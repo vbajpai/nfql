@@ -1,0 +1,6 @@
+filter-primitive port80
+  type ip-port
+  permit 80
+
+filter-definition foo
+  match ip-source-port port80

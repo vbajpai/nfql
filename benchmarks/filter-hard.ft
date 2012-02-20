@@ -1,0 +1,17 @@
+filter-primitive port80
+  type ip-port
+  permit 80
+
+filter-primitive port25
+  type ip-port
+  permit 25
+
+filter-primitive port443
+  type ip-port
+  permit 443
+
+filter-definition foo
+  match ip-source-port port443
+  or
+  match ip-destination-port port25
+  match ip-source-port port80
