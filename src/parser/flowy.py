@@ -21,6 +21,7 @@ if __name__ == '__main__':
 
     if len(arguments) != 1:
         sys.stderr.write('Exactly one argument expected\n')
+        sys.stderr.write(usage)
         exit(1)
         
     file = arguments[0]
