@@ -6,6 +6,7 @@ netaddr==0.7.6
 numexpr==2.0.1
 numpy==1.6.1
 ply==2.5
+pycallgraph==0.5.1
 pyflowtools==0.3.4.1
 pylint==0.25.1
 tables==2.3.1
