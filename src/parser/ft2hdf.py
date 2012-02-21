@@ -168,6 +168,11 @@ def main():
     options, arguments = p.parse_args()
     start_time = options.start_time
     end_time = options.end_time
+    
+    if len(arguments) is 0:
+      sys.stderr.write(usage)
+      exit(1)
+    
     folders = arguments[:-1]
     output = arguments[-1]
     if not (output[output.find('.h5'):] == '.h5'):
