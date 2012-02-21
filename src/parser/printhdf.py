@@ -15,7 +15,7 @@ if __name__ == "__main__":
     p = OptionParser(usage)
     options, arguments = p.parse_args()
     if len(arguments) != 1:
-        sys.stderr.write('Exactly one argument expected\n')
+        sys.stderr.write(usage)
         exit(1)
     
     printHDF(arguments[0])
