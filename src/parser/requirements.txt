@@ -1,0 +1,12 @@
+Cython==0.15.1
+distribute==0.6.24
+logilab-astng==0.23.1
+logilab-common==0.57.1
+netaddr==0.7.6
+numexpr==2.0.1
+numpy==1.6.1
+ply==2.5
+pyflowtools==0.3.4.1
+pylint==0.25.1
+tables==2.3.1
+wsgiref==0.1.2
