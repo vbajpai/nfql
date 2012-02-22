@@ -32,6 +32,8 @@
 #include <errno.h>
 #include <stdbool.h>
 #include <string.h>
+#include <fcntl.h>
+
 #include "ftreader.h"
 #include "flowy.h"
 #include "auto_comps.h"
@@ -204,6 +206,7 @@ static void *branch_start(void *arg)
 int main(int argc, char **argv)
 {
     struct ft_data *data;
+    int inputFd;
     int num_threads;
     int i, ret;
     pthread_t *thread_ids;
@@ -214,9 +217,15 @@ int main(int argc, char **argv)
     struct group ***group_tuples;
 
     num_threads = 2;
-
-    data = ft_open(STDIN_FILENO);
-
+  
+    inputFd = open(argv[1], O_RDONLY);
+    if (inputFd == -1){
+      perror("open");
+      exit(EXIT_FAILURE);
+    }   
+  
+    data = ft_open(inputFd);
+  
     binfos = (struct branch_info *)calloc(num_threads, sizeof(struct branch_info));
     if (binfos == NULL) {
         perror("malloc");
