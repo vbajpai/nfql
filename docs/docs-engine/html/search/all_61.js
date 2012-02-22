@@ -59,6 +59,5 @@ var searchData=
   ['author_5femail',['author_email',['../namespacesetup.html#a4ead8e1ca45242906fde7d5489f3beaa',1,'setup']]],
   ['auto_5fassign_2ec',['auto_assign.c',['../auto__assign_8c.html',1,'']]],
   ['auto_5fcomps_2ec',['auto_comps.c',['../auto__comps_8c.html',1,'']]],
-  ['auto_5fcomps_2eh',['auto_comps.h',['../auto__comps_8h.html',1,'']]],
-  ['auto_5fswitch_2ec',['auto_switch.c',['../auto__switch_8c.html',1,'']]]
+  ['auto_5fcomps_2eh',['auto_comps.h',['../auto__comps_8h.html',1,'']]]
 ];

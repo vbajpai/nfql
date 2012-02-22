@@ -97,7 +97,7 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="utils_8h__dep__incl.png" border="0" usemap="#utils_8hdep" alt=""/></div>
 <map name="utils_8hdep" id="utils_8hdep">
-<area shape="rect" id="node3" href="filter_8c.html" title="filter.c" alt="" coords="5,83,61,111"/><area shape="rect" id="node5" href="flowy_8c.html" title="flowy.c" alt="" coords="85,83,145,111"/><area shape="rect" id="node7" href="grouper__fptr_8c.html" title="grouper_fptr.c" alt="" coords="171,83,273,111"/><area shape="rect" id="node9" href="iterate_8c.html" title="iterate.c" alt="" coords="299,83,367,111"/><area shape="rect" id="node11" href="merger__fptr_8c.html" title="merger_fptr.c" alt="" coords="391,83,491,111"/></map>
+<area shape="rect" id="node3" href="flowy_8c.html" title="flowy.c" alt="" coords="4,83,64,111"/><area shape="rect" id="node5" href="grouper__fptr_8c.html" title="grouper_fptr.c" alt="" coords="90,83,192,111"/><area shape="rect" id="node7" href="iterate_8c.html" title="iterate.c" alt="" coords="218,83,285,111"/><area shape="rect" id="node9" href="merger__fptr_8c.html" title="merger_fptr.c" alt="" coords="310,83,409,111"/></map>
 </div>
 </div>
 <p><a href="utils_8h_source.html">Go to the source code of this file.</a></p>
@@ -1081,7 +1081,28 @@ Functions</h2></td></tr>
       </table>
 </div>
 <div class="memdoc">
+<div class="fragment"><pre class="fragment">{
+    <span class="keywordtype">size_t</span> l, u, idx;
+    <span class="keyword">const</span> <span class="keywordtype">void</span> *p;
+    <span class="keywordtype">int</span> comparison;
 
+    l = 0;
+    u = nmemb;
+    <span class="keywordflow">while</span> (l &lt; u) {
+        idx = (l + u) / 2;
+        p = (<span class="keywordtype">void</span> *) (((<span class="keyword">const</span> <span class="keywordtype">char</span> *) base) + (idx * size));
+        comparison = (*compar) (key, p, thunk);
+        <span class="keywordflow">if</span> (comparison &lt; 0) {
+            u = idx;
+        } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (comparison &gt; 0) {
+            l = idx + 1;
+        } <span class="keywordflow">else</span> {
+            <span class="keywordflow">return</span> (<span class="keywordtype">void</span> *) p;
+        }
+    }
+    <span class="keywordflow">return</span> NULL;
+}
+</pre></div>
 </div>
 </div>
 <a class="anchor" id="a7fa9db1e2b045598af3d72ba4745b83f"></a><!-- doxytag: member="utils.h::comp_uint16_t" ref="a7fa9db1e2b045598af3d72ba4745b83f" args="(const void *e1, const void *e2, void *thunk)" -->
@@ -1624,12 +1645,7 @@ Functions</h2></td></tr>
       </table>
 </div>
 <div class="memdoc">
-<div class="fragment"><pre class="fragment">{
-    free(handle-&gt;<a class="code" href="structbsearch__handle.html#afc72b1ba737f8fbd876df833d366aa0a">ordered_records</a>);
-    free(handle-&gt;<a class="code" href="structbsearch__handle.html#a57b7985cee8d7b2ae2dfe70fdfd0da01">uniq_records</a>);
-    free(handle);
-}
-</pre></div>
+
 </div>
 </div>
 <a class="anchor" id="aebe94b939f2b3394b6d7d46198a834c3"></a><!-- doxytag: member="utils.h::tree_find_uint16_t" ref="aebe94b939f2b3394b6d7d46198a834c3" args="(struct bsearch_handle *handle, char *record, unsigned short field_offset)" -->
@@ -1782,7 +1798,7 @@ Functions</h2></td></tr>
 
 
 <hr class="footer"/><address class="footer"><small>
-Generated on Wed Feb 22 2012 00:09:38 for My Project by &#160;<a href="http://www.doxygen.org/index.html">
+Generated on Wed Feb 22 2012 20:25:17 for My Project by &#160;<a href="http://www.doxygen.org/index.html">
 <img class="footer" src="doxygen.png" alt="doxygen"/>
 </a> 1.7.6.1
 </small></address>

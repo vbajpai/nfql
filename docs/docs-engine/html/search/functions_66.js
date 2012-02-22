@@ -1,6 +1,6 @@
 var searchData=
 [
-  ['filter',['filter',['../filter_8c.html#a05b69a2687e7d6108da701476042993d',1,'filter(struct ft_data *data, struct filter_rule **filter_rules, int num_filter_rules, size_t *num_filtered_records):&#160;filter.c'],['../flowy_8c.html#ad16d168606f8e5927810013c8b566b3a',1,'filter(struct ft_data *data, struct filter_rule *filter_rules, int num_filter_rules, size_t *num_filtered_records):&#160;flowy.c']]],
+  ['filter',['filter',['../flowy_8c.html#ad16d168606f8e5927810013c8b566b3a',1,'flowy.c']]],
   ['filter_5fbody',['filter_body',['../namespacefun__gen.html#a61a94a55994d4646e00b38ca77db4b61',1,'fun_gen']]],
   ['filter_5feq_5fuint16_5ft',['filter_eq_uint16_t',['../auto__comps_8c.html#abe66a806889783e72d526d2fe57486e5',1,'filter_eq_uint16_t(char *record, size_t field_offset, uint64_t value, uint64_t delta):&#160;auto_comps.c'],['../auto__comps_8h.html#abe66a806889783e72d526d2fe57486e5',1,'filter_eq_uint16_t(char *record, size_t field_offset, uint64_t value, uint64_t delta):&#160;auto_comps.c']]],
   ['filter_5feq_5fuint32_5ft',['filter_eq_uint32_t',['../auto__comps_8c.html#aa07ceb571d93f79d8aad46b9b64fb4c7',1,'filter_eq_uint32_t(char *record, size_t field_offset, uint64_t value, uint64_t delta):&#160;auto_comps.c'],['../auto__comps_8h.html#aa07ceb571d93f79d8aad46b9b64fb4c7',1,'filter_eq_uint32_t(char *record, size_t field_offset, uint64_t value, uint64_t delta):&#160;auto_comps.c']]],

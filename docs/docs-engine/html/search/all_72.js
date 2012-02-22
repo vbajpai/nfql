@@ -8,7 +8,6 @@ var searchData=
   ['rule_5fgt',['RULE_GT',['../flowy_8h.html#a06fc87d81c62e9abb8790b6e5713c55ba39064db790ddb7c5ded1a4104bc1e668',1,'flowy.h']]],
   ['rule_5fle',['RULE_LE',['../flowy_8h.html#a06fc87d81c62e9abb8790b6e5713c55bacea35658f1d47e4f8eda7e53c94e6958',1,'flowy.h']]],
   ['rule_5flt',['RULE_LT',['../flowy_8h.html#a06fc87d81c62e9abb8790b6e5713c55baafeee41a14819145738148b41411a5b3',1,'flowy.h']]],
-  ['rule_5fmatches',['rule_matches',['../auto__switch_8c.html#a32adbcf1127eb2f7ccca0bb18019237e',1,'auto_switch.c']]],
   ['rule_5fne',['RULE_NE',['../flowy_8h.html#a06fc87d81c62e9abb8790b6e5713c55bafa4fb8bc149240a966abae1e4f9a3ac3',1,'flowy.h']]],
   ['rule_5fno',['RULE_NO',['../flowy_8h.html#a06fc87d81c62e9abb8790b6e5713c55ba4a92c264af23f5d31efd5dd89b1fe322',1,'flowy.h']]],
   ['rule_5frel',['RULE_REL',['../flowy_8h.html#a06fc87d81c62e9abb8790b6e5713c55bab89e0e8dce147e7f8328afc134e4967b',1,'flowy.h']]],

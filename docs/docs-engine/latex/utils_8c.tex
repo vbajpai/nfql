@@ -1,0 +1,56 @@
+\hypertarget{utils_8c}{\section{utils.\-c \-File \-Reference}
+\label{utils_8c}\index{utils.\-c@{utils.\-c}}
+}
+{\ttfamily \#include $<$stdlib.\-h$>$}\*
+\-Include dependency graph for utils.\-c\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=126pt]{utils_8c__incl}
+\end{center}
+\end{figure}
+\subsection*{\-Functions}
+\begin{DoxyCompactItemize}
+\item 
+void $\ast$ \hyperlink{utils_8c_a05060ff8f80698e127a541d6897a37fa}{bsearch\-\_\-r} (const void $\ast$key, const void $\ast$base, size\-\_\-t nmemb, size\-\_\-t size, int($\ast$\hyperlink{auto__comps_8c_a0175038e9fbcee94d51ca2ac939109a6}{compar})(const void $\ast$, const void $\ast$, void $\ast$thunk), void $\ast$thunk)
+\end{DoxyCompactItemize}
+
+
+\subsection{\-Function \-Documentation}
+\hypertarget{utils_8c_a05060ff8f80698e127a541d6897a37fa}{\index{utils.\-c@{utils.\-c}!bsearch\-\_\-r@{bsearch\-\_\-r}}
+\index{bsearch\-\_\-r@{bsearch\-\_\-r}!utils.c@{utils.\-c}}
+\subsubsection[{bsearch\-\_\-r}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ {\bf bsearch\-\_\-r} (
+\begin{DoxyParamCaption}
+\item[{const void $\ast$}]{key, }
+\item[{const void $\ast$}]{base, }
+\item[{size\-\_\-t}]{nmemb, }
+\item[{size\-\_\-t}]{size, }
+\item[{int($\ast$)(const void $\ast$, const void $\ast$, void $\ast$thunk)}]{compar, }
+\item[{void $\ast$}]{thunk}
+\end{DoxyParamCaption}
+)}}\label{utils_8c_a05060ff8f80698e127a541d6897a37fa}
+
+\begin{DoxyCode}
+{
+    size_t l, u, idx;
+    const void *p;
+    int comparison;
+
+    l = 0;
+    u = nmemb;
+    while (l < u) {
+        idx = (l + u) / 2;
+        p = (void *) (((const char *) base) + (idx * size));
+        comparison = (*compar) (key, p, thunk);
+        if (comparison < 0) {
+            u = idx;
+        } else if (comparison > 0) {
+            l = idx + 1;
+        } else {
+            return (void *) p;
+        }
+    }
+    return NULL;
+}
+\end{DoxyCode}

@@ -1261,6 +1261,30 @@ void \hyperlink{utils_8h_ac6c00986c20a159076cfbf57cf26c595}{tree\-\_\-destroy} (
 \item[{void $\ast$}]{thunk}
 \end{DoxyParamCaption}
 )}}\label{utils_8h_a05060ff8f80698e127a541d6897a37fa}
+
+\begin{DoxyCode}
+{
+    size_t l, u, idx;
+    const void *p;
+    int comparison;
+
+    l = 0;
+    u = nmemb;
+    while (l < u) {
+        idx = (l + u) / 2;
+        p = (void *) (((const char *) base) + (idx * size));
+        comparison = (*compar) (key, p, thunk);
+        if (comparison < 0) {
+            u = idx;
+        } else if (comparison > 0) {
+            l = idx + 1;
+        } else {
+            return (void *) p;
+        }
+    }
+    return NULL;
+}
+\end{DoxyCode}
 \hypertarget{utils_8h_a7fa9db1e2b045598af3d72ba4745b83f}{\index{utils.\-h@{utils.\-h}!comp\-\_\-uint16\-\_\-t@{comp\-\_\-uint16\-\_\-t}}
 \index{comp\-\_\-uint16\-\_\-t@{comp\-\_\-uint16\-\_\-t}!utils.h@{utils.\-h}}
 \subsubsection[{comp\-\_\-uint16\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf comp\-\_\-uint16\-\_\-t} (
@@ -1471,14 +1495,6 @@ void \hyperlink{utils_8h_ac6c00986c20a159076cfbf57cf26c595}{tree\-\_\-destroy} (
 \item[{struct {\bf bsearch\-\_\-handle} $\ast$}]{handle}
 \end{DoxyParamCaption}
 )}}\label{utils_8h_ac6c00986c20a159076cfbf57cf26c595}
-
-\begin{DoxyCode}
-{
-    free(handle->ordered_records);
-    free(handle->uniq_records);
-    free(handle);
-}
-\end{DoxyCode}
 \hypertarget{utils_8h_aebe94b939f2b3394b6d7d46198a834c3}{\index{utils.\-h@{utils.\-h}!tree\-\_\-find\-\_\-uint16\-\_\-t@{tree\-\_\-find\-\_\-uint16\-\_\-t}}
 \index{tree\-\_\-find\-\_\-uint16\-\_\-t@{tree\-\_\-find\-\_\-uint16\-\_\-t}!utils.h@{utils.\-h}}
 \subsubsection[{tree\-\_\-find\-\_\-uint16\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}char$\ast$$\ast$ {\bf tree\-\_\-find\-\_\-uint16\-\_\-t} (
