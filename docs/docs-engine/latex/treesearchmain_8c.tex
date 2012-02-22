@@ -1,0 +1,189 @@
+\hypertarget{treesearchmain_8c}{\section{treesearchmain.\-c \-File \-Reference}
+\label{treesearchmain_8c}\index{treesearchmain.\-c@{treesearchmain.\-c}}
+}
+{\ttfamily \#include $<$unistd.\-h$>$}\*
+{\ttfamily \#include $<$stdlib.\-h$>$}\*
+{\ttfamily \#include $<$string.\-h$>$}\*
+{\ttfamily \#include $<$errno.\-h$>$}\*
+{\ttfamily \#include $<$stdio.\-h$>$}\*
+{\ttfamily \#include \char`\"{}ftreader.\-h\char`\"{}}\*
+{\ttfamily \#include \char`\"{}flowy.\-h\char`\"{}}\*
+\-Include dependency graph for treesearchmain.\-c\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{treesearchmain_8c__incl}
+\end{center}
+\end{figure}
+\subsection*{\-Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structgrouper__rule2}{grouper\-\_\-rule2}
+\end{DoxyCompactItemize}
+\subsection*{\-Defines}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{treesearchmain_8c_a369266c24eacffb87046522897a570d5}{\-\_\-\-G\-N\-U\-\_\-\-S\-O\-U\-R\-C\-E}
+\end{DoxyCompactItemize}
+\subsection*{\-Functions}
+\begin{DoxyCompactItemize}
+\item 
+void \hyperlink{treesearchmain_8c_ab5d6c766094824a006c2e84efc9a8f10}{grouper\-\_\-eq\-\_\-uint32\-\_\-t} (struct \hyperlink{structgroup}{group} \hyperlink{structgroup}{group}, struct \hyperlink{structgrouper__rule2}{grouper\-\_\-rule2} $\ast$rules)
+\item 
+void \hyperlink{treesearchmain_8c_aa637c53a40f8276afad8f791d88df731}{grouper\-\_\-eq\-\_\-uint16\-\_\-t} (struct \hyperlink{structgroup}{group} \hyperlink{structgroup}{group}, struct \hyperlink{structgrouper__rule2}{grouper\-\_\-rule2} $\ast$rules)
+\item 
+int \hyperlink{treesearchmain_8c_ae66f6b31b5ad750f1fe042a706a4e3d4}{main} ()
+\end{DoxyCompactItemize}
+
+
+\subsection{\-Define \-Documentation}
+\hypertarget{treesearchmain_8c_a369266c24eacffb87046522897a570d5}{\index{treesearchmain.\-c@{treesearchmain.\-c}!\-\_\-\-G\-N\-U\-\_\-\-S\-O\-U\-R\-C\-E@{\-\_\-\-G\-N\-U\-\_\-\-S\-O\-U\-R\-C\-E}}
+\index{\-\_\-\-G\-N\-U\-\_\-\-S\-O\-U\-R\-C\-E@{\-\_\-\-G\-N\-U\-\_\-\-S\-O\-U\-R\-C\-E}!treesearchmain.c@{treesearchmain.\-c}}
+\subsubsection[{\-\_\-\-G\-N\-U\-\_\-\-S\-O\-U\-R\-C\-E}]{\setlength{\rightskip}{0pt plus 5cm}\#define {\bf \-\_\-\-G\-N\-U\-\_\-\-S\-O\-U\-R\-C\-E}}}\label{treesearchmain_8c_a369266c24eacffb87046522897a570d5}
+
+
+\subsection{\-Function \-Documentation}
+\hypertarget{treesearchmain_8c_aa637c53a40f8276afad8f791d88df731}{\index{treesearchmain.\-c@{treesearchmain.\-c}!grouper\-\_\-eq\-\_\-uint16\-\_\-t@{grouper\-\_\-eq\-\_\-uint16\-\_\-t}}
+\index{grouper\-\_\-eq\-\_\-uint16\-\_\-t@{grouper\-\_\-eq\-\_\-uint16\-\_\-t}!treesearchmain.c@{treesearchmain.\-c}}
+\subsubsection[{grouper\-\_\-eq\-\_\-uint16\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf grouper\-\_\-eq\-\_\-uint16\-\_\-t} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf group}}]{group, }
+\item[{struct {\bf grouper\-\_\-rule2} $\ast$}]{rules}
+\end{DoxyParamCaption}
+)}}\label{treesearchmain_8c_aa637c53a40f8276afad8f791d88df731}
+
+\begin{DoxyCode}
+{
+}
+\end{DoxyCode}
+\hypertarget{treesearchmain_8c_ab5d6c766094824a006c2e84efc9a8f10}{\index{treesearchmain.\-c@{treesearchmain.\-c}!grouper\-\_\-eq\-\_\-uint32\-\_\-t@{grouper\-\_\-eq\-\_\-uint32\-\_\-t}}
+\index{grouper\-\_\-eq\-\_\-uint32\-\_\-t@{grouper\-\_\-eq\-\_\-uint32\-\_\-t}!treesearchmain.c@{treesearchmain.\-c}}
+\subsubsection[{grouper\-\_\-eq\-\_\-uint32\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf grouper\-\_\-eq\-\_\-uint32\-\_\-t} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf group}}]{group, }
+\item[{struct {\bf grouper\-\_\-rule2} $\ast$}]{rules}
+\end{DoxyParamCaption}
+)}}\label{treesearchmain_8c_ab5d6c766094824a006c2e84efc9a8f10}
+
+\begin{DoxyCode}
+{
+    // TODO: first member only right for absolute deltas
+    uint32_t compar = *(uint32_t *)(group.members[0]+rules[0].field_offset1);
+    uint32_t val;
+
+    char **found_records = tree_find_uint32_t(rules[0].handle, group.members[0]
+      , rules[0].field_offset2);
+    for (;;found_records++) {
+        if (*found_records == NULL) {
+            continue;
+        }
+        val = *(uint32_t *)(*found_records+rules[0].field_offset2);
+
+        if (val != compar) {
+            break;
+        }
+
+        if ((rules+1)->func != NULL) {
+            (rules+1)->func(group, rules+1);
+            continue;
+        }
+
+        group.num_members++;
+        group.members = realloc
+    }
+}
+\end{DoxyCode}
+
+
+\-Here is the call graph for this function\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=320pt]{treesearchmain_8c_ab5d6c766094824a006c2e84efc9a8f10_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{treesearchmain_8c_ae66f6b31b5ad750f1fe042a706a4e3d4}{\index{treesearchmain.\-c@{treesearchmain.\-c}!main@{main}}
+\index{main@{main}!treesearchmain.c@{treesearchmain.\-c}}
+\subsubsection[{main}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf main} (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}}\label{treesearchmain_8c_ae66f6b31b5ad750f1fe042a706a4e3d4}
+
+\begin{DoxyCode}
+           {
+    struct ft_data *data;
+    char **records;
+    int num_records;
+    struct group *groups;
+    int num_groups;
+    int i;
+
+    data = ft_open(STDIN_FILENO);
+    records = data->records;
+    num_records = data->num_records;
+
+    struct grouper_rule2 rules[5] = {
+        { data->offsets.srcaddr, data->offsets.srcaddr, 0, tree_create_uint32_t
+      (records, num_records, data->offsets.srcaddr), grouper_eq_uint32_t },
+        { data->offsets.dstaddr, data->offsets.dstaddr, 0, tree_create_uint32_t
+      (records, num_records, data->offsets.dstaddr), grouper_eq_uint32_t },
+        { data->offsets.srcport, data->offsets.srcport, 0, tree_create_uint16_t
+      (records, num_records, data->offsets.srcport), grouper_eq_uint16_t },
+        { data->offsets.dstport, data->offsets.dstport, 0, tree_create_uint16_t
+      (records, num_records, data->offsets.dstport), grouper_eq_uint16_t },
+        { 0, 0, 0, NULL }
+    };
+
+    char **filtered_records;
+
+    filtered_records = (char **)malloc(sizeof(char *)*num_records);
+    if (filtered_records == NULL) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+
+    for (i = 0; i < num_records; i++) {
+        filtered_records[i] = records[i];
+    }
+
+    num_groups = 1;
+    for (i = 0; i < num_records; i++) {
+        if (filtered_records[i] == NULL) {
+            continue;
+        }
+
+        groups = (struct group *)realloc(sizeof(struct group)*num_groups);
+        if (groups == NULL) {
+            perror("realloc");
+            exit(EXIT_FAILURE);
+        }
+        groups[num_groups-1].num_members = 1;
+        groups[num_groups-1].members = (char **)malloc(sizeof(char *)*groups[
+      num_groups-1].num_members);
+        groups[num_groups-1].members[0] = filtered_records[i];
+
+        rules[0].func(groups[num_groups-1], rules);
+    }
+
+    // dont forget to merge modules to real groups
+
+    return EXIT_SUCCESS;
+}
+\end{DoxyCode}
+
+
+\-Here is the call graph for this function\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{treesearchmain_8c_ae66f6b31b5ad750f1fe042a706a4e3d4_cgraph}
+\end{center}
+\end{figure}
+
+

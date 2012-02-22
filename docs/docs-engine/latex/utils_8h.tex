@@ -1,0 +1,1517 @@
+\hypertarget{utils_8h}{\section{utils.\-h \-File \-Reference}
+\label{utils_8h}\index{utils.\-h@{utils.\-h}}
+}
+{\ttfamily \#include $<$stdlib.\-h$>$}\*
+{\ttfamily \#include \char`\"{}flowy.\-h\char`\"{}}\*
+\-Include dependency graph for utils.\-h\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=343pt]{utils_8h__incl}
+\end{center}
+\end{figure}
+\-This graph shows which files directly or indirectly include this file\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{utils_8h__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{\-Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structpermut__iter}{permut\-\_\-iter}
+\item 
+struct \hyperlink{structbsearch__handle}{bsearch\-\_\-handle}
+\end{DoxyCompactItemize}
+\subsection*{\-Functions}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structpermut__iter}{permut\-\_\-iter} $\ast$ \hyperlink{utils_8h_a6d88d48d220e95a90623fd364a7ff51b}{iter\-\_\-init} (size\-\_\-t $\ast$offsets, size\-\_\-t $\ast$lengths, size\-\_\-t arr\-\_\-len)
+\item 
+int \hyperlink{utils_8h_a38a5dc6c2c0cc8a9d328a076e92e2d52}{iter\-\_\-next} (struct \hyperlink{structpermut__iter}{permut\-\_\-iter} $\ast$iter)
+\item 
+void \hyperlink{utils_8h_a7eb1309d6a95f4bc618c9952a19fd625}{iter\-\_\-destroy} (struct \hyperlink{structpermut__iter}{permut\-\_\-iter} $\ast$iter)
+\item 
+void \hyperlink{utils_8h_a25504d2edbe933b8c1423b80a7d15922}{assign\-\_\-fptr} (struct \hyperlink{structbranch__info}{branch\-\_\-info} $\ast$binfos, int num\-\_\-threads)
+\item 
+void $\ast$ \hyperlink{utils_8h_a05060ff8f80698e127a541d6897a37fa}{bsearch\-\_\-r} (const void $\ast$key, const void $\ast$base, size\-\_\-t nmemb, size\-\_\-t size, int($\ast$\hyperlink{auto__comps_8c_a0175038e9fbcee94d51ca2ac939109a6}{compar})(const void $\ast$, const void $\ast$, void $\ast$thunk), void $\ast$thunk)
+\item 
+int \hyperlink{utils_8h_a8e4e3b0c264d1cb6517da41ce956a705}{comp\-\_\-uint8\-\_\-t} (const void $\ast$e1, const void $\ast$e2, void $\ast$thunk)
+\item 
+int \hyperlink{utils_8h_a7fa9db1e2b045598af3d72ba4745b83f}{comp\-\_\-uint16\-\_\-t} (const void $\ast$e1, const void $\ast$e2, void $\ast$thunk)
+\item 
+int \hyperlink{utils_8h_af6db05e0f8ec6dc038079b4d7db31714}{comp\-\_\-uint32\-\_\-t} (const void $\ast$e1, const void $\ast$e2, void $\ast$thunk)
+\item 
+int \hyperlink{utils_8h_a36dfc38dd5516fc8494ad47d3f171068}{comp\-\_\-uint64\-\_\-t} (const void $\ast$e1, const void $\ast$e2, void $\ast$thunk)
+\item 
+int \hyperlink{utils_8h_a5556a90f339bb6560b4b90e324c551a0}{comp\-\_\-uint8\-\_\-t\-\_\-p} (const void $\ast$e1, const void $\ast$e2, void $\ast$thunk)
+\item 
+int \hyperlink{utils_8h_aa00100c379f87bfd70e2c92b79abaa6e}{comp\-\_\-uint16\-\_\-t\-\_\-p} (const void $\ast$e1, const void $\ast$e2, void $\ast$thunk)
+\item 
+int \hyperlink{utils_8h_af52876511c1e1050b7760a0162b20879}{comp\-\_\-uint32\-\_\-t\-\_\-p} (const void $\ast$e1, const void $\ast$e2, void $\ast$thunk)
+\item 
+int \hyperlink{utils_8h_af4b5c747e5b94300a1a45187d4acf8f3}{comp\-\_\-uint64\-\_\-t\-\_\-p} (const void $\ast$e1, const void $\ast$e2, void $\ast$thunk)
+\item 
+struct \hyperlink{structbsearch__handle}{bsearch\-\_\-handle} $\ast$ \hyperlink{utils_8h_a9058cfa954fa07371ecf13994ee45a03}{tree\-\_\-create\-\_\-uint8\-\_\-t} (char $\ast$$\ast$records, size\-\_\-t num\-\_\-records, unsigned short field\-\_\-offset)
+\item 
+struct \hyperlink{structbsearch__handle}{bsearch\-\_\-handle} $\ast$ \hyperlink{utils_8h_a038703de2b4abf9e265ab9fb56d66f28}{tree\-\_\-create\-\_\-uint16\-\_\-t} (char $\ast$$\ast$records, size\-\_\-t num\-\_\-records, unsigned short field\-\_\-offset)
+\item 
+struct \hyperlink{structbsearch__handle}{bsearch\-\_\-handle} $\ast$ \hyperlink{utils_8h_a7e0443ce623317d05ea0ea6c17b53b19}{tree\-\_\-create\-\_\-uint32\-\_\-t} (char $\ast$$\ast$records, size\-\_\-t num\-\_\-records, unsigned short field\-\_\-offset)
+\item 
+struct \hyperlink{structbsearch__handle}{bsearch\-\_\-handle} $\ast$ \hyperlink{utils_8h_a51d2effb1b2dc321e3ed03811e912be3}{tree\-\_\-create\-\_\-uint64\-\_\-t} (char $\ast$$\ast$records, size\-\_\-t num\-\_\-records, unsigned short field\-\_\-offset)
+\item 
+char $\ast$$\ast$ \hyperlink{utils_8h_a19ae5b13b74c743579a7016f3d953500}{tree\-\_\-find\-\_\-uint8\-\_\-t} (struct \hyperlink{structbsearch__handle}{bsearch\-\_\-handle} $\ast$handle, char $\ast$record, unsigned short field\-\_\-offset)
+\item 
+char $\ast$$\ast$ \hyperlink{utils_8h_aebe94b939f2b3394b6d7d46198a834c3}{tree\-\_\-find\-\_\-uint16\-\_\-t} (struct \hyperlink{structbsearch__handle}{bsearch\-\_\-handle} $\ast$handle, char $\ast$record, unsigned short field\-\_\-offset)
+\item 
+char $\ast$$\ast$ \hyperlink{utils_8h_a4b35cb4c4e29767fe0026730ee2c2803}{tree\-\_\-find\-\_\-uint32\-\_\-t} (struct \hyperlink{structbsearch__handle}{bsearch\-\_\-handle} $\ast$handle, char $\ast$record, unsigned short field\-\_\-offset)
+\item 
+char $\ast$$\ast$ \hyperlink{utils_8h_abc45589b5c611416af360a7d894bf996}{tree\-\_\-find\-\_\-uint64\-\_\-t} (struct \hyperlink{structbsearch__handle}{bsearch\-\_\-handle} $\ast$handle, char $\ast$record, unsigned short field\-\_\-offset)
+\item 
+void \hyperlink{utils_8h_ac6c00986c20a159076cfbf57cf26c595}{tree\-\_\-destroy} (struct \hyperlink{structbsearch__handle}{bsearch\-\_\-handle} $\ast$handle)
+\end{DoxyCompactItemize}
+
+
+\subsection{\-Function \-Documentation}
+\hypertarget{utils_8h_a25504d2edbe933b8c1423b80a7d15922}{\index{utils.\-h@{utils.\-h}!assign\-\_\-fptr@{assign\-\_\-fptr}}
+\index{assign\-\_\-fptr@{assign\-\_\-fptr}!utils.h@{utils.\-h}}
+\subsubsection[{assign\-\_\-fptr}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf assign\-\_\-fptr} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf branch\-\_\-info} $\ast$}]{binfos, }
+\item[{int}]{num\-\_\-threads}
+\end{DoxyParamCaption}
+)}}\label{utils_8h_a25504d2edbe933b8c1423b80a7d15922}
+
+\begin{DoxyCode}
+                                                              {
+    int i, j;
+    for (i = 0; i < num_threads; i++) {
+        for (j = 0; j < binfos[i].num_group_modules; j++) {
+            switch (binfos[i].group_modules[j].op) {
+                case RULE_EQ | RULE_S1_8 | RULE_S2_8 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint8_t_uint8_t_abs;
+                    break;
+                case RULE_EQ | RULE_S1_8 | RULE_S2_8 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint8_t_uint8_t_rel;
+                    break;
+                case RULE_EQ | RULE_S1_8 | RULE_S2_8 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint8_t_uint8_t_no;
+                    break;
+                case RULE_EQ | RULE_S1_8 | RULE_S2_16 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint8_t_uint16_t_abs;
+                    break;
+                case RULE_EQ | RULE_S1_8 | RULE_S2_16 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint8_t_uint16_t_rel;
+                    break;
+                case RULE_EQ | RULE_S1_8 | RULE_S2_16 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint8_t_uint16_t_no;
+                    break;
+                case RULE_EQ | RULE_S1_8 | RULE_S2_32 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint8_t_uint32_t_abs;
+                    break;
+                case RULE_EQ | RULE_S1_8 | RULE_S2_32 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint8_t_uint32_t_rel;
+                    break;
+                case RULE_EQ | RULE_S1_8 | RULE_S2_32 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint8_t_uint32_t_no;
+                    break;
+                case RULE_EQ | RULE_S1_8 | RULE_S2_64 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint8_t_uint64_t_abs;
+                    break;
+                case RULE_EQ | RULE_S1_8 | RULE_S2_64 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint8_t_uint64_t_rel;
+                    break;
+                case RULE_EQ | RULE_S1_8 | RULE_S2_64 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint8_t_uint64_t_no;
+                    break;
+                case RULE_EQ | RULE_S1_16 | RULE_S2_8 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint16_t_uint8_t_abs;
+                    break;
+                case RULE_EQ | RULE_S1_16 | RULE_S2_8 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint16_t_uint8_t_rel;
+                    break;
+                case RULE_EQ | RULE_S1_16 | RULE_S2_8 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint16_t_uint8_t_no;
+                    break;
+                case RULE_EQ | RULE_S1_16 | RULE_S2_16 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint16_t_uint16_t_abs;
+                    break;
+                case RULE_EQ | RULE_S1_16 | RULE_S2_16 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint16_t_uint16_t_rel;
+                    break;
+                case RULE_EQ | RULE_S1_16 | RULE_S2_16 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint16_t_uint16_t_no;
+                    break;
+                case RULE_EQ | RULE_S1_16 | RULE_S2_32 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint16_t_uint32_t_abs;
+                    break;
+                case RULE_EQ | RULE_S1_16 | RULE_S2_32 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint16_t_uint32_t_rel;
+                    break;
+                case RULE_EQ | RULE_S1_16 | RULE_S2_32 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint16_t_uint32_t_no;
+                    break;
+                case RULE_EQ | RULE_S1_16 | RULE_S2_64 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint16_t_uint64_t_abs;
+                    break;
+                case RULE_EQ | RULE_S1_16 | RULE_S2_64 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint16_t_uint64_t_rel;
+                    break;
+                case RULE_EQ | RULE_S1_16 | RULE_S2_64 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint16_t_uint64_t_no;
+                    break;
+                case RULE_EQ | RULE_S1_32 | RULE_S2_8 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint32_t_uint8_t_abs;
+                    break;
+                case RULE_EQ | RULE_S1_32 | RULE_S2_8 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint32_t_uint8_t_rel;
+                    break;
+                case RULE_EQ | RULE_S1_32 | RULE_S2_8 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint32_t_uint8_t_no;
+                    break;
+                case RULE_EQ | RULE_S1_32 | RULE_S2_16 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint32_t_uint16_t_abs;
+                    break;
+                case RULE_EQ | RULE_S1_32 | RULE_S2_16 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint32_t_uint16_t_rel;
+                    break;
+                case RULE_EQ | RULE_S1_32 | RULE_S2_16 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint32_t_uint16_t_no;
+                    break;
+                case RULE_EQ | RULE_S1_32 | RULE_S2_32 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint32_t_uint32_t_abs;
+                    break;
+                case RULE_EQ | RULE_S1_32 | RULE_S2_32 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint32_t_uint32_t_rel;
+                    break;
+                case RULE_EQ | RULE_S1_32 | RULE_S2_32 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint32_t_uint32_t_no;
+                    break;
+                case RULE_EQ | RULE_S1_32 | RULE_S2_64 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint32_t_uint64_t_abs;
+                    break;
+                case RULE_EQ | RULE_S1_32 | RULE_S2_64 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint32_t_uint64_t_rel;
+                    break;
+                case RULE_EQ | RULE_S1_32 | RULE_S2_64 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint32_t_uint64_t_no;
+                    break;
+                case RULE_EQ | RULE_S1_64 | RULE_S2_8 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint64_t_uint8_t_abs;
+                    break;
+                case RULE_EQ | RULE_S1_64 | RULE_S2_8 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint64_t_uint8_t_rel;
+                    break;
+                case RULE_EQ | RULE_S1_64 | RULE_S2_8 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint64_t_uint8_t_no;
+                    break;
+                case RULE_EQ | RULE_S1_64 | RULE_S2_16 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint64_t_uint16_t_abs;
+                    break;
+                case RULE_EQ | RULE_S1_64 | RULE_S2_16 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint64_t_uint16_t_rel;
+                    break;
+                case RULE_EQ | RULE_S1_64 | RULE_S2_16 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint64_t_uint16_t_no;
+                    break;
+                case RULE_EQ | RULE_S1_64 | RULE_S2_32 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint64_t_uint32_t_abs;
+                    break;
+                case RULE_EQ | RULE_S1_64 | RULE_S2_32 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint64_t_uint32_t_rel;
+                    break;
+                case RULE_EQ | RULE_S1_64 | RULE_S2_32 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint64_t_uint32_t_no;
+                    break;
+                case RULE_EQ | RULE_S1_64 | RULE_S2_64 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint64_t_uint64_t_abs;
+                    break;
+                case RULE_EQ | RULE_S1_64 | RULE_S2_64 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint64_t_uint64_t_rel;
+                    break;
+                case RULE_EQ | RULE_S1_64 | RULE_S2_64 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_eq_uint64_t_uint64_t_no;
+                    break;
+                case RULE_NE | RULE_S1_8 | RULE_S2_8 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint8_t_uint8_t_abs;
+                    break;
+                case RULE_NE | RULE_S1_8 | RULE_S2_8 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint8_t_uint8_t_rel;
+                    break;
+                case RULE_NE | RULE_S1_8 | RULE_S2_8 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint8_t_uint8_t_no;
+                    break;
+                case RULE_NE | RULE_S1_8 | RULE_S2_16 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint8_t_uint16_t_abs;
+                    break;
+                case RULE_NE | RULE_S1_8 | RULE_S2_16 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint8_t_uint16_t_rel;
+                    break;
+                case RULE_NE | RULE_S1_8 | RULE_S2_16 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint8_t_uint16_t_no;
+                    break;
+                case RULE_NE | RULE_S1_8 | RULE_S2_32 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint8_t_uint32_t_abs;
+                    break;
+                case RULE_NE | RULE_S1_8 | RULE_S2_32 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint8_t_uint32_t_rel;
+                    break;
+                case RULE_NE | RULE_S1_8 | RULE_S2_32 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint8_t_uint32_t_no;
+                    break;
+                case RULE_NE | RULE_S1_8 | RULE_S2_64 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint8_t_uint64_t_abs;
+                    break;
+                case RULE_NE | RULE_S1_8 | RULE_S2_64 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint8_t_uint64_t_rel;
+                    break;
+                case RULE_NE | RULE_S1_8 | RULE_S2_64 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint8_t_uint64_t_no;
+                    break;
+                case RULE_NE | RULE_S1_16 | RULE_S2_8 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint16_t_uint8_t_abs;
+                    break;
+                case RULE_NE | RULE_S1_16 | RULE_S2_8 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint16_t_uint8_t_rel;
+                    break;
+                case RULE_NE | RULE_S1_16 | RULE_S2_8 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint16_t_uint8_t_no;
+                    break;
+                case RULE_NE | RULE_S1_16 | RULE_S2_16 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint16_t_uint16_t_abs;
+                    break;
+                case RULE_NE | RULE_S1_16 | RULE_S2_16 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint16_t_uint16_t_rel;
+                    break;
+                case RULE_NE | RULE_S1_16 | RULE_S2_16 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint16_t_uint16_t_no;
+                    break;
+                case RULE_NE | RULE_S1_16 | RULE_S2_32 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint16_t_uint32_t_abs;
+                    break;
+                case RULE_NE | RULE_S1_16 | RULE_S2_32 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint16_t_uint32_t_rel;
+                    break;
+                case RULE_NE | RULE_S1_16 | RULE_S2_32 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint16_t_uint32_t_no;
+                    break;
+                case RULE_NE | RULE_S1_16 | RULE_S2_64 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint16_t_uint64_t_abs;
+                    break;
+                case RULE_NE | RULE_S1_16 | RULE_S2_64 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint16_t_uint64_t_rel;
+                    break;
+                case RULE_NE | RULE_S1_16 | RULE_S2_64 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint16_t_uint64_t_no;
+                    break;
+                case RULE_NE | RULE_S1_32 | RULE_S2_8 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint32_t_uint8_t_abs;
+                    break;
+                case RULE_NE | RULE_S1_32 | RULE_S2_8 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint32_t_uint8_t_rel;
+                    break;
+                case RULE_NE | RULE_S1_32 | RULE_S2_8 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint32_t_uint8_t_no;
+                    break;
+                case RULE_NE | RULE_S1_32 | RULE_S2_16 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint32_t_uint16_t_abs;
+                    break;
+                case RULE_NE | RULE_S1_32 | RULE_S2_16 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint32_t_uint16_t_rel;
+                    break;
+                case RULE_NE | RULE_S1_32 | RULE_S2_16 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint32_t_uint16_t_no;
+                    break;
+                case RULE_NE | RULE_S1_32 | RULE_S2_32 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint32_t_uint32_t_abs;
+                    break;
+                case RULE_NE | RULE_S1_32 | RULE_S2_32 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint32_t_uint32_t_rel;
+                    break;
+                case RULE_NE | RULE_S1_32 | RULE_S2_32 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint32_t_uint32_t_no;
+                    break;
+                case RULE_NE | RULE_S1_32 | RULE_S2_64 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint32_t_uint64_t_abs;
+                    break;
+                case RULE_NE | RULE_S1_32 | RULE_S2_64 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint32_t_uint64_t_rel;
+                    break;
+                case RULE_NE | RULE_S1_32 | RULE_S2_64 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint32_t_uint64_t_no;
+                    break;
+                case RULE_NE | RULE_S1_64 | RULE_S2_8 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint64_t_uint8_t_abs;
+                    break;
+                case RULE_NE | RULE_S1_64 | RULE_S2_8 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint64_t_uint8_t_rel;
+                    break;
+                case RULE_NE | RULE_S1_64 | RULE_S2_8 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint64_t_uint8_t_no;
+                    break;
+                case RULE_NE | RULE_S1_64 | RULE_S2_16 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint64_t_uint16_t_abs;
+                    break;
+                case RULE_NE | RULE_S1_64 | RULE_S2_16 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint64_t_uint16_t_rel;
+                    break;
+                case RULE_NE | RULE_S1_64 | RULE_S2_16 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint64_t_uint16_t_no;
+                    break;
+                case RULE_NE | RULE_S1_64 | RULE_S2_32 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint64_t_uint32_t_abs;
+                    break;
+                case RULE_NE | RULE_S1_64 | RULE_S2_32 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint64_t_uint32_t_rel;
+                    break;
+                case RULE_NE | RULE_S1_64 | RULE_S2_32 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint64_t_uint32_t_no;
+                    break;
+                case RULE_NE | RULE_S1_64 | RULE_S2_64 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint64_t_uint64_t_abs;
+                    break;
+                case RULE_NE | RULE_S1_64 | RULE_S2_64 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint64_t_uint64_t_rel;
+                    break;
+                case RULE_NE | RULE_S1_64 | RULE_S2_64 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ne_uint64_t_uint64_t_no;
+                    break;
+                case RULE_GT | RULE_S1_8 | RULE_S2_8 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint8_t_uint8_t_abs;
+                    break;
+                case RULE_GT | RULE_S1_8 | RULE_S2_8 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint8_t_uint8_t_rel;
+                    break;
+                case RULE_GT | RULE_S1_8 | RULE_S2_8 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint8_t_uint8_t_no;
+                    break;
+                case RULE_GT | RULE_S1_8 | RULE_S2_16 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint8_t_uint16_t_abs;
+                    break;
+                case RULE_GT | RULE_S1_8 | RULE_S2_16 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint8_t_uint16_t_rel;
+                    break;
+                case RULE_GT | RULE_S1_8 | RULE_S2_16 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint8_t_uint16_t_no;
+                    break;
+                case RULE_GT | RULE_S1_8 | RULE_S2_32 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint8_t_uint32_t_abs;
+                    break;
+                case RULE_GT | RULE_S1_8 | RULE_S2_32 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint8_t_uint32_t_rel;
+                    break;
+                case RULE_GT | RULE_S1_8 | RULE_S2_32 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint8_t_uint32_t_no;
+                    break;
+                case RULE_GT | RULE_S1_8 | RULE_S2_64 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint8_t_uint64_t_abs;
+                    break;
+                case RULE_GT | RULE_S1_8 | RULE_S2_64 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint8_t_uint64_t_rel;
+                    break;
+                case RULE_GT | RULE_S1_8 | RULE_S2_64 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint8_t_uint64_t_no;
+                    break;
+                case RULE_GT | RULE_S1_16 | RULE_S2_8 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint16_t_uint8_t_abs;
+                    break;
+                case RULE_GT | RULE_S1_16 | RULE_S2_8 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint16_t_uint8_t_rel;
+                    break;
+                case RULE_GT | RULE_S1_16 | RULE_S2_8 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint16_t_uint8_t_no;
+                    break;
+                case RULE_GT | RULE_S1_16 | RULE_S2_16 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint16_t_uint16_t_abs;
+                    break;
+                case RULE_GT | RULE_S1_16 | RULE_S2_16 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint16_t_uint16_t_rel;
+                    break;
+                case RULE_GT | RULE_S1_16 | RULE_S2_16 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint16_t_uint16_t_no;
+                    break;
+                case RULE_GT | RULE_S1_16 | RULE_S2_32 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint16_t_uint32_t_abs;
+                    break;
+                case RULE_GT | RULE_S1_16 | RULE_S2_32 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint16_t_uint32_t_rel;
+                    break;
+                case RULE_GT | RULE_S1_16 | RULE_S2_32 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint16_t_uint32_t_no;
+                    break;
+                case RULE_GT | RULE_S1_16 | RULE_S2_64 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint16_t_uint64_t_abs;
+                    break;
+                case RULE_GT | RULE_S1_16 | RULE_S2_64 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint16_t_uint64_t_rel;
+                    break;
+                case RULE_GT | RULE_S1_16 | RULE_S2_64 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint16_t_uint64_t_no;
+                    break;
+                case RULE_GT | RULE_S1_32 | RULE_S2_8 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint32_t_uint8_t_abs;
+                    break;
+                case RULE_GT | RULE_S1_32 | RULE_S2_8 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint32_t_uint8_t_rel;
+                    break;
+                case RULE_GT | RULE_S1_32 | RULE_S2_8 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint32_t_uint8_t_no;
+                    break;
+                case RULE_GT | RULE_S1_32 | RULE_S2_16 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint32_t_uint16_t_abs;
+                    break;
+                case RULE_GT | RULE_S1_32 | RULE_S2_16 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint32_t_uint16_t_rel;
+                    break;
+                case RULE_GT | RULE_S1_32 | RULE_S2_16 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint32_t_uint16_t_no;
+                    break;
+                case RULE_GT | RULE_S1_32 | RULE_S2_32 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint32_t_uint32_t_abs;
+                    break;
+                case RULE_GT | RULE_S1_32 | RULE_S2_32 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint32_t_uint32_t_rel;
+                    break;
+                case RULE_GT | RULE_S1_32 | RULE_S2_32 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint32_t_uint32_t_no;
+                    break;
+                case RULE_GT | RULE_S1_32 | RULE_S2_64 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint32_t_uint64_t_abs;
+                    break;
+                case RULE_GT | RULE_S1_32 | RULE_S2_64 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint32_t_uint64_t_rel;
+                    break;
+                case RULE_GT | RULE_S1_32 | RULE_S2_64 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint32_t_uint64_t_no;
+                    break;
+                case RULE_GT | RULE_S1_64 | RULE_S2_8 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint64_t_uint8_t_abs;
+                    break;
+                case RULE_GT | RULE_S1_64 | RULE_S2_8 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint64_t_uint8_t_rel;
+                    break;
+                case RULE_GT | RULE_S1_64 | RULE_S2_8 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint64_t_uint8_t_no;
+                    break;
+                case RULE_GT | RULE_S1_64 | RULE_S2_16 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint64_t_uint16_t_abs;
+                    break;
+                case RULE_GT | RULE_S1_64 | RULE_S2_16 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint64_t_uint16_t_rel;
+                    break;
+                case RULE_GT | RULE_S1_64 | RULE_S2_16 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint64_t_uint16_t_no;
+                    break;
+                case RULE_GT | RULE_S1_64 | RULE_S2_32 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint64_t_uint32_t_abs;
+                    break;
+                case RULE_GT | RULE_S1_64 | RULE_S2_32 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint64_t_uint32_t_rel;
+                    break;
+                case RULE_GT | RULE_S1_64 | RULE_S2_32 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint64_t_uint32_t_no;
+                    break;
+                case RULE_GT | RULE_S1_64 | RULE_S2_64 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint64_t_uint64_t_abs;
+                    break;
+                case RULE_GT | RULE_S1_64 | RULE_S2_64 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint64_t_uint64_t_rel;
+                    break;
+                case RULE_GT | RULE_S1_64 | RULE_S2_64 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_gt_uint64_t_uint64_t_no;
+                    break;
+                case RULE_LT | RULE_S1_8 | RULE_S2_8 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint8_t_uint8_t_abs;
+                    break;
+                case RULE_LT | RULE_S1_8 | RULE_S2_8 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint8_t_uint8_t_rel;
+                    break;
+                case RULE_LT | RULE_S1_8 | RULE_S2_8 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint8_t_uint8_t_no;
+                    break;
+                case RULE_LT | RULE_S1_8 | RULE_S2_16 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint8_t_uint16_t_abs;
+                    break;
+                case RULE_LT | RULE_S1_8 | RULE_S2_16 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint8_t_uint16_t_rel;
+                    break;
+                case RULE_LT | RULE_S1_8 | RULE_S2_16 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint8_t_uint16_t_no;
+                    break;
+                case RULE_LT | RULE_S1_8 | RULE_S2_32 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint8_t_uint32_t_abs;
+                    break;
+                case RULE_LT | RULE_S1_8 | RULE_S2_32 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint8_t_uint32_t_rel;
+                    break;
+                case RULE_LT | RULE_S1_8 | RULE_S2_32 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint8_t_uint32_t_no;
+                    break;
+                case RULE_LT | RULE_S1_8 | RULE_S2_64 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint8_t_uint64_t_abs;
+                    break;
+                case RULE_LT | RULE_S1_8 | RULE_S2_64 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint8_t_uint64_t_rel;
+                    break;
+                case RULE_LT | RULE_S1_8 | RULE_S2_64 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint8_t_uint64_t_no;
+                    break;
+                case RULE_LT | RULE_S1_16 | RULE_S2_8 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint16_t_uint8_t_abs;
+                    break;
+                case RULE_LT | RULE_S1_16 | RULE_S2_8 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint16_t_uint8_t_rel;
+                    break;
+                case RULE_LT | RULE_S1_16 | RULE_S2_8 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint16_t_uint8_t_no;
+                    break;
+                case RULE_LT | RULE_S1_16 | RULE_S2_16 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint16_t_uint16_t_abs;
+                    break;
+                case RULE_LT | RULE_S1_16 | RULE_S2_16 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint16_t_uint16_t_rel;
+                    break;
+                case RULE_LT | RULE_S1_16 | RULE_S2_16 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint16_t_uint16_t_no;
+                    break;
+                case RULE_LT | RULE_S1_16 | RULE_S2_32 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint16_t_uint32_t_abs;
+                    break;
+                case RULE_LT | RULE_S1_16 | RULE_S2_32 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint16_t_uint32_t_rel;
+                    break;
+                case RULE_LT | RULE_S1_16 | RULE_S2_32 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint16_t_uint32_t_no;
+                    break;
+                case RULE_LT | RULE_S1_16 | RULE_S2_64 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint16_t_uint64_t_abs;
+                    break;
+                case RULE_LT | RULE_S1_16 | RULE_S2_64 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint16_t_uint64_t_rel;
+                    break;
+                case RULE_LT | RULE_S1_16 | RULE_S2_64 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint16_t_uint64_t_no;
+                    break;
+                case RULE_LT | RULE_S1_32 | RULE_S2_8 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint32_t_uint8_t_abs;
+                    break;
+                case RULE_LT | RULE_S1_32 | RULE_S2_8 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint32_t_uint8_t_rel;
+                    break;
+                case RULE_LT | RULE_S1_32 | RULE_S2_8 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint32_t_uint8_t_no;
+                    break;
+                case RULE_LT | RULE_S1_32 | RULE_S2_16 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint32_t_uint16_t_abs;
+                    break;
+                case RULE_LT | RULE_S1_32 | RULE_S2_16 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint32_t_uint16_t_rel;
+                    break;
+                case RULE_LT | RULE_S1_32 | RULE_S2_16 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint32_t_uint16_t_no;
+                    break;
+                case RULE_LT | RULE_S1_32 | RULE_S2_32 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint32_t_uint32_t_abs;
+                    break;
+                case RULE_LT | RULE_S1_32 | RULE_S2_32 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint32_t_uint32_t_rel;
+                    break;
+                case RULE_LT | RULE_S1_32 | RULE_S2_32 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint32_t_uint32_t_no;
+                    break;
+                case RULE_LT | RULE_S1_32 | RULE_S2_64 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint32_t_uint64_t_abs;
+                    break;
+                case RULE_LT | RULE_S1_32 | RULE_S2_64 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint32_t_uint64_t_rel;
+                    break;
+                case RULE_LT | RULE_S1_32 | RULE_S2_64 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint32_t_uint64_t_no;
+                    break;
+                case RULE_LT | RULE_S1_64 | RULE_S2_8 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint64_t_uint8_t_abs;
+                    break;
+                case RULE_LT | RULE_S1_64 | RULE_S2_8 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint64_t_uint8_t_rel;
+                    break;
+                case RULE_LT | RULE_S1_64 | RULE_S2_8 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint64_t_uint8_t_no;
+                    break;
+                case RULE_LT | RULE_S1_64 | RULE_S2_16 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint64_t_uint16_t_abs;
+                    break;
+                case RULE_LT | RULE_S1_64 | RULE_S2_16 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint64_t_uint16_t_rel;
+                    break;
+                case RULE_LT | RULE_S1_64 | RULE_S2_16 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint64_t_uint16_t_no;
+                    break;
+                case RULE_LT | RULE_S1_64 | RULE_S2_32 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint64_t_uint32_t_abs;
+                    break;
+                case RULE_LT | RULE_S1_64 | RULE_S2_32 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint64_t_uint32_t_rel;
+                    break;
+                case RULE_LT | RULE_S1_64 | RULE_S2_32 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint64_t_uint32_t_no;
+                    break;
+                case RULE_LT | RULE_S1_64 | RULE_S2_64 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint64_t_uint64_t_abs;
+                    break;
+                case RULE_LT | RULE_S1_64 | RULE_S2_64 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint64_t_uint64_t_rel;
+                    break;
+                case RULE_LT | RULE_S1_64 | RULE_S2_64 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_lt_uint64_t_uint64_t_no;
+                    break;
+                case RULE_LE | RULE_S1_8 | RULE_S2_8 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint8_t_uint8_t_abs;
+                    break;
+                case RULE_LE | RULE_S1_8 | RULE_S2_8 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint8_t_uint8_t_rel;
+                    break;
+                case RULE_LE | RULE_S1_8 | RULE_S2_8 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint8_t_uint8_t_no;
+                    break;
+                case RULE_LE | RULE_S1_8 | RULE_S2_16 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint8_t_uint16_t_abs;
+                    break;
+                case RULE_LE | RULE_S1_8 | RULE_S2_16 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint8_t_uint16_t_rel;
+                    break;
+                case RULE_LE | RULE_S1_8 | RULE_S2_16 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint8_t_uint16_t_no;
+                    break;
+                case RULE_LE | RULE_S1_8 | RULE_S2_32 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint8_t_uint32_t_abs;
+                    break;
+                case RULE_LE | RULE_S1_8 | RULE_S2_32 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint8_t_uint32_t_rel;
+                    break;
+                case RULE_LE | RULE_S1_8 | RULE_S2_32 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint8_t_uint32_t_no;
+                    break;
+                case RULE_LE | RULE_S1_8 | RULE_S2_64 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint8_t_uint64_t_abs;
+                    break;
+                case RULE_LE | RULE_S1_8 | RULE_S2_64 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint8_t_uint64_t_rel;
+                    break;
+                case RULE_LE | RULE_S1_8 | RULE_S2_64 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint8_t_uint64_t_no;
+                    break;
+                case RULE_LE | RULE_S1_16 | RULE_S2_8 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint16_t_uint8_t_abs;
+                    break;
+                case RULE_LE | RULE_S1_16 | RULE_S2_8 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint16_t_uint8_t_rel;
+                    break;
+                case RULE_LE | RULE_S1_16 | RULE_S2_8 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint16_t_uint8_t_no;
+                    break;
+                case RULE_LE | RULE_S1_16 | RULE_S2_16 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint16_t_uint16_t_abs;
+                    break;
+                case RULE_LE | RULE_S1_16 | RULE_S2_16 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint16_t_uint16_t_rel;
+                    break;
+                case RULE_LE | RULE_S1_16 | RULE_S2_16 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint16_t_uint16_t_no;
+                    break;
+                case RULE_LE | RULE_S1_16 | RULE_S2_32 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint16_t_uint32_t_abs;
+                    break;
+                case RULE_LE | RULE_S1_16 | RULE_S2_32 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint16_t_uint32_t_rel;
+                    break;
+                case RULE_LE | RULE_S1_16 | RULE_S2_32 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint16_t_uint32_t_no;
+                    break;
+                case RULE_LE | RULE_S1_16 | RULE_S2_64 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint16_t_uint64_t_abs;
+                    break;
+                case RULE_LE | RULE_S1_16 | RULE_S2_64 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint16_t_uint64_t_rel;
+                    break;
+                case RULE_LE | RULE_S1_16 | RULE_S2_64 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint16_t_uint64_t_no;
+                    break;
+                case RULE_LE | RULE_S1_32 | RULE_S2_8 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint32_t_uint8_t_abs;
+                    break;
+                case RULE_LE | RULE_S1_32 | RULE_S2_8 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint32_t_uint8_t_rel;
+                    break;
+                case RULE_LE | RULE_S1_32 | RULE_S2_8 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint32_t_uint8_t_no;
+                    break;
+                case RULE_LE | RULE_S1_32 | RULE_S2_16 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint32_t_uint16_t_abs;
+                    break;
+                case RULE_LE | RULE_S1_32 | RULE_S2_16 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint32_t_uint16_t_rel;
+                    break;
+                case RULE_LE | RULE_S1_32 | RULE_S2_16 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint32_t_uint16_t_no;
+                    break;
+                case RULE_LE | RULE_S1_32 | RULE_S2_32 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint32_t_uint32_t_abs;
+                    break;
+                case RULE_LE | RULE_S1_32 | RULE_S2_32 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint32_t_uint32_t_rel;
+                    break;
+                case RULE_LE | RULE_S1_32 | RULE_S2_32 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint32_t_uint32_t_no;
+                    break;
+                case RULE_LE | RULE_S1_32 | RULE_S2_64 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint32_t_uint64_t_abs;
+                    break;
+                case RULE_LE | RULE_S1_32 | RULE_S2_64 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint32_t_uint64_t_rel;
+                    break;
+                case RULE_LE | RULE_S1_32 | RULE_S2_64 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint32_t_uint64_t_no;
+                    break;
+                case RULE_LE | RULE_S1_64 | RULE_S2_8 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint64_t_uint8_t_abs;
+                    break;
+                case RULE_LE | RULE_S1_64 | RULE_S2_8 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint64_t_uint8_t_rel;
+                    break;
+                case RULE_LE | RULE_S1_64 | RULE_S2_8 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint64_t_uint8_t_no;
+                    break;
+                case RULE_LE | RULE_S1_64 | RULE_S2_16 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint64_t_uint16_t_abs;
+                    break;
+                case RULE_LE | RULE_S1_64 | RULE_S2_16 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint64_t_uint16_t_rel;
+                    break;
+                case RULE_LE | RULE_S1_64 | RULE_S2_16 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint64_t_uint16_t_no;
+                    break;
+                case RULE_LE | RULE_S1_64 | RULE_S2_32 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint64_t_uint32_t_abs;
+                    break;
+                case RULE_LE | RULE_S1_64 | RULE_S2_32 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint64_t_uint32_t_rel;
+                    break;
+                case RULE_LE | RULE_S1_64 | RULE_S2_32 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint64_t_uint32_t_no;
+                    break;
+                case RULE_LE | RULE_S1_64 | RULE_S2_64 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint64_t_uint64_t_abs;
+                    break;
+                case RULE_LE | RULE_S1_64 | RULE_S2_64 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint64_t_uint64_t_rel;
+                    break;
+                case RULE_LE | RULE_S1_64 | RULE_S2_64 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_le_uint64_t_uint64_t_no;
+                    break;
+                case RULE_GE | RULE_S1_8 | RULE_S2_8 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint8_t_uint8_t_abs;
+                    break;
+                case RULE_GE | RULE_S1_8 | RULE_S2_8 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint8_t_uint8_t_rel;
+                    break;
+                case RULE_GE | RULE_S1_8 | RULE_S2_8 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint8_t_uint8_t_no;
+                    break;
+                case RULE_GE | RULE_S1_8 | RULE_S2_16 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint8_t_uint16_t_abs;
+                    break;
+                case RULE_GE | RULE_S1_8 | RULE_S2_16 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint8_t_uint16_t_rel;
+                    break;
+                case RULE_GE | RULE_S1_8 | RULE_S2_16 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint8_t_uint16_t_no;
+                    break;
+                case RULE_GE | RULE_S1_8 | RULE_S2_32 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint8_t_uint32_t_abs;
+                    break;
+                case RULE_GE | RULE_S1_8 | RULE_S2_32 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint8_t_uint32_t_rel;
+                    break;
+                case RULE_GE | RULE_S1_8 | RULE_S2_32 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint8_t_uint32_t_no;
+                    break;
+                case RULE_GE | RULE_S1_8 | RULE_S2_64 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint8_t_uint64_t_abs;
+                    break;
+                case RULE_GE | RULE_S1_8 | RULE_S2_64 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint8_t_uint64_t_rel;
+                    break;
+                case RULE_GE | RULE_S1_8 | RULE_S2_64 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint8_t_uint64_t_no;
+                    break;
+                case RULE_GE | RULE_S1_16 | RULE_S2_8 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint16_t_uint8_t_abs;
+                    break;
+                case RULE_GE | RULE_S1_16 | RULE_S2_8 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint16_t_uint8_t_rel;
+                    break;
+                case RULE_GE | RULE_S1_16 | RULE_S2_8 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint16_t_uint8_t_no;
+                    break;
+                case RULE_GE | RULE_S1_16 | RULE_S2_16 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint16_t_uint16_t_abs;
+                    break;
+                case RULE_GE | RULE_S1_16 | RULE_S2_16 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint16_t_uint16_t_rel;
+                    break;
+                case RULE_GE | RULE_S1_16 | RULE_S2_16 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint16_t_uint16_t_no;
+                    break;
+                case RULE_GE | RULE_S1_16 | RULE_S2_32 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint16_t_uint32_t_abs;
+                    break;
+                case RULE_GE | RULE_S1_16 | RULE_S2_32 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint16_t_uint32_t_rel;
+                    break;
+                case RULE_GE | RULE_S1_16 | RULE_S2_32 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint16_t_uint32_t_no;
+                    break;
+                case RULE_GE | RULE_S1_16 | RULE_S2_64 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint16_t_uint64_t_abs;
+                    break;
+                case RULE_GE | RULE_S1_16 | RULE_S2_64 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint16_t_uint64_t_rel;
+                    break;
+                case RULE_GE | RULE_S1_16 | RULE_S2_64 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint16_t_uint64_t_no;
+                    break;
+                case RULE_GE | RULE_S1_32 | RULE_S2_8 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint32_t_uint8_t_abs;
+                    break;
+                case RULE_GE | RULE_S1_32 | RULE_S2_8 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint32_t_uint8_t_rel;
+                    break;
+                case RULE_GE | RULE_S1_32 | RULE_S2_8 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint32_t_uint8_t_no;
+                    break;
+                case RULE_GE | RULE_S1_32 | RULE_S2_16 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint32_t_uint16_t_abs;
+                    break;
+                case RULE_GE | RULE_S1_32 | RULE_S2_16 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint32_t_uint16_t_rel;
+                    break;
+                case RULE_GE | RULE_S1_32 | RULE_S2_16 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint32_t_uint16_t_no;
+                    break;
+                case RULE_GE | RULE_S1_32 | RULE_S2_32 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint32_t_uint32_t_abs;
+                    break;
+                case RULE_GE | RULE_S1_32 | RULE_S2_32 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint32_t_uint32_t_rel;
+                    break;
+                case RULE_GE | RULE_S1_32 | RULE_S2_32 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint32_t_uint32_t_no;
+                    break;
+                case RULE_GE | RULE_S1_32 | RULE_S2_64 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint32_t_uint64_t_abs;
+                    break;
+                case RULE_GE | RULE_S1_32 | RULE_S2_64 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint32_t_uint64_t_rel;
+                    break;
+                case RULE_GE | RULE_S1_32 | RULE_S2_64 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint32_t_uint64_t_no;
+                    break;
+                case RULE_GE | RULE_S1_64 | RULE_S2_8 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint64_t_uint8_t_abs;
+                    break;
+                case RULE_GE | RULE_S1_64 | RULE_S2_8 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint64_t_uint8_t_rel;
+                    break;
+                case RULE_GE | RULE_S1_64 | RULE_S2_8 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint64_t_uint8_t_no;
+                    break;
+                case RULE_GE | RULE_S1_64 | RULE_S2_16 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint64_t_uint16_t_abs;
+                    break;
+                case RULE_GE | RULE_S1_64 | RULE_S2_16 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint64_t_uint16_t_rel;
+                    break;
+                case RULE_GE | RULE_S1_64 | RULE_S2_16 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint64_t_uint16_t_no;
+                    break;
+                case RULE_GE | RULE_S1_64 | RULE_S2_32 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint64_t_uint32_t_abs;
+                    break;
+                case RULE_GE | RULE_S1_64 | RULE_S2_32 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint64_t_uint32_t_rel;
+                    break;
+                case RULE_GE | RULE_S1_64 | RULE_S2_32 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint64_t_uint32_t_no;
+                    break;
+                case RULE_GE | RULE_S1_64 | RULE_S2_64 | RULE_ABS:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint64_t_uint64_t_abs;
+                    break;
+                case RULE_GE | RULE_S1_64 | RULE_S2_64 | RULE_REL:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint64_t_uint64_t_rel;
+                    break;
+                case RULE_GE | RULE_S1_64 | RULE_S2_64 | RULE_NO:
+                    binfos[i].group_modules[j].func = 
+      grouper_ge_uint64_t_uint64_t_no;
+                    break;
+
+            }
+        }
+    }
+}
+\end{DoxyCode}
+\hypertarget{utils_8h_a05060ff8f80698e127a541d6897a37fa}{\index{utils.\-h@{utils.\-h}!bsearch\-\_\-r@{bsearch\-\_\-r}}
+\index{bsearch\-\_\-r@{bsearch\-\_\-r}!utils.h@{utils.\-h}}
+\subsubsection[{bsearch\-\_\-r}]{\setlength{\rightskip}{0pt plus 5cm}void$\ast$ {\bf bsearch\-\_\-r} (
+\begin{DoxyParamCaption}
+\item[{const void $\ast$}]{key, }
+\item[{const void $\ast$}]{base, }
+\item[{size\-\_\-t}]{nmemb, }
+\item[{size\-\_\-t}]{size, }
+\item[{int($\ast$)(const void $\ast$, const void $\ast$, void $\ast$thunk)}]{compar, }
+\item[{void $\ast$}]{thunk}
+\end{DoxyParamCaption}
+)}}\label{utils_8h_a05060ff8f80698e127a541d6897a37fa}
+\hypertarget{utils_8h_a7fa9db1e2b045598af3d72ba4745b83f}{\index{utils.\-h@{utils.\-h}!comp\-\_\-uint16\-\_\-t@{comp\-\_\-uint16\-\_\-t}}
+\index{comp\-\_\-uint16\-\_\-t@{comp\-\_\-uint16\-\_\-t}!utils.h@{utils.\-h}}
+\subsubsection[{comp\-\_\-uint16\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf comp\-\_\-uint16\-\_\-t} (
+\begin{DoxyParamCaption}
+\item[{const void $\ast$}]{e1, }
+\item[{const void $\ast$}]{e2, }
+\item[{void $\ast$}]{thunk}
+\end{DoxyParamCaption}
+)}}\label{utils_8h_a7fa9db1e2b045598af3d72ba4745b83f}
+\hypertarget{utils_8h_aa00100c379f87bfd70e2c92b79abaa6e}{\index{utils.\-h@{utils.\-h}!comp\-\_\-uint16\-\_\-t\-\_\-p@{comp\-\_\-uint16\-\_\-t\-\_\-p}}
+\index{comp\-\_\-uint16\-\_\-t\-\_\-p@{comp\-\_\-uint16\-\_\-t\-\_\-p}!utils.h@{utils.\-h}}
+\subsubsection[{comp\-\_\-uint16\-\_\-t\-\_\-p}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf comp\-\_\-uint16\-\_\-t\-\_\-p} (
+\begin{DoxyParamCaption}
+\item[{const void $\ast$}]{e1, }
+\item[{const void $\ast$}]{e2, }
+\item[{void $\ast$}]{thunk}
+\end{DoxyParamCaption}
+)}}\label{utils_8h_aa00100c379f87bfd70e2c92b79abaa6e}
+\hypertarget{utils_8h_af6db05e0f8ec6dc038079b4d7db31714}{\index{utils.\-h@{utils.\-h}!comp\-\_\-uint32\-\_\-t@{comp\-\_\-uint32\-\_\-t}}
+\index{comp\-\_\-uint32\-\_\-t@{comp\-\_\-uint32\-\_\-t}!utils.h@{utils.\-h}}
+\subsubsection[{comp\-\_\-uint32\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf comp\-\_\-uint32\-\_\-t} (
+\begin{DoxyParamCaption}
+\item[{const void $\ast$}]{e1, }
+\item[{const void $\ast$}]{e2, }
+\item[{void $\ast$}]{thunk}
+\end{DoxyParamCaption}
+)}}\label{utils_8h_af6db05e0f8ec6dc038079b4d7db31714}
+\hypertarget{utils_8h_af52876511c1e1050b7760a0162b20879}{\index{utils.\-h@{utils.\-h}!comp\-\_\-uint32\-\_\-t\-\_\-p@{comp\-\_\-uint32\-\_\-t\-\_\-p}}
+\index{comp\-\_\-uint32\-\_\-t\-\_\-p@{comp\-\_\-uint32\-\_\-t\-\_\-p}!utils.h@{utils.\-h}}
+\subsubsection[{comp\-\_\-uint32\-\_\-t\-\_\-p}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf comp\-\_\-uint32\-\_\-t\-\_\-p} (
+\begin{DoxyParamCaption}
+\item[{const void $\ast$}]{e1, }
+\item[{const void $\ast$}]{e2, }
+\item[{void $\ast$}]{thunk}
+\end{DoxyParamCaption}
+)}}\label{utils_8h_af52876511c1e1050b7760a0162b20879}
+\hypertarget{utils_8h_a36dfc38dd5516fc8494ad47d3f171068}{\index{utils.\-h@{utils.\-h}!comp\-\_\-uint64\-\_\-t@{comp\-\_\-uint64\-\_\-t}}
+\index{comp\-\_\-uint64\-\_\-t@{comp\-\_\-uint64\-\_\-t}!utils.h@{utils.\-h}}
+\subsubsection[{comp\-\_\-uint64\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf comp\-\_\-uint64\-\_\-t} (
+\begin{DoxyParamCaption}
+\item[{const void $\ast$}]{e1, }
+\item[{const void $\ast$}]{e2, }
+\item[{void $\ast$}]{thunk}
+\end{DoxyParamCaption}
+)}}\label{utils_8h_a36dfc38dd5516fc8494ad47d3f171068}
+\hypertarget{utils_8h_af4b5c747e5b94300a1a45187d4acf8f3}{\index{utils.\-h@{utils.\-h}!comp\-\_\-uint64\-\_\-t\-\_\-p@{comp\-\_\-uint64\-\_\-t\-\_\-p}}
+\index{comp\-\_\-uint64\-\_\-t\-\_\-p@{comp\-\_\-uint64\-\_\-t\-\_\-p}!utils.h@{utils.\-h}}
+\subsubsection[{comp\-\_\-uint64\-\_\-t\-\_\-p}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf comp\-\_\-uint64\-\_\-t\-\_\-p} (
+\begin{DoxyParamCaption}
+\item[{const void $\ast$}]{e1, }
+\item[{const void $\ast$}]{e2, }
+\item[{void $\ast$}]{thunk}
+\end{DoxyParamCaption}
+)}}\label{utils_8h_af4b5c747e5b94300a1a45187d4acf8f3}
+\hypertarget{utils_8h_a8e4e3b0c264d1cb6517da41ce956a705}{\index{utils.\-h@{utils.\-h}!comp\-\_\-uint8\-\_\-t@{comp\-\_\-uint8\-\_\-t}}
+\index{comp\-\_\-uint8\-\_\-t@{comp\-\_\-uint8\-\_\-t}!utils.h@{utils.\-h}}
+\subsubsection[{comp\-\_\-uint8\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf comp\-\_\-uint8\-\_\-t} (
+\begin{DoxyParamCaption}
+\item[{const void $\ast$}]{e1, }
+\item[{const void $\ast$}]{e2, }
+\item[{void $\ast$}]{thunk}
+\end{DoxyParamCaption}
+)}}\label{utils_8h_a8e4e3b0c264d1cb6517da41ce956a705}
+\hypertarget{utils_8h_a5556a90f339bb6560b4b90e324c551a0}{\index{utils.\-h@{utils.\-h}!comp\-\_\-uint8\-\_\-t\-\_\-p@{comp\-\_\-uint8\-\_\-t\-\_\-p}}
+\index{comp\-\_\-uint8\-\_\-t\-\_\-p@{comp\-\_\-uint8\-\_\-t\-\_\-p}!utils.h@{utils.\-h}}
+\subsubsection[{comp\-\_\-uint8\-\_\-t\-\_\-p}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf comp\-\_\-uint8\-\_\-t\-\_\-p} (
+\begin{DoxyParamCaption}
+\item[{const void $\ast$}]{e1, }
+\item[{const void $\ast$}]{e2, }
+\item[{void $\ast$}]{thunk}
+\end{DoxyParamCaption}
+)}}\label{utils_8h_a5556a90f339bb6560b4b90e324c551a0}
+\hypertarget{utils_8h_a7eb1309d6a95f4bc618c9952a19fd625}{\index{utils.\-h@{utils.\-h}!iter\-\_\-destroy@{iter\-\_\-destroy}}
+\index{iter\-\_\-destroy@{iter\-\_\-destroy}!utils.h@{utils.\-h}}
+\subsubsection[{iter\-\_\-destroy}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf iter\-\_\-destroy} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf permut\-\_\-iter} $\ast$}]{iter}
+\end{DoxyParamCaption}
+)}}\label{utils_8h_a7eb1309d6a95f4bc618c9952a19fd625}
+
+\begin{DoxyCode}
+{
+    free(iter->array);
+    free(iter->offsets);
+    free(iter->lengths);
+    free(iter);
+}
+\end{DoxyCode}
+\hypertarget{utils_8h_a6d88d48d220e95a90623fd364a7ff51b}{\index{utils.\-h@{utils.\-h}!iter\-\_\-init@{iter\-\_\-init}}
+\index{iter\-\_\-init@{iter\-\_\-init}!utils.h@{utils.\-h}}
+\subsubsection[{iter\-\_\-init}]{\setlength{\rightskip}{0pt plus 5cm}struct {\bf permut\-\_\-iter}$\ast$ {\bf iter\-\_\-init} (
+\begin{DoxyParamCaption}
+\item[{size\-\_\-t $\ast$}]{offsets, }
+\item[{size\-\_\-t $\ast$}]{lengths, }
+\item[{size\-\_\-t}]{arr\-\_\-len}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}read\mbox{]}}}}\label{utils_8h_a6d88d48d220e95a90623fd364a7ff51b}
+
+\begin{DoxyCode}
+{
+    struct permut_iter *iter;
+    int i;
+
+    iter = (struct permut_iter *)malloc(sizeof(struct permut_iter));
+    if (iter == NULL) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+
+    iter->len = arr_len;
+
+    iter->array = (size_t *)malloc(sizeof(size_t)*arr_len);
+
+    if (iter->array == NULL) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+
+    iter->offsets = (size_t *)malloc(sizeof(size_t)*arr_len);
+
+    if (iter->offsets == NULL) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+
+    iter->lengths = (size_t *)malloc(sizeof(size_t)*arr_len);
+
+    if (iter->lengths == NULL) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+
+    for (i = 0; i < arr_len; i++) {
+        iter->array[i] = offsets[i];
+        iter->offsets[i] = offsets[i];
+        iter->lengths[i] = lengths[i];
+    }
+
+    return iter;
+}
+\end{DoxyCode}
+\hypertarget{utils_8h_a38a5dc6c2c0cc8a9d328a076e92e2d52}{\index{utils.\-h@{utils.\-h}!iter\-\_\-next@{iter\-\_\-next}}
+\index{iter\-\_\-next@{iter\-\_\-next}!utils.h@{utils.\-h}}
+\subsubsection[{iter\-\_\-next}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf iter\-\_\-next} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf permut\-\_\-iter} $\ast$}]{iter}
+\end{DoxyParamCaption}
+)}}\label{utils_8h_a38a5dc6c2c0cc8a9d328a076e92e2d52}
+
+\begin{DoxyCode}
+{
+    int i;
+
+    // count up by one
+    // if overflow occurs, carry one
+    for (i = iter->len-1; i >= 0; --i) {
+        if (iter->array[i] < (iter->offsets[i] + iter->lengths[i])) {
+            iter->array[i]++;
+            return 1;
+        } else {
+            iter->array[i] = iter->offsets[i];
+        }
+    }
+
+    return 0;
+}
+\end{DoxyCode}
+\hypertarget{utils_8h_a038703de2b4abf9e265ab9fb56d66f28}{\index{utils.\-h@{utils.\-h}!tree\-\_\-create\-\_\-uint16\-\_\-t@{tree\-\_\-create\-\_\-uint16\-\_\-t}}
+\index{tree\-\_\-create\-\_\-uint16\-\_\-t@{tree\-\_\-create\-\_\-uint16\-\_\-t}!utils.h@{utils.\-h}}
+\subsubsection[{tree\-\_\-create\-\_\-uint16\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}struct {\bf bsearch\-\_\-handle}$\ast$ {\bf tree\-\_\-create\-\_\-uint16\-\_\-t} (
+\begin{DoxyParamCaption}
+\item[{char $\ast$$\ast$}]{records, }
+\item[{size\-\_\-t}]{num\-\_\-records, }
+\item[{unsigned short}]{field\-\_\-offset}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}read\mbox{]}}}}\label{utils_8h_a038703de2b4abf9e265ab9fb56d66f28}
+\hypertarget{utils_8h_a7e0443ce623317d05ea0ea6c17b53b19}{\index{utils.\-h@{utils.\-h}!tree\-\_\-create\-\_\-uint32\-\_\-t@{tree\-\_\-create\-\_\-uint32\-\_\-t}}
+\index{tree\-\_\-create\-\_\-uint32\-\_\-t@{tree\-\_\-create\-\_\-uint32\-\_\-t}!utils.h@{utils.\-h}}
+\subsubsection[{tree\-\_\-create\-\_\-uint32\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}struct {\bf bsearch\-\_\-handle}$\ast$ {\bf tree\-\_\-create\-\_\-uint32\-\_\-t} (
+\begin{DoxyParamCaption}
+\item[{char $\ast$$\ast$}]{records, }
+\item[{size\-\_\-t}]{num\-\_\-records, }
+\item[{unsigned short}]{field\-\_\-offset}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}read\mbox{]}}}}\label{utils_8h_a7e0443ce623317d05ea0ea6c17b53b19}
+\hypertarget{utils_8h_a51d2effb1b2dc321e3ed03811e912be3}{\index{utils.\-h@{utils.\-h}!tree\-\_\-create\-\_\-uint64\-\_\-t@{tree\-\_\-create\-\_\-uint64\-\_\-t}}
+\index{tree\-\_\-create\-\_\-uint64\-\_\-t@{tree\-\_\-create\-\_\-uint64\-\_\-t}!utils.h@{utils.\-h}}
+\subsubsection[{tree\-\_\-create\-\_\-uint64\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}struct {\bf bsearch\-\_\-handle}$\ast$ {\bf tree\-\_\-create\-\_\-uint64\-\_\-t} (
+\begin{DoxyParamCaption}
+\item[{char $\ast$$\ast$}]{records, }
+\item[{size\-\_\-t}]{num\-\_\-records, }
+\item[{unsigned short}]{field\-\_\-offset}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}read\mbox{]}}}}\label{utils_8h_a51d2effb1b2dc321e3ed03811e912be3}
+\hypertarget{utils_8h_a9058cfa954fa07371ecf13994ee45a03}{\index{utils.\-h@{utils.\-h}!tree\-\_\-create\-\_\-uint8\-\_\-t@{tree\-\_\-create\-\_\-uint8\-\_\-t}}
+\index{tree\-\_\-create\-\_\-uint8\-\_\-t@{tree\-\_\-create\-\_\-uint8\-\_\-t}!utils.h@{utils.\-h}}
+\subsubsection[{tree\-\_\-create\-\_\-uint8\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}struct {\bf bsearch\-\_\-handle}$\ast$ {\bf tree\-\_\-create\-\_\-uint8\-\_\-t} (
+\begin{DoxyParamCaption}
+\item[{char $\ast$$\ast$}]{records, }
+\item[{size\-\_\-t}]{num\-\_\-records, }
+\item[{unsigned short}]{field\-\_\-offset}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}read\mbox{]}}}}\label{utils_8h_a9058cfa954fa07371ecf13994ee45a03}
+\hypertarget{utils_8h_ac6c00986c20a159076cfbf57cf26c595}{\index{utils.\-h@{utils.\-h}!tree\-\_\-destroy@{tree\-\_\-destroy}}
+\index{tree\-\_\-destroy@{tree\-\_\-destroy}!utils.h@{utils.\-h}}
+\subsubsection[{tree\-\_\-destroy}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf tree\-\_\-destroy} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf bsearch\-\_\-handle} $\ast$}]{handle}
+\end{DoxyParamCaption}
+)}}\label{utils_8h_ac6c00986c20a159076cfbf57cf26c595}
+
+\begin{DoxyCode}
+{
+    free(handle->ordered_records);
+    free(handle->uniq_records);
+    free(handle);
+}
+\end{DoxyCode}
+\hypertarget{utils_8h_aebe94b939f2b3394b6d7d46198a834c3}{\index{utils.\-h@{utils.\-h}!tree\-\_\-find\-\_\-uint16\-\_\-t@{tree\-\_\-find\-\_\-uint16\-\_\-t}}
+\index{tree\-\_\-find\-\_\-uint16\-\_\-t@{tree\-\_\-find\-\_\-uint16\-\_\-t}!utils.h@{utils.\-h}}
+\subsubsection[{tree\-\_\-find\-\_\-uint16\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}char$\ast$$\ast$ {\bf tree\-\_\-find\-\_\-uint16\-\_\-t} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf bsearch\-\_\-handle} $\ast$}]{handle, }
+\item[{char $\ast$}]{record, }
+\item[{unsigned short}]{field\-\_\-offset}
+\end{DoxyParamCaption}
+)}}\label{utils_8h_aebe94b939f2b3394b6d7d46198a834c3}
+\hypertarget{utils_8h_a4b35cb4c4e29767fe0026730ee2c2803}{\index{utils.\-h@{utils.\-h}!tree\-\_\-find\-\_\-uint32\-\_\-t@{tree\-\_\-find\-\_\-uint32\-\_\-t}}
+\index{tree\-\_\-find\-\_\-uint32\-\_\-t@{tree\-\_\-find\-\_\-uint32\-\_\-t}!utils.h@{utils.\-h}}
+\subsubsection[{tree\-\_\-find\-\_\-uint32\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}char$\ast$$\ast$ {\bf tree\-\_\-find\-\_\-uint32\-\_\-t} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf bsearch\-\_\-handle} $\ast$}]{handle, }
+\item[{char $\ast$}]{record, }
+\item[{unsigned short}]{field\-\_\-offset}
+\end{DoxyParamCaption}
+)}}\label{utils_8h_a4b35cb4c4e29767fe0026730ee2c2803}
+\hypertarget{utils_8h_abc45589b5c611416af360a7d894bf996}{\index{utils.\-h@{utils.\-h}!tree\-\_\-find\-\_\-uint64\-\_\-t@{tree\-\_\-find\-\_\-uint64\-\_\-t}}
+\index{tree\-\_\-find\-\_\-uint64\-\_\-t@{tree\-\_\-find\-\_\-uint64\-\_\-t}!utils.h@{utils.\-h}}
+\subsubsection[{tree\-\_\-find\-\_\-uint64\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}char$\ast$$\ast$ {\bf tree\-\_\-find\-\_\-uint64\-\_\-t} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf bsearch\-\_\-handle} $\ast$}]{handle, }
+\item[{char $\ast$}]{record, }
+\item[{unsigned short}]{field\-\_\-offset}
+\end{DoxyParamCaption}
+)}}\label{utils_8h_abc45589b5c611416af360a7d894bf996}
+\hypertarget{utils_8h_a19ae5b13b74c743579a7016f3d953500}{\index{utils.\-h@{utils.\-h}!tree\-\_\-find\-\_\-uint8\-\_\-t@{tree\-\_\-find\-\_\-uint8\-\_\-t}}
+\index{tree\-\_\-find\-\_\-uint8\-\_\-t@{tree\-\_\-find\-\_\-uint8\-\_\-t}!utils.h@{utils.\-h}}
+\subsubsection[{tree\-\_\-find\-\_\-uint8\-\_\-t}]{\setlength{\rightskip}{0pt plus 5cm}char$\ast$$\ast$ {\bf tree\-\_\-find\-\_\-uint8\-\_\-t} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf bsearch\-\_\-handle} $\ast$}]{handle, }
+\item[{char $\ast$}]{record, }
+\item[{unsigned short}]{field\-\_\-offset}
+\end{DoxyParamCaption}
+)}}\label{utils_8h_a19ae5b13b74c743579a7016f3d953500}

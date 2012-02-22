@@ -1,0 +1,156 @@
+\hypertarget{filter_8c}{\section{filter.\-c \-File \-Reference}
+\label{filter_8c}\index{filter.\-c@{filter.\-c}}
+}
+{\ttfamily \#include $<$stdio.\-h$>$}\*
+{\ttfamily \#include $<$pthread.\-h$>$}\*
+{\ttfamily \#include $<$stdlib.\-h$>$}\*
+{\ttfamily \#include $<$errno.\-h$>$}\*
+{\ttfamily \#include $<$stdbool.\-h$>$}\*
+{\ttfamily \#include $<$string.\-h$>$}\*
+{\ttfamily \#include \char`\"{}ftreader.\-h\char`\"{}}\*
+{\ttfamily \#include \char`\"{}flowy.\-h\char`\"{}}\*
+{\ttfamily \#include \char`\"{}auto\-\_\-comps.\-h\char`\"{}}\*
+{\ttfamily \#include \char`\"{}utils.\-h\char`\"{}}\*
+\-Include dependency graph for filter.\-c\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{filter_8c__incl}
+\end{center}
+\end{figure}
+\subsection*{\-Defines}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{filter_8c_a369266c24eacffb87046522897a570d5}{\-\_\-\-G\-N\-U\-\_\-\-S\-O\-U\-R\-C\-E}
+\end{DoxyCompactItemize}
+\subsection*{\-Functions}
+\begin{DoxyCompactItemize}
+\item 
+char $\ast$$\ast$ \hyperlink{filter_8c_a05b69a2687e7d6108da701476042993d}{filter} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, struct \hyperlink{structfilter__rule}{filter\-\_\-rule} $\ast$$\ast$filter\-\_\-rules, int num\-\_\-filter\-\_\-rules, size\-\_\-t $\ast$num\-\_\-filtered\-\_\-records)
+\item 
+int \hyperlink{filter_8c_a3c04138a5bfe5d72780bb7e82a18e627}{main} (int argc, char $\ast$$\ast$argv)
+\end{DoxyCompactItemize}
+
+
+\subsection{\-Define \-Documentation}
+\hypertarget{filter_8c_a369266c24eacffb87046522897a570d5}{\index{filter.\-c@{filter.\-c}!\-\_\-\-G\-N\-U\-\_\-\-S\-O\-U\-R\-C\-E@{\-\_\-\-G\-N\-U\-\_\-\-S\-O\-U\-R\-C\-E}}
+\index{\-\_\-\-G\-N\-U\-\_\-\-S\-O\-U\-R\-C\-E@{\-\_\-\-G\-N\-U\-\_\-\-S\-O\-U\-R\-C\-E}!filter.c@{filter.\-c}}
+\subsubsection[{\-\_\-\-G\-N\-U\-\_\-\-S\-O\-U\-R\-C\-E}]{\setlength{\rightskip}{0pt plus 5cm}\#define {\bf \-\_\-\-G\-N\-U\-\_\-\-S\-O\-U\-R\-C\-E}}}\label{filter_8c_a369266c24eacffb87046522897a570d5}
+
+
+\subsection{\-Function \-Documentation}
+\hypertarget{filter_8c_a05b69a2687e7d6108da701476042993d}{\index{filter.\-c@{filter.\-c}!filter@{filter}}
+\index{filter@{filter}!filter.c@{filter.\-c}}
+\subsubsection[{filter}]{\setlength{\rightskip}{0pt plus 5cm}char$\ast$$\ast$ {\bf filter} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{struct {\bf filter\-\_\-rule} $\ast$$\ast$}]{filter\-\_\-rules, }
+\item[{int}]{num\-\_\-filter\-\_\-rules, }
+\item[{size\-\_\-t $\ast$}]{num\-\_\-filtered\-\_\-records}
+\end{DoxyParamCaption}
+)}}\label{filter_8c_a05b69a2687e7d6108da701476042993d}
+
+\begin{DoxyCode}
+{
+    int i, j, k;
+    char **filtered_records;
+
+    *num_filtered_records = 0;
+    filtered_records = (char **)malloc(sizeof(char *)**num_filtered_records);
+    if (filtered_records == NULL) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+
+    for (i = 0; i < data->num_records; i++) {
+        for (j = 0; j < num_filter_rules; j++) {
+            for (k = 0; filter_rules[j][k].func != NULL; k++) {
+                if (filter_rules[j][k].func(data->records[i], filter_rules[j][k
+      ].field_offset, filter_rules[j][k].value, filter_rules[j][k].delta))
+                    goto next;
+            }
+            if (filter_rules[j][k].func == NULL) break;
+next:       continue;
+        }
+
+        // break if a rule did not return true
+        if (j < num_filter_rules)
+            continue;
+
+        (*num_filtered_records)++;
+        filtered_records = (char **)realloc(filtered_records, sizeof(char *)**
+      num_filtered_records);
+        if (filtered_records == NULL) {
+            perror("malloc");
+            exit(EXIT_FAILURE);
+        }
+        filtered_records[*num_filtered_records-1] = data->records[i];
+    }
+
+    return filtered_records;
+}
+\end{DoxyCode}
+\hypertarget{filter_8c_a3c04138a5bfe5d72780bb7e82a18e627}{\index{filter.\-c@{filter.\-c}!main@{main}}
+\index{main@{main}!filter.c@{filter.\-c}}
+\subsubsection[{main}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf main} (
+\begin{DoxyParamCaption}
+\item[{int}]{argc, }
+\item[{char $\ast$$\ast$}]{argv}
+\end{DoxyParamCaption}
+)}}\label{filter_8c_a3c04138a5bfe5d72780bb7e82a18e627}
+
+\begin{DoxyCode}
+{
+    struct ft_data *data;
+    int num_threads;
+    struct branch_info *binfos;
+    char **filtered_records; /* temporary - are freed later */
+    size_t num_filtered_records;
+
+    num_threads = 2;
+
+    data = ft_open(STDIN_FILENO);
+
+    binfos = (struct branch_info *)calloc(num_threads, sizeof(struct branch_info
+      ));
+    if (binfos == NULL) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+
+    /*
+     * custom rules
+     */
+
+    struct filter_rule http_smtp_filter[3] = {
+        { data->offsets.srcport, 80, 0, filter_eq_uint16_t },
+        { data->offsets.dstport, 25, 0, filter_eq_uint16_t },
+        { 0, 0, 0, NULL}
+    };
+
+    struct filter_rule *filter_rules[1] = {
+        http_smtp_filter
+    };
+
+    filtered_records = filter(data, filter_rules, 1, &num_filtered_records);
+
+    free(filtered_records);
+
+    printf("%zd\n", num_filtered_records);
+
+    exit(EXIT_SUCCESS);
+}
+\end{DoxyCode}
+
+
+\-Here is the call graph for this function\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=248pt]{filter_8c_a3c04138a5bfe5d72780bb7e82a18e627_cgraph}
+\end{center}
+\end{figure}
+
+
