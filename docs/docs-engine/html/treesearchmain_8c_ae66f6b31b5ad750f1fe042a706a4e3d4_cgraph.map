@@ -1,9 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$ftreader_8c.html#a02ab4173607a2c21aeb6f5fc1ae15363" title="ft_open" alt="" coords="143,5,209,33"/>
-<area shape="rect" id="node5" href="$utils_8h.html#a7e0443ce623317d05ea0ea6c17b53b19" title="tree_create_uint32_t" alt="" coords="104,57,248,85"/>
-<area shape="rect" id="node7" href="$treesearchmain_8c.html#ab5d6c766094824a006c2e84efc9a8f10" title="grouper_eq_uint32_t" alt="" coords="104,109,248,137"/>
-<area shape="rect" id="node13" href="$utils_8h.html#a038703de2b4abf9e265ab9fb56d66f28" title="tree_create_uint16_t" alt="" coords="104,161,248,189"/>
-<area shape="rect" id="node15" href="$treesearchmain_8c.html#aa637c53a40f8276afad8f791d88df731" title="grouper_eq_uint16_t" alt="" coords="104,213,248,241"/>
-<area shape="rect" id="node9" href="$auto__comps_8c.html#a0175038e9fbcee94d51ca2ac939109a6" title="compar" alt="" coords="327,83,393,111"/>
-<area shape="rect" id="node11" href="$utils_8h.html#a4b35cb4c4e29767fe0026730ee2c2803" title="tree_find_uint32_t" alt="" coords="296,135,424,163"/>
-</map>
