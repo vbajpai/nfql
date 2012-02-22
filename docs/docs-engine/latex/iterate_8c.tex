@@ -1,0 +1,120 @@
+\hypertarget{iterate_8c}{\section{iterate.\-c \-File \-Reference}
+\label{iterate_8c}\index{iterate.\-c@{iterate.\-c}}
+}
+{\ttfamily \#include $<$stdio.\-h$>$}\*
+{\ttfamily \#include \char`\"{}utils.\-h\char`\"{}}\*
+\-Include dependency graph for iterate.\-c\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{iterate_8c__incl}
+\end{center}
+\end{figure}
+\subsection*{\-Functions}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structpermut__iter}{permut\-\_\-iter} $\ast$ \hyperlink{iterate_8c_a6d88d48d220e95a90623fd364a7ff51b}{iter\-\_\-init} (size\-\_\-t $\ast$offsets, size\-\_\-t $\ast$lengths, size\-\_\-t arr\-\_\-len)
+\item 
+int \hyperlink{iterate_8c_a38a5dc6c2c0cc8a9d328a076e92e2d52}{iter\-\_\-next} (struct \hyperlink{structpermut__iter}{permut\-\_\-iter} $\ast$iter)
+\item 
+void \hyperlink{iterate_8c_a7eb1309d6a95f4bc618c9952a19fd625}{iter\-\_\-destroy} (struct \hyperlink{structpermut__iter}{permut\-\_\-iter} $\ast$iter)
+\end{DoxyCompactItemize}
+
+
+\subsection{\-Function \-Documentation}
+\hypertarget{iterate_8c_a7eb1309d6a95f4bc618c9952a19fd625}{\index{iterate.\-c@{iterate.\-c}!iter\-\_\-destroy@{iter\-\_\-destroy}}
+\index{iter\-\_\-destroy@{iter\-\_\-destroy}!iterate.c@{iterate.\-c}}
+\subsubsection[{iter\-\_\-destroy}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf iter\-\_\-destroy} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf permut\-\_\-iter} $\ast$}]{iter}
+\end{DoxyParamCaption}
+)}}\label{iterate_8c_a7eb1309d6a95f4bc618c9952a19fd625}
+
+\begin{DoxyCode}
+{
+    free(iter->array);
+    free(iter->offsets);
+    free(iter->lengths);
+    free(iter);
+}
+\end{DoxyCode}
+\hypertarget{iterate_8c_a6d88d48d220e95a90623fd364a7ff51b}{\index{iterate.\-c@{iterate.\-c}!iter\-\_\-init@{iter\-\_\-init}}
+\index{iter\-\_\-init@{iter\-\_\-init}!iterate.c@{iterate.\-c}}
+\subsubsection[{iter\-\_\-init}]{\setlength{\rightskip}{0pt plus 5cm}struct {\bf permut\-\_\-iter}$\ast$ {\bf iter\-\_\-init} (
+\begin{DoxyParamCaption}
+\item[{size\-\_\-t $\ast$}]{offsets, }
+\item[{size\-\_\-t $\ast$}]{lengths, }
+\item[{size\-\_\-t}]{arr\-\_\-len}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}read\mbox{]}}}}\label{iterate_8c_a6d88d48d220e95a90623fd364a7ff51b}
+
+\begin{DoxyCode}
+{
+    struct permut_iter *iter;
+    int i;
+
+    iter = (struct permut_iter *)malloc(sizeof(struct permut_iter));
+    if (iter == NULL) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+
+    iter->len = arr_len;
+
+    iter->array = (size_t *)malloc(sizeof(size_t)*arr_len);
+
+    if (iter->array == NULL) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+
+    iter->offsets = (size_t *)malloc(sizeof(size_t)*arr_len);
+
+    if (iter->offsets == NULL) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+
+    iter->lengths = (size_t *)malloc(sizeof(size_t)*arr_len);
+
+    if (iter->lengths == NULL) {
+        perror("malloc");
+        exit(EXIT_FAILURE);
+    }
+
+    for (i = 0; i < arr_len; i++) {
+        iter->array[i] = offsets[i];
+        iter->offsets[i] = offsets[i];
+        iter->lengths[i] = lengths[i];
+    }
+
+    return iter;
+}
+\end{DoxyCode}
+\hypertarget{iterate_8c_a38a5dc6c2c0cc8a9d328a076e92e2d52}{\index{iterate.\-c@{iterate.\-c}!iter\-\_\-next@{iter\-\_\-next}}
+\index{iter\-\_\-next@{iter\-\_\-next}!iterate.c@{iterate.\-c}}
+\subsubsection[{iter\-\_\-next}]{\setlength{\rightskip}{0pt plus 5cm}int {\bf iter\-\_\-next} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf permut\-\_\-iter} $\ast$}]{iter}
+\end{DoxyParamCaption}
+)}}\label{iterate_8c_a38a5dc6c2c0cc8a9d328a076e92e2d52}
+
+\begin{DoxyCode}
+{
+    int i;
+
+    // count up by one
+    // if overflow occurs, carry one
+    for (i = iter->len-1; i >= 0; --i) {
+        if (iter->array[i] < (iter->offsets[i] + iter->lengths[i])) {
+            iter->array[i]++;
+            return 1;
+        } else {
+            iter->array[i] = iter->offsets[i];
+        }
+    }
+
+    return 0;
+}
+\end{DoxyCode}

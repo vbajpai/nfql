@@ -1,0 +1,751 @@
+\hypertarget{ftreader_8h}{\section{ftreader.\-h \-File \-Reference}
+\label{ftreader_8h}\index{ftreader.\-h@{ftreader.\-h}}
+}
+{\ttfamily \#include $<$ftlib.\-h$>$}\*
+\-Include dependency graph for ftreader.\-h\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=138pt]{ftreader_8h__incl}
+\end{center}
+\end{figure}
+\-This graph shows which files directly or indirectly include this file\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=200pt]{ftreader_8h__dep__incl}
+\end{center}
+\end{figure}
+\subsection*{\-Classes}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structft__data}{ft\-\_\-data}
+\end{DoxyCompactItemize}
+\subsection*{\-Functions}
+\begin{DoxyCompactItemize}
+\item 
+struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$ \hyperlink{ftreader_8h_a02ab4173607a2c21aeb6f5fc1ae15363}{ft\-\_\-open} (int fd)
+\item 
+void \hyperlink{ftreader_8h_ad94301177ce8ddd86a89f30a24d211eb}{ft\-\_\-write} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int fd)
+\item 
+void \hyperlink{ftreader_8h_a136abafdc766875975f4aba353296056}{ft\-\_\-records\-\_\-get\-\_\-all} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number, struct fts3rec\-\_\-all $\ast$record)
+\item 
+u\-\_\-int32 $\ast$ \hyperlink{ftreader_8h_a4dc7fa9ae4e6a7c59b771b755d1c13f0}{ft\-\_\-records\-\_\-get\-\_\-unix\-\_\-secs} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int32 $\ast$ \hyperlink{ftreader_8h_a953bb22031b4df55ea417d28ffec2e50}{ft\-\_\-records\-\_\-get\-\_\-unix\-\_\-nsecs} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int32 $\ast$ \hyperlink{ftreader_8h_a24eda1c5cc6f96244d2b424d8c655d8c}{ft\-\_\-records\-\_\-get\-\_\-sys\-Up\-Time} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int32 $\ast$ \hyperlink{ftreader_8h_ae5d22be5fb41eb126467b6c5b6964d04}{ft\-\_\-records\-\_\-get\-\_\-exaddr} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int32 $\ast$ \hyperlink{ftreader_8h_a786cb7cd83f28d17585172156d39184f}{ft\-\_\-records\-\_\-get\-\_\-srcaddr} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int32 $\ast$ \hyperlink{ftreader_8h_a0c23f4d0172997a3d3e8bfed6b31d4e1}{ft\-\_\-records\-\_\-get\-\_\-dstaddr} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int32 $\ast$ \hyperlink{ftreader_8h_a5d726e180443df4bd6f969f1a56a5ab2}{ft\-\_\-records\-\_\-get\-\_\-nexthop} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int16 $\ast$ \hyperlink{ftreader_8h_a2c1431fb28709936f02987a06efa54b4}{ft\-\_\-records\-\_\-get\-\_\-input} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int16 $\ast$ \hyperlink{ftreader_8h_a6d67fe1c3ff0cc365ca15141aeffd7e1}{ft\-\_\-records\-\_\-get\-\_\-output} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int32 $\ast$ \hyperlink{ftreader_8h_a895286ebe61e77d47fd31f56f869a1e6}{ft\-\_\-records\-\_\-get\-\_\-d\-Flows} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int32 $\ast$ \hyperlink{ftreader_8h_a4b77a7ca4c75ec77fb5aeddce4deeb47}{ft\-\_\-records\-\_\-get\-\_\-d\-Pkts} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int32 $\ast$ \hyperlink{ftreader_8h_a5f6950f256a8a375d6dcb265a7f0f288}{ft\-\_\-records\-\_\-get\-\_\-d\-Octets} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int32 $\ast$ \hyperlink{ftreader_8h_af5bc632bc8d357892ba5175a92f63655}{ft\-\_\-records\-\_\-get\-\_\-\-First} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int32 $\ast$ \hyperlink{ftreader_8h_aafc5ced3e1e6123950379cef52ef54e8}{ft\-\_\-records\-\_\-get\-\_\-\-Last} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int16 $\ast$ \hyperlink{ftreader_8h_abf0ad8f465395988d80310ad1bc2323f}{ft\-\_\-records\-\_\-get\-\_\-srcport} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int16 $\ast$ \hyperlink{ftreader_8h_a072c865fc48d18ea903ffb7eb4ba4bf1}{ft\-\_\-records\-\_\-get\-\_\-dstport} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int8 $\ast$ \hyperlink{ftreader_8h_a814a1ec271ad29a17b9ddbc6f1584334}{ft\-\_\-records\-\_\-get\-\_\-prot} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int8 $\ast$ \hyperlink{ftreader_8h_adffd7e1e48b4bd245a4c5d9b4e7579bb}{ft\-\_\-records\-\_\-get\-\_\-tos} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int8 $\ast$ \hyperlink{ftreader_8h_a8f6a6802ae470877db97bf9cd2f2e7bb}{ft\-\_\-records\-\_\-get\-\_\-tcp\-\_\-flags} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int8 $\ast$ \hyperlink{ftreader_8h_a9034cc2174cc1119f428fa4bb5e0be38}{ft\-\_\-records\-\_\-get\-\_\-engine\-\_\-type} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int8 $\ast$ \hyperlink{ftreader_8h_acf986167370645650639b034f53eee26}{ft\-\_\-records\-\_\-get\-\_\-engine\-\_\-id} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int8 $\ast$ \hyperlink{ftreader_8h_a178235ea56a74bdb10120f390691da1f}{ft\-\_\-records\-\_\-get\-\_\-src\-\_\-mask} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int8 $\ast$ \hyperlink{ftreader_8h_a95341a1393350a47e1cd9256a38f30a7}{ft\-\_\-records\-\_\-get\-\_\-dst\-\_\-mask} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int16 $\ast$ \hyperlink{ftreader_8h_a9d2fffbaf0fe7e3caaf9ca857a34c746}{ft\-\_\-records\-\_\-get\-\_\-src\-\_\-as} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int16 $\ast$ \hyperlink{ftreader_8h_ace02e8e05e83d6dd906cc053982d92d8}{ft\-\_\-records\-\_\-get\-\_\-dst\-\_\-as} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int8 $\ast$ \hyperlink{ftreader_8h_aa194c515e2b788b71801cc96d8d647e7}{ft\-\_\-records\-\_\-get\-\_\-in\-\_\-encaps} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int8 $\ast$ \hyperlink{ftreader_8h_aa8cb4acabe87d72f30a6718b4cbc3ce7}{ft\-\_\-records\-\_\-get\-\_\-out\-\_\-encaps} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int32 $\ast$ \hyperlink{ftreader_8h_a68139ae77e2adfdce52df5a20e73ebf4}{ft\-\_\-records\-\_\-get\-\_\-peer\-\_\-nexthop} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int32 $\ast$ \hyperlink{ftreader_8h_a0b7ee69c42093fe905769648e9c47100}{ft\-\_\-records\-\_\-get\-\_\-router\-\_\-sc} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int32 $\ast$ \hyperlink{ftreader_8h_aa533844932b360bf8f4fcff3023a612c}{ft\-\_\-records\-\_\-get\-\_\-src\-\_\-tag} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int32 $\ast$ \hyperlink{ftreader_8h_a4f0a9bb7c5ed25a1770a5fa8bb12ef20}{ft\-\_\-records\-\_\-get\-\_\-dst\-\_\-tag} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int32 $\ast$ \hyperlink{ftreader_8h_afff04438f15cb4cbc9cdeff71e46e2ac}{ft\-\_\-records\-\_\-get\-\_\-extra\-\_\-pkts} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+u\-\_\-int8 $\ast$ \hyperlink{ftreader_8h_a72faa47e484416ceb021f8280ff10164}{ft\-\_\-records\-\_\-get\-\_\-marked\-\_\-tos} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data, int number)
+\item 
+void \hyperlink{ftreader_8h_a56723ebca229eaf177374270536540d8}{ft\-\_\-close} (struct \hyperlink{structft__data}{ft\-\_\-data} $\ast$data)
+\end{DoxyCompactItemize}
+
+
+\subsection{\-Function \-Documentation}
+\hypertarget{ftreader_8h_a56723ebca229eaf177374270536540d8}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-close@{ft\-\_\-close}}
+\index{ft\-\_\-close@{ft\-\_\-close}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-close}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf ft\-\_\-close} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_a56723ebca229eaf177374270536540d8}
+
+\begin{DoxyCode}
+{
+    int i;
+
+    ftio_close(&data->io);
+
+    for (i=0; i<data->num_records; i++) {
+        free(data->records[i]);
+    }
+    free(data->records);
+
+    if(data->fd) {
+        close(data->fd);
+    }
+    free(data);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_a02ab4173607a2c21aeb6f5fc1ae15363}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-open@{ft\-\_\-open}}
+\index{ft\-\_\-open@{ft\-\_\-open}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-open}]{\setlength{\rightskip}{0pt plus 5cm}struct {\bf ft\-\_\-data}$\ast$ {\bf ft\-\_\-open} (
+\begin{DoxyParamCaption}
+\item[{int}]{fd}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily  \mbox{[}read\mbox{]}}}}\label{ftreader_8h_a02ab4173607a2c21aeb6f5fc1ae15363}
+
+\begin{DoxyCode}
+{
+    int ret;
+    struct ft_data *data;
+    char *record;
+
+    data = (struct ft_data *)calloc(1, sizeof(struct ft_data));
+
+    data->fd = fd;
+
+    ret = ftio_init(&data->io, data->fd, FT_IO_FLAG_READ);
+    if (ret < 0) {
+        perror("ftio_init failed");
+        return NULL;
+    }
+
+    ftio_get_ver(&data->io, &data->version);
+    data->xfield = ftio_xfield(&data->io);
+    fts3rec_compute_offsets(&data->offsets, &data->version);
+    data->rec_size = ftio_rec_size(&data->io);
+
+    /*
+     * TODO: optimize the reallocs here (eg by doubling the space every time
+     *       one runs out of it)
+     *
+     * TODO: maybe allocate everything in one big chunk for faster iteration
+     *
+     */
+
+    while ((record = ftio_read(&data->io)) != NULL) {
+        data->num_records++;
+        data->records = (char **)realloc(data->records, sizeof(char *)*data->
+      num_records);
+        data->records[data->num_records-1] = (char *)malloc(data->rec_size);
+        memcpy(data->records[data->num_records-1], record, data->rec_size);
+    }
+
+    return data;
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_a136abafdc766875975f4aba353296056}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-all@{ft\-\_\-records\-\_\-get\-\_\-all}}
+\index{ft\-\_\-records\-\_\-get\-\_\-all@{ft\-\_\-records\-\_\-get\-\_\-all}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-all}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf ft\-\_\-records\-\_\-get\-\_\-all} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number, }
+\item[{struct fts3rec\-\_\-all $\ast$}]{record}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_a136abafdc766875975f4aba353296056}
+
+\begin{DoxyCode}
+{
+    record->unix_secs = ft_records_get_unix_secs(data, number);
+    record->unix_nsecs = ft_records_get_unix_nsecs(data, number);
+    record->sysUpTime = ft_records_get_sysUpTime(data, number);
+    record->exaddr = ft_records_get_exaddr(data, number);
+    record->srcaddr = ft_records_get_srcaddr(data, number);
+    record->dstaddr = ft_records_get_dstaddr(data, number);
+    record->nexthop = ft_records_get_nexthop(data, number);
+    record->input = ft_records_get_input(data, number);
+    record->output = ft_records_get_output(data, number);
+    record->dFlows = ft_records_get_dFlows(data, number);
+    record->dPkts = ft_records_get_dPkts(data, number);
+    record->dOctets = ft_records_get_dOctets(data, number);
+    record->First = ft_records_get_First(data, number);
+    record->Last = ft_records_get_Last(data, number);
+    record->srcport = ft_records_get_srcport(data, number);
+    record->dstport = ft_records_get_dstport(data, number);
+    record->prot = ft_records_get_prot(data, number);
+    record->tos = ft_records_get_tos(data, number);
+    record->tcp_flags = ft_records_get_tcp_flags(data, number);
+    record->engine_type = ft_records_get_engine_type(data, number);
+    record->engine_id = ft_records_get_engine_id(data, number);
+    record->src_mask = ft_records_get_src_mask(data, number);
+    record->dst_mask = ft_records_get_dst_mask(data, number);
+    record->src_as = ft_records_get_src_as(data, number);
+    record->dst_as = ft_records_get_dst_as(data, number);
+    record->in_encaps = ft_records_get_in_encaps(data, number);
+    record->out_encaps = ft_records_get_out_encaps(data, number);
+    record->peer_nexthop = ft_records_get_peer_nexthop(data, number);
+    record->router_sc = ft_records_get_router_sc(data, number);
+    record->src_tag = ft_records_get_src_tag(data, number);
+    record->dst_tag = ft_records_get_dst_tag(data, number);
+    record->extra_pkts = ft_records_get_extra_pkts(data, number);
+    record->marked_tos = ft_records_get_marked_tos(data, number);
+}
+\end{DoxyCode}
+
+
+\-Here is the call graph for this function\-:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[height=550pt]{ftreader_8h_a136abafdc766875975f4aba353296056_cgraph}
+\end{center}
+\end{figure}
+
+
+\hypertarget{ftreader_8h_a895286ebe61e77d47fd31f56f869a1e6}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-d\-Flows@{ft\-\_\-records\-\_\-get\-\_\-d\-Flows}}
+\index{ft\-\_\-records\-\_\-get\-\_\-d\-Flows@{ft\-\_\-records\-\_\-get\-\_\-d\-Flows}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-d\-Flows}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int32$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-d\-Flows} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_a895286ebe61e77d47fd31f56f869a1e6}
+
+\begin{DoxyCode}
+{
+    return (u_int32 *)(data->records[number] + data->offsets.dFlows);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_a5f6950f256a8a375d6dcb265a7f0f288}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-d\-Octets@{ft\-\_\-records\-\_\-get\-\_\-d\-Octets}}
+\index{ft\-\_\-records\-\_\-get\-\_\-d\-Octets@{ft\-\_\-records\-\_\-get\-\_\-d\-Octets}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-d\-Octets}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int32$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-d\-Octets} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_a5f6950f256a8a375d6dcb265a7f0f288}
+
+\begin{DoxyCode}
+{
+    return (u_int32 *)(data->records[number] + data->offsets.dOctets);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_a4b77a7ca4c75ec77fb5aeddce4deeb47}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-d\-Pkts@{ft\-\_\-records\-\_\-get\-\_\-d\-Pkts}}
+\index{ft\-\_\-records\-\_\-get\-\_\-d\-Pkts@{ft\-\_\-records\-\_\-get\-\_\-d\-Pkts}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-d\-Pkts}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int32$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-d\-Pkts} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_a4b77a7ca4c75ec77fb5aeddce4deeb47}
+
+\begin{DoxyCode}
+{
+    return (u_int32 *)(data->records[number] + data->offsets.dPkts);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_ace02e8e05e83d6dd906cc053982d92d8}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-dst\-\_\-as@{ft\-\_\-records\-\_\-get\-\_\-dst\-\_\-as}}
+\index{ft\-\_\-records\-\_\-get\-\_\-dst\-\_\-as@{ft\-\_\-records\-\_\-get\-\_\-dst\-\_\-as}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-dst\-\_\-as}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int16$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-dst\-\_\-as} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_ace02e8e05e83d6dd906cc053982d92d8}
+
+\begin{DoxyCode}
+{
+    return (u_int16 *)(data->records[number] + data->offsets.dst_as);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_a95341a1393350a47e1cd9256a38f30a7}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-dst\-\_\-mask@{ft\-\_\-records\-\_\-get\-\_\-dst\-\_\-mask}}
+\index{ft\-\_\-records\-\_\-get\-\_\-dst\-\_\-mask@{ft\-\_\-records\-\_\-get\-\_\-dst\-\_\-mask}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-dst\-\_\-mask}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int8$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-dst\-\_\-mask} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_a95341a1393350a47e1cd9256a38f30a7}
+
+\begin{DoxyCode}
+{
+    return (u_int8  *)(data->records[number] + data->offsets.dst_mask);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_a4f0a9bb7c5ed25a1770a5fa8bb12ef20}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-dst\-\_\-tag@{ft\-\_\-records\-\_\-get\-\_\-dst\-\_\-tag}}
+\index{ft\-\_\-records\-\_\-get\-\_\-dst\-\_\-tag@{ft\-\_\-records\-\_\-get\-\_\-dst\-\_\-tag}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-dst\-\_\-tag}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int32$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-dst\-\_\-tag} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_a4f0a9bb7c5ed25a1770a5fa8bb12ef20}
+
+\begin{DoxyCode}
+{
+    return (u_int32 *)(data->records[number] + data->offsets.dst_tag);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_a0c23f4d0172997a3d3e8bfed6b31d4e1}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-dstaddr@{ft\-\_\-records\-\_\-get\-\_\-dstaddr}}
+\index{ft\-\_\-records\-\_\-get\-\_\-dstaddr@{ft\-\_\-records\-\_\-get\-\_\-dstaddr}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-dstaddr}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int32$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-dstaddr} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_a0c23f4d0172997a3d3e8bfed6b31d4e1}
+
+\begin{DoxyCode}
+{
+    return (u_int32 *)(data->records[number] + data->offsets.dstaddr);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_a072c865fc48d18ea903ffb7eb4ba4bf1}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-dstport@{ft\-\_\-records\-\_\-get\-\_\-dstport}}
+\index{ft\-\_\-records\-\_\-get\-\_\-dstport@{ft\-\_\-records\-\_\-get\-\_\-dstport}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-dstport}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int16$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-dstport} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_a072c865fc48d18ea903ffb7eb4ba4bf1}
+
+\begin{DoxyCode}
+{
+    return (u_int16 *)(data->records[number] + data->offsets.dstport);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_acf986167370645650639b034f53eee26}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-engine\-\_\-id@{ft\-\_\-records\-\_\-get\-\_\-engine\-\_\-id}}
+\index{ft\-\_\-records\-\_\-get\-\_\-engine\-\_\-id@{ft\-\_\-records\-\_\-get\-\_\-engine\-\_\-id}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-engine\-\_\-id}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int8$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-engine\-\_\-id} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_acf986167370645650639b034f53eee26}
+
+\begin{DoxyCode}
+{
+    return (u_int8  *)(data->records[number] + data->offsets.engine_id);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_a9034cc2174cc1119f428fa4bb5e0be38}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-engine\-\_\-type@{ft\-\_\-records\-\_\-get\-\_\-engine\-\_\-type}}
+\index{ft\-\_\-records\-\_\-get\-\_\-engine\-\_\-type@{ft\-\_\-records\-\_\-get\-\_\-engine\-\_\-type}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-engine\-\_\-type}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int8$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-engine\-\_\-type} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_a9034cc2174cc1119f428fa4bb5e0be38}
+
+\begin{DoxyCode}
+{
+    return (u_int8  *)(data->records[number] + data->offsets.engine_type);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_ae5d22be5fb41eb126467b6c5b6964d04}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-exaddr@{ft\-\_\-records\-\_\-get\-\_\-exaddr}}
+\index{ft\-\_\-records\-\_\-get\-\_\-exaddr@{ft\-\_\-records\-\_\-get\-\_\-exaddr}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-exaddr}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int32$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-exaddr} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_ae5d22be5fb41eb126467b6c5b6964d04}
+
+\begin{DoxyCode}
+{
+    return (u_int32 *)(data->records[number] + data->offsets.exaddr);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_afff04438f15cb4cbc9cdeff71e46e2ac}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-extra\-\_\-pkts@{ft\-\_\-records\-\_\-get\-\_\-extra\-\_\-pkts}}
+\index{ft\-\_\-records\-\_\-get\-\_\-extra\-\_\-pkts@{ft\-\_\-records\-\_\-get\-\_\-extra\-\_\-pkts}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-extra\-\_\-pkts}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int32$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-extra\-\_\-pkts} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_afff04438f15cb4cbc9cdeff71e46e2ac}
+
+\begin{DoxyCode}
+{
+    return (u_int32 *)(data->records[number] + data->offsets.extra_pkts);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_af5bc632bc8d357892ba5175a92f63655}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-\-First@{ft\-\_\-records\-\_\-get\-\_\-\-First}}
+\index{ft\-\_\-records\-\_\-get\-\_\-\-First@{ft\-\_\-records\-\_\-get\-\_\-\-First}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-\-First}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int32$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-\-First} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_af5bc632bc8d357892ba5175a92f63655}
+
+\begin{DoxyCode}
+{
+    return (u_int32 *)(data->records[number] + data->offsets.First);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_aa194c515e2b788b71801cc96d8d647e7}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-in\-\_\-encaps@{ft\-\_\-records\-\_\-get\-\_\-in\-\_\-encaps}}
+\index{ft\-\_\-records\-\_\-get\-\_\-in\-\_\-encaps@{ft\-\_\-records\-\_\-get\-\_\-in\-\_\-encaps}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-in\-\_\-encaps}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int8$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-in\-\_\-encaps} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_aa194c515e2b788b71801cc96d8d647e7}
+
+\begin{DoxyCode}
+{
+    return (u_int8  *)(data->records[number] + data->offsets.in_encaps);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_a2c1431fb28709936f02987a06efa54b4}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-input@{ft\-\_\-records\-\_\-get\-\_\-input}}
+\index{ft\-\_\-records\-\_\-get\-\_\-input@{ft\-\_\-records\-\_\-get\-\_\-input}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-input}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int16$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-input} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_a2c1431fb28709936f02987a06efa54b4}
+
+\begin{DoxyCode}
+{
+    return (u_int16 *)(data->records[number] + data->offsets.input);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_aafc5ced3e1e6123950379cef52ef54e8}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-\-Last@{ft\-\_\-records\-\_\-get\-\_\-\-Last}}
+\index{ft\-\_\-records\-\_\-get\-\_\-\-Last@{ft\-\_\-records\-\_\-get\-\_\-\-Last}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-\-Last}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int32$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-\-Last} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_aafc5ced3e1e6123950379cef52ef54e8}
+
+\begin{DoxyCode}
+{
+    return (u_int32 *)(data->records[number] + data->offsets.Last);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_a72faa47e484416ceb021f8280ff10164}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-marked\-\_\-tos@{ft\-\_\-records\-\_\-get\-\_\-marked\-\_\-tos}}
+\index{ft\-\_\-records\-\_\-get\-\_\-marked\-\_\-tos@{ft\-\_\-records\-\_\-get\-\_\-marked\-\_\-tos}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-marked\-\_\-tos}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int8$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-marked\-\_\-tos} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_a72faa47e484416ceb021f8280ff10164}
+
+\begin{DoxyCode}
+{
+    return (u_int8  *)(data->records[number] + data->offsets.marked_tos);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_a5d726e180443df4bd6f969f1a56a5ab2}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-nexthop@{ft\-\_\-records\-\_\-get\-\_\-nexthop}}
+\index{ft\-\_\-records\-\_\-get\-\_\-nexthop@{ft\-\_\-records\-\_\-get\-\_\-nexthop}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-nexthop}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int32$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-nexthop} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_a5d726e180443df4bd6f969f1a56a5ab2}
+
+\begin{DoxyCode}
+{
+    return (u_int32 *)(data->records[number] + data->offsets.nexthop);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_aa8cb4acabe87d72f30a6718b4cbc3ce7}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-out\-\_\-encaps@{ft\-\_\-records\-\_\-get\-\_\-out\-\_\-encaps}}
+\index{ft\-\_\-records\-\_\-get\-\_\-out\-\_\-encaps@{ft\-\_\-records\-\_\-get\-\_\-out\-\_\-encaps}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-out\-\_\-encaps}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int8$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-out\-\_\-encaps} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_aa8cb4acabe87d72f30a6718b4cbc3ce7}
+
+\begin{DoxyCode}
+{
+    return (u_int8  *)(data->records[number] + data->offsets.out_encaps);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_a6d67fe1c3ff0cc365ca15141aeffd7e1}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-output@{ft\-\_\-records\-\_\-get\-\_\-output}}
+\index{ft\-\_\-records\-\_\-get\-\_\-output@{ft\-\_\-records\-\_\-get\-\_\-output}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-output}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int16$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-output} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_a6d67fe1c3ff0cc365ca15141aeffd7e1}
+
+\begin{DoxyCode}
+{
+    return (u_int16 *)(data->records[number] + data->offsets.output);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_a68139ae77e2adfdce52df5a20e73ebf4}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-peer\-\_\-nexthop@{ft\-\_\-records\-\_\-get\-\_\-peer\-\_\-nexthop}}
+\index{ft\-\_\-records\-\_\-get\-\_\-peer\-\_\-nexthop@{ft\-\_\-records\-\_\-get\-\_\-peer\-\_\-nexthop}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-peer\-\_\-nexthop}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int32$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-peer\-\_\-nexthop} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_a68139ae77e2adfdce52df5a20e73ebf4}
+
+\begin{DoxyCode}
+{
+    return (u_int32 *)(data->records[number] + data->offsets.peer_nexthop);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_a814a1ec271ad29a17b9ddbc6f1584334}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-prot@{ft\-\_\-records\-\_\-get\-\_\-prot}}
+\index{ft\-\_\-records\-\_\-get\-\_\-prot@{ft\-\_\-records\-\_\-get\-\_\-prot}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-prot}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int8$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-prot} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_a814a1ec271ad29a17b9ddbc6f1584334}
+
+\begin{DoxyCode}
+{
+    return (u_int8  *)(data->records[number] + data->offsets.prot);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_a0b7ee69c42093fe905769648e9c47100}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-router\-\_\-sc@{ft\-\_\-records\-\_\-get\-\_\-router\-\_\-sc}}
+\index{ft\-\_\-records\-\_\-get\-\_\-router\-\_\-sc@{ft\-\_\-records\-\_\-get\-\_\-router\-\_\-sc}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-router\-\_\-sc}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int32$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-router\-\_\-sc} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_a0b7ee69c42093fe905769648e9c47100}
+
+\begin{DoxyCode}
+{
+    return (u_int32 *)(data->records[number] + data->offsets.router_sc);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_a9d2fffbaf0fe7e3caaf9ca857a34c746}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-src\-\_\-as@{ft\-\_\-records\-\_\-get\-\_\-src\-\_\-as}}
+\index{ft\-\_\-records\-\_\-get\-\_\-src\-\_\-as@{ft\-\_\-records\-\_\-get\-\_\-src\-\_\-as}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-src\-\_\-as}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int16$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-src\-\_\-as} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_a9d2fffbaf0fe7e3caaf9ca857a34c746}
+
+\begin{DoxyCode}
+{
+    return (u_int16 *)(data->records[number] + data->offsets.src_as);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_a178235ea56a74bdb10120f390691da1f}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-src\-\_\-mask@{ft\-\_\-records\-\_\-get\-\_\-src\-\_\-mask}}
+\index{ft\-\_\-records\-\_\-get\-\_\-src\-\_\-mask@{ft\-\_\-records\-\_\-get\-\_\-src\-\_\-mask}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-src\-\_\-mask}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int8$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-src\-\_\-mask} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_a178235ea56a74bdb10120f390691da1f}
+
+\begin{DoxyCode}
+{
+    return (u_int8  *)(data->records[number] + data->offsets.src_mask);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_aa533844932b360bf8f4fcff3023a612c}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-src\-\_\-tag@{ft\-\_\-records\-\_\-get\-\_\-src\-\_\-tag}}
+\index{ft\-\_\-records\-\_\-get\-\_\-src\-\_\-tag@{ft\-\_\-records\-\_\-get\-\_\-src\-\_\-tag}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-src\-\_\-tag}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int32$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-src\-\_\-tag} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_aa533844932b360bf8f4fcff3023a612c}
+
+\begin{DoxyCode}
+{
+    return (u_int32 *)(data->records[number] + data->offsets.src_tag);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_a786cb7cd83f28d17585172156d39184f}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-srcaddr@{ft\-\_\-records\-\_\-get\-\_\-srcaddr}}
+\index{ft\-\_\-records\-\_\-get\-\_\-srcaddr@{ft\-\_\-records\-\_\-get\-\_\-srcaddr}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-srcaddr}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int32$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-srcaddr} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_a786cb7cd83f28d17585172156d39184f}
+
+\begin{DoxyCode}
+{
+    return (u_int32 *)(data->records[number] + data->offsets.srcaddr);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_abf0ad8f465395988d80310ad1bc2323f}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-srcport@{ft\-\_\-records\-\_\-get\-\_\-srcport}}
+\index{ft\-\_\-records\-\_\-get\-\_\-srcport@{ft\-\_\-records\-\_\-get\-\_\-srcport}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-srcport}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int16$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-srcport} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_abf0ad8f465395988d80310ad1bc2323f}
+
+\begin{DoxyCode}
+{
+    return (u_int16 *)(data->records[number] + data->offsets.srcport);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_a24eda1c5cc6f96244d2b424d8c655d8c}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-sys\-Up\-Time@{ft\-\_\-records\-\_\-get\-\_\-sys\-Up\-Time}}
+\index{ft\-\_\-records\-\_\-get\-\_\-sys\-Up\-Time@{ft\-\_\-records\-\_\-get\-\_\-sys\-Up\-Time}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-sys\-Up\-Time}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int32$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-sys\-Up\-Time} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_a24eda1c5cc6f96244d2b424d8c655d8c}
+
+\begin{DoxyCode}
+{
+    return (u_int32 *)(data->records[number] + data->offsets.sysUpTime);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_a8f6a6802ae470877db97bf9cd2f2e7bb}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-tcp\-\_\-flags@{ft\-\_\-records\-\_\-get\-\_\-tcp\-\_\-flags}}
+\index{ft\-\_\-records\-\_\-get\-\_\-tcp\-\_\-flags@{ft\-\_\-records\-\_\-get\-\_\-tcp\-\_\-flags}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-tcp\-\_\-flags}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int8$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-tcp\-\_\-flags} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_a8f6a6802ae470877db97bf9cd2f2e7bb}
+
+\begin{DoxyCode}
+{
+    return (u_int8  *)(data->records[number] + data->offsets.tcp_flags);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_adffd7e1e48b4bd245a4c5d9b4e7579bb}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-tos@{ft\-\_\-records\-\_\-get\-\_\-tos}}
+\index{ft\-\_\-records\-\_\-get\-\_\-tos@{ft\-\_\-records\-\_\-get\-\_\-tos}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-tos}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int8$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-tos} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_adffd7e1e48b4bd245a4c5d9b4e7579bb}
+
+\begin{DoxyCode}
+{
+    return (u_int8  *)(data->records[number] + data->offsets.tos);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_a953bb22031b4df55ea417d28ffec2e50}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-unix\-\_\-nsecs@{ft\-\_\-records\-\_\-get\-\_\-unix\-\_\-nsecs}}
+\index{ft\-\_\-records\-\_\-get\-\_\-unix\-\_\-nsecs@{ft\-\_\-records\-\_\-get\-\_\-unix\-\_\-nsecs}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-unix\-\_\-nsecs}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int32$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-unix\-\_\-nsecs} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_a953bb22031b4df55ea417d28ffec2e50}
+
+\begin{DoxyCode}
+{
+    return (u_int32 *)(data->records[number] + data->offsets.unix_nsecs);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_a4dc7fa9ae4e6a7c59b771b755d1c13f0}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-records\-\_\-get\-\_\-unix\-\_\-secs@{ft\-\_\-records\-\_\-get\-\_\-unix\-\_\-secs}}
+\index{ft\-\_\-records\-\_\-get\-\_\-unix\-\_\-secs@{ft\-\_\-records\-\_\-get\-\_\-unix\-\_\-secs}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-records\-\_\-get\-\_\-unix\-\_\-secs}]{\setlength{\rightskip}{0pt plus 5cm}u\-\_\-int32$\ast$ {\bf ft\-\_\-records\-\_\-get\-\_\-unix\-\_\-secs} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{number}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_a4dc7fa9ae4e6a7c59b771b755d1c13f0}
+
+\begin{DoxyCode}
+{
+    return (u_int32 *)(data->records[number] + data->offsets.unix_secs);
+}
+\end{DoxyCode}
+\hypertarget{ftreader_8h_ad94301177ce8ddd86a89f30a24d211eb}{\index{ftreader.\-h@{ftreader.\-h}!ft\-\_\-write@{ft\-\_\-write}}
+\index{ft\-\_\-write@{ft\-\_\-write}!ftreader.h@{ftreader.\-h}}
+\subsubsection[{ft\-\_\-write}]{\setlength{\rightskip}{0pt plus 5cm}void {\bf ft\-\_\-write} (
+\begin{DoxyParamCaption}
+\item[{struct {\bf ft\-\_\-data} $\ast$}]{data, }
+\item[{int}]{fd}
+\end{DoxyParamCaption}
+)}}\label{ftreader_8h_ad94301177ce8ddd86a89f30a24d211eb}
+
+\begin{DoxyCode}
+{
+    struct ftset ftset;
+    int ret, i;
+    struct ftio ftio_out;
+
+    ftset_init(&ftset, 0);
+
+    ftset.comments = ftio_get_comment(&data->io); // TODO: make configureable
+    ftset.byte_order = FT_HEADER_LITTLE_ENDIAN; // TODO: make configureable
+    ftset.z_level = 6; // from 0-9 TODO: make configureable
+
+    ret = ftio_init(&ftio_out, outfd, FT_IO_FLAG_WRITE | ((ftset.z_level) ? 
+      FT_IO_FLAG_ZINIT : 0));
+    if (ret < 0) {
+        perror("ftio_init() failed");
+        return;
+    }
+
+    ftio_set_byte_order(&ftio_out, ftset.byte_order);
+    ftio_set_z_level(&ftio_out, ftset.z_level);
+    ftio_set_streaming(&ftio_out, 0);
+    ftio_set_debug(&ftio_out, 0); // TODO: make configureable
+
+    ftio_set_preloaded(&ftio_out, 1);
+    ftio_set_cap_time(&ftio_out, ftio_get_cap_start(&data->io), 
+      ftio_get_cap_end(&data->io));
+    ftio_set_flows_count(&ftio_out, data->num_records);
+    ftio_set_corrupt(&ftio_out, ftio_get_corrupt(&data->io));
+    ftio_set_lost(&ftio_out, ftio_get_lost(&data->io));
+
+    ret = ftio_set_comment(&ftio_out, ftset.comments);
+    ret = ftio_set_ver(&ftio_out, &data->version);
+    ret = ftio_write_header(&ftio_out);
+
+    for (i = 0; i < data->num_records; i++) {
+        ret = ftio_write(&ftio_out, data->records[i]);
+    }
+
+    ret = ftio_close(&ftio_out);
+    close(outfd);
+}
+\end{DoxyCode}
