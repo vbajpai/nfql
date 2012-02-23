@@ -28,10 +28,11 @@
  * this header contains the public flowy interface
  */
 
-#include <stdlib.h>
 #include <stdbool.h>
 #include <pthread.h>
 #include <stdint.h>
+
+#include "base_header.h"
 
 #ifndef __FLOWY_H
 #define __FLOWY_H

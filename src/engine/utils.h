@@ -28,7 +28,7 @@
  *  this header contains internally used stuff
  */
 
-#include <stdlib.h>
+#include "base_header.h"
 #include "flowy.h"
 
 struct permut_iter {

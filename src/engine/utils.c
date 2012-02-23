@@ -24,7 +24,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdlib.h>
+#include "base_header.h"
 
 /*
  * adapted from ./stdlib/bsearch.c from the GNU C Library

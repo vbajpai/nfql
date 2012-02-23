@@ -24,12 +24,10 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <stdio.h>
 #include <fcntl.h>
-#include <string.h>
 #include <arpa/inet.h>
-#include <stdlib.h>
 
+#include "base_header.h"
 #include "ftreader.h"
 
 struct ft_data *ft_open(int fd)

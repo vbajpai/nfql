@@ -26,12 +26,8 @@
 
 #define _GNU_SOURCE
 
-#include <stdio.h>
 #include <pthread.h>
-#include <stdlib.h>
-#include <errno.h>
 #include <stdbool.h>
-#include <string.h>
 #include <fcntl.h>
 
 #include "base_header.h"
@@ -216,7 +212,7 @@ int main(int argc, char **argv){
     num_threads = 2;
   
     if (argc != 2 || strcmp(argv[1], "--help") == 0) 
-      usageErr("%s $TRACE or %s < $TRACE\n", argv[0], argv[0]);
+      usageErr("%s $TRACE\n", argv[0], argv[0]);
   
     inputFd = open(argv[1], O_RDONLY);
     if (inputFd == -1)

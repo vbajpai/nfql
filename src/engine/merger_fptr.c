@@ -26,7 +26,7 @@
 
 #define _GNU_SOURCE
 
-#include <stdio.h>
+#include "base_header.h"
 #include "flowy.h"
 #include "auto_comps.h"
 #include "utils.h"
