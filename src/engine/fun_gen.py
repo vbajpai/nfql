@@ -77,11 +77,9 @@ source.write(preamble)
 header.write("#ifndef flowy_engine_auto_comps_h\n")
 header.write("#define flowy_engine_auto_comps_h\n\n")
 
-header.write('#include "base_header.h"\n\n')
-header.write("#include <stdbool.h>\n")
+header.write('#include "pipeline.h"\n\n')
 header.write("#include <math.h>\n")
-header.write("#include <stdint.h>\n\n")
-header.write("#include \"flowy.h\"\n")
+
 source.write("#include \"auto_comps.h\"\n")
 
 source.write("""
@@ -417,9 +415,10 @@ source.write(preamble)
 header.write("#ifndef flowy_engine_auto_assign_h\n")
 header.write("#define flowy_engine_auto_assign_h\n\n")
 
-header.write('#include "base_header.h"\n\n')
-header.write("#include \"flowy.h\"\n")
-header.write("#include \"auto_comps.h\"\n")
+header.write("#include \"auto_comps.h\"\n\n")
+header.write("void\nassign_fptr(struct branch_info *binfos, int num_threads);\n\n")
+
+
 source.write("#include \"auto_assign.h\"\n")
 
 source.write("""

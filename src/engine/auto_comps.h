@@ -10,9 +10,6 @@
 #include "pipeline.h"
 
 #include <math.h>
-
-struct group;
-
 bool filter_eq_uint8_t(char *record, size_t field_offset, uint64_t value, uint64_t delta);
 bool filter_eq_uint16_t(char *record, size_t field_offset, uint64_t value, uint64_t delta);
 bool filter_eq_uint32_t(char *record, size_t field_offset, uint64_t value, uint64_t delta);

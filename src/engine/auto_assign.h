@@ -9,6 +9,7 @@
 
 #include "auto_comps.h"
 
-void assign_fptr(struct branch_info *binfos, int num_threads);
+void
+assign_fptr(struct branch_info *binfos, int num_threads);
 
 #endif
