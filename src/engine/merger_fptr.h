@@ -27,9 +27,6 @@
 #ifndef flowy_engine_merger_fptr_h
 #define flowy_engine_merger_fptr_h
 
-#include "base_header.h"
-
-#include "flowy.h"
 #include "auto_comps.h"
 #include "utils.h"
 

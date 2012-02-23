@@ -7,13 +7,9 @@
 #ifndef flowy_engine_auto_comps_h
 #define flowy_engine_auto_comps_h
 
-#include "base_header.h"
+#include "pipeline.h"
 
-#include <stdbool.h>
 #include <math.h>
-#include <stdint.h>
-
-#include "flowy.h"
 
 struct group;
 

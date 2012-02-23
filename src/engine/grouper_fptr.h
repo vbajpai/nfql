@@ -27,9 +27,7 @@
 #ifndef flowy_engine_grouper_fptr_h
 #define flowy_engine_grouper_fptr_h
 
-#include "base_header.h"
-
-#include "flowy.h"
+#include "pipeline.h"
 #include "utils.h"
 
 struct grouper_rule;

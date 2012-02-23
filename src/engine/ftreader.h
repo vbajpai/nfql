@@ -31,7 +31,6 @@
 #include "base_header.h"
 
 #include <fcntl.h>
-#include <arpa/inet.h>
 #include <ftlib.h>
 
 struct ft_data {
