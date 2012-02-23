@@ -34,6 +34,7 @@
 #include <string.h>
 #include <fcntl.h>
 
+#include "base_header.h"
 #include "ftreader.h"
 #include "flowy.h"
 #include "auto_comps.h"
@@ -57,8 +58,7 @@ struct group ***merger(struct group ***filtered_groups, size_t *num_filtered_gro
  * respectively and field_lengths are FIRST and LAST
  */
 
-char **filter(struct ft_data *data, struct filter_rule *filter_rules, int num_filter_rules, size_t *num_filtered_records)
-{
+char **filter(struct ft_data *data, struct filter_rule *filter_rules, int num_filter_rules, size_t *num_filtered_records){
     int i, j;
     char **filtered_records;
 
@@ -93,8 +93,7 @@ char **filter(struct ft_data *data, struct filter_rule *filter_rules, int num_fi
 
 struct group **group_filter(struct group **groups, size_t num_groups,
         struct gfilter_rule *rules, size_t num_gfilter_rules,
-        size_t *num_filtered_groups)
-{
+        size_t *num_filtered_groups){
     int i, j;
     struct group **filtered_groups;
 
@@ -148,8 +147,7 @@ struct group **group_filter(struct group **groups, size_t num_groups,
     return filtered_groups;
 }
 
-static void *branch_start(void *arg)
-{
+static void *branch_start(void *arg){
     struct branch_info *binfo = (struct branch_info *)arg;
 
     char **filtered_records; /* temporary - are freed later */
@@ -203,8 +201,7 @@ static void *branch_start(void *arg)
     pthread_exit(NULL);
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv){
     struct ft_data *data;
     int inputFd;
     int num_threads;
@@ -218,11 +215,12 @@ int main(int argc, char **argv)
 
     num_threads = 2;
   
+    if (argc != 2 || strcmp(argv[1], "--help") == 0) 
+      usageErr("%s $TRACE or %s < $TRACE\n", argv[0], argv[0]);
+  
     inputFd = open(argv[1], O_RDONLY);
-    if (inputFd == -1){
-      perror("open");
-      exit(EXIT_FAILURE);
-    }   
+    if (inputFd == -1)
+      errExit("open");
   
     data = ft_open(inputFd);
   
