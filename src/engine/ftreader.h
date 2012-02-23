@@ -1,4 +1,5 @@
 /*
+ * Copyright 2012 Vaibhav Bajpai <contact@vaibhavbajpai.com>
  * Copyright 2011 Johannes 'josch' Schauer <j.schauer@email.de>
  *
  * All rights reserved.
@@ -30,20 +31,25 @@
 #define __FTREADER_H
 
 struct ft_data {
-    int fd;
-    struct ftio io;
-    struct fts3rec_offsets offsets;
-    struct ftver version;
-    u_int64 xfield;
-    int rec_size;
-    char **records;
-    int num_records;
+  int fd;
+  struct ftio io;
+  struct fts3rec_offsets offsets;
+  struct ftver version;
+  u_int64 xfield;
+  int rec_size;
+  char **records;
+  int num_records;
 };
 
-struct ft_data *ft_open(int fd);
-void ft_write(struct ft_data *data, int fd);
+struct ft_data *
+ft_open(int fd);
 
-void ft_records_get_all(struct ft_data* data, int number, struct fts3rec_all *record);
+void 
+ft_write(struct ft_data *data, int fd);
+
+void 
+ft_records_get_all(struct ft_data* data, int number, 
+                   struct fts3rec_all *record);
 
 u_int32 *ft_records_get_unix_secs(struct ft_data* data, int number);
 u_int32 *ft_records_get_unix_nsecs(struct ft_data* data, int number);
