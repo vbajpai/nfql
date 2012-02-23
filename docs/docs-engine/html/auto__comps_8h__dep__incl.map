@@ -1,7 +1,0 @@
-<map id="G" name="G">
-<area shape="rect" id="node3" href="$auto__assign_8c.html" title="auto_assign.c" alt="" coords="4,83,107,111"/>
-<area shape="rect" id="node5" href="$auto__comps_8c.html" title="auto_comps.c" alt="" coords="132,83,236,111"/>
-<area shape="rect" id="node7" href="$flowy_8c.html" title="flowy.c" alt="" coords="260,83,320,111"/>
-<area shape="rect" id="node9" href="$grouper__fptr_8c.html" title="grouper_fptr.c" alt="" coords="346,83,448,111"/>
-<area shape="rect" id="node11" href="$merger__fptr_8c.html" title="merger_fptr.c" alt="" coords="473,83,572,111"/>
-</map>
