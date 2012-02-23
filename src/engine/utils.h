@@ -1,4 +1,5 @@
 /*
+ * Copyright 2012 Vaibhav Bajpai <contact@vaibhavbajpai.com>
  * Copyright 2011 Johannes 'josch' Schauer <j.schauer@email.de>
  *
  * All rights reserved.
@@ -32,41 +33,86 @@
 #include "flowy.h"
 
 struct permut_iter {
-    size_t len;
-    size_t *array;
-    size_t *offsets;
-    size_t *lengths;
+  size_t len;
+  size_t *array;
+  size_t *offsets;
+  size_t *lengths;
 };
-
-struct permut_iter *iter_init(size_t *offsets, size_t *lengths, size_t arr_len);
-int iter_next(struct permut_iter *iter);
-void iter_destroy(struct permut_iter *iter);
-
-void assign_fptr(struct branch_info *binfos, int num_threads);
-
-
 struct bsearch_handle {
-    char **ordered_records;
-    char ***uniq_records;
-    size_t num_uniq_records;
+  char **ordered_records;
+  char ***uniq_records;
+  size_t num_uniq_records;
 };
 
-void *bsearch_r(const void *key, const void *base, size_t nmemb, size_t size, int (*compar) (const void *, const void *, void *thunk), void *thunk);
+struct permut_iter *
+iter_init(size_t *offsets, size_t *lengths, size_t arr_len);
 
-int comp_uint8_t(const void *e1, const void *e2, void *thunk);
-int comp_uint16_t(const void *e1, const void *e2, void *thunk);
-int comp_uint32_t(const void *e1, const void *e2, void *thunk);
-int comp_uint64_t(const void *e1, const void *e2, void *thunk);
-int comp_uint8_t_p(const void *e1, const void *e2, void *thunk);
-int comp_uint16_t_p(const void *e1, const void *e2, void *thunk);
-int comp_uint32_t_p(const void *e1, const void *e2, void *thunk);
-int comp_uint64_t_p(const void *e1, const void *e2, void *thunk);
-struct bsearch_handle *tree_create_uint8_t(char **records, size_t num_records, unsigned short field_offset);
-struct bsearch_handle *tree_create_uint16_t(char **records, size_t num_records, unsigned short field_offset);
-struct bsearch_handle *tree_create_uint32_t(char **records, size_t num_records, unsigned short field_offset);
-struct bsearch_handle *tree_create_uint64_t(char **records, size_t num_records, unsigned short field_offset);
-char **tree_find_uint8_t(struct bsearch_handle *handle, char *record, unsigned short field_offset);
-char **tree_find_uint16_t(struct bsearch_handle *handle, char *record, unsigned short field_offset);
-char **tree_find_uint32_t(struct bsearch_handle *handle, char *record, unsigned short field_offset);
-char **tree_find_uint64_t(struct bsearch_handle *handle, char *record, unsigned short field_offset);
-void tree_destroy(struct bsearch_handle *handle);
+int 
+iter_next(struct permut_iter *iter);
+
+void 
+iter_destroy(struct permut_iter *iter);
+
+void 
+assign_fptr(struct branch_info *binfos, int num_threads);
+
+void *
+bsearch_r(const void *key, const void *base, size_t nmemb, size_t size, 
+          int (*compar) (const void *, const void *, void *thunk), void *thunk);
+
+int 
+comp_uint8_t(const void *e1, const void *e2, void *thunk);
+
+int 
+comp_uint16_t(const void *e1, const void *e2, void *thunk);
+
+int 
+comp_uint32_t(const void *e1, const void *e2, void *thunk);
+
+int 
+comp_uint64_t(const void *e1, const void *e2, void *thunk);
+
+int 
+comp_uint8_t_p(const void *e1, const void *e2, void *thunk);
+
+int 
+comp_uint16_t_p(const void *e1, const void *e2, void *thunk);
+
+int 
+comp_uint32_t_p(const void *e1, const void *e2, void *thunk);
+
+int 
+comp_uint64_t_p(const void *e1, const void *e2, void *thunk);
+
+struct bsearch_handle *
+tree_create_uint8_t(char **records, size_t num_records, 
+                    unsigned short field_offset);
+
+struct bsearch_handle *
+tree_create_uint16_t(char **records, size_t num_records, 
+                     unsigned short field_offset);
+
+struct bsearch_handle *
+tree_create_uint32_t(char **records, size_t num_records, 
+                     unsigned short field_offset);
+
+struct bsearch_handle *
+tree_create_uint64_t(char **records, size_t num_records, 
+                     unsigned short field_offset);
+
+char **
+tree_find_uint8_t(struct bsearch_handle *handle, char *record, 
+                  unsigned short field_offset);
+
+char **
+tree_find_uint16_t(struct bsearch_handle *handle, char *record, 
+                   unsigned short field_offset);
+
+char **tree_find_uint32_t(struct bsearch_handle *handle, char *record, 
+                          unsigned short field_offset);
+
+char **tree_find_uint64_t(struct bsearch_handle *handle, char *record, 
+                          unsigned short field_offset);
+
+void 
+tree_destroy(struct bsearch_handle *handle);

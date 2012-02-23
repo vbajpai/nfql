@@ -1,4 +1,5 @@
 /*
+ * Copyright 2012 Vaibhav Bajpai <contact@vaibhavbajpai.com>
  * Copyright 2011 Johannes 'josch' Schauer <j.schauer@email.de>
  *
  * All rights reserved.
@@ -58,71 +59,71 @@
  */
 
 enum {
-    /* size2 */
-    RULE_S2_8 = 0,
-    RULE_S2_16 = 1,
-    RULE_S2_32 = 2,
-    RULE_S2_64 = 3,
-    /* size1 */
-    RULE_S1_8 = 0,
-    RULE_S1_16 = 4,
-    RULE_S1_32 = 8,
-    RULE_S1_64 = 12,
-    /* D */
-    RULE_ABS = 0,
-    RULE_REL = 16,
-    RULE_NO = 32,
-    /* comp */
-    RULE_EQ = 0,
-    RULE_NE = 64,
-    RULE_GT = 128,
-    RULE_LT = 192,
-    RULE_LE = 256,
-    RULE_GE = 320,
+  /* size2 */
+  RULE_S2_8 = 0,
+  RULE_S2_16 = 1,
+  RULE_S2_32 = 2,
+  RULE_S2_64 = 3,
+  /* size1 */
+  RULE_S1_8 = 0,
+  RULE_S1_16 = 4,
+  RULE_S1_32 = 8,
+  RULE_S1_64 = 12,
+  /* D */
+  RULE_ABS = 0,
+  RULE_REL = 16,
+  RULE_NO = 32,
+  /* comp */
+  RULE_EQ = 0,
+  RULE_NE = 64,
+  RULE_GT = 128,
+  RULE_LT = 192,
+  RULE_LE = 256,
+  RULE_GE = 320,
 };
 
 enum field_length {
-    LEN_UNIX_SECS       = 32,
-    LEN_UNIX_NSECS      = 32,
-    LEN_SYSUPTIME       = 32,
-    LEN_EXADDR          = 32,
-
-    LEN_DFLOWS          = 32,
-    LEN_DPKTS           = 32,
-    LEN_DOCTETS         = 32,
-    LEN_FIRST           = 32,
-
-    LEN_LAST            = 32,
-    LEN_ENGINE_TYPE     = 8,
-    LEN_ENGINE_ID       = 8,
-
-    LEN_SRCADDR         = 32,
-    LEN_DSTADDR         = 32,
-
-    LEN_NEXTHOP         = 32,
-    LEN_INPUT           = 16,
-    LEN_OUTPUT          = 16,
-    LEN_SRCPORT         = 16,
-
-    LEN_DSTPORT         = 16,
-    LEN_PROT            = 8,
-    LEN_TOS             = 8,
-    LEN_TCP_FLAGS       = 8,
-
-    LEN_SRC_MASK        = 8,
-    LEN_DST_MASK        = 8,
-    LEN_SRC_AS          = 16,
-    LEN_DST_AS          = 16,
-
-    LEN_IN_ENCAPS       = 8,
-    LEN_OUT_ENCAPS      = 8,
-    LEN_PEER_NEXTHOP    = 32,
-    LEN_ROUTER_SC       = 32,
-
-    LEN_EXTRA_PKTS      = 32,
-    LEN_MARKED_TOS      = 8,
-    LEN_SRC_TAG         = 32,
-    LEN_DST_TAG         = 32,
+  LEN_UNIX_SECS       = 32,
+  LEN_UNIX_NSECS      = 32,
+  LEN_SYSUPTIME       = 32,
+  LEN_EXADDR          = 32,
+  
+  LEN_DFLOWS          = 32,
+  LEN_DPKTS           = 32,
+  LEN_DOCTETS         = 32,
+  LEN_FIRST           = 32,
+  
+  LEN_LAST            = 32,
+  LEN_ENGINE_TYPE     = 8,
+  LEN_ENGINE_ID       = 8,
+  
+  LEN_SRCADDR         = 32,
+  LEN_DSTADDR         = 32,
+  
+  LEN_NEXTHOP         = 32,
+  LEN_INPUT           = 16,
+  LEN_OUTPUT          = 16,
+  LEN_SRCPORT         = 16,
+  
+  LEN_DSTPORT         = 16,
+  LEN_PROT            = 8,
+  LEN_TOS             = 8,
+  LEN_TCP_FLAGS       = 8,
+  
+  LEN_SRC_MASK        = 8,
+  LEN_DST_MASK        = 8,
+  LEN_SRC_AS          = 16,
+  LEN_DST_AS          = 16,
+  
+  LEN_IN_ENCAPS       = 8,
+  LEN_OUT_ENCAPS      = 8,
+  LEN_PEER_NEXTHOP    = 32,
+  LEN_ROUTER_SC       = 32,
+  
+  LEN_EXTRA_PKTS      = 32,
+  LEN_MARKED_TOS      = 8,
+  LEN_SRC_TAG         = 32,
+  LEN_DST_TAG         = 32,
 };
 
 /*
@@ -130,9 +131,9 @@ enum field_length {
  */
 
 struct flowquery {
-    size_t num_branches;
-    struct branch_info *branches;
-    struct merger_rule **mrules;
+  size_t num_branches;
+  struct branch_info *branches;
+  struct merger_rule **mrules;
 };
 
 /*
@@ -140,20 +141,20 @@ struct flowquery {
  */
 
 struct branch_info {
-    /* have to be filled manually */
-    int branch_id;
-    struct ft_data *data;
-    struct filter_rule *filter_rules;
-    size_t num_filter_rules;
-    struct grouper_rule *group_modules;
-    size_t num_group_modules;
-    struct grouper_aggr *aggr;
-    size_t num_aggr;
-    struct gfilter_rule *gfilter_rules;
-    size_t num_gfilter_rules;
-    /* will be filled by individual branches */
-    struct group **filtered_groups;
-    size_t num_filtered_groups;
+  /* have to be filled manually */
+  int branch_id;
+  struct ft_data *data;
+  struct filter_rule *filter_rules;
+  size_t num_filter_rules;
+  struct grouper_rule *group_modules;
+  size_t num_group_modules;
+  struct grouper_aggr *aggr;
+  size_t num_aggr;
+  struct gfilter_rule *gfilter_rules;
+  size_t num_gfilter_rules;
+  /* will be filled by individual branches */
+  struct group **filtered_groups;
+  size_t num_filtered_groups;
 };
 
 /*
@@ -161,14 +162,14 @@ struct branch_info {
  */
 
 struct filter_rule {
-    size_t field_offset;
-    uint64_t value;
-    uint64_t delta;
-    bool (*func)(
-            char *record,
-            size_t field_offset,
-            uint64_t value,
-            uint64_t delta);
+  size_t field_offset;
+  uint64_t value;
+  uint64_t delta;
+  bool (*func)(
+               char *record,
+               size_t field_offset,
+               uint64_t value,
+               uint64_t delta);
 };
 
 /*
@@ -179,16 +180,16 @@ struct filter_rule {
  */
 
 struct group {
-    char       **members;
-    size_t       num_members;
-    struct aggr *aggr;
-    uint32_t start;
-    uint32_t end;
+  char       **members;
+  size_t       num_members;
+  struct aggr *aggr;
+  uint32_t start;
+  uint32_t end;
 };
 
 struct aggr {
-    size_t    num_values;
-    uint64_t *values;
+  size_t    num_values;
+  uint64_t *values;
 };
 
 /*
@@ -198,25 +199,25 @@ struct aggr {
  */
 
 struct grouper_rule {
-    size_t field_offset1;
-    size_t field_offset2;
-    uint64_t delta;
-    uint16_t op;
-    bool (*func)(
-            struct group *group,
-            size_t field_offset1,
-            char *record2,
-            size_t field_offset2,
-            uint64_t delta);
+  size_t field_offset1;
+  size_t field_offset2;
+  uint64_t delta;
+  uint16_t op;
+  bool (*func)(
+               struct group *group,
+               size_t field_offset1,
+               char *record2,
+               size_t field_offset2,
+               uint64_t delta);
 };
 
 struct grouper_aggr {
-    int module; // NEW: indicate module, -1 for all
-    size_t field_offset;
-    struct aggr (*func)(
-            char **group_records,
-            size_t num_records,
-            size_t field_offset);
+  int module; // NEW: indicate module, -1 for all
+  size_t field_offset;
+  struct aggr (*func)(
+                      char **group_records,
+                      size_t num_records,
+                      size_t field_offset);
 };
 
 /*
@@ -224,13 +225,13 @@ struct grouper_aggr {
  */
 
 struct gfilter_rule {
-    size_t field;
-    uint64_t value;
-    uint64_t delta;
-    bool (*func)(struct group *group,
-            size_t field,
-            uint64_t value,
-            uint64_t delta);
+  size_t field;
+  uint64_t value;
+  uint64_t delta;
+  bool (*func)(struct group *group,
+               size_t field,
+               uint64_t value,
+               uint64_t delta);
 };
 
 /*
@@ -238,16 +239,16 @@ struct gfilter_rule {
  */
 
 struct merger_rule {
-    size_t branch1;
-    size_t field1;
-    size_t branch2;
-    size_t field2;
-    uint64_t delta;
-    bool (*func)(struct group *group1,
-            size_t field1,
-            struct group *group2,
-            size_t field2,
-            uint64_t delta);
+  size_t branch1;
+  size_t field1;
+  size_t branch2;
+  size_t field2;
+  uint64_t delta;
+  bool (*func)(struct group *group1,
+               size_t field1,
+               struct group *group2,
+               size_t field2,
+               uint64_t delta);
 };
 
 #endif

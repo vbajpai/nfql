@@ -1,6 +1,5 @@
 /*
  * Copyright 2012 Vaibhav Bajpai <contact@vaibhavbajpai.com>
- * Copyright 2011 Johannes 'josch' Schauer <j.schauer@email.de>
  *
  * All rights reserved.
  *
@@ -25,33 +24,11 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "base_header.h"
+#ifndef flowy_engine_merger_fptr_h
+#define flowy_engine_merger_fptr_h
 
-/*
- * adapted from ./stdlib/bsearch.c from the GNU C Library
- * pass additional argument thunk to compar to allow it access additional data
- * without global variables - in our case, we need to pass the data offset
- */
-void *
-bsearch_r(const void *key, const void *base, size_t nmemb, size_t size,
-          int (*compar) (const void *, const void *, void *thunk), void *thunk) {
-  size_t l, u, idx;
-  const void *p;
-  int comparison;
-  
-  l = 0;
-  u = nmemb;
-  while (l < u) {
-    idx = (l + u) / 2;
-    p = (void *) (((const char *) base) + (idx * size));
-    comparison = (*compar) (key, p, thunk);
-    if (comparison < 0) {
-      u = idx;
-    } else if (comparison > 0) {
-      l = idx + 1;
-    } else {
-      return (void *) p;
-    }
-  }
-  return NULL;
-}
+struct group ***
+merger(struct group ***filtered_groups, size_t *num_filtered_groups, 
+       int num_threads, struct merger_rule *filter, int num_filter_rules);
+
+#endif
