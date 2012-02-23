@@ -74,12 +74,14 @@ source = open("auto_comps.c", "w")
 header.write(preamble)
 source.write(preamble)
 
+header.write("#ifndef flowy_engine_auto_comps_h\n")
+header.write("#define flowy_engine_auto_comps_h\n\n")
+
+header.write('#include "base_header.h"\n\n')
 header.write("#include <stdbool.h>\n")
-header.write("#include <stdlib.h>\n")
-header.write("#include <stdint.h>\n")
+header.write("#include <math.h>\n")
+header.write("#include <stdint.h>\n\n")
 header.write("#include \"flowy.h\"\n")
-source.write("#include <stdio.h>\n")
-source.write("#include <math.h>\n")
 source.write("#include \"auto_comps.h\"\n")
 
 source.write("""
@@ -402,19 +404,25 @@ for op in 'eq', 'ne', 'lt', 'gt', 'le', 'ge', \
     source.write(merger_proto%(op))
     source.write(merger_body(op))
 
+header.write("#endif\n")
 header.close()
 source.close()
 
-
+header = open("auto_assign.h", 'w')
 source = open("auto_assign.c", 'w')
 
+header.write(preamble)
 source.write(preamble)
 
+header.write("#ifndef flowy_engine_auto_assign_h\n")
+header.write("#define flowy_engine_auto_assign_h\n\n")
+
+header.write('#include "base_header.h"\n\n')
+header.write("#include \"flowy.h\"\n")
+header.write("#include \"auto_comps.h\"\n")
+source.write("#include \"auto_assign.h\"\n")
+
 source.write("""
-
-#include "flowy.h"
-#include "auto_comps.h"
-
 void assign_fptr(struct branch_info *binfos, int num_threads) {
     int i, j;
     for (i = 0; i < num_threads; i++) {
@@ -438,6 +446,8 @@ source.write("""
 }
 """)
 
+header.write("#endif\n")
+header.close()
 source.close()
 
 def switch_cases(op, atype1, atype2, dtype):
@@ -480,9 +490,18 @@ def switch_cases(op, atype1, atype2, dtype):
         raise ValueError(op)
     return result;
 
+
+header = open("auto_switch.h", 'w')
 source = open("auto_switch.c", "w")
 
+header.write(preamble)
 source.write(preamble)
+
+header.write("#ifndef flowy_engine_auto_switch_h\n")
+header.write("#define flowy_engine_auto_switch_h\n\n")
+
+header.write('#include "base_header.h"\n\n')
+source.write("#include \"auto_switch.h\"\n")
 
 source.write("rule_matches = false;\n")
 source.write("switch (group_modules[k].op) {\n")
@@ -499,4 +518,6 @@ for op in 'RULE_EQ', 'RULE_NE', 'RULE_GT', 'RULE_LT', 'RULE_LE', 'RULE_GE':
 source.write("}\n")
 source.write("if (!rule_matches) break;\n")
 
+header.write("#endif\n")
+header.close()
 source.close()

@@ -25,10 +25,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <ftlib.h>
+#ifndef flowy_engine_ftreader_h
+#define flowy_engine_ftreader_h
 
-#ifndef __FTREADER_H
-#define __FTREADER_H
+#include "base_header.h"
+
+#include <fcntl.h>
+#include <arpa/inet.h>
+#include <ftlib.h>
 
 struct ft_data {
   int fd;

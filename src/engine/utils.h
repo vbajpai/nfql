@@ -25,9 +25,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- *  this header contains internally used stuff
- */
+#ifndef flowy_engine_utils_h
+#define flowy_engine_utils_h
 
 #include "base_header.h"
 #include "flowy.h"
@@ -52,9 +51,6 @@ iter_next(struct permut_iter *iter);
 
 void 
 iter_destroy(struct permut_iter *iter);
-
-void 
-assign_fptr(struct branch_info *binfos, int num_threads);
 
 void *
 bsearch_r(const void *key, const void *base, size_t nmemb, size_t size, 
@@ -108,11 +104,16 @@ char **
 tree_find_uint16_t(struct bsearch_handle *handle, char *record, 
                    unsigned short field_offset);
 
-char **tree_find_uint32_t(struct bsearch_handle *handle, char *record, 
+char **
+tree_find_uint32_t(struct bsearch_handle *handle, char *record, 
                           unsigned short field_offset);
 
-char **tree_find_uint64_t(struct bsearch_handle *handle, char *record, 
+char **
+tree_find_uint64_t(struct bsearch_handle *handle, char *record, 
                           unsigned short field_offset);
 
 void 
 tree_destroy(struct bsearch_handle *handle);
+
+
+#endif

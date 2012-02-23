@@ -25,10 +25,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include <fcntl.h>
-#include <arpa/inet.h>
-
-#include "base_header.h"
 #include "ftreader.h"
 
 struct ft_data *

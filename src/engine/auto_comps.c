@@ -4,8 +4,6 @@
  * DO NOT CHANGE!
  */
 
-#include <stdio.h>
-#include <math.h>
 #include "auto_comps.h"
 
 int compar(const void *a, const void *b)

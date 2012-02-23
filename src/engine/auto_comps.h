@@ -4,10 +4,19 @@
  * DO NOT CHANGE!
  */
 
+#ifndef flowy_engine_auto_comps_h
+#define flowy_engine_auto_comps_h
+
+#include "base_header.h"
+
 #include <stdbool.h>
-#include <stdlib.h>
+#include <math.h>
 #include <stdint.h>
+
 #include "flowy.h"
+
+struct group;
+
 bool filter_eq_uint8_t(char *record, size_t field_offset, uint64_t value, uint64_t delta);
 bool filter_eq_uint16_t(char *record, size_t field_offset, uint64_t value, uint64_t delta);
 bool filter_eq_uint32_t(char *record, size_t field_offset, uint64_t value, uint64_t delta);
@@ -398,3 +407,4 @@ bool merger_a_f(struct group *group1, size_t field1, struct group *group2, size_
 bool merger_a_fi(struct group *group1, size_t field1, struct group *group2, size_t field2, uint64_t delta);
 bool merger_a_eq(struct group *group1, size_t field1, struct group *group2, size_t field2, uint64_t delta);
 bool merger_in(struct group *group1, size_t field1, struct group *group2, size_t field2, uint64_t delta);
+#endif

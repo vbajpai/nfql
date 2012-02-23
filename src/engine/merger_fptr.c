@@ -27,10 +27,7 @@
 
 #define _GNU_SOURCE
 
-#include "base_header.h"
-#include "flowy.h"
-#include "auto_comps.h"
-#include "utils.h"
+#include "merger_fptr.h"
 
 struct group ***
 merger(struct group ***filtered_groups, size_t *num_filtered_groups, 

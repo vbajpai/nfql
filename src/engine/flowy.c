@@ -27,17 +27,8 @@
 
 #define _GNU_SOURCE
 
-#include <pthread.h>
-#include <stdbool.h>
-#include <fcntl.h>
-
-#include "base_header.h"
-#include "ftreader.h"
 #include "flowy.h"
-#include "auto_comps.h"
-#include "utils.h"
-#include "grouper_fptr.h"
-#include "merger_fptr.h"
+
 
 // TODO: allow OR in filters
 // TODO: allow grouping and merging with more than one module

@@ -27,6 +27,14 @@
 #ifndef flowy_engine_merger_fptr_h
 #define flowy_engine_merger_fptr_h
 
+#include "base_header.h"
+
+#include "flowy.h"
+#include "auto_comps.h"
+#include "utils.h"
+
+struct merger_rule;
+
 struct group ***
 merger(struct group ***filtered_groups, size_t *num_filtered_groups, 
        int num_threads, struct merger_rule *filter, int num_filter_rules);

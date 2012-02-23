@@ -29,14 +29,27 @@
  * this header contains the public flowy interface
  */
 
-#include <stdbool.h>
-#include <pthread.h>
-#include <stdint.h>
+#ifndef __FLOWY_H
+#define __FLOWY_H
 
 #include "base_header.h"
 
-#ifndef __FLOWY_H
-#define __FLOWY_H
+#include <stdbool.h>
+#include <pthread.h>
+#include <stdint.h>
+#include <fcntl.h>
+
+/* these includes had circular dependencies,
+ * used forward declaration for now
+ */
+#include "auto_comps.h"
+#include "grouper_fptr.h"
+#include "auto_assign.h"
+#include "merger_fptr.h"
+
+#include "ftreader.h"
+#include "utils.h"
+
 
 /*
  * struct grouper_rule.op is a uint16_t with the options ORed together so that

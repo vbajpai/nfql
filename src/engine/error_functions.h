@@ -27,6 +27,10 @@
 #ifndef flowy_engine_error_functions_h
 #define flowy_engine_error_functions_h
 
+#include "base_header.h"
+
+#include <stdarg.h>
+
 /* This macro stops 'gcc -Wall' complaining that "control
  * reaches end of non-void function" if we use the following
  * functions to terminate main() or some other non-void function. 

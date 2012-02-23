@@ -27,6 +27,14 @@
 #ifndef flowy_engine_grouper_fptr_h
 #define flowy_engine_grouper_fptr_h
 
+#include "base_header.h"
+
+#include "flowy.h"
+#include "utils.h"
+
+struct grouper_rule;
+struct grouper_aggr;
+
 struct uniq_records_tree *
 build_record_trees(char **filtered_records, size_t num_filtered_records,
                    struct grouper_rule *group_modules);

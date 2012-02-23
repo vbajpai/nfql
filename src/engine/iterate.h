@@ -24,66 +24,11 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "error_functions.h"
+#ifndef flowy_engine_iterate_h
+#define flowy_engine_iterate_h
 
-#ifdef __GNUC__
-  __attribute__ ((__noreturn__)) 
+#include "base_header.h"
+
+#include "utils.h"
+
 #endif
-
-static void
-terminate() {
-
-  /* Dump core if EF_DUMPCORE environment variable is defined
-   * and is a nonempty string; otherwise call exit(3)
-   */
-  char *s;
-  s = getenv("EF_DUMPCORE");
-  if (s != NULL && *s != '\0')
-    abort();
-
-  exit(EXIT_FAILURE);
-}
-
-static void
-outputError(int err, Boolean flushStdout,
-            const char *format, va_list ap) {
-
-  #define BUF_SIZE 500
-  char buf[BUF_SIZE], userMsg[BUF_SIZE], errText[BUF_SIZE];
-  
-  vsnprintf(userMsg, BUF_SIZE, format, ap);  
-  snprintf(errText, BUF_SIZE, ":");  
-  snprintf(buf, BUF_SIZE, "ERROR%s %s\n", errText, userMsg);
-  
-  if (flushStdout)
-    fflush(stdout); /* Flush any pending stdout */
-  fputs(buf, stderr);
-  fflush(stderr);
-}
-
-void 
-usageErr(const char *format, ...) {
-  
-  va_list argList;
-  fflush(stdout); /* Flush any pending stdout */
-  
-  fprintf(stderr, "Usage: "); 
-  va_start(argList, format); 
-  vfprintf(stderr, format, argList); 
-  va_end(argList);
-  
-  fflush(stderr); /* In case stderr is not line-buffered */
-  exit(EXIT_FAILURE);
-}
-
-void
-errExit(const char *format, ...) {
-  
-  va_list argList;
-  
-  va_start(argList, format);
-  outputError(errno, TRUE, format, argList); 
-  va_end(argList);
-  
-  terminate();
-}

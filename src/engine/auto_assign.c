@@ -4,10 +4,7 @@
  * DO NOT CHANGE!
  */
 
-
-
-#include "flowy.h"
-#include "auto_comps.h"
+#include "auto_assign.h"
 
 void assign_fptr(struct branch_info *binfos, int num_threads) {
     int i, j;

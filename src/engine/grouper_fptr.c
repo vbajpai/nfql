@@ -27,10 +27,7 @@
 
 #define _GNU_SOURCE
 
-#include "base_header.h"
-#include "flowy.h"
-#include "auto_comps.h"
-#include "utils.h"
+#include "grouper_fptr.h"
 
 #define tree_item(size) \
 struct tree_item_##size { \
@@ -93,7 +90,7 @@ struct uniq_records_tree {
  */
 
 struct uniq_records_tree *
-build_record_trees(char **filtered_records, size_t num_filtered_records,
+build_record_trees(char **filtered_records, size_t num_filtered_records, 
                    struct grouper_rule *group_modules) {
   
   struct uniq_records_tree *uniq_records_trees;
