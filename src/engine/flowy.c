@@ -358,71 +358,67 @@ main(int argc, char **argv) {
   
   
   
-  /*
-   * fill the func attribute of grouper rules
-   */
+  /* -----------------------------------------------------------------------*/  
+  /*            fills grouper_rule.func from the grouper_rule.op            */
+  /*               by falling through a huge switch statement               */
+  /* -----------------------------------------------------------------------*/    
   assign_fptr(binfos, num_threads);
+  /* -----------------------------------------------------------------------*/
+
   
-  /*
-   * SPLITTER
-   *
-   * (mostly pthread stuff)
-   */
   
+  
+  
+  
+  /* -----------------------------------------------------------------------*/  
+  /*               splitter → filter → grouper → group-filter               */
+  /* -----------------------------------------------------------------------*/   
+  
+
+  /* allocate space for a dedicated thread for each branch */
   thread_ids = (pthread_t *)calloc(num_threads, sizeof(pthread_t));
-  if (thread_ids == NULL) {
-    perror("malloc");
-    exit(EXIT_FAILURE);
-  }
-  
+  if (thread_ids == NULL)
+    errExit("malloc");
   thread_attrs = (pthread_attr_t *)calloc(num_threads, sizeof(pthread_attr_t));
-  if (thread_attrs == NULL) {
-    perror("malloc");
-    exit(EXIT_FAILURE);
-  }
-  
+  if (thread_attrs == NULL)
+    errExit("malloc");
+    
+  /* allocate space for an array of pointers to filtered groups */
   filtered_groups = (struct group ***)malloc(num_threads*sizeof(struct group **));
-  if (filtered_groups == NULL) {
-    perror("malloc");
-    exit(EXIT_FAILURE);
-  }
-  
-  num_filtered_groups = (size_t *)malloc(sizeof(size_t)*num_threads);
-  if (num_filtered_groups == NULL) {
-    perror("malloc");
-    exit(EXIT_FAILURE);
-  }
-  
+  if (filtered_groups == NULL)
+    errExit("malloc");    
+  num_filtered_groups = (size_t *)malloc(num_threads*sizeof(size_t));
+  if (num_filtered_groups == NULL)
+    errExit("malloc");
+    
+    
   for (i = 0; i < num_threads; i++) {
+
+    /* initialize each thread attributes */
     ret = pthread_attr_init(&thread_attrs[i]);
-    if (ret != 0) {
-      errno = ret;
-      perror("pthread_attr_init");
-      exit(EXIT_FAILURE);
-    }
+    if (ret != 0)
+      errExit("pthread_attr_init");
     
-    ret = pthread_create(&thread_ids[i], &thread_attrs[i], &branch_start, (void *)(&binfos[i]));
-    if (ret != 0) {
-      errno = ret;
-      perror("pthread_create");
-      exit(EXIT_FAILURE);
-    }
+    /* start each thread for a dedicated branch */      
+    ret = pthread_create(&thread_ids[i], &thread_attrs[i], 
+                         &branch_start, (void *)(&binfos[i]));    
+    if (ret != 0)
+      errExit("pthread_create");
     
+    
+    /* destroy the thread attributes once the thread is created */  
     ret = pthread_attr_destroy(&thread_attrs[i]);
-    if (ret != 0) {
-      errno = ret;
-      perror("pthread_attr_destroy");
-      exit(EXIT_FAILURE);
-    }
+    if (ret != 0) 
+      errExit("pthread_attr_destroy");
   }
   
+  /* - wait for each thread to complete its branch
+   * - save and print the number of filtered groups on completion
+   * - save the filtered groups on completion */
   for (i = 0; i < num_threads; i++) {
     ret = pthread_join(thread_ids[i], NULL);
-    if (ret != 0) {
-      errno = ret;
-      perror("pthread_join");
-      exit(EXIT_FAILURE);
-    }
+    if (ret != 0)
+      errExit("pthread_join");
     
     num_filtered_groups[i] = binfos[i].num_filtered_groups;
     filtered_groups[i] = binfos[i].filtered_groups;
@@ -432,6 +428,15 @@ main(int argc, char **argv) {
   free(thread_ids);
   free(thread_attrs);
   free(binfos);
+  
+  /* -----------------------------------------------------------------------*/    
+  
+  
+  
+  
+  
+  
+  
   
   /*
    * MERGER
