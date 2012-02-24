@@ -44,9 +44,21 @@ ft_open(int fd) {
     return NULL;
   }
   
-  ftio_get_ver(&data->io, &data->version);
-  data->xfield = ftio_xfield(&data->io);
-  fts3rec_compute_offsets(&data->offsets, &data->version);
+  if (ftio_check_xfield(&data->io, FT_XFIELD_DPKTS |
+                        FT_XFIELD_DOCTETS | FT_XFIELD_FIRST | FT_XFIELD_LAST | FT_XFIELD_INPUT |
+                        FT_XFIELD_OUTPUT | FT_XFIELD_SRCADDR | FT_XFIELD_DSTADDR |
+                        FT_XFIELD_SRCPORT | FT_XFIELD_DSTPORT | FT_XFIELD_UNIX_SECS |
+                        FT_XFIELD_UNIX_NSECS | FT_XFIELD_SYSUPTIME | FT_XFIELD_TCP_FLAGS |
+                        FT_XFIELD_PROT)) {
+    fterr_warnx("Flow record missing required field for format.");
+    exit(EXIT_FAILURE);
+  }else {
+    /* calculate FT_XFIELD */
+    data->xfield = ftio_xfield(&data->io);
+  }  
+  
+  ftio_get_ver(&data->io, &data->version);  
+  fts3rec_compute_offsets(&data->offsets, &data->version);  
   data->rec_size = ftio_rec_size(&data->io);
   
   /*
@@ -57,11 +69,74 @@ ft_open(int fd) {
    *
    */
   
+#ifdef DEBUGENGINE
+  
+  /* print flow header */
+  ftio_header_print(&data->io, stdout, '#');  
+  
+#endif
+
+  
   while ((record = ftio_read(&data->io)) != NULL) {
     data->num_records++;
     data->records = (char **)realloc(data->records, sizeof(char *)*data->num_records);
     data->records[data->num_records-1] = (char *)malloc(data->rec_size);
     memcpy(data->records[data->num_records-1], record, data->rec_size);
+    
+#ifdef DEBUGENGINE
+    
+    struct fts3rec_all cur;
+    cur.unix_secs = ((u_int32*)(record+(data->offsets).unix_secs));
+    cur.unix_nsecs = ((u_int32*)(record+(data->offsets).unix_nsecs));
+    cur.sysUpTime = ((u_int32*)(record+(data->offsets).sysUpTime));
+    cur.dOctets = ((u_int32*)(record+(data->offsets).dOctets));
+    cur.dPkts = ((u_int32*)(record+(data->offsets).dPkts));
+    cur.First = ((u_int32*)(record+(data->offsets).First));
+    cur.Last = ((u_int32*)(record+(data->offsets).Last));
+    cur.srcaddr = ((u_int32*)(record+(data->offsets).srcaddr));
+    cur.dstaddr = ((u_int32*)(record+(data->offsets).dstaddr));
+    cur.input = ((u_int16*)(record+(data->offsets).input));
+    cur.output = ((u_int16*)(record+(data->offsets).output));
+    cur.srcport = ((u_int16*)(record+(data->offsets).srcport));
+    cur.dstport = ((u_int16*)(record+(data->offsets).dstport));
+    cur.prot = ((u_int8*)(record+(data->offsets).prot));
+    cur.tcp_flags = ((u_int8*)(record+(data->offsets).tcp_flags));
+    
+    struct fttime ftt;
+    ftt = ftltime(*cur.sysUpTime, *cur.unix_secs, *cur.unix_nsecs, *cur.First);
+    struct tm *tm;
+    tm = localtime((time_t*)&ftt.secs);
+    
+    printf("%-2.2d%-2.2d.%-2.2d:%-2.2d:%-2.2d.%-3.3lu ",
+           (int)tm->tm_mon+1, (int)tm->tm_mday, (int)tm->tm_hour,
+           (int)tm->tm_min, (int)tm->tm_sec, (u_long)ftt.msecs);
+    
+    ftt = ftltime(*cur.sysUpTime, *cur.unix_secs, *cur.unix_nsecs, *cur.Last);
+    tm = localtime((time_t*)&ftt.secs);
+    
+    printf("%-2.2d%-2.2d.%-2.2d:%-2.2d:%-2.2d.%-3.3lu ",
+           (int)tm->tm_mon+1, (int)tm->tm_mday, (int)tm->tm_hour,
+           (int)tm->tm_min, (int)tm->tm_sec, (u_long)ftt.msecs);
+    
+    /* other info */
+    char fmt_buf1[64], fmt_buf2[64];
+    fmt_ipv4(fmt_buf1, *cur.srcaddr, FMT_PAD_RIGHT);
+    fmt_ipv4(fmt_buf2, *cur.dstaddr, FMT_PAD_RIGHT);
+    
+    printf("%-5u %-15.15s %-5u %-5u %-15.15s %-5u %-3u %-2d %-10lu %-10lu\n",
+           
+           (u_int)*cur.input, fmt_buf1, (u_int)*cur.srcport, 
+           (u_int)*cur.output, fmt_buf2, (u_int)*cur.dstport,
+           (u_int)*cur.prot, 
+           (u_int)*cur.tcp_flags & 0x7,
+           (u_long)*cur.dPkts, 
+           (u_long)*cur.dOctets);
+    
+    if (0 & FT_OPT_NOBUF)
+      fflush(stdout);
+    
+#endif 
+    
   }
   
   return data;

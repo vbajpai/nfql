@@ -37,4 +37,6 @@
 
 typedef enum { FALSE, TRUE } Boolean;
 
+#define DEBUGENGINE
+
 #endif

@@ -215,7 +215,9 @@ main(int argc, char **argv) {
     errExit("open");
   
   data = ft_open(inputFd);
-  
+  exit(EXIT_SUCCESS);  
+
+ 
   binfos = (struct branch_info *)calloc(num_threads, sizeof(struct branch_info));
   if (binfos == NULL) {
     perror("malloc");
