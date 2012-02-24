@@ -194,64 +194,101 @@ branch_start(void *arg) {
 
 int 
 main(int argc, char **argv) {
-  struct ft_data *data;
-  int inputFd;
-  int num_threads;
-  int i, ret;
-  pthread_t *thread_ids;
-  pthread_attr_t *thread_attrs;
-  struct branch_info *binfos;
-  struct group ***filtered_groups;
-  size_t *num_filtered_groups;
-  struct group ***group_tuples;
   
-  num_threads = 2;
+  struct ft_data*             data;
+  int                         inputFd;
+  int                         num_threads;
+  int                         i, ret;
+  pthread_t*                  thread_ids;
+  pthread_attr_t*             thread_attrs;
+  struct branch_info*         binfos;
+  struct group***             filtered_groups;
+  size_t*                     num_filtered_groups;
+  struct group***             group_tuples;
+  
+  
+  
+  
+
+  /* ----------------------------------------------*/  
+  /*     reading the input trace into a struct     */
+  /* ----------------------------------------------*/   
   
   if (argc != 2 || strcmp(argv[1], "--help") == 0) 
-    usageErr("%s $TRACE\n", argv[0], argv[0]);
-  
+    usageErr("%s $TRACE\n", argv[0], argv[0]);  
   inputFd = open(argv[1], O_RDONLY);
   if (inputFd == -1)
-    errExit("open");
+    errExit("open");  
+  data = ft_open(inputFd);  
   
-  data = ft_open(inputFd);
-  exit(EXIT_SUCCESS);  
+  /* ----------------------------------------------*/
+   
+  
+  
+  
+  
+  
+  /* ---------------------------------------------*/  
+  /*    creating branch_info for each thread      */
+  /* ---------------------------------------------*/  
+  
+  num_threads = 2;
+  binfos = (struct branch_info *)
+            calloc(num_threads, 
+                   sizeof(struct branch_info));
+  if (binfos == NULL)
+    errExit("malloc");  
+  
+  /* ----------------------------------------------*/
 
+
+  
+  
+  
+    
+  /* -----------------------------------------------------------------------*/  
+  /*    filter, grouper, grouper aggregation rules for branch 1             */
+  /* -----------------------------------------------------------------------*/  
  
-  binfos = (struct branch_info *)calloc(num_threads, sizeof(struct branch_info));
-  if (binfos == NULL) {
-    perror("malloc");
-    exit(EXIT_FAILURE);
-  }
   
-  /*
-   * custom rules
-   */
-  
+  /* array of filter rules, with one filter */
   struct filter_rule filter_rules_branch1[1] = {
     { data->offsets.dstport, 80, 0, filter_eq_uint16_t },
   };
   
-  struct grouper_rule group_module_branch1[2] = {
-    { data->offsets.srcaddr, data->offsets.srcaddr, 0, RULE_EQ | RULE_NO | RULE_S2_32 | RULE_S1_32, NULL },
-    { data->offsets.dstaddr, data->offsets.dstaddr, 0, RULE_EQ | RULE_NO | RULE_S2_32 | RULE_S1_32, NULL },
-    //        { data->offsets.Last, data->offsets.First, 1, grouper_lt_uint32_t_rel }
-  };
   
+  /* array of grouper rules, with 2 groupers */
+  struct grouper_rule group_module_branch1[2] = {
+    
+    { data->offsets.srcaddr, data->offsets.srcaddr, 0, 
+      RULE_EQ | RULE_NO | RULE_S2_32 | RULE_S1_32, NULL },
+    
+    { data->offsets.dstaddr, data->offsets.dstaddr, 0, 
+      RULE_EQ | RULE_NO | RULE_S2_32 | RULE_S1_32, NULL },
+    
+    //{ data->offsets.Last, data->offsets.First, 1, grouper_lt_uint32_t_rel }
+  };  
+  
+
+  /* array of grouper aggregation rules, with 4 grouper aggrs */
   struct grouper_aggr group_aggr_branch1[4] = {
     { 0, data->offsets.srcaddr, aggr_static_uint32_t },
     { 0, data->offsets.dstaddr, aggr_static_uint32_t },
     { 0, data->offsets.dOctets, aggr_sum_uint32_t },
     { 0, data->offsets.tcp_flags, aggr_or_uint16_t }
   };
+
   
+  /* array of grouper filter rules, with 0 filters */
   struct gfilter_rule gfilter_branch1[0] = {
   };
   
+  
+  /* filling up the branch_info struct */
   binfos[0].branch_id = 0;
   binfos[0].data = data;
   binfos[0].filter_rules = filter_rules_branch1;
-  binfos[0].num_filter_rules = 0;
+  binfos[0].num_filter_rules = 1;
   binfos[0].group_modules = group_module_branch1;
   binfos[0].num_group_modules = 2;
   binfos[0].aggr = group_aggr_branch1;
@@ -259,26 +296,50 @@ main(int argc, char **argv) {
   binfos[0].gfilter_rules = gfilter_branch1;
   binfos[0].num_gfilter_rules = 0;
   
+ /* -----------------------------------------------------------------------*/
+  
+  
+  
+  
+  
+  
+  /* -----------------------------------------------------------------------*/  
+  /*    filter, grouper, grouper aggregation rules for branch 2             */
+  /* -----------------------------------------------------------------------*/  
+  
+
+  /* array of filter rules, with one filter */
   struct filter_rule filter_rules_branch2[1] = {
     { data->offsets.srcport, 80, 0, filter_eq_uint16_t },
   };
-  
+
+
+  /* array of grouper rules, with 2 groupers */
   struct grouper_rule group_module_branch2[2] = {
-    { data->offsets.srcaddr, data->offsets.srcaddr, 0, RULE_EQ | RULE_NO | RULE_S2_32 | RULE_S1_32, NULL },
-    { data->offsets.dstaddr, data->offsets.dstaddr, 0, RULE_EQ | RULE_NO | RULE_S2_32 | RULE_S1_32, NULL },
-    //        { data->offsets.Last, data->offsets.First, 1, grouper_lt_uint32_t_rel },
+    { data->offsets.srcaddr, data->offsets.srcaddr, 0, 
+      RULE_EQ | RULE_NO | RULE_S2_32 | RULE_S1_32, NULL },
+    { data->offsets.dstaddr, data->offsets.dstaddr, 0, 
+      RULE_EQ | RULE_NO | RULE_S2_32 | RULE_S1_32, NULL },
+    
+    //{ data->offsets.Last, data->offsets.First, 1, grouper_lt_uint32_t_rel },
   };
+
   
+  /* array of grouper aggregation rules, with 4 grouper aggrs */
   struct grouper_aggr group_aggr_branch2[4] = {
     { 0, data->offsets.srcaddr, aggr_static_uint32_t },
     { 0, data->offsets.dstaddr, aggr_static_uint32_t },
     { 0, data->offsets.dOctets, aggr_sum_uint32_t },
     { 0, data->offsets.tcp_flags, aggr_or_uint16_t }
   };
+
   
+  /* array of grouper filter rules, with 0 filters */
   struct gfilter_rule gfilter_branch2[0] = {
   };
+
   
+  /* filling up the branch_info struct */  
   binfos[1].branch_id = 1;
   binfos[1].data = data;
   binfos[1].filter_rules = filter_rules_branch2;
@@ -289,6 +350,13 @@ main(int argc, char **argv) {
   binfos[1].num_aggr = 4;
   binfos[1].gfilter_rules = gfilter_branch2;
   binfos[1].num_gfilter_rules = 0;
+
+  /* -----------------------------------------------------------------------*/
+  
+  
+  
+  
+  
   
   /*
    * fill the func attribute of grouper rules
