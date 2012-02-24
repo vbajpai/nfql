@@ -89,5 +89,6 @@ u_int32 *ft_records_get_extra_pkts(struct ft_data* data, int number);
 u_int8  *ft_records_get_marked_tos(struct ft_data* data, int number);
 
 void ft_close(struct ft_data* data);
+void flow_print_record(struct ft_data *, char *);
 
 #endif

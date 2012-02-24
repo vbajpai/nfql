@@ -48,33 +48,40 @@
 char ** 
 filter(struct ft_data *data, struct filter_rule *filter_rules, 
        int num_filter_rules, size_t *num_filtered_records) {
-  int i, j;
-  char **filtered_records;
   
-  *num_filtered_records = 0;
-  filtered_records = (char **)malloc(sizeof(char *)**num_filtered_records);
-  if (filtered_records == NULL) {
-    perror("malloc");
-    exit(EXIT_FAILURE);
-  }
+  int                         i, j;
+  char**                      filtered_records;
   
+  filtered_records = (char **)malloc((*num_filtered_records) * sizeof(char *));
+  if (filtered_records == NULL)
+    errExit("malloc");
+  
+  /* process each record */
   for (i = 0; i < data->num_records; i++) {
+    /* process each filter rule, for each record */
     for (j = 0; j < num_filter_rules; j++) {
-      if (!filter_rules[j].func(data->records[i], filter_rules[j].field_offset, filter_rules[j].value, filter_rules[j].delta))
+      /* run the comparator function of the filter rule on the record */
+      if (!filter_rules[j].func(data->records[i], 
+                                filter_rules[j].field_offset, 
+                                filter_rules[j].value, 
+                                filter_rules[j].delta))
         break;
     }
     
-    // break if a rule did not return true
+    /* if any rule is not satisfied, move on to another record */
     if (j < num_filter_rules)
       continue;
-    
-    (*num_filtered_records)++;
-    filtered_records = (char **)realloc(filtered_records, sizeof(char *)**num_filtered_records);
-    if (filtered_records == NULL) {
-      perror("malloc");
-      exit(EXIT_FAILURE);
+    /* else, increment the filter counter, and save this record */
+    else {      
+      (*num_filtered_records)++;
+      filtered_records = (char **)
+                         realloc(filtered_records,
+                                (*num_filtered_records)*sizeof(char *));
+      if (filtered_records == NULL)
+        errExit("malloc");
+      
+      filtered_records[*num_filtered_records-1] = data->records[i];
     }
-    filtered_records[*num_filtered_records-1] = data->records[i];
   }
   
   return filtered_records;
@@ -139,29 +146,55 @@ group_filter(struct group **groups, size_t num_groups,
 
 static void *
 branch_start(void *arg) {
-  struct branch_info *binfo = (struct branch_info *)arg;
   
-  char **filtered_records; /* temporary - are freed later */
-  size_t num_filtered_records;
-  struct group **groups; /* temporary - are freed later */
-  size_t num_groups;
-  struct group **filtered_groups; /* returned */
-  size_t num_filtered_groups; /* stored in binfo */
+  struct branch_info*         binfo = (struct branch_info *)arg;  
   
-  //if (binfo->branch_id == 1) return NULL;
+  /* filter stage variables */
+  char**                      filtered_records; /* temporary - are freed later */
+  size_t                      num_filtered_records = 0;
   
-  /*
-   * FILTER
-   */
+  /* grouper stage variables */
+  struct group**              groups; /* temporary - are freed later */
+  size_t                      num_groups;
   
-  filtered_records = filter(binfo->data, binfo->filter_rules, binfo->num_filter_rules, &num_filtered_records);
-  printf("\rnumber of filtered records: %zd\n", num_filtered_records);
+  /* group-filter stage variables */
+  struct group**              filtered_groups; /* returned */
+  size_t                      num_filtered_groups; /* stored in binfo */
   
-  /*
-   * GROUPER
-   */
+
   
-  groups = grouper(filtered_records, num_filtered_records, binfo->group_modules, binfo->num_group_modules, binfo->aggr, binfo->num_aggr, &num_groups);
+  
+  /* -----------------------------------------------------------------------*/  
+  /*                                filter                                  */
+  /* -----------------------------------------------------------------------*/  
+  
+  filtered_records = filter(binfo->data, 
+                            binfo->filter_rules, 
+                            binfo->num_filter_rules, 
+                            &num_filtered_records);
+  
+#ifdef DEBUGENGINE
+  binfo->filtered_records = filtered_records;
+  binfo->num_filtered_records = num_filtered_records;
+#endif
+
+  /* -----------------------------------------------------------------------*/
+  
+
+  
+  
+  
+  
+  
+  /* -----------------------------------------------------------------------*/  
+  /*                               grouper                                  */
+  /* -----------------------------------------------------------------------*/  
+  
+#ifdef GROUPER
+  
+  groups = grouper(filtered_records, num_filtered_records, 
+                   binfo->group_modules, binfo->num_group_modules, 
+                   binfo->aggr, binfo->num_aggr, &num_groups);
   free(filtered_records);
   printf("\nnumber of groups: %zd\n", num_groups);
   
@@ -171,11 +204,21 @@ branch_start(void *arg) {
     printf("%p\n", groups[i]);
   }
   
-  /*
-   * GROUPFILTER
-   */
+
+  /* -----------------------------------------------------------------------*/
   
-  filtered_groups = group_filter(groups, num_groups, binfo->gfilter_rules, binfo->num_gfilter_rules, &num_filtered_groups);
+
+  
+  
+  
+  /* -----------------------------------------------------------------------*/  
+  /*                            grouper-filter                              */
+  /* -----------------------------------------------------------------------*/  
+  
+  filtered_groups = group_filter(groups, num_groups, 
+                                 binfo->gfilter_rules, 
+                                 binfo->num_gfilter_rules, 
+                                 &num_filtered_groups);
   free(groups);
   printf("\rnumber of filtered groups: %zd\n", num_filtered_groups);
   
@@ -188,6 +231,10 @@ branch_start(void *arg) {
       exit(EXIT_FAILURE);
     }
   }
+
+  /* -----------------------------------------------------------------------*/
+  
+#endif
   
   pthread_exit(NULL);
 }
@@ -429,6 +476,22 @@ main(int argc, char **argv) {
   free(thread_attrs);
   free(binfos);
   
+#ifdef DEBUGENGINE
+
+  /* process each record */
+  for (int i = 0; i < num_threads; i++) {
+    
+    printf("\nNo. of Filtered Records: %zd\n", binfos[i].num_filtered_records);
+    
+    puts("\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n");
+    
+    for (int j = 0; j < binfos[i].num_filtered_records; j++) {
+      flow_print_record(binfos[i].data, binfos[i].filtered_records[j]);  
+    }
+  }  
+#endif
+
+  
   /* -----------------------------------------------------------------------*/    
   
   
@@ -436,12 +499,11 @@ main(int argc, char **argv) {
   
   
   
+#ifdef MERGERUNGROUPER  
   
-  
-  /*
-   * MERGER
-   */
-  
+  /* -----------------------------------------------------------------------*/  
+  /*                                 merger                                 */
+  /* -----------------------------------------------------------------------*/
   struct merger_rule mfilter[2] = {
     { 0, 0, 1, 1, 0, merger_eq },
     { 0, 2, 1, 2, 0, merger_lt },
@@ -459,12 +521,29 @@ main(int argc, char **argv) {
   group_tuples = merger(filtered_groups, num_filtered_groups, num_threads, mfilter, 2);
   
   free(group_tuples);
+
+  /* -----------------------------------------------------------------------*/    
   
-  /*
-   * UNGROUPER
-   */
   
+  
+  
+  
+  
+  
+  
+  
+  
+  /* -----------------------------------------------------------------------*/  
+  /*                                ungrouper                               */
+  /* -----------------------------------------------------------------------*/  
   // TODO: free group_collections at some point
+  /* -----------------------------------------------------------------------*/    
+  
+  
+#endif  
+  
+  
+  
   
   exit(EXIT_SUCCESS);
 }

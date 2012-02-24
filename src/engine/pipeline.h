@@ -44,6 +44,7 @@ struct flowquery {
  */
 
 struct branch_info {
+  
   /* have to be filled manually */
   int branch_id;
   struct ft_data *data;
@@ -55,6 +56,12 @@ struct branch_info {
   size_t num_aggr;
   struct gfilter_rule *gfilter_rules;
   size_t num_gfilter_rules;
+  
+#ifdef DEBUGENGINE
+  char** filtered_records;
+  size_t num_filtered_records;  
+#endif
+  
   /* will be filled by individual branches */
   struct group **filtered_groups;
   size_t num_filtered_groups;
