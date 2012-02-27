@@ -24,19 +24,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef flowy_engine_base_header_h
-#define flowy_engine_base_header_h
+#include "base.h"
 
-#include <sys/types.h> /* Type definitions used by many programs */
-#include <stdio.h> /* Standard I/O functions */
-#include <stdlib.h> /* EXIT_SUCCESS and EXIT_FAILURE constants */
-#include <errno.h> /* Declares errno and defines error constants */
-#include <string.h> /* Commonly used string-handling functions */
-#include <stdint.h>
-#include <stdbool.h>
-
-typedef enum { FALSE, TRUE } Boolean;
-
-#define DEBUGENGINE
-
-#endif
+Boolean debug;
+Boolean absolute;

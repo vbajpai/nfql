@@ -24,25 +24,20 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef flowy_engine_error_functions_h
-#define flowy_engine_error_functions_h
+#ifndef flowy_engine_base_h
+#define flowy_engine_base_h
 
-#include "base.h"
+#include <sys/types.h> /* Type definitions used by many programs */
+#include <stdio.h> /* Standard I/O functions */
+#include <stdlib.h> /* EXIT_SUCCESS and EXIT_FAILURE constants */
+#include <errno.h> /* Declares errno and defines error constants */
+#include <string.h> /* Commonly used string-handling functions */
+#include <stdint.h>
+#include <stdbool.h>
 
-#include <stdarg.h>
+typedef enum { FALSE, TRUE } Boolean;
 
-/* This macro stops 'gcc -Wall' complaining that "control
- * reaches end of non-void function" if we use the following
- * functions to terminate main() or some other non-void function. 
- */
-#ifdef __GNUC__
-  #define NORETURN __attribute__ ((__noreturn__)) 
-#else
-  #define NORETURN
-#endif
-
-void usageError(char *progName, char *msg, int opt);
-void usageErr(const char *format, ...) NORETURN;
-void errExit(const char *format, ...) NORETURN;
+extern Boolean debug;
+extern Boolean absolute;
 
 #endif

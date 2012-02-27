@@ -178,10 +178,10 @@ branch_start(void *arg) {
                             binfo->num_filter_rules, 
                             &num_filtered_records);
   
-#ifdef ABSOLUTE
-  binfo->filtered_records = filtered_records;
-  binfo->num_filtered_records = num_filtered_records;
-#endif
+  if(absolute){
+    binfo->filtered_records = filtered_records;
+    binfo->num_filtered_records = num_filtered_records;
+  }
 
   /* -----------------------------------------------------------------------*/
   
@@ -212,8 +212,6 @@ branch_start(void *arg) {
 
   /* -----------------------------------------------------------------------*/
   
-#else  
-  free(filtered_records);
 #endif
   
 
@@ -250,6 +248,10 @@ branch_start(void *arg) {
 int 
 main(int argc, char **argv) {
   
+  /* command line parsing variables */
+  int                         opt;
+  char*                       traceFile;
+  
   /* ftreader variables */
   struct ft_data*             data;
   int                         inputFd;
@@ -271,18 +273,35 @@ main(int argc, char **argv) {
 #endif
   
   
+  /* ----------------------------------------------*/  
+  /*         parsing command line arguments        */
+  /* ----------------------------------------------*/
+  
+  while ((opt = getopt(argc, argv, "da")) != -1) {
+    switch (opt) {
+      case 'd': debug = TRUE; break;
+      case 'a': absolute = TRUE; break;
+      case ':': exit(EXIT_FAILURE); 
+      case '?': exit(EXIT_FAILURE); 
+    }
+  }
+  if (debug)
+    absolute = TRUE;
+  
+  if (optind < argc)
+    traceFile = argv[optind];  
+  else
+    usageErr("%s $TRACE\n", argv[0], argv[0]);
   
   
-
   /* ----------------------------------------------*/  
   /*     reading the input trace into a struct     */
   /* ----------------------------------------------*/   
   
-  if (argc != 2 || strcmp(argv[1], "--help") == 0) 
-    usageErr("%s $TRACE\n", argv[0], argv[0]);  
-  inputFd = open(argv[1], O_RDONLY);
-  if (inputFd == -1)
-    errExit("open");  
+  inputFd = open(traceFile, O_RDONLY);
+  if (inputFd == -1){
+    errExit("open"); 
+  }
   data = ft_open(inputFd);  
   
   /* ----------------------------------------------*/
@@ -503,20 +522,20 @@ main(int argc, char **argv) {
   free(thread_attrs);
   free(binfos);
   
-#ifdef ABSOLUTE
-
-  /* process each record */
-  for (int i = 0; i < num_threads; i++) {
+  if(absolute){
     
-    printf("\nNo. of Filtered Records: %zd\n", binfos[i].num_filtered_records);
-    
-    puts("\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n");
-    
-    for (int j = 0; j < binfos[i].num_filtered_records; j++) {
-      flow_print_record(binfos[i].data, binfos[i].filtered_records[j]);  
+    /* process each record */
+    for (int i = 0; i < num_threads; i++) {
+      
+      printf("\nNo. of Filtered Records: %zd\n", binfos[i].num_filtered_records);
+      
+      puts("\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n");
+      
+      for (int j = 0; j < binfos[i].num_filtered_records; j++) {
+        flow_print_record(binfos[i].data, binfos[i].filtered_records[j]);  
+      }
     }
-  }  
-#endif
+  }
 
   
   /* -----------------------------------------------------------------------*/    

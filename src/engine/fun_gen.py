@@ -499,7 +499,7 @@ source.write(preamble)
 header.write("#ifndef flowy_engine_auto_switch_h\n")
 header.write("#define flowy_engine_auto_switch_h\n\n")
 
-header.write('#include "base_header.h"\n\n')
+header.write('#include "base.h"\n\n')
 source.write("#include \"auto_switch.h\"\n")
 
 source.write("rule_matches = false;\n")

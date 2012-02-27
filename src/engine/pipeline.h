@@ -27,7 +27,7 @@
 #ifndef flowy_engine_pipeline_h
 #define flowy_engine_pipeline_h
 
-#include "base_header.h"
+#include "base.h"
 
 /*
  * query definition
@@ -55,12 +55,10 @@ struct branch_info {
   struct grouper_aggr *aggr;
   size_t num_aggr;
   struct gfilter_rule *gfilter_rules;
-  size_t num_gfilter_rules;
-  
-#ifdef ABSOLUTE
+  size_t num_gfilter_rules; 
   char** filtered_records;
   size_t num_filtered_records;  
-#endif
+
   
   /* will be filled by individual branches */
   struct group **filtered_groups;

@@ -69,23 +69,23 @@ ft_open(int fd) {
    *
    */
   
-#ifdef DEBUGENGINE
+
+  if(debug){
   
-  /* print flow header */
-  ftio_header_print(&data->io, stdout, '#');  
-
-  puts("\n\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n\n");    
-#endif
-
+    /* print flow header */
+    ftio_header_print(&data->io, stdout, '#');  
+    
+    puts("\n\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n\n");
+  }
+  
   while ((record = ftio_read(&data->io)) != NULL) {
     data->num_records++;
     data->records = (char **)realloc(data->records, sizeof(char *)*data->num_records);
     data->records[data->num_records-1] = (char *)malloc(data->rec_size);
     memcpy(data->records[data->num_records-1], record, data->rec_size);
     
-#ifdef DEBUGENGINE    
+  if(debug)
     flow_print_record(data, record);
-#endif 
   }
   
   return data;

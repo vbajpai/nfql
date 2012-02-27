@@ -62,6 +62,15 @@ outputError(int err, Boolean flushStdout,
 }
 
 void 
+usageError(char *progName, char *msg, int opt)
+{
+  if (msg != NULL && opt != 0)
+    fprintf(stderr, "%s (-%c)\n", msg, opt);
+  usageErr("%s $TRACE\n", progName, progName);
+}
+
+
+void 
 usageErr(const char *format, ...) {
   
   va_list argList;
