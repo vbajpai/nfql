@@ -29,16 +29,14 @@
 
 #include "flowy.h"
 
-
-// TODO: allow OR in filters
-// TODO: allow grouping and merging with more than one module
-
-/*
+/* TODO
+ * TODO: allow OR in filters
+ * TODO: allow grouping and merging with more than one module
+ *
  * for bitwise operations the delta is the value with which the operation is
  * done as in: bitAND(flags, delta) = value
- */
-
-/*
+ *
+ *
  * specifying two record numbers and what fields to compare
  *
  * for allen operations, the offsets are the offsets of First and Last
@@ -251,6 +249,11 @@ main(int argc, char **argv) {
   /* command line parsing variables */
   int                         opt;
   char*                       traceFile;
+  static struct option longopts[] = {
+    { "debug",      no_argument,      NULL,           'd' },
+    { "absolute",   no_argument,      NULL,           'a' }
+  };
+
   
   /* ftreader variables */
   struct ft_data*             data;
@@ -273,11 +276,15 @@ main(int argc, char **argv) {
 #endif
   
   
+  
+  
+  
+  
   /* ----------------------------------------------*/  
   /*         parsing command line arguments        */
   /* ----------------------------------------------*/
   
-  while ((opt = getopt(argc, argv, "da")) != -1) {
+  while ((opt = getopt_long(argc, argv, "da", longopts, NULL)) != -1) {
     switch (opt) {
       case 'd': debug = TRUE; break;
       case 'a': absolute = TRUE; break;
@@ -292,6 +299,12 @@ main(int argc, char **argv) {
     traceFile = argv[optind];  
   else
     usageErr("%s $TRACE\n", argv[0], argv[0]);
+  /* ----------------------------------------------*/
+  
+  
+  
+  
+  
   
   
   /* ----------------------------------------------*/  
@@ -306,6 +319,7 @@ main(int argc, char **argv) {
   
   /* ----------------------------------------------*/
    
+  
   
   
   

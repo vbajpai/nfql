@@ -34,6 +34,7 @@
 #define flowy_engine_flowy_h
 
 #include <pthread.h>
+#include <getopt.h>
 
 #include "grouper_fptr.h"
 #include "merger_fptr.h"
