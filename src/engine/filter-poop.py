@@ -4,9 +4,9 @@ class FilterStatement:
   
   def __init__(self, name, value, datatype, delta, op):
     self.offset = {
-      'name': [name],
-      'value': [value],
-      'datatype': [datatype]
+      'name': name,
+      'value': value,
+      'datatype': datatype
     }
     
     self.delta = delta

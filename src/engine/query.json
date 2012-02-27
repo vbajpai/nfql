@@ -1,0 +1,9 @@
+{
+  "delta": 0, 
+  "op": "RULE_EQ", 
+  "offset": {
+    "datatype": "u_int16", 
+    "name": "dstport", 
+    "value": 80
+  }
+}
