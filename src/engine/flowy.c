@@ -154,13 +154,18 @@ branch_start(void *arg) {
   size_t                      num_filtered_records = 0;
   
   /* grouper stage variables */
+
+#ifdef GROUPER  
   struct group**              groups; /* temporary - are freed later */
   size_t                      num_groups;
+#endif
   
   /* group-filter stage variables */
+  
+#ifdef GROUPFILTER
   struct group**              filtered_groups; /* returned */
   size_t                      num_filtered_groups; /* stored in binfo */
-  
+#endif
 
   
   
@@ -207,9 +212,10 @@ branch_start(void *arg) {
 
   /* -----------------------------------------------------------------------*/
   
-
+#endif
   
   
+#ifdef GROUPFILTER
   
   /* -----------------------------------------------------------------------*/  
   /*                            grouper-filter                              */
@@ -242,16 +248,25 @@ branch_start(void *arg) {
 int 
 main(int argc, char **argv) {
   
+  /* ftreader variables */
   struct ft_data*             data;
   int                         inputFd;
+  
+  /* branch_info variables */
   int                         num_threads;
   int                         i, ret;
   pthread_t*                  thread_ids;
   pthread_attr_t*             thread_attrs;
   struct branch_info*         binfos;
+
+#ifdef GROUPFILTER  
   struct group***             filtered_groups;
   size_t*                     num_filtered_groups;
+#endif
+  
+#ifdef MERGER  
   struct group***             group_tuples;
+#endif
   
   
   
@@ -429,16 +444,20 @@ main(int argc, char **argv) {
   thread_attrs = (pthread_attr_t *)calloc(num_threads, sizeof(pthread_attr_t));
   if (thread_attrs == NULL)
     errExit("malloc");
-    
+  
+#ifdef GROUPFILTER
+  
   /* allocate space for an array of pointers to filtered groups */
   filtered_groups = (struct group ***)malloc(num_threads*sizeof(struct group **));
   if (filtered_groups == NULL)
     errExit("malloc");    
   num_filtered_groups = (size_t *)malloc(num_threads*sizeof(size_t));
   if (num_filtered_groups == NULL)
-    errExit("malloc");
-    
-    
+    errExit("malloc");  
+  
+#endif
+
+  
   for (i = 0; i < num_threads; i++) {
 
     /* initialize each thread attributes */
@@ -466,10 +485,16 @@ main(int argc, char **argv) {
     ret = pthread_join(thread_ids[i], NULL);
     if (ret != 0)
       errExit("pthread_join");
+
+#ifdef GROUPFILTER    
     
+    /* fetch the filtered groups */
     num_filtered_groups[i] = binfos[i].num_filtered_groups;
     filtered_groups[i] = binfos[i].filtered_groups;
-    printf("%zd\n", num_filtered_groups[i]);
+    printf("%zd\n", num_filtered_groups[i]);    
+    
+#endif
+    
   }
   
   free(thread_ids);
@@ -499,7 +524,7 @@ main(int argc, char **argv) {
   
   
   
-#ifdef MERGERUNGROUPER  
+#ifdef MERGER
   
   /* -----------------------------------------------------------------------*/  
   /*                                 merger                                 */
@@ -524,14 +549,14 @@ main(int argc, char **argv) {
 
   /* -----------------------------------------------------------------------*/    
   
+#endif  
   
   
   
   
   
   
-  
-  
+#ifdef UNGROUPER  
   
   /* -----------------------------------------------------------------------*/  
   /*                                ungrouper                               */
