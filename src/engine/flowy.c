@@ -534,7 +534,6 @@ main(int argc, char **argv) {
   
   free(thread_ids);
   free(thread_attrs);
-  free(binfos);
   
   if(absolute){
     
@@ -546,10 +545,14 @@ main(int argc, char **argv) {
       puts("\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n");
       
       for (int j = 0; j < binfos[i].num_filtered_records; j++) {
-        flow_print_record(binfos[i].data, binfos[i].filtered_records[j]);  
+        flow_print_record(binfos[i].data, binfos[i].filtered_records[j]);
       }
+      
+      free(binfos[i].filtered_records);
     }
   }
+  
+  free(binfos);
 
   
   /* -----------------------------------------------------------------------*/    

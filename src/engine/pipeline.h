@@ -55,7 +55,9 @@ struct branch_info {
   struct grouper_aggr *aggr;
   size_t num_aggr;
   struct gfilter_rule *gfilter_rules;
-  size_t num_gfilter_rules; 
+  size_t num_gfilter_rules;
+  
+  /* used with --absolute flag */
   char** filtered_records;
   size_t num_filtered_records;  
 
