@@ -423,10 +423,38 @@ source.write("#include \"auto_assign.h\"\n")
 
 source.write("""
 void assign_fptr(struct branch_info *binfos, int num_threads) {
-    int i, j;
-    for (i = 0; i < num_threads; i++) {
-        for (j = 0; j < binfos[i].num_group_modules; j++) {
-            switch (binfos[i].group_modules[j].op) {
+    for (int i = 0; i < num_threads; i++) {
+""")
+  
+
+# switch statement for the filter
+
+source.write("""
+
+        /* for loop for the filter */
+        for (int j = 0; j < binfos[i].num_filter_rules; j++) {
+          switch (binfos[i].filter_rules[j].op) {
+
+""")  
+  
+for op in 'RULE_EQ', 'RULE_NE', 'RULE_GT', 'RULE_LT', 'RULE_LE', 'RULE_GE':
+  for atype in 'RULE_S1_8', 'RULE_S1_16', 'RULE_S1_32', 'RULE_S1_64':
+    source.write("                case %s | %s:\n"%(op, atype))
+    source.write("                    binfos[i].filter_rules[j].func = filter_%s_%s;\n"%(                                                                                                     enum_map[op], enum_map[atype]))
+    source.write("                    break;\n")
+
+source.write("""
+            }
+        }
+""")
+  
+# switch statement for the grouper
+
+source.write("""
+  
+      /* for loop for the grouper */
+        for (int j = 0; j < binfos[i].num_group_modules; j++) {
+          switch (binfos[i].group_modules[j].op) {
 """)
 
 for op in 'RULE_EQ', 'RULE_NE', 'RULE_GT', 'RULE_LT', 'RULE_LE', 'RULE_GE':
@@ -499,7 +527,7 @@ source.write(preamble)
 header.write("#ifndef flowy_engine_auto_switch_h\n")
 header.write("#define flowy_engine_auto_switch_h\n\n")
 
-header.write('#include "base.h"\n\n')
+header.write('#include "base_header.h"\n\n')
 source.write("#include \"auto_switch.h\"\n")
 
 source.write("rule_matches = false;\n")

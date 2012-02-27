@@ -350,7 +350,8 @@ main(int argc, char **argv) {
   
   /* array of filter rules, with one filter */
   struct filter_rule filter_rules_branch1[1] = {
-    { data->offsets.dstport, 80, 0, filter_eq_uint16_t },
+      { data->offsets.dstport, 80, 0,
+        RULE_EQ | RULE_S1_16, NULL},
   };
   
   
@@ -407,7 +408,8 @@ main(int argc, char **argv) {
 
   /* array of filter rules, with one filter */
   struct filter_rule filter_rules_branch2[1] = {
-    { data->offsets.srcport, 80, 0, filter_eq_uint16_t },
+      { data->offsets.srcport, 80, 0,
+        RULE_EQ | RULE_S1_16, NULL},    
   };
 
 
