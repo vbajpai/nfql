@@ -57,7 +57,7 @@ struct branch_info {
   struct gfilter_rule *gfilter_rules;
   size_t num_gfilter_rules;
   
-#ifdef DEBUGENGINE
+#ifdef ABSOLUTE
   char** filtered_records;
   size_t num_filtered_records;  
 #endif

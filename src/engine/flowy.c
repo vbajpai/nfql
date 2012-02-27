@@ -178,7 +178,7 @@ branch_start(void *arg) {
                             binfo->num_filter_rules, 
                             &num_filtered_records);
   
-#ifdef DEBUGENGINE
+#ifdef ABSOLUTE
   binfo->filtered_records = filtered_records;
   binfo->num_filtered_records = num_filtered_records;
 #endif
@@ -212,9 +212,11 @@ branch_start(void *arg) {
 
   /* -----------------------------------------------------------------------*/
   
+#else  
+  free(filtered_records);
 #endif
   
-  
+
 #ifdef GROUPFILTER
   
   /* -----------------------------------------------------------------------*/  
@@ -501,7 +503,7 @@ main(int argc, char **argv) {
   free(thread_attrs);
   free(binfos);
   
-#ifdef DEBUGENGINE
+#ifdef ABSOLUTE
 
   /* process each record */
   for (int i = 0; i < num_threads; i++) {
