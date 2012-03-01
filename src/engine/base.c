@@ -26,5 +26,5 @@
 
 #include "base.h"
 
-Boolean debug;
-Boolean absolute;
+bool debug;
+bool absolute;

@@ -35,11 +35,27 @@
 
 #include <pthread.h>
 #include <getopt.h>
+#include <json/json.h>
+#include <sys/stat.h>
+#include <sys/mman.h>
+
 
 #include "grouper_fptr.h"
 #include "merger_fptr.h"
 #include "auto_assign.h"
 #include "error_functions.h"
 #include "ftreader.h"
+
+struct filter_rules_params{
+  uint64_t delta;
+  const char* op;
+  struct filter_offset* off;
+};
+
+struct filter_offset{
+  const char* name;
+  uint64_t value;
+  const char* datatype;
+};
 
 #endif

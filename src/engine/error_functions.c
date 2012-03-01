@@ -45,7 +45,7 @@ terminate() {
 }
 
 static void
-outputError(int err, Boolean flushStdout,
+outputError(int err, bool flushStdout,
             const char *format, va_list ap) {
 
   #define BUF_SIZE 500
@@ -91,7 +91,7 @@ errExit(const char *format, ...) {
   va_list argList;
   
   va_start(argList, format);
-  outputError(errno, TRUE, format, argList); 
+  outputError(errno, true, format, argList); 
   va_end(argList);
   
   terminate();

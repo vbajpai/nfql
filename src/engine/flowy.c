@@ -247,32 +247,41 @@ int
 main(int argc, char **argv) {
   
   /* command line parsing variables */
-  int                         opt;
-  char*                       traceFile;
-  static struct option longopts[] = {
+  int                                 opt;
+  char*                               trace_filename;
+  char*                               query_filename;
+  static struct option                longopts[] = {
     { "debug",      no_argument,      NULL,           'd' },
     { "absolute",   no_argument,      NULL,           'a' }
   };
 
   
   /* ftreader variables */
-  struct ft_data*             data;
-  int                         inputFd;
+  struct ft_data*                     trace_data;
+  int                                 fsock;
+  
+  /* json parser variables */
+  char*                               query_mmap_data;
+  struct stat                         sb;
+  struct json_object*                 query_json;
+  struct json_object*                 filter_offset_json;  
+  struct filter_offset*               filter_offset;
+  struct filter_rules_params*         filter_rules_params;
   
   /* branch_info variables */
-  int                         num_threads;
-  int                         i, ret;
-  pthread_t*                  thread_ids;
-  pthread_attr_t*             thread_attrs;
-  struct branch_info*         binfos;
+  int                                 num_threads;
+  int                                 i, ret;
+  pthread_t*                          thread_ids;
+  pthread_attr_t*                     thread_attrs;
+  struct branch_info*                 binfos;
 
 #ifdef GROUPFILTER  
-  struct group***             filtered_groups;
-  size_t*                     num_filtered_groups;
+  struct group***                     filtered_groups;
+  size_t*                             num_filtered_groups;
 #endif
   
 #ifdef MERGER  
-  struct group***             group_tuples;
+  struct group***                     group_tuples;
 #endif
   
   
@@ -295,10 +304,13 @@ main(int argc, char **argv) {
   if (debug)
     absolute = TRUE;
   
-  if (optind < argc)
-    traceFile = argv[optind];  
-  else
-    usageErr("%s $TRACE\n", argv[0], argv[0]);
+  if (argc != optind + 2)
+    usageErr("%s $TRACE $QUERY\n", argv[0], argv[0]);
+  else {
+    trace_filename = argv[optind];
+    query_filename = argv[optind+1];
+  }
+
   /* ----------------------------------------------*/
   
   
@@ -311,13 +323,76 @@ main(int argc, char **argv) {
   /*     reading the input trace into a struct     */
   /* ----------------------------------------------*/   
   
-  inputFd = open(traceFile, O_RDONLY);
-  if (inputFd == -1){
+  fsock = open(trace_filename, O_RDONLY);
+  if (fsock == -1)
     errExit("open"); 
-  }
-  data = ft_open(inputFd);  
+  trace_data = ft_open(fsock);
+  if (close(fsock) == -1)
+    errExit("close");
   
   /* ----------------------------------------------*/
+  
+  
+  
+  
+  
+  
+  
+  
+  /* ----------------------------------------------*/  
+  /*     reading the input query into a mmap       */
+  /* ----------------------------------------------*/    
+  
+  fsock = open(query_filename, O_RDONLY);
+  if (fsock == -1)
+    errExit("open");
+  if (fstat(fsock, &sb) == -1)
+    errExit("fstat");
+  query_mmap_data = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fsock, 0); 
+  if (query_mmap_data == MAP_FAILED)
+    errExit("mmap");
+  if (close(fsock) == -1)
+    errExit("close");
+  
+  /* ----------------------------------------------*/
+  
+  
+  
+  
+  
+  
+  
+  /* ----------------------------------------------*/  
+  /*        parse the json into a struct           */
+  /* ----------------------------------------------*/   
+
+  filter_rules_params = calloc(1, sizeof(filter_rules_params));
+  filter_offset = calloc(1, sizeof(filter_offset));
+  filter_rules_params->off = filter_offset; 
+  
+  query_json = json_tokener_parse(query_mmap_data);
+  filter_rules_params->delta = 
+  json_object_get_int(json_object_object_get(query_json, "delta"));
+  filter_rules_params->op = 
+  json_object_get_string(json_object_object_get(query_json, "op"));  
+  filter_offset_json = 
+  json_object_object_get(query_json, "offset");
+  filter_rules_params->off->name = 
+  json_object_get_string(json_object_object_get(filter_offset_json, "name"));  
+  filter_rules_params->off->value = 
+  json_object_get_int(json_object_object_get(filter_offset_json, "value"));
+  filter_rules_params->off->datatype = 
+  json_object_get_string(json_object_object_get(filter_offset_json, "datatype"));
+
+  json_object_object_del(filter_offset_json, "offset"); 
+  json_object_object_del(query_json, "");  
+  if (munmap(query_mmap_data, sb.st_size) == -1)
+    errExit("munmap");
+  
+  /* ----------------------------------------------*/ 
+  
+  
+  
    
   
   
@@ -350,18 +425,22 @@ main(int argc, char **argv) {
   
   /* array of filter rules, with one filter */
   struct filter_rule filter_rules_branch1[1] = {
-      { data->offsets.dstport, 80, 0,
-        RULE_EQ | RULE_S1_16, NULL},
+      { trace_data->offsets.dstport, 
+        filter_rules_params->off->value, 
+        filter_rules_params->delta,
+        RULE_EQ | RULE_S1_16, 
+        NULL
+      },
   };
   
   
   /* array of grouper rules, with 2 groupers */
   struct grouper_rule group_module_branch1[2] = {
     
-    { data->offsets.srcaddr, data->offsets.srcaddr, 0, 
+    { trace_data->offsets.srcaddr, trace_data->offsets.srcaddr, 0, 
       RULE_EQ | RULE_NO | RULE_S2_32 | RULE_S1_32, NULL },
     
-    { data->offsets.dstaddr, data->offsets.dstaddr, 0, 
+    { trace_data->offsets.dstaddr, trace_data->offsets.dstaddr, 0, 
       RULE_EQ | RULE_NO | RULE_S2_32 | RULE_S1_32, NULL },
     
     //{ data->offsets.Last, data->offsets.First, 1, grouper_lt_uint32_t_rel }
@@ -370,10 +449,10 @@ main(int argc, char **argv) {
 
   /* array of grouper aggregation rules, with 4 grouper aggrs */
   struct grouper_aggr group_aggr_branch1[4] = {
-    { 0, data->offsets.srcaddr, aggr_static_uint32_t },
-    { 0, data->offsets.dstaddr, aggr_static_uint32_t },
-    { 0, data->offsets.dOctets, aggr_sum_uint32_t },
-    { 0, data->offsets.tcp_flags, aggr_or_uint16_t }
+    { 0, trace_data->offsets.srcaddr, aggr_static_uint32_t },
+    { 0, trace_data->offsets.dstaddr, aggr_static_uint32_t },
+    { 0, trace_data->offsets.dOctets, aggr_sum_uint32_t },
+    { 0, trace_data->offsets.tcp_flags, aggr_or_uint16_t }
   };
 
   
@@ -384,7 +463,7 @@ main(int argc, char **argv) {
   
   /* filling up the branch_info struct */
   binfos[0].branch_id = 0;
-  binfos[0].data = data;
+  binfos[0].data = trace_data;
   binfos[0].filter_rules = filter_rules_branch1;
   binfos[0].num_filter_rules = 1;
   binfos[0].group_modules = group_module_branch1;
@@ -405,19 +484,21 @@ main(int argc, char **argv) {
   /*    filter, grouper, grouper aggregation rules for branch 2             */
   /* -----------------------------------------------------------------------*/  
   
-
   /* array of filter rules, with one filter */
   struct filter_rule filter_rules_branch2[1] = {
-      { data->offsets.srcport, 80, 0,
-        RULE_EQ | RULE_S1_16, NULL},    
+      { trace_data->offsets.srcport,
+        filter_rules_params->off->value, 
+        filter_rules_params->delta,
+        RULE_EQ | RULE_S1_16, 
+        NULL},    
   };
 
 
   /* array of grouper rules, with 2 groupers */
   struct grouper_rule group_module_branch2[2] = {
-    { data->offsets.srcaddr, data->offsets.srcaddr, 0, 
+    { trace_data->offsets.srcaddr, trace_data->offsets.srcaddr, 0, 
       RULE_EQ | RULE_NO | RULE_S2_32 | RULE_S1_32, NULL },
-    { data->offsets.dstaddr, data->offsets.dstaddr, 0, 
+    { trace_data->offsets.dstaddr, trace_data->offsets.dstaddr, 0, 
       RULE_EQ | RULE_NO | RULE_S2_32 | RULE_S1_32, NULL },
     
     //{ data->offsets.Last, data->offsets.First, 1, grouper_lt_uint32_t_rel },
@@ -426,10 +507,10 @@ main(int argc, char **argv) {
   
   /* array of grouper aggregation rules, with 4 grouper aggrs */
   struct grouper_aggr group_aggr_branch2[4] = {
-    { 0, data->offsets.srcaddr, aggr_static_uint32_t },
-    { 0, data->offsets.dstaddr, aggr_static_uint32_t },
-    { 0, data->offsets.dOctets, aggr_sum_uint32_t },
-    { 0, data->offsets.tcp_flags, aggr_or_uint16_t }
+    { 0, trace_data->offsets.srcaddr, aggr_static_uint32_t },
+    { 0, trace_data->offsets.dstaddr, aggr_static_uint32_t },
+    { 0, trace_data->offsets.dOctets, aggr_sum_uint32_t },
+    { 0, trace_data->offsets.tcp_flags, aggr_or_uint16_t }
   };
 
   
@@ -440,7 +521,7 @@ main(int argc, char **argv) {
   
   /* filling up the branch_info struct */  
   binfos[1].branch_id = 1;
-  binfos[1].data = data;
+  binfos[1].data = trace_data;
   binfos[1].filter_rules = filter_rules_branch2;
   binfos[1].num_filter_rules = 1;
   binfos[1].group_modules = group_module_branch2;
@@ -454,6 +535,10 @@ main(int argc, char **argv) {
   
   
   
+  /* deallocate the query buffers */
+  free(filter_offset);
+  free(filter_rules_params);
+
   
   
   

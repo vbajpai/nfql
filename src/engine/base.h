@@ -35,9 +35,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-typedef enum { FALSE, TRUE } Boolean;
-
-extern Boolean debug;
-extern Boolean absolute;
+extern bool debug;
+extern bool absolute;
 
 #endif
