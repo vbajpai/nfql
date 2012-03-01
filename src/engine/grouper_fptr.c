@@ -29,66 +29,12 @@
 
 #include "grouper_fptr.h"
 
-#define tree_item(size) \
-struct tree_item_##size { \
-size value; \
-char ***ptr; \
-};
-
-tree_item(uint8_t);
-tree_item(uint16_t);
-tree_item(uint32_t);
-tree_item(uint64_t);
-
-#define comp(size) \
-int comp_##size(void *thunk, const void *e1, const void *e2) \
-{ \
-size x, y; \
-x = *(size *)(**(char ***)e1+*(size_t *)thunk); \
-y = *(size *)(**(char ***)e2+*(size_t *)thunk); \
-return (x > y) - (y > x); \
-}
-
-comp(uint8_t);
-comp(uint16_t);
-comp(uint32_t);
-comp(uint64_t);
-
-#define comp_p(size) \
-int comp_##size##_p(void *thunk, const void *e1, const void *e2) \
-{ \
-size x, y; \
-x = *(size *)((char *)e1+*(size_t *)thunk); \
-y = ((struct tree_item_uint32_t *)e2)->value; \
-return (x > y) - (y > x); \
-}
-
-comp_p(uint8_t);
-comp_p(uint16_t);
-comp_p(uint32_t);
-comp_p(uint64_t);
-
-typedef enum { UINT8_T, UINT16_T, UINT32_T, UINT64_T } int_sizes;
-
-struct uniq_records_tree {
-  int_sizes type;
-  union {
-    struct tree_item_uint8_t *uniq_records8;
-    struct tree_item_uint16_t *uniq_records16;
-    struct tree_item_uint32_t *uniq_records32;
-    struct tree_item_uint64_t *uniq_records64;
-  }tree_item;
-  size_t num_uniq_records;
-  char ***sorted_records;
-};
-
 /*
  * variables are named "tree" but there are no trees, just arrays. But those
  * arrays are used to binary search them in a "tree-like" fashion and hence
  * the naming
  *
  */
-
 struct uniq_records_tree *
 build_record_trees(char **filtered_records, 
                    size_t num_filtered_records, 
@@ -114,25 +60,38 @@ build_record_trees(char **filtered_records,
           (void *)&group_modules[0].field_offset2,
           comp_uint32_t);
   
-  uniq_records = (struct tree_item_uint32_t *)malloc(num_filtered_records*sizeof(struct tree_item_uint32_t));
-  uniq_records[0].value = *(uint32_t *)(*sorted_records[0] + group_modules[0].field_offset2);
+  uniq_records = (struct tree_item_uint32_t *)
+                 malloc(num_filtered_records*sizeof(struct tree_item_uint32_t));
+  if (uniq_records == NULL)
+    errExit("malloc");  
+  
+  uniq_records[0].value = *(uint32_t *)
+                          (*sorted_records[0] + group_modules[0].field_offset2);
   uniq_records[0].ptr = &sorted_records[0];
   num_uniq_records = 1;
   for (i = 0; i < num_filtered_records; i++) {
-    if (*(uint32_t *)(*sorted_records[i] + group_modules[0].field_offset2)
-        != uniq_records[num_uniq_records-1].value) {
+    if (*(uint32_t *)(*sorted_records[i] + 
+        group_modules[0].field_offset2) != 
+        uniq_records[num_uniq_records-1].value) {
       
-      uniq_records[num_uniq_records].value = *(uint32_t *)(*sorted_records[i] + group_modules[0].field_offset2);
+      uniq_records[num_uniq_records].value = *(uint32_t *)
+                                              (*sorted_records[i] + 
+                                               group_modules[0].field_offset2);
       uniq_records[num_uniq_records].ptr = &sorted_records[i];
       num_uniq_records++;
     }
   }
-  uniq_records = (struct tree_item_uint32_t *)realloc(uniq_records, num_uniq_records*sizeof(struct tree_item_uint32_t));
+  uniq_records = (struct tree_item_uint32_t *)
+                  realloc(uniq_records, 
+                          num_uniq_records*sizeof(struct tree_item_uint32_t));
+  if (uniq_records == NULL)
+    errExit("realloc");
   
   // mark the end of sorted records
   sorted_records[num_filtered_records] = NULL;
   
-  uniq_records_trees = (struct uniq_records_tree *)malloc(1 * sizeof(struct uniq_records_tree));
+  uniq_records_trees = (struct uniq_records_tree *)
+                        malloc(1 * sizeof(struct uniq_records_tree));
   if (uniq_records_trees == NULL)
     errExit("malloc");
   
@@ -155,7 +114,6 @@ grouper(char **filtered_records,
   
   struct group**                      groups;
   struct group*                       newgroup;
-  int                                 j, k;
   struct uniq_records_tree*           uniq_records_trees;
   
   groups = (struct group **)malloc(sizeof(struct group *));
@@ -187,14 +145,18 @@ grouper(char **filtered_records,
                                             group_modules);    
     for (int i = 0; i < num_filtered_records; i++) {
       if ((i&1023)==0) {
-        printf("\r%0.2f%% %d/%zd groups: %zd", (i*100.0f)/num_filtered_records, i, num_filtered_records, *num_groups);
+        printf("\r%0.2f%% %d/%zd groups: %zd", (i*100.0f)/num_filtered_records, 
+                                                i, num_filtered_records, 
+                                                *num_groups);
         fflush(stdout);
-      }      
+      }
       if (filtered_records[i] == NULL)
         continue;
       
-      (*num_groups)++;
-      groups = (struct group **)realloc(groups, sizeof(struct group*)**num_groups);
+      (*num_groups) += 1;
+      
+      groups = (struct group **)
+               realloc(groups, sizeof(struct group*)**num_groups);
       if (newgroup == NULL)
         errExit("realloc");
       newgroup = (struct group *)malloc(sizeof(struct group));
@@ -219,8 +181,8 @@ grouper(char **filtered_records,
                         (void *)uniq_records_trees[0].tree_item.uniq_records32,
                         uniq_records_trees[0].num_uniq_records,
                         sizeof(struct tree_item_uint32_t),
-                        comp_uint32_t_p,
-                        (void *)&group_modules[0].field_offset1
+                        (void *)&group_modules[0].field_offset1,
+                        comp_uint32_t_p
                        ))->ptr;
       
       // iterate until terminating NULL in sorted_records
@@ -234,6 +196,7 @@ grouper(char **filtered_records,
           continue;
         
         // check all module filter rules for those two records
+        int k;
         for (k = 0; k < num_group_modules; k++) {
           if (!group_modules[k].func(newgroup, 
                                      group_modules[k].field_offset1,
@@ -251,15 +214,18 @@ grouper(char **filtered_records,
         if (k < num_group_modules)
           continue;
         
-        newgroup->num_members++;
+        newgroup->num_members += 1;
+        
         newgroup->members = (char **)
                             realloc(newgroup->members, 
                                     sizeof(char *)*newgroup->num_members);
+        
         // assign entry in filtered_records to group
         newgroup->members[newgroup->num_members-1] = **record_iter; 
         **record_iter = NULL; // set entry in filtered_records to NULL
       }
       
+      free(filtered_records[i]);
       filtered_records[i] = NULL;
     }
     
@@ -276,7 +242,7 @@ grouper(char **filtered_records,
     if (groups[i]->aggr == NULL)
       errExit("malloc");
     
-    for (j = 0; j < num_group_aggr; j++)
+    for (int j = 0; j < num_group_aggr; j++)
       groups[i]->aggr[j] = aggr[j].func(groups[i]->members, 
                                         groups[i]->num_members, 
                                         aggr[j].field_offset);
@@ -289,3 +255,33 @@ grouper(char **filtered_records,
   
   return groups;
 }
+
+
+
+#define comp(size) \
+int comp_##size(void *thunk, const void *e1, const void *e2) \
+{ \
+size x, y; \
+x = *(size *)(**(char ***)e1+*(size_t *)thunk); \
+y = *(size *)(**(char ***)e2+*(size_t *)thunk); \
+return (x > y) - (y > x); \
+}
+
+comp(uint8_t);
+comp(uint16_t);
+comp(uint32_t);
+comp(uint64_t);
+
+#define comp_p(size) \
+int comp_##size##_p(void *thunk, const void *e1, const void *e2) \
+{ \
+size x, y; \
+x = *(size *)((char *)e1+*(size_t *)thunk); \
+y = ((struct tree_item_uint32_t *)e2)->value; \
+return (x > y) - (y > x); \
+}
+
+comp_p(uint8_t);
+comp_p(uint16_t);
+comp_p(uint32_t);
+comp_p(uint64_t);

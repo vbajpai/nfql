@@ -38,7 +38,7 @@ bsearch_r(const void *key,
           size_t nmemb, 
           size_t size,
           void *thunk,
-          int (*compar) (const void *, const void *, void *thunk)) {
+          int (*compar) (void *thunk, const void *, const void *)) {
   size_t l, u, idx;
   const void *p;
   int comparison;
@@ -48,7 +48,7 @@ bsearch_r(const void *key,
   while (l < u) {
     idx = (l + u) / 2;
     p = (void *) (((const char *) base) + (idx * size));
-    comparison = (*compar) (key, p, thunk);
+    comparison = (*compar) (thunk, key, p);
     if (comparison < 0) {
       u = idx;
     } else if (comparison > 0) {

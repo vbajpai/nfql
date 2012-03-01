@@ -57,7 +57,7 @@ struct branch_info {
   struct gfilter_rule *gfilter_rules;
   size_t num_gfilter_rules;
   
-  /* used with --absolute flag */
+  /* used with --debug flag */
   char** filtered_records;
   size_t num_filtered_records;  
 

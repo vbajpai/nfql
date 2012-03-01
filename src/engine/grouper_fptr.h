@@ -34,6 +34,32 @@
 struct grouper_rule;
 struct grouper_aggr;
 
+#define tree_item(size) \
+struct tree_item_##size { \
+size value; \
+char ***ptr; \
+};
+
+tree_item(uint8_t);
+tree_item(uint16_t);
+tree_item(uint32_t);
+tree_item(uint64_t);
+
+typedef enum { UINT8_T, UINT16_T, UINT32_T, UINT64_T } int_sizes;
+
+struct uniq_records_tree {
+  int_sizes type;
+  union {
+    struct tree_item_uint8_t *uniq_records8;
+    struct tree_item_uint16_t *uniq_records16;
+    struct tree_item_uint32_t *uniq_records32;
+    struct tree_item_uint64_t *uniq_records64;
+  }tree_item;
+  size_t num_uniq_records;
+  char ***sorted_records;
+};
+
+
 struct uniq_records_tree *
 build_record_trees(char **filtered_records, size_t num_filtered_records,
                    struct grouper_rule *group_modules);

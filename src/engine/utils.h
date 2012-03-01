@@ -57,7 +57,7 @@ bsearch_r(const void *key,
           size_t nmemb, 
           size_t size,
           void *thunk,
-          int (*compar) (const void *, const void *, void *thunk));
+          int (*compar) (void *thunk, const void *, const void *));
 
 int 
 comp_uint8_t(void *thunk, const void *e1, const void *e2);

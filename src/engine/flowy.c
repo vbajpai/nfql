@@ -47,7 +47,6 @@ char **
 filter(struct ft_data *data, struct filter_rule *filter_rules, 
        int num_filter_rules, size_t *num_filtered_records) {
   
-  int                         i, j;
   char**                      filtered_records;
   
   filtered_records = (char **)malloc((*num_filtered_records) * sizeof(char *));
@@ -55,8 +54,9 @@ filter(struct ft_data *data, struct filter_rule *filter_rules,
     errExit("malloc");
   
   /* process each record */
-  for (i = 0; i < data->num_records; i++) {
+  for (int i = 0; i < data->num_records; i++) {
     /* process each filter rule, for each record */
+    int j = 0;
     for (j = 0; j < num_filter_rules; j++) {
       /* run the comparator function of the filter rule on the record */
       if (!filter_rules[j].func(data->records[i], 
@@ -176,10 +176,7 @@ branch_start(void *arg) {
                             binfo->num_filter_rules, 
                             &num_filtered_records);
   
-  if(absolute){
-    binfo->filtered_records = filtered_records;
-    binfo->num_filtered_records = num_filtered_records;
-  }
+
 
   /* -----------------------------------------------------------------------*/
   
@@ -199,8 +196,7 @@ branch_start(void *arg) {
                    binfo->group_modules, binfo->num_group_modules, 
                    binfo->aggr, binfo->num_aggr, &num_groups);
   
-  if(!absolute)
-    free(filtered_records);
+  free(filtered_records);
   
   printf("\nnumber of groups: %zd\n", num_groups);
   
@@ -304,8 +300,6 @@ main(int argc, char **argv) {
       case '?': exit(EXIT_FAILURE); 
     }
   }
-  if (debug)
-    absolute = TRUE;
   
   if (argc != optind + 2)
     usageErr("%s $TRACE $QUERY\n", argv[0], argv[0]);
@@ -631,7 +625,7 @@ main(int argc, char **argv) {
   free(thread_ids);
   free(thread_attrs);
   
-  if(absolute){
+  if(debug){
     
     /* process each record */
     for (int i = 0; i < num_threads; i++) {
