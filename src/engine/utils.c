@@ -33,8 +33,12 @@
  * without global variables - in our case, we need to pass the data offset
  */
 void *
-bsearch_r(const void *key, const void *base, size_t nmemb, size_t size,
-          int (*compar) (const void *, const void *, void *thunk), void *thunk) {
+bsearch_r(const void *key, 
+          const void *base, 
+          size_t nmemb, 
+          size_t size,
+          void *thunk,
+          int (*compar) (const void *, const void *, void *thunk)) {
   size_t l, u, idx;
   const void *p;
   int comparison;

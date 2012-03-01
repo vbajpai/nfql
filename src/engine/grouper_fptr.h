@@ -29,6 +29,7 @@
 
 #include "pipeline.h"
 #include "utils.h"
+#include "error_functions.h"
 
 struct grouper_rule;
 struct grouper_aggr;

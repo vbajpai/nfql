@@ -52,32 +52,36 @@ void
 iter_destroy(struct permut_iter *iter);
 
 void *
-bsearch_r(const void *key, const void *base, size_t nmemb, size_t size, 
-          int (*compar) (const void *, const void *, void *thunk), void *thunk);
+bsearch_r(const void *key, 
+          const void *base, 
+          size_t nmemb, 
+          size_t size,
+          void *thunk,
+          int (*compar) (const void *, const void *, void *thunk));
 
 int 
-comp_uint8_t(const void *e1, const void *e2, void *thunk);
+comp_uint8_t(void *thunk, const void *e1, const void *e2);
 
 int 
-comp_uint16_t(const void *e1, const void *e2, void *thunk);
+comp_uint16_t(void *thunk, const void *e1, const void *e2);
 
 int 
-comp_uint32_t(const void *e1, const void *e2, void *thunk);
+comp_uint32_t(void *thunk, const void *e1, const void *e2);
 
 int 
-comp_uint64_t(const void *e1, const void *e2, void *thunk);
+comp_uint64_t(void *thunk, const void *e1, const void *e2);
 
 int 
-comp_uint8_t_p(const void *e1, const void *e2, void *thunk);
+comp_uint8_t_p(void *thunk, const void *e1, const void *e2);
 
 int 
-comp_uint16_t_p(const void *e1, const void *e2, void *thunk);
+comp_uint16_t_p(void *thunk, const void *e1, const void *e2);
 
 int 
-comp_uint32_t_p(const void *e1, const void *e2, void *thunk);
+comp_uint32_t_p(void *thunk, const void *e1, const void *e2);
 
 int 
-comp_uint64_t_p(const void *e1, const void *e2, void *thunk);
+comp_uint64_t_p(void *thunk, const void *e1, const void *e2);
 
 struct bsearch_handle *
 tree_create_uint8_t(char **records, size_t num_records, 
