@@ -155,14 +155,14 @@ branch_start(void *arg) {
 
 #ifdef GROUPER  
   struct group**              groups; /* temporary - are freed later */
-  size_t                      num_groups;
+  size_t                      num_groups = 0;
 #endif
   
   /* group-filter stage variables */
   
 #ifdef GROUPFILTER
   struct group**              filtered_groups; /* returned */
-  size_t                      num_filtered_groups; /* stored in binfo */
+  size_t                      num_filtered_groups = 0; /* stored in binfo */
 #endif
 
   
@@ -198,7 +198,10 @@ branch_start(void *arg) {
   groups = grouper(filtered_records, num_filtered_records, 
                    binfo->group_modules, binfo->num_group_modules, 
                    binfo->aggr, binfo->num_aggr, &num_groups);
-  free(filtered_records);
+  
+  if(!absolute)
+    free(filtered_records);
+  
   printf("\nnumber of groups: %zd\n", num_groups);
   
   int i;
@@ -437,6 +440,7 @@ main(int argc, char **argv) {
   /* array of grouper rules, with 2 groupers */
   struct grouper_rule group_module_branch1[2] = {
     
+    // shouldn't this be _16 ?
     { trace_data->offsets.srcaddr, trace_data->offsets.srcaddr, 0, 
       RULE_EQ | RULE_NO | RULE_S2_32 | RULE_S1_32, NULL },
     
@@ -449,6 +453,8 @@ main(int argc, char **argv) {
 
   /* array of grouper aggregation rules, with 4 grouper aggrs */
   struct grouper_aggr group_aggr_branch1[4] = {
+    
+    // shouldn't the first field be -1 as indicated?
     { 0, trace_data->offsets.srcaddr, aggr_static_uint32_t },
     { 0, trace_data->offsets.dstaddr, aggr_static_uint32_t },
     { 0, trace_data->offsets.dOctets, aggr_sum_uint32_t },
@@ -543,10 +549,13 @@ main(int argc, char **argv) {
   
   
   /* -----------------------------------------------------------------------*/  
-  /*            fills grouper_rule.func from the grouper_rule.op            */
-  /*               by falling through a huge switch statement               */
+  /*            fills filter_rule.func and grouper_rule.func                */
+  /*                        from the grouper_rule.op                        */
+  /*             by falling through a huge switch statement                 */
   /* -----------------------------------------------------------------------*/    
+  
   assign_fptr(binfos, num_threads);
+  
   /* -----------------------------------------------------------------------*/
 
   

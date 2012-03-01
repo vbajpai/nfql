@@ -77,7 +77,7 @@ struct uniq_records_tree {
     struct tree_item_uint16_t *uniq_records16;
     struct tree_item_uint32_t *uniq_records32;
     struct tree_item_uint64_t *uniq_records64;
-  };
+  }tree_item;
   size_t num_uniq_records;
   char ***sorted_records;
 };
@@ -90,14 +90,15 @@ struct uniq_records_tree {
  */
 
 struct uniq_records_tree *
-build_record_trees(char **filtered_records, size_t num_filtered_records, 
+build_record_trees(char **filtered_records, 
+                   size_t num_filtered_records, 
                    struct grouper_rule *group_modules) {
-  
-  struct uniq_records_tree *uniq_records_trees;
-  struct tree_item_uint32_t *uniq_records;
-  size_t num_uniq_records;
-  char ***sorted_records;
-  int i;
+
+  struct uniq_records_tree*           uniq_records_trees;
+  struct tree_item_uint32_t*          uniq_records;
+  size_t                              num_uniq_records;
+  char***                             sorted_records;
+  int                                 i;
   
   sorted_records = (char ***)malloc(sizeof(char **)*(num_filtered_records+1));
   if (sorted_records == NULL) {
@@ -139,7 +140,7 @@ build_record_trees(char **filtered_records, size_t num_filtered_records,
   
   uniq_records_trees[0].type = UINT32_T;
   uniq_records_trees[0].num_uniq_records = num_uniq_records;
-  uniq_records_trees[0].uniq_records32 = uniq_records;
+  uniq_records_trees[0].tree_item.uniq_records32 = uniq_records;
   uniq_records_trees[0].sorted_records = sorted_records;
   
   return uniq_records_trees;
@@ -150,12 +151,11 @@ grouper(char **filtered_records, size_t num_filtered_records,
         struct grouper_rule *group_modules, int num_group_modules,
         struct grouper_aggr *aggr, size_t num_group_aggr, size_t *num_groups) {
   
-  struct group **groups;
-  struct group *newgroup;
-  int i, j, k;
-  struct uniq_records_tree *uniq_records_trees;
+  struct group**                      groups;
+  struct group*                       newgroup;
+  int                                 i, j, k;
+  struct uniq_records_tree*           uniq_records_trees;
   
-  *num_groups = 0;
   groups = (struct group **)malloc(sizeof(struct group *));
   
   if (num_group_modules == 0) {
@@ -177,8 +177,11 @@ grouper(char **filtered_records, size_t num_filtered_records,
       newgroup->members = (char **)malloc(sizeof(char *));
       newgroup->members[0] = filtered_records[i];
     }
-  } else {
-    uniq_records_trees = build_record_trees(filtered_records, num_filtered_records, group_modules);
+  } 
+  else {
+    uniq_records_trees = build_record_trees(filtered_records, 
+                                            num_filtered_records, 
+                                            group_modules);
     
     for (i = 0; i < num_filtered_records; i++) {
       if ((i&1023)==0) {
@@ -208,7 +211,7 @@ grouper(char **filtered_records, size_t num_filtered_records,
       // hand side of comparison
       char ***record_iter = ((struct tree_item_uint32_t *)bsearch_r(
                                                                     filtered_records[i],
-                                                                    (void *)uniq_records_trees[0].uniq_records32,
+                                                                    (void *)uniq_records_trees[0].tree_item.uniq_records32,
                                                                     uniq_records_trees[0].num_uniq_records,
                                                                     sizeof(struct tree_item_uint32_t),
                                                                     comp_uint32_t_p,
@@ -250,7 +253,7 @@ grouper(char **filtered_records, size_t num_filtered_records,
     
     // free uniq_records_trees
     free(uniq_records_trees[0].sorted_records);
-    free(uniq_records_trees[0].uniq_records32);
+    free(uniq_records_trees[0].tree_item.uniq_records32);
     free(uniq_records_trees);
   }
   
