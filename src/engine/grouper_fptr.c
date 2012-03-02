@@ -85,14 +85,15 @@ build_record_trees(struct branch_info *binfo,
     if (*(uint32_t *)(*sorted_records[i] + 
         group_modules[0].field_offset2) != 
         uniq_records[num_uniq_records-1].value) {
-      
       uniq_records[num_uniq_records].value = *(uint32_t *)
                                               (*sorted_records[i] + 
                                                group_modules[0].field_offset2);
+
       uniq_records[num_uniq_records].ptr = &sorted_records[i];
       num_uniq_records++;
     }
   }
+
   uniq_records = (struct tree_item_uint32_t *)
                   realloc(uniq_records, 
                           num_uniq_records*sizeof(struct tree_item_uint32_t));
@@ -157,7 +158,7 @@ grouper(char **filtered_records,
                                             filtered_records,
                                             num_filtered_records, 
                                             group_modules);
-    
+
     if(debug){  
       binfo->num_unique_records = uniq_records_trees->num_uniq_records;
       binfo->unique_records = (char**)
@@ -167,7 +168,7 @@ grouper(char **filtered_records,
       
       for (int i = 0; i < binfo->num_unique_records; i++)
         binfo->unique_records[i] = 
-        *uniq_records_trees->tree_item.uniq_records32->ptr[i];
+        **uniq_records_trees->tree_item.uniq_records32[i].ptr;
     }
     
     for (int i = 0; i < num_filtered_records; i++) {
