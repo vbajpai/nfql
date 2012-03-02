@@ -36,7 +36,8 @@
  *
  */
 struct uniq_records_tree *
-build_record_trees(char **filtered_records, 
+build_record_trees(struct branch_info *binfo,
+                   char **filtered_records, 
                    size_t num_filtered_records, 
                    struct grouper_rule *group_modules) {
 
@@ -59,6 +60,14 @@ build_record_trees(char **filtered_records,
           sizeof(char **), 
           (void *)&group_modules[0].field_offset2,
           comp_uint32_t);
+  
+  if(debug){  
+    binfo->sorted_records = (char**)
+                             malloc(num_filtered_records * sizeof(char*));
+    for (int i = 0; i < num_filtered_records; i++)
+      binfo->sorted_records[i] = *sorted_records[i];
+    binfo->num_filtered_records = num_filtered_records;    
+  }
   
   uniq_records = (struct tree_item_uint32_t *)
                  malloc(num_filtered_records*sizeof(struct tree_item_uint32_t));
@@ -106,6 +115,7 @@ build_record_trees(char **filtered_records,
 struct group **
 grouper(char **filtered_records, 
         size_t num_filtered_records,
+        struct branch_info *binfo,
         struct grouper_rule *group_modules, 
         int num_group_modules,
         struct grouper_aggr *aggr, 
@@ -140,9 +150,10 @@ grouper(char **filtered_records,
     }
   } 
   else {
-    uniq_records_trees = build_record_trees(filtered_records, 
+    uniq_records_trees = build_record_trees(binfo,
+                                            filtered_records,
                                             num_filtered_records, 
-                                            group_modules);    
+                                            group_modules);
     for (int i = 0; i < num_filtered_records; i++) {
       if ((i&1023)==0) {
         printf("\r%0.2f%% %d/%zd groups: %zd", (i*100.0f)/num_filtered_records, 

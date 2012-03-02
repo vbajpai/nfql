@@ -57,10 +57,10 @@ struct branch_info {
   struct gfilter_rule *gfilter_rules;
   size_t num_gfilter_rules;
   
-  /* used with --debug flag (points to filtered records) */
+  /* used with --debug flag */
   char** filtered_records;
   size_t num_filtered_records;  
-
+  char** sorted_records;
   
   /* will be filled by individual branches */
   struct group **filtered_groups;

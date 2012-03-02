@@ -30,6 +30,7 @@
 #include "pipeline.h"
 #include "utils.h"
 #include "error_functions.h"
+#include "ftreader.h"
 
 struct grouper_rule;
 struct grouper_aggr;
@@ -61,12 +62,19 @@ struct uniq_records_tree {
 
 
 struct uniq_records_tree *
-build_record_trees(char **filtered_records, size_t num_filtered_records,
+build_record_trees(struct branch_info *binfo,
+                   char **filtered_records, 
+                   size_t num_filtered_records,
                    struct grouper_rule *group_modules);
 
 struct group **
-grouper(char **filtered_records, size_t num_filtered_records,
-        struct grouper_rule *group_modules, int num_group_modules,
-        struct grouper_aggr *aggr, size_t num_group_aggr, size_t *num_groups);
+grouper(char **filtered_records, 
+        size_t num_filtered_records,
+        struct branch_info *data,
+        struct grouper_rule *group_modules, 
+        int num_group_modules,
+        struct grouper_aggr *aggr, 
+        size_t num_group_aggr, 
+        size_t *num_groups);
 
 #endif

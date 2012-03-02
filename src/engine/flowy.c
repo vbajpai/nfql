@@ -197,9 +197,14 @@ branch_start(void *arg) {
   
 #ifdef GROUPER
   
-  groups = grouper(filtered_records, num_filtered_records, 
-                   binfo->group_modules, binfo->num_group_modules, 
-                   binfo->aggr, binfo->num_aggr, &num_groups);
+  groups = grouper(filtered_records, 
+                   num_filtered_records, 
+                   binfo,
+                   binfo->group_modules, 
+                   binfo->num_group_modules, 
+                   binfo->aggr, 
+                   binfo->num_aggr, 
+                   &num_groups);
   
   free(filtered_records);
   
@@ -635,8 +640,7 @@ main(int argc, char **argv) {
     /* process each record */
     for (int i = 0; i < num_threads; i++) {
       
-      printf("\nNo. of Filtered Records: %zd\n", binfos[i].num_filtered_records);
-      
+      printf("\nNo. of Filtered Records: %zd\n", binfos[i].num_filtered_records);      
       puts("\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n");
       
       for (int j = 0; j < binfos[i].num_filtered_records; j++) {
@@ -647,6 +651,20 @@ main(int argc, char **argv) {
       }
       
       free(binfos[i].filtered_records);
+      
+      
+      printf("\nNo. of Sorted Records: %zd\n", binfos[i].num_filtered_records);      
+      puts("\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n");
+      
+      for (int j = 0; j < binfos[i].num_filtered_records; j++) {
+        flow_print_record(binfos[i].data, binfos[i].sorted_records[j]);
+        
+        /* not free'd since they point to original records */
+        binfos[i].sorted_records[j] = NULL;
+      }
+      
+      free(binfos[i].sorted_records);
+      
     }
   }
   
