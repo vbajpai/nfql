@@ -148,18 +148,16 @@ branch_start(void *arg) {
   struct branch_info*         binfo = (struct branch_info *)arg;  
   
   /* filter stage variables */
-  char**                      filtered_records; /* temporary - are freed later */
+  char**                      filtered_records;
   size_t                      num_filtered_records = 0;
   
   /* grouper stage variables */
-
 #ifdef GROUPER  
-  struct group**              groups; /* temporary - are freed later */
+  struct group**              groups;
   size_t                      num_groups = 0;
 #endif
   
-  /* group-filter stage variables */
-  
+  /* group-filter stage variables */  
 #ifdef GROUPFILTER
   struct group**              filtered_groups; /* returned */
   size_t                      num_filtered_groups = 0; /* stored in binfo */
@@ -176,8 +174,15 @@ branch_start(void *arg) {
                             binfo->num_filter_rules, 
                             &num_filtered_records);
   
-
-
+  if(debug){
+    
+    binfo->filtered_records = (char**)
+                              malloc(num_filtered_records * sizeof(char*));
+    for (int i = 0; i < num_filtered_records; i++)
+      binfo->filtered_records[i] = filtered_records[i];
+    binfo->num_filtered_records = num_filtered_records;
+  }
+  
   /* -----------------------------------------------------------------------*/
   
 
@@ -636,14 +641,14 @@ main(int argc, char **argv) {
       
       for (int j = 0; j < binfos[i].num_filtered_records; j++) {
         flow_print_record(binfos[i].data, binfos[i].filtered_records[j]);
+        
+        /* not free'd since they point to original records */
+        binfos[i].filtered_records[j] = NULL;
       }
       
       free(binfos[i].filtered_records);
     }
   }
-  
-  free(binfos);
-
   
   /* -----------------------------------------------------------------------*/    
   
@@ -695,7 +700,8 @@ main(int argc, char **argv) {
   
 #endif  
   
-  
+
+/* free branch_info */
   
   
   exit(EXIT_SUCCESS);

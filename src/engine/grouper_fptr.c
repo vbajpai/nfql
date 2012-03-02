@@ -225,7 +225,9 @@ grouper(char **filtered_records,
         **record_iter = NULL; // set entry in filtered_records to NULL
       }
       
-      free(filtered_records[i]);
+      /* not free'd since the filtered records just point to the original
+       * flow-tools traces and are not a copy
+       */
       filtered_records[i] = NULL;
     }
     
