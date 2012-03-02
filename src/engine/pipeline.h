@@ -61,6 +61,8 @@ struct branch_info {
   char** filtered_records;
   size_t num_filtered_records;  
   char** sorted_records;
+  char** unique_records;
+  size_t num_unique_records;
   
   /* will be filled by individual branches */
   struct group **filtered_groups;

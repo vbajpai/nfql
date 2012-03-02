@@ -64,6 +64,9 @@ build_record_trees(struct branch_info *binfo,
   if(debug){  
     binfo->sorted_records = (char**)
                              malloc(num_filtered_records * sizeof(char*));
+    if (binfo->sorted_records == NULL)
+      errExit("malloc");
+    
     for (int i = 0; i < num_filtered_records; i++)
       binfo->sorted_records[i] = *sorted_records[i];
     binfo->num_filtered_records = num_filtered_records;    
@@ -154,6 +157,19 @@ grouper(char **filtered_records,
                                             filtered_records,
                                             num_filtered_records, 
                                             group_modules);
+    
+    if(debug){  
+      binfo->num_unique_records = uniq_records_trees->num_uniq_records;
+      binfo->unique_records = (char**)
+      malloc(binfo->num_unique_records * sizeof(char*));      
+      if (binfo->unique_records == NULL)
+        errExit("malloc");
+      
+      for (int i = 0; i < binfo->num_unique_records; i++)
+        binfo->unique_records[i] = 
+        *uniq_records_trees->tree_item.uniq_records32->ptr[i];
+    }
+    
     for (int i = 0; i < num_filtered_records; i++) {
       if ((i&1023)==0) {
         printf("\r%0.2f%% %d/%zd groups: %zd", (i*100.0f)/num_filtered_records, 
@@ -242,9 +258,16 @@ grouper(char **filtered_records,
       filtered_records[i] = NULL;
     }
     
-    // free uniq_records_trees
+    // unlink the sorted records from the flow data
+    for (int i = 0; i < num_filtered_records; i++)
+      uniq_records_trees[0].sorted_records[i] = NULL;    
     free(uniq_records_trees[0].sorted_records);
+
+    // unlink the uniq records from the flow data
+    for (int i = 0; i < uniq_records_trees->num_uniq_records; i++)
+      uniq_records_trees[0].tree_item.uniq_records32->ptr = NULL;
     free(uniq_records_trees[0].tree_item.uniq_records32);
+    
     free(uniq_records_trees);
   }
   

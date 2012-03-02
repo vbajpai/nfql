@@ -47,7 +47,6 @@
 #include "ftreader.h"
 
 #define GROUPER
-#define GROUPFILTER
 
 struct filter_rules_params{
   uint64_t delta;
