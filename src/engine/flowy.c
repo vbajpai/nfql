@@ -26,7 +26,6 @@
  */
 
 #define _GNU_SOURCE
-
 #include "flowy.h"
 
 /* TODO
@@ -638,7 +637,7 @@ main(int argc, char **argv) {
     for (int i = 0; i < num_threads; i++) {
       
       printf("\nNo. of Filtered Records: %zd\n", binfos[i].num_filtered_records);      
-      puts("\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n");      
+      puts(FLOWHEADER);      
       for (int j = 0; j < binfos[i].num_filtered_records; j++) {
         flow_print_record(binfos[i].data, binfos[i].filtered_records[j]);
         
@@ -650,7 +649,7 @@ main(int argc, char **argv) {
       if(if_group_modules_exist){
         
         printf("\nNo. of Sorted Records: %zd\n", binfos[i].num_filtered_records);      
-        puts("\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n");      
+        puts(FLOWHEADER);      
         for (int j = 0; j < binfos[i].num_filtered_records; j++) {
           flow_print_record(binfos[i].data, binfos[i].sorted_records[j]);
           
@@ -661,7 +660,7 @@ main(int argc, char **argv) {
         
         
         printf("\nNo. of Unique Records: %zd\n", binfos[i].num_unique_records);      
-        puts("\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n");      
+        puts(FLOWHEADER);      
         for (int j = 0; j < binfos[i].num_unique_records; j++) {
           flow_print_record(binfos[i].data, binfos[i].unique_records[j]);
           
@@ -673,7 +672,7 @@ main(int argc, char **argv) {
       } 
       
       printf("\nNo. of Groups: %zu\n", binfos[i].num_groups);
-      puts("\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets"); 
+      puts(FLOWHEADER); 
       for (int j = 0; j < binfos[i].num_groups; j++) {
        printf("\n");
        struct group* group = binfos[i].groupset[j];

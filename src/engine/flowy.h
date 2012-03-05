@@ -60,4 +60,7 @@ struct filter_offset{
   const char* datatype;
 };
 
+#define FLOWHEADER "\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n"
+
 #endif
+
