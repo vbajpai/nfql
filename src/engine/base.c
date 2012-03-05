@@ -27,4 +27,4 @@
 #include "base.h"
 
 bool debug;
-bool absolute;
+bool if_group_modules_exist;

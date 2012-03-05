@@ -36,6 +36,6 @@
 #include <stdbool.h>
 
 extern bool debug;
-extern bool absolute;
+extern bool if_group_modules_exist;
 
 #endif

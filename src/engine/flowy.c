@@ -153,7 +153,7 @@ branch_start(void *arg) {
   
   /* grouper stage variables */
 #ifdef GROUPER  
-  struct group**              groups;
+  struct group**              groupset;
   size_t                      num_groups = 0;
 #endif
   
@@ -197,25 +197,24 @@ branch_start(void *arg) {
   
 #ifdef GROUPER
   
-  groups = grouper(filtered_records, 
+  groupset = grouper(filtered_records, 
                    num_filtered_records, 
                    binfo,
                    binfo->group_modules, 
-                   binfo->num_group_modules, 
+                   0, 
                    binfo->aggr, 
                    binfo->num_aggr, 
                    &num_groups);
   
-  free(filtered_records);
-  
-  printf("\nnumber of groups: %zd\n", num_groups);
-  
-  int i;
-  printf("foobar4\n");
-  for (i = num_groups-1; i > num_groups-10; i--) {
-    printf("%p\n", groups[i]);
-  }
-  
+  if(debug){
+    
+    binfo->groupset = (struct group**)
+    malloc(num_groups * sizeof(struct group**));
+    
+    for (int i = 0; i < num_groups; i++)
+      binfo->groupset[i] = groupset[i];
+    binfo->num_groups = num_groups;
+  }  
 
   /* -----------------------------------------------------------------------*/
   
@@ -260,8 +259,7 @@ main(int argc, char **argv) {
   char*                               trace_filename;
   char*                               query_filename;
   static struct option                longopts[] = {
-    { "debug",      no_argument,      NULL,           'd' },
-    { "absolute",   no_argument,      NULL,           'a' }
+    { "debug",      no_argument,      NULL,           'd' }
   };
 
   
@@ -305,7 +303,6 @@ main(int argc, char **argv) {
   while ((opt = getopt_long(argc, argv, "da", longopts, NULL)) != -1) {
     switch (opt) {
       case 'd': debug = TRUE; break;
-      case 'a': absolute = TRUE; break;
       case ':': exit(EXIT_FAILURE); 
       case '?': exit(EXIT_FAILURE); 
     }
@@ -650,28 +647,44 @@ main(int argc, char **argv) {
       }      
       free(binfos[i].filtered_records);
       
-      
-      printf("\nNo. of Sorted Records: %zd\n", binfos[i].num_filtered_records);      
-      puts("\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n");      
-      for (int j = 0; j < binfos[i].num_filtered_records; j++) {
-        flow_print_record(binfos[i].data, binfos[i].sorted_records[j]);
+      if(if_group_modules_exist){
         
-        /* not free'd since they point to original records */
-        binfos[i].sorted_records[j] = NULL;
-      }      
-      free(binfos[i].sorted_records);
-      
-      
-      printf("\nNo. of Unique Records: %zd\n", binfos[i].num_unique_records);      
-      puts("\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n");      
-      for (int j = 0; j < binfos[i].num_unique_records; j++) {
-        flow_print_record(binfos[i].data, binfos[i].unique_records[j]);
+        printf("\nNo. of Sorted Records: %zd\n", binfos[i].num_filtered_records);      
+        puts("\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n");      
+        for (int j = 0; j < binfos[i].num_filtered_records; j++) {
+          flow_print_record(binfos[i].data, binfos[i].sorted_records[j]);
+          
+          /* not free'd since they point to original records */
+          binfos[i].sorted_records[j] = NULL;
+        }      
+        free(binfos[i].sorted_records);
         
-        /* not free'd since they point to original records */
-        binfos[i].unique_records[j] = NULL;
-      }      
-      free(binfos[i].unique_records);      
+        
+        printf("\nNo. of Unique Records: %zd\n", binfos[i].num_unique_records);      
+        puts("\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n");      
+        for (int j = 0; j < binfos[i].num_unique_records; j++) {
+          flow_print_record(binfos[i].data, binfos[i].unique_records[j]);
+          
+          /* not free'd since they point to original records */
+          binfos[i].unique_records[j] = NULL;
+        }      
+        free(binfos[i].unique_records);      
       
+      } 
+      
+      printf("\nNo. of Groups: %zu\n", binfos[i].num_groups);
+      puts("\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets"); 
+      for (int j = 0; j < binfos[i].num_groups; j++) {
+       printf("\n");
+       struct group* group = binfos[i].groupset[j];
+       for (int k = 0; k < group->num_members; k++) {
+         flow_print_record(binfos[i].data, group->members[k]);
+         group->members[k] = NULL;
+       }
+       free(group->members);         
+       group = NULL;
+      }
+      free(binfos[i].groupset);
     }
   }
   

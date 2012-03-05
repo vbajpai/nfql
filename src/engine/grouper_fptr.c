@@ -69,7 +69,9 @@ build_record_trees(struct branch_info *binfo,
     
     for (int i = 0; i < num_filtered_records; i++)
       binfo->sorted_records[i] = *sorted_records[i];
-    binfo->num_filtered_records = num_filtered_records;    
+    binfo->num_filtered_records = num_filtered_records;
+    
+    if_group_modules_exist = true;
   }
   
   uniq_records = (struct tree_item_uint32_t *)
@@ -126,32 +128,34 @@ grouper(char **filtered_records,
         size_t num_group_aggr, 
         size_t *num_groups) {
   
-  struct group**                      groups;
-  struct group*                       newgroup;
+  struct group**                      groupset = NULL;
+  struct group*                       group = NULL;
   struct uniq_records_tree*           uniq_records_trees;
   
-  groups = (struct group **)malloc(sizeof(struct group *));
+  groupset = (struct group **)malloc(sizeof(struct group *));
   
   if (num_group_modules == 0) {    
-    for (int i = 0; i < num_filtered_records; i++) {      
-      if ((i&1023)==0) {
-        printf("\r%0.2f%% %d/%zd groups: %zd", 
-               (i*100.0f)/num_filtered_records, 
-               i, num_filtered_records, *num_groups);
-        fflush(stdout);
-      }      
-      (*num_groups)++;
-      groups = (struct group **)realloc(groups, 
-                                        sizeof(struct group*)**num_groups);
-      newgroup = (struct group *)malloc(sizeof(struct group));      
-      if (newgroup == NULL)
+    for (int i = 0; i < num_filtered_records; i++) {
+      
+      (*num_groups) += 1;
+      groupset = (struct group **)realloc(groupset, 
+                                          sizeof(struct group*)**num_groups);
+      if (groupset == NULL)
+        errExit("realloc");      
+      group = (struct group *)malloc(sizeof(struct group));      
+      if (group == NULL)
         errExit("malloc");
       
-      groups[*num_groups-1] = newgroup;
-      newgroup->num_members = 1;
-      newgroup->members = (char **)malloc(sizeof(char *));
-      newgroup->members[0] = filtered_records[i];
+      groupset[*num_groups-1] = group;
+      group->num_members = 1;
+      group->members = (char **)malloc(sizeof(char *));
+      if (group->members == NULL)
+        errExit("malloc");      
+      group->members[0] = filtered_records[i];
+      filtered_records[i] = NULL;
     }
+    
+    free(filtered_records);
   } 
   else {
     uniq_records_trees = build_record_trees(binfo,
@@ -172,35 +176,26 @@ grouper(char **filtered_records,
     }
     
     for (int i = 0; i < num_filtered_records; i++) {
-      if ((i&1023)==0) {
-        printf("\r%0.2f%% %d/%zd groups: %zd", (i*100.0f)/num_filtered_records, 
-                                                i, num_filtered_records, 
-                                                *num_groups);
-        fflush(stdout);
-      }
       if (filtered_records[i] == NULL)
         continue;
       
       (*num_groups) += 1;
       
-      groups = (struct group **)
-               realloc(groups, sizeof(struct group*)**num_groups);
-      if (newgroup == NULL)
-        errExit("realloc");
-      newgroup = (struct group *)malloc(sizeof(struct group));
-      if (newgroup == NULL)
+      groupset = (struct group **)
+                  realloc(groupset, sizeof(struct group*) * (*num_groups));
+      if (groupset == NULL)
+        errExit("realloc");      
+      group = (struct group *)malloc(sizeof(struct group));
+      if (group == NULL)
         errExit("malloc");
 
-      groups[*num_groups-1] = newgroup;
-      newgroup->num_members = 1;
-      newgroup->members = (char **)malloc(sizeof(char *));
-      if (newgroup->members == NULL)
-        errExit("malloc");
-      
-      newgroup->members[0] = filtered_records[i];      
-      if (num_group_modules == 0)
-        continue;
-      
+      groupset[*num_groups-1] = group;
+      group->num_members = 1;
+      group->members = (char **)malloc(sizeof(char *));
+      if (group->members == NULL)
+        errExit("malloc");      
+      group->members[0] = filtered_records[i];      
+
       // search for left hand side of comparison in records ordered by right
       // hand side of comparison
       char ***record_iter = 
@@ -226,7 +221,7 @@ grouper(char **filtered_records,
         // check all module filter rules for those two records
         int k;
         for (k = 0; k < num_group_modules; k++) {
-          if (!group_modules[k].func(newgroup, 
+          if (!group_modules[k].func(group, 
                                      group_modules[k].field_offset1,
                                      **record_iter, 
                                      group_modules[k].field_offset2, 
@@ -242,55 +237,52 @@ grouper(char **filtered_records,
         if (k < num_group_modules)
           continue;
         
-        newgroup->num_members += 1;
+        group->num_members += 1;
         
-        newgroup->members = (char **)
-                            realloc(newgroup->members, 
-                                    sizeof(char *)*newgroup->num_members);
+        group->members = (char **)
+                            realloc(group->members, 
+                                    sizeof(char *)*group->num_members);
         
         // assign entry in filtered_records to group
-        newgroup->members[newgroup->num_members-1] = **record_iter; 
+        group->members[group->num_members-1] = **record_iter; 
         **record_iter = NULL; // set entry in filtered_records to NULL
       }
       
-      /* not free'd since the filtered records just point to the original
-       * flow-tools traces and are not a copy
-       */
+      // unlink the filtered records from the flow data
       filtered_records[i] = NULL;
-    }
+    }    
+    
+    free(filtered_records);    
     
     // unlink the sorted records from the flow data
     for (int i = 0; i < num_filtered_records; i++)
       uniq_records_trees[0].sorted_records[i] = NULL;    
     free(uniq_records_trees[0].sorted_records);
-
+    
     // unlink the uniq records from the flow data
     for (int i = 0; i < uniq_records_trees->num_uniq_records; i++)
       uniq_records_trees[0].tree_item.uniq_records32->ptr = NULL;
-    free(uniq_records_trees[0].tree_item.uniq_records32);
-    
+    free(uniq_records_trees[0].tree_item.uniq_records32);    
     free(uniq_records_trees);
   }
+
   
+  
+#ifdef GROUPAGGR
   for (int i = 0; i < *num_groups; i++) {
-    printf("%p\n", groups[i]);
-    groups[i]->aggr = (struct aggr *)
-                       malloc(sizeof(struct aggr)*num_group_aggr);
-    if (groups[i]->aggr == NULL)
+    groupset[i]->aggr = (struct aggr *)
+                         malloc(sizeof(struct aggr)*num_group_aggr);
+    if (groupset[i]->aggr == NULL)
       errExit("malloc");
     
     for (int j = 0; j < num_group_aggr; j++)
-      groups[i]->aggr[j] = aggr[j].func(groups[i]->members, 
-                                        groups[i]->num_members, 
-                                        aggr[j].field_offset);
-    
+      groupset[i]->aggr[j] = aggr[j].func(groupset[i]->members, 
+                                          groupset[i]->num_members, 
+                                          aggr[j].field_offset);
   }
+#endif
   
-  printf("foobar5\n");
-  for (int i = *num_groups; i > *num_groups-10; i--)
-    printf("%p\n", groups[i]);
-  
-  return groups;
+  return groupset;
 }
 
 
