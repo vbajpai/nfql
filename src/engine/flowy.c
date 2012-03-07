@@ -200,7 +200,7 @@ branch_start(void *arg) {
                    num_filtered_records, 
                    binfo,
                    binfo->group_modules, 
-                   0, 
+                   binfo->num_group_modules, 
                    binfo->aggr, 
                    binfo->num_aggr, 
                    &num_groups);
@@ -226,7 +226,7 @@ branch_start(void *arg) {
   /*                            grouper-filter                              */
   /* -----------------------------------------------------------------------*/  
   
-  filtered_groups = group_filter(groups, num_groups, 
+  filtered_groups = group_filter(groupset, num_groups, 
                                  binfo->gfilter_rules, 
                                  binfo->num_gfilter_rules, 
                                  &num_filtered_groups);
@@ -674,14 +674,33 @@ main(int argc, char **argv) {
       printf("\nNo. of Groups: %zu\n", binfos[i].num_groups);
       puts(FLOWHEADER); 
       for (int j = 0; j < binfos[i].num_groups; j++) {
+        
        printf("\n");
        struct group* group = binfos[i].groupset[j];
+        
+       /* print group members */ 
        for (int k = 0; k < group->num_members; k++) {
          flow_print_record(binfos[i].data, group->members[k]);
          group->members[k] = NULL;
        }
+        
+#ifdef GROUPAGGR
+        puts("\nAggregation Metadata: \n"); 
+       /* print group aggregation values */ 
+       for (int x = 0; x < binfos[i].num_aggr; x++) {
+         for (int y = 0; y < group->aggr[x].num_values; y++) {
+           printf("%llu\t", group->aggr[x].values[y]);
+         }
+         printf("\n");
+         group->aggr[x].values = NULL;
+         free(group->aggr[x].values);
+       }
+       group->aggr = NULL;
+       free(group->aggr); 
+
        free(group->members);         
        group = NULL;
+#endif        
       }
       free(binfos[i].groupset);
     }

@@ -153,8 +153,7 @@ grouper(char **filtered_records,
         errExit("malloc");      
       group->members[0] = filtered_records[i];
       filtered_records[i] = NULL;
-    }
-    
+    }    
     free(filtered_records);
   } 
   else {

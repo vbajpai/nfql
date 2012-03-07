@@ -46,8 +46,6 @@
 #include "error_functions.h"
 #include "ftreader.h"
 
-#define GROUPER
-
 struct filter_rules_params{
   uint64_t delta;
   const char* op;
