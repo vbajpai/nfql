@@ -699,12 +699,12 @@ main(int argc, char **argv) {
           group->members[k] = NULL;
         }
         
-#ifdef GROUPAGGR
+#ifdef GROUPAGGRPRINT
         puts("\nAggregation Metadata: \n"); 
         /* print group aggregation values */ 
         for (int x = 0; x < binfos[i].num_aggr; x++) {
           for (int y = 0; y < group->aggr[x].num_values; y++) {
-            printf("%llu\t", group->aggr[x].values[y]);
+            printf("%llu %zu\n", group->aggr[x].values[y], binfos[i].aggr[x].field_offset);
           }
           printf("\n");
           group->aggr[x].values = NULL;

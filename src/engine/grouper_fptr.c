@@ -152,10 +152,17 @@ grouper(char **filtered_records,
     if (group->members == NULL)
       errExit("malloc");    
     
-    for (int i = 0; i < num_filtered_records; i++) {      
+    for (int i = 0; i < num_filtered_records; i++) {
       group->members[i] = filtered_records[i];
       filtered_records[i] = NULL;
     }    
+    
+    /* save the start and finish times of the extreme members */
+    group->start = *(u_int32*)(filtered_records[0]+
+                              (binfo->data->offsets).First);
+    group->end = *(u_int32*)(filtered_records[num_filtered_records-1]+
+                            (binfo->data->offsets).Last);
+    
     free(filtered_records);
   } 
   else {
@@ -251,7 +258,13 @@ grouper(char **filtered_records,
       
       // unlink the filtered records from the flow data
       filtered_records[i] = NULL;
-    }    
+    }
+    
+    /* save the start and finish times of the extreme members */
+    group->start = *(u_int32*)(group->members[0] +
+                              (binfo->data->offsets).First);
+    group->end = *(u_int32*)(group->members[group->num_members-1] +
+                            (binfo->data->offsets).Last);    
     
     free(filtered_records);    
     
