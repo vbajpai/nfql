@@ -209,6 +209,8 @@ branch_start(void *arg) {
     
     binfo->groupset = (struct group**)
     malloc(num_groups * sizeof(struct group**));
+    if (binfo->groupset == NULL)
+      errExit("malloc");
     
     for (int i = 0; i < num_groups; i++)
       binfo->groupset[i] = groupset[i];

@@ -134,24 +134,26 @@ grouper(char **filtered_records,
   
   groupset = (struct group **)malloc(sizeof(struct group *));
   
-  if (num_group_modules == 0) {    
-    for (int i = 0; i < num_filtered_records; i++) {
-      
-      (*num_groups) += 1;
-      groupset = (struct group **)realloc(groupset, 
-                                          sizeof(struct group*)**num_groups);
-      if (groupset == NULL)
-        errExit("realloc");      
-      group = (struct group *)malloc(sizeof(struct group));      
-      if (group == NULL)
-        errExit("malloc");
-      
-      groupset[*num_groups-1] = group;
-      group->num_members = 1;
-      group->members = (char **)malloc(sizeof(char *));
-      if (group->members == NULL)
-        errExit("malloc");      
-      group->members[0] = filtered_records[i];
+  /* club all filtered records into one group, if no group modules are defined */
+  if (num_group_modules == 0) {  
+    
+    /* groupset with space for 1 group */
+    (*num_groups) = 1;
+    groupset = (struct group **)malloc(sizeof(struct group*)**num_groups);
+    if (groupset == NULL)
+      errExit("malloc");      
+    group = (struct group *)malloc(sizeof(struct group));      
+    if (group == NULL)
+      errExit("malloc");
+    
+    groupset[*num_groups - 1] = group;
+    group->num_members = num_filtered_records;
+    group->members = (char **)malloc(group->num_members * sizeof(char *));
+    if (group->members == NULL)
+      errExit("malloc");    
+    
+    for (int i = 0; i < num_filtered_records; i++) {      
+      group->members[i] = filtered_records[i];
       filtered_records[i] = NULL;
     }    
     free(filtered_records);
