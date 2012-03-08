@@ -197,13 +197,13 @@ branch_start(void *arg) {
 #ifdef GROUPER
   
   groupset = grouper(filtered_records, 
-                   num_filtered_records, 
-                   binfo,
-                   binfo->group_modules, 
-                   binfo->num_group_modules, 
-                   binfo->aggr, 
-                   binfo->num_aggr, 
-                   &num_groups);
+                     num_filtered_records, 
+                     binfo,
+                     binfo->group_modules, 
+                     binfo->num_group_modules, 
+                     binfo->aggr, 
+                     binfo->num_aggr, 
+                     &num_groups);
   
   if(debug){
     
@@ -671,7 +671,7 @@ main(int argc, char **argv) {
       
       } 
       
-      printf("\nNo. of Groups: %zu\n", binfos[i].num_groups);
+      printf("\nNo. of Groups: %zu (Verbose Output)\n", binfos[i].num_groups);
       puts(FLOWHEADER); 
       for (int j = 0; j < binfos[i].num_groups; j++) {
         
@@ -681,27 +681,40 @@ main(int argc, char **argv) {
        /* print group members */ 
        for (int k = 0; k < group->num_members; k++) {
          flow_print_record(binfos[i].data, group->members[k]);
-         group->members[k] = NULL;
-       }
+       }        
+      }
+      
+      printf("\nNo. of Groups: %zu (Condensed Output)\n", binfos[i].num_groups);
+      puts(FLOWHEADER); 
+      for (int j = 0; j < binfos[i].num_groups; j++) {
+        
+        struct group* group = binfos[i].groupset[j];
+        
+        /* print the first group member as the representative */ 
+        for (int k = 0; k < group->num_members; k++) {
+          if(k == 0)
+            flow_print_record(binfos[i].data, group->members[k]);
+          group->members[k] = NULL;
+        }
         
 #ifdef GROUPAGGR
         puts("\nAggregation Metadata: \n"); 
-       /* print group aggregation values */ 
-       for (int x = 0; x < binfos[i].num_aggr; x++) {
-         for (int y = 0; y < group->aggr[x].num_values; y++) {
-           printf("%llu\t", group->aggr[x].values[y]);
-         }
-         printf("\n");
-         group->aggr[x].values = NULL;
-         free(group->aggr[x].values);
-       }
-       group->aggr = NULL;
-       free(group->aggr); 
-
-       free(group->members);         
-       group = NULL;
+        /* print group aggregation values */ 
+        for (int x = 0; x < binfos[i].num_aggr; x++) {
+          for (int y = 0; y < group->aggr[x].num_values; y++) {
+            printf("%llu\t", group->aggr[x].values[y]);
+          }
+          printf("\n");
+          group->aggr[x].values = NULL;
+          free(group->aggr[x].values);
+        }
+        group->aggr = NULL;
+        free(group->aggr); 
+        
+        free(group->members);         
+        group = NULL;
 #endif        
-      }
+      }      
       free(binfos[i].groupset);
     }
   }
