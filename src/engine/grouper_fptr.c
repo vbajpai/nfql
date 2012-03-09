@@ -41,26 +41,45 @@ grouper_aggregations(struct group* group,
   if (group->aggr == NULL)
     errExit("malloc");
 
-  for (int i = 0; i < binfo->num_aggr; i++){
+  for (int i = 0; i < binfo->num_group_modules; i++) {
+    size_t group_offset_1 = binfo->group_modules[i].field_offset1;
+    size_t group_offset_2 = binfo->group_modules[i].field_offset2;
     
+    if(group_offset_1 != group_offset_2)
+      *((u_int32*)(group_aggregation+group_offset_1)) = 
+                  *aggr_static_uint64_t(group->members, 
+                                        group->num_members, 
+                                        group_offset_1, 
+                                        TRUE).values;
+      
+    *((u_int32*)(group_aggregation+group_offset_2)) = 
+    *aggr_static_uint64_t(group->members, 
+                          group->num_members, 
+                          group_offset_2, 
+                          TRUE).values;      
+
+  }
+  for (int i = 0; i < binfo->num_aggr; i++){    
     bool if_ignore_aggr_rule = false;
     size_t aggr_offset = binfo->aggr[i].field_offset;
+    
     for (int j = 0; j < binfo->num_group_modules; j++) {
       size_t group_offset_1 = binfo->group_modules[j].field_offset1;
       size_t group_offset_2 = binfo->group_modules[j].field_offset2;
       
       /* if aggr rule is same as grouping rule, just ignore it */
-      if (aggr_offset == group_offset_1 || 
-          aggr_offset == group_offset_2){
+      if (aggr_offset == group_offset_1 || aggr_offset == group_offset_2){
         if_ignore_aggr_rule = true;
         break;
       }
     }
+
     group->aggr[i] = binfo->aggr[i].func(group->members, 
                                          group->num_members, 
                                          aggr_offset, 
                                          if_ignore_aggr_rule);
-    *((u_int32*)(group_aggregation+aggr_offset)) = *group->aggr[i].values;
+    if(!if_ignore_aggr_rule)
+      *((u_int32*)(group_aggregation+aggr_offset)) = *group->aggr[i].values; 
   }
 
   return group_aggregation;
