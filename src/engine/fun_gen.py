@@ -150,7 +150,7 @@ def grouper_body(op, atype1, atype2, dtype):
     result += "}\n\n"
     return result;
 
-groupaggr_proto = "struct aggr aggr_%s_%s(char **records, size_t num_records, size_t field_offset)"
+groupaggr_proto = """struct aggr aggr_%s_%s(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)"""
 def groupaggr_body(op, atype):
     result = "\n{\n"
     result += "    struct aggr aggr;\n"
@@ -160,12 +160,13 @@ def groupaggr_body(op, atype):
     result += "        return aggr;\n"
     result += "    }\n"
     if op == 'static':
-        result += "    aggr.num_values = 1;\n"
-        result += "    aggr.values = (uint64_t *)malloc(sizeof(uint64_t)*aggr.num_values);\n"
-        result += "    if (aggr.values == NULL) {\n"
+        result += "    if (if_aggr_common) {\n"
+        result += "      aggr.num_values = 1;\n"
+        result += "      aggr.values = (uint64_t *)malloc(sizeof(uint64_t));\n"
+        result += "      if (aggr.values == NULL)\n"
         result += "        perror(\"malloc\");\n"
+        result += "      aggr.values[0] = *(%s *)(records[0] + field_offset);\n"%atype
         result += "    }\n"
-        result += "    aggr.values[0] = *(%s *)(records[0] + field_offset);\n"%atype
     elif op == 'count':
         result += "    aggr.num_values = 1;\n"
         result += "    aggr.values = (uint64_t *)malloc(sizeof(uint64_t)*aggr.num_values);\n"

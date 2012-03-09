@@ -41,23 +41,31 @@ grouper_aggregations(struct group* group,
   if (group->aggr == NULL)
     errExit("malloc");
 
-  for (int j = 0; j < binfo->num_aggr; j++){
-    size_t aggr_offset = binfo->aggr[j].field_offset;
-    group->aggr[j] = binfo->aggr[j].func(group->members, 
+  for (int i = 0; i < binfo->num_aggr; i++){
+    
+    bool if_ignore_aggr_rule = false;
+    size_t aggr_offset = binfo->aggr[i].field_offset;
+    for (int j = 0; j < binfo->num_group_modules; j++) {
+      size_t group_offset_1 = binfo->group_modules[j].field_offset1;
+      size_t group_offset_2 = binfo->group_modules[j].field_offset2;
+      
+      /* if aggr rule is same as grouping rule, just ignore it */
+      if (aggr_offset == group_offset_1 || 
+          aggr_offset == group_offset_2){
+        if_ignore_aggr_rule = true;
+        break;
+      }
+    }
+    group->aggr[i] = binfo->aggr[i].func(group->members, 
                                          group->num_members, 
-                                         aggr_offset);
-    *((u_int32*)(group_aggregation+aggr_offset)) = *group->aggr[j].values;
+                                         aggr_offset, 
+                                         if_ignore_aggr_rule);
+    *((u_int32*)(group_aggregation+aggr_offset)) = *group->aggr[i].values;
   }
 
   return group_aggregation;
 }
 
-/*
- * variables are named "tree" but there are no trees, just arrays. But those
- * arrays are used to binary search them in a "tree-like" fashion and hence
- * the naming
- *
- */
 struct uniq_records_tree *
 build_record_trees(struct branch_info *binfo,
                    char **filtered_records, 

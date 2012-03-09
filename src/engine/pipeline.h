@@ -137,7 +137,8 @@ struct grouper_aggr {
   struct aggr (*func)(
                       char **group_records,
                       size_t num_records,
-                      size_t field_offset);
+                      size_t field_offset,
+                      bool if_aggr_common);
 };
 
 /*
