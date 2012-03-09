@@ -97,12 +97,15 @@ struct filter_rule {
  */
 
 struct group {
-  char       **members;
-  size_t       num_members;
-  struct aggr *aggr;
+  char**   members;
+  size_t   num_members;
   uint32_t start;
   uint32_t end;
+  char* group_aggr_record;
+  struct aggr* aggr;
 };
+
+
 
 struct aggr {
   size_t    num_values;

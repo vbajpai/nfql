@@ -29,6 +29,7 @@
 #define flowy_engine_ftreader_h
 
 #include "base.h"
+#include "flowy.h"
 
 #include <fcntl.h>
 #include <ftlib.h>

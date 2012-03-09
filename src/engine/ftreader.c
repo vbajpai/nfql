@@ -75,7 +75,7 @@ ft_open(int fd) {
     /* print flow header */
     ftio_header_print(&data->io, stdout, '#');  
     
-    puts("\n\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n\n");
+    puts(FLOWHEADER);
   }
   
   while ((record = ftio_read(&data->io)) != NULL) {

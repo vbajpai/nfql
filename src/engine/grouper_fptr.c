@@ -29,6 +29,29 @@
 
 #include "grouper_fptr.h"
 
+char* 
+grouper_aggregations(struct group* group, 
+                     struct branch_info *binfo){
+  
+  char* group_aggregation = (char *)calloc(1, binfo->data->rec_size);
+  if (group_aggregation == NULL)
+    errExit("calloc");
+  
+  group->aggr = (struct aggr *) malloc(sizeof(struct aggr)*binfo->num_aggr);
+  if (group->aggr == NULL)
+    errExit("malloc");
+
+  for (int j = 0; j < binfo->num_aggr; j++){
+    size_t aggr_offset = binfo->aggr[j].field_offset;
+    group->aggr[j] = binfo->aggr[j].func(group->members, 
+                                         group->num_members, 
+                                         aggr_offset);
+    *((u_int32*)(group_aggregation+aggr_offset)) = *group->aggr[j].values;
+  }
+
+  return group_aggregation;
+}
+
 /*
  * variables are named "tree" but there are no trees, just arrays. But those
  * arrays are used to binary search them in a "tree-like" fashion and hence
@@ -280,22 +303,9 @@ grouper(char **filtered_records,
     free(uniq_records_trees);
   }
 
-  
-  
-#ifdef GROUPAGGR
-  for (int i = 0; i < *num_groups; i++) {
-    groupset[i]->aggr = (struct aggr *)
-                         malloc(sizeof(struct aggr)*num_group_aggr);
-    if (groupset[i]->aggr == NULL)
-      errExit("malloc");
-    
-    for (int j = 0; j < num_group_aggr; j++)
-      groupset[i]->aggr[j] = aggr[j].func(groupset[i]->members, 
-                                          groupset[i]->num_members, 
-                                          aggr[j].field_offset);
-  }
-#endif
-  
+  for (int i = 0; i < *num_groups; i++)
+    groupset[i]->group_aggr_record = 
+    grouper_aggregations(groupset[i], binfo);
   return groupset;
 }
 
