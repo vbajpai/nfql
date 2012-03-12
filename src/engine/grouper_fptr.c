@@ -208,10 +208,10 @@ grouper(char **filtered_records,
     }    
     
     /* save the start and finish times of the extreme members */
-    group->start = *(u_int32_t*)(filtered_records[0]+
-                              (binfo->data->offsets).First);
-    group->end = *(u_int32_t*)(filtered_records[num_filtered_records-1]+
-                            (binfo->data->offsets).Last);
+    group->start = *(u_int32_t*)(group->members[0] +
+                                 (binfo->data->offsets).First);
+    group->end = *(u_int32_t*)(group->members[group->num_members-1] +
+                               (binfo->data->offsets).Last); 
     
     free(filtered_records);
   } 
