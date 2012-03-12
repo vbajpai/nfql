@@ -458,7 +458,7 @@ main(int argc, char **argv) {
     
     // shouldn't the first field be -1 as indicated?
     { 0, trace_data->offsets.srcaddr, aggr_static_uint32_t },
-    { 0, trace_data->offsets.dstaddr, aggr_static_uint32_t },
+    { 0, trace_data->offsets.dPkts, aggr_sum_uint32_t },
     { 0, trace_data->offsets.dOctets, aggr_sum_uint32_t },
     { 0, trace_data->offsets.tcp_flags, aggr_or_uint16_t }
   };
@@ -516,7 +516,7 @@ main(int argc, char **argv) {
   /* array of grouper aggregation rules, with 4 grouper aggrs */
   struct grouper_aggr group_aggr_branch2[4] = {
     { 0, trace_data->offsets.srcaddr, aggr_static_uint32_t },
-    { 0, trace_data->offsets.dstaddr, aggr_static_uint32_t },
+    { 0, trace_data->offsets.dPkts, aggr_sum_uint32_t },
     { 0, trace_data->offsets.dOctets, aggr_sum_uint32_t },
     { 0, trace_data->offsets.tcp_flags, aggr_or_uint16_t }
   };
