@@ -372,17 +372,19 @@ flow_print_record(struct ft_data *data, char *record){
   cur.prot = ((u_int8_t*)(record+(data->offsets).prot));
   cur.tcp_flags = ((u_int8_t*)(record+(data->offsets).tcp_flags));
   
-  struct fttime ftt;
+  struct fttime 
   ftt = ftltime(*cur.sysUpTime, *cur.unix_secs, *cur.unix_nsecs, *cur.First);
   struct tm *tm;
-  tm = localtime((time_t*)&ftt.secs);
+  time_t t_first = ftt.secs;
+  tm = localtime(&t_first);
   
   printf("%-2.2d%-2.2d.%-2.2d:%-2.2d:%-2.2d.%-3.3lu ",
          (int)tm->tm_mon+1, (int)tm->tm_mday, (int)tm->tm_hour,
          (int)tm->tm_min, (int)tm->tm_sec, (u_long)ftt.msecs);
   
   ftt = ftltime(*cur.sysUpTime, *cur.unix_secs, *cur.unix_nsecs, *cur.Last);
-  tm = localtime((time_t*)&ftt.secs);
+  time_t t_last = ftt.secs;
+  tm = localtime(&t_last);
   
   printf("%-2.2d%-2.2d.%-2.2d:%-2.2d:%-2.2d.%-3.3lu ",
          (int)tm->tm_mon+1, (int)tm->tm_mday, (int)tm->tm_hour,
