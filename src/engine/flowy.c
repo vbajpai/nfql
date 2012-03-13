@@ -168,9 +168,13 @@ branch_start(void *arg) {
     if (binfo->groupset == NULL)
       errExit("malloc");
     
-    for (int i = 0; i < num_groups; i++)
+    for (int i = 0; i < num_groups; i++){
       binfo->groupset[i] = groupset[i];
+      groupset[i] = NULL;
+    }
+    
     binfo->num_groups = num_groups;
+    free(groupset);
   }  
 
   /* -----------------------------------------------------------------------*/
@@ -190,14 +194,13 @@ branch_start(void *arg) {
   
 #ifdef GROUPERAGGREGATIONS  
   
-  for (int i = 0; i < num_groups; i++)
-    groupset[i]->group_aggr_record = 
-    grouper_aggregations(groupset[i], binfo);
+  for (int i = 0; i < binfo->num_groups; i++)
+    binfo->groupset[i]->group_aggr_record = 
+    grouper_aggregations(binfo->groupset[i], binfo);
 
 #endif  
   
   /* -----------------------------------------------------------------------*/
-  
   
   
   
@@ -211,26 +214,18 @@ branch_start(void *arg) {
   /*                            grouper-filter                              */
   /* -----------------------------------------------------------------------*/  
   
-  filtered_groups = group_filter(groupset, num_groups, 
+  filtered_groups = group_filter(binfo->groupset, 
+                                 binfo->num_groups, 
                                  binfo->gfilter_rules, 
                                  binfo->num_gfilter_rules, 
                                  &num_filtered_groups);
-  free(groups);
-  printf("\rnumber of filtered groups: %zd\n", num_filtered_groups);
-  
+ 
   binfo->num_filtered_groups = num_filtered_groups;
   binfo->filtered_groups = filtered_groups;
-  
-  for (i = 0; i < num_filtered_groups; i++) {
-    if (binfo->filtered_groups[i] == NULL) {
-      perror("found nil");
-      exit(EXIT_FAILURE);
-    }
-  }
 
   /* -----------------------------------------------------------------------*/
   
-#endif
+#endif  
   
   pthread_exit(NULL);
 }
@@ -689,6 +684,22 @@ main(int argc, char **argv) {
         /* print the first group member as the representative */ 
         flow_print_record(binfos[i].data, group->group_aggr_record);
         
+      }
+#endif
+
+      
+#ifdef GROUPFILTER
+      printf("\nNo. of Filtered Groups: %zu (Aggregations)\n", 
+             binfos[i].num_filtered_groups);      
+      puts(FLOWHEADER); 
+      
+      for (int j = 0; j < binfos[i].num_filtered_groups; j++) {
+        
+        struct group* group = binfos[i].filtered_groups[j];
+        
+        /* print the first group member as the representative */ 
+        flow_print_record(binfos[i].data, group->group_aggr_record);
+        
         for (int x = 0; x < binfos[i].num_aggr; x++)
           free(group->aggr[x].values);
         
@@ -696,7 +707,9 @@ main(int argc, char **argv) {
         free(group->members);
         free(group->group_aggr_record);
       }
-#endif
+#endif      
+      
+      
       free(binfos[i].groupset);
     }
   }
