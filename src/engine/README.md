@@ -58,7 +58,7 @@ filter_switch.c
 
 Contains the filter function definition using switch statements.
 
-grouper_fptr.c
+grouper.c
 --------------
 
 grouper_switch.c

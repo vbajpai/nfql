@@ -27,7 +27,7 @@
 
 #define _GNU_SOURCE
 
-#include "grouper_fptr.h"
+#include "grouper.h"
 
 char* 
 grouper_aggregations(struct group* group, 

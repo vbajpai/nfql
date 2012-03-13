@@ -40,7 +40,7 @@
 #include <sys/mman.h>
 
 
-#include "grouper_fptr.h"
+#include "grouper.h"
 #include "merger_fptr.h"
 #include "auto_assign.h"
 #include "error_functions.h"
