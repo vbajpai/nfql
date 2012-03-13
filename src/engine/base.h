@@ -35,7 +35,7 @@
 #include <stdint.h>
 #include <stdbool.h>
 
-#define GROUPER
+#define GROUPERAGGREGATIONS
 
 extern bool debug;
 extern bool if_group_modules_exist;

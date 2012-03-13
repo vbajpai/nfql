@@ -31,7 +31,7 @@
 
 char* 
 grouper_aggregations(struct group* group, 
-                     struct branch_info *binfo){
+                     struct branch_info *binfo) {
   
   char* group_aggregation = (char *)calloc(1, binfo->data->rec_size);
   if (group_aggregation == NULL)
@@ -135,12 +135,11 @@ build_record_trees(struct branch_info *binfo,
   num_uniq_records = 1;
   for (i = 0; i < num_filtered_records; i++) {
     if (*(uint32_t *)(*sorted_records[i] + 
-        group_modules[0].field_offset2) != 
-        uniq_records[num_uniq_records-1].value) {
+      group_modules[0].field_offset2) != 
+      uniq_records[num_uniq_records-1].value) {
       uniq_records[num_uniq_records].value = *(uint32_t *)
                                               (*sorted_records[i] + 
                                                group_modules[0].field_offset2);
-
       uniq_records[num_uniq_records].ptr = &sorted_records[i];
       num_uniq_records++;
     }
@@ -330,9 +329,6 @@ grouper(char **filtered_records,
     free(uniq_records_trees);
   }
 
-  for (int i = 0; i < *num_groups; i++)
-    groupset[i]->group_aggr_record = 
-    grouper_aggregations(groupset[i], binfo);
   return groupset;
 }
 
