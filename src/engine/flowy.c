@@ -42,48 +42,6 @@
  * respectively and field_lengths are FIRST and LAST
  */
 
-char ** 
-filter(struct ft_data *data, struct filter_rule *filter_rules, 
-       int num_filter_rules, size_t *num_filtered_records) {
-  
-  char**                      filtered_records;
-  
-  filtered_records = (char **)malloc((*num_filtered_records) * sizeof(char *));
-  if (filtered_records == NULL)
-    errExit("malloc");
-  
-  /* process each record */
-  for (int i = 0; i < data->num_records; i++) {
-    /* process each filter rule, for each record */
-    int j = 0;
-    for (j = 0; j < num_filter_rules; j++) {
-      /* run the comparator function of the filter rule on the record */
-      if (!filter_rules[j].func(data->records[i], 
-                                filter_rules[j].field_offset, 
-                                filter_rules[j].value, 
-                                filter_rules[j].delta))
-        break;
-    }
-    
-    /* if any rule is not satisfied, move on to another record */
-    if (j < num_filter_rules)
-      continue;
-    /* else, increment the filter counter, and save this record */
-    else {      
-      (*num_filtered_records)++;
-      filtered_records = (char **)
-                         realloc(filtered_records,
-                                (*num_filtered_records)*sizeof(char *));
-      if (filtered_records == NULL)
-        errExit("malloc");
-      
-      filtered_records[*num_filtered_records-1] = data->records[i];
-    }
-  }
-  
-  return filtered_records;
-}
-
 struct group **
 group_filter(struct group **groups, size_t num_groups, 
              struct gfilter_rule *rules, size_t num_gfilter_rules,
@@ -750,7 +708,11 @@ main(int argc, char **argv) {
     }
   }
   
-  group_tuples = merger(filtered_groups, num_filtered_groups, num_threads, mfilter, 2);
+  group_tuples = merger(filtered_groups, 
+                        num_filtered_groups, 
+                        num_threads, 
+                        mfilter, 
+                        2);
   
   free(group_tuples);
 

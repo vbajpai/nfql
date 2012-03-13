@@ -1,6 +1,5 @@
 /*
  * Copyright 2012 Vaibhav Bajpai <contact@vaibhavbajpai.com>
- * Copyright 2011 Johannes 'josch' Schauer <j.schauer@email.de>
  *
  * All rights reserved.
  *
@@ -25,39 +24,19 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * this header contains the public flowy interface
- */
+#ifndef flowy_engine_filter_h
+#define flowy_engine_filter_h
 
-
-#ifndef flowy_engine_flowy_h
-#define flowy_engine_flowy_h
-
-#include <pthread.h>
-#include <getopt.h>
-#include <json/json.h>
-#include <sys/stat.h>
-#include <sys/mman.h>
-
-#include "filter.h"
-#include "grouper.h"
-#include "merger_fptr.h"
-#include "auto_assign.h"
+#include "base.h"
 #include "error_functions.h"
+#include "pipeline.h"
 #include "ftreader.h"
 
-struct filter_rules_params{
-  uint64_t delta;
-  const char* op;
-  struct filter_offset* off;
-};
+char ** 
+filter(struct ft_data *data, 
+       struct filter_rule *filter_rules, 
+       int num_filter_rules, 
+       size_t *num_filtered_records);
 
-struct filter_offset{
-  const char* name;
-  uint64_t value;
-  const char* datatype;
-};
-
-#define FLOWHEADER "\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n"
 
 #endif
