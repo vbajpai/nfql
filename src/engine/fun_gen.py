@@ -470,6 +470,26 @@ for op in 'RULE_EQ', 'RULE_NE', 'RULE_GT', 'RULE_LT', 'RULE_LE', 'RULE_GE':
 source.write("""
             }
         }
+""")
+
+
+# switch statement for the grouper-filter
+
+source.write("""
+  
+  /* for loop for the group-filter */
+  for (int j = 0; j < binfos[i].num_gfilter_rules; j++) {
+  switch (binfos[i].gfilter_rules[j].op) {
+  """)
+
+for op in 'RULE_EQ', 'RULE_NE', 'RULE_GT', 'RULE_LT', 'RULE_LE', 'RULE_GE':
+  source.write("                case %s:\n"%(op))
+  source.write("                    binfos[i].gfilter_rules[j].func = gfilter_%s;\n"%(enum_map[op]))
+  source.write("                    break;\n")
+
+source.write("""
+            }
+        }
     }
 }
 """)
