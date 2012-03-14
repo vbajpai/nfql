@@ -372,7 +372,8 @@ main(int argc, char **argv) {
 
   
   /* array of grouper filter rules, with 0 filters */
-  struct gfilter_rule gfilter_branch1[0] = {
+  struct gfilter_rule gfilter_branch1[1] = {
+    {trace_data->offsets.dPkts, 100, 0, RULE_GT, NULL}
   };
   
   
@@ -386,7 +387,7 @@ main(int argc, char **argv) {
   binfos[0].aggr = group_aggr_branch1;
   binfos[0].num_aggr = 4;
   binfos[0].gfilter_rules = gfilter_branch1;
-  binfos[0].num_gfilter_rules = 0;
+  binfos[0].num_gfilter_rules = 1;
   
  /* -----------------------------------------------------------------------*/
   
@@ -430,7 +431,8 @@ main(int argc, char **argv) {
 
   
   /* array of grouper filter rules, with 0 filters */
-  struct gfilter_rule gfilter_branch2[0] = {
+  struct gfilter_rule gfilter_branch2[1] = {
+    {trace_data->offsets.dPkts, 100, 0, RULE_GT, NULL}
   };
 
   
@@ -444,7 +446,7 @@ main(int argc, char **argv) {
   binfos[1].aggr = group_aggr_branch2;
   binfos[1].num_aggr = 4;
   binfos[1].gfilter_rules = gfilter_branch2;
-  binfos[1].num_gfilter_rules = 0;
+  binfos[1].num_gfilter_rules = 1;
 
   /* -----------------------------------------------------------------------*/
   
@@ -590,29 +592,21 @@ main(int argc, char **argv) {
        /* print group members */ 
        for (int k = 0; k < group->num_members; k++) {
          flow_print_record(binfos[i].data, group->members[k]);
-       }        
-      }
-      
-      for (int j = 0; j < binfos[i].num_groups; j++) {
-        
-        struct group* group = binfos[i].groupset[j];
-        
-        /* print the first group member as the representative */ 
-        for (int k = 0; k < group->num_members; k++) {
-          group->members[k] = NULL;
-        }
+         group->members[k] = NULL;
+       }     
+       free(group->members);
       }
       
 #ifdef GROUPERAGGREGATIONS
       printf("\nNo. of Groups: %zu (Aggregations)\n", binfos[i].num_groups);
       puts(FLOWHEADER); 
-      for (int j = 0; j < binfos[i].num_groups; j++) {
-        
+      for (int j = 0; j < binfos[i].num_groups; j++) {        
         struct group* group = binfos[i].groupset[j];
+        flow_print_record(binfos[i].data, group->group_aggr_record);  
         
-        /* print the first group member as the representative */ 
-        flow_print_record(binfos[i].data, group->group_aggr_record);
-        
+        for (int x = 0; x < binfos[i].num_aggr; x++)
+          free(group->aggr[x].values);
+        free(group->aggr); 
       }
 #endif
 
@@ -624,21 +618,16 @@ main(int argc, char **argv) {
       
       for (int j = 0; j < binfos[i].num_filtered_groups; j++) {
         
-        struct group* group = binfos[i].filtered_groups[j];
-        
-        /* print the first group member as the representative */ 
-        flow_print_record(binfos[i].data, group->group_aggr_record);
-        
-        for (int x = 0; x < binfos[i].num_aggr; x++)
-          free(group->aggr[x].values);
-        
-        free(group->aggr); 
-        free(group->members);
-        free(group->group_aggr_record);
+        struct group* filtered_group = binfos[i].filtered_groups[j];
+        flow_print_record(binfos[i].data, filtered_group->group_aggr_record);
       }
-#endif      
+#endif
       
-      
+      for (int j = 0; j < binfos[i].num_groups; j++) {        
+        struct group* group = binfos[i].groupset[j];
+        free(group->group_aggr_record);
+        free(group);
+      }
       free(binfos[i].groupset);
     }
   }

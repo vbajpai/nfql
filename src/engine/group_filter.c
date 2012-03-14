@@ -27,7 +27,7 @@
 #include "group_filter.h"
 
 struct group **
-group_filter(struct group **groups, 
+group_filter(struct group **groupset, 
              size_t num_groups, 
              struct gfilter_rule *rules, 
              size_t num_gfilter_rules,
@@ -35,41 +35,50 @@ group_filter(struct group **groups,
   
   struct group **filtered_groupset;  
   filtered_groupset = (struct group **)
-  calloc(*num_filtered_groups, 
-         sizeof(struct group *));
+                       calloc(*num_filtered_groups, 
+                              sizeof(struct group *));
   if (filtered_groupset == NULL)
     errExit("calloc");
   
   int i, j;
   /* iterate over each group */
-  for (i = 0, j = 0; i < num_groups; i++, (*num_filtered_groups)++) {    
+  for (i = 0, j = 0; i < num_groups; i++) {
+    
+    struct group* group = groupset[i];
     
     /* iterate over each group filter rule */
     for (j = 0; j < num_gfilter_rules; j++) {
       
       /* break out if any one of the rules does NOT match */
-      if (!rules[j].func(groups[i], 
+      if (!rules[j].func(group, 
                          rules[j].field, 
                          rules[j].value, 
                          rules[j].delta))
         break;
     }
     
-    /* free the group, if it did not pass the filter rules */
+    /* free the group, if it did not pass the filter rules  */
     if (j < num_gfilter_rules) {
-      free(groups[i]->members);
-      free(groups[i]->aggr);
-      free(groups[i]);
-      groups[i] = NULL;
+      
+      /* free only when --debug is NOT set, otherwise free later. */
+      if(!debug){
+        free(group->members);
+        free(group->aggr);
+        free(group);
+        group = NULL;
+      }      
     }
+    
     /* otherwise add the group to the filtered groupset */
     else {
+      
+      (*num_filtered_groups)++;
       filtered_groupset = 
       (struct group **)realloc(filtered_groupset, 
-                               (*num_filtered_groups+1)*sizeof(struct group *));
+                              (*num_filtered_groups)*sizeof(struct group *));
       if (filtered_groupset == NULL)
         errExit("realloc");      
-      filtered_groupset[*num_filtered_groups] = groups[i];
+      filtered_groupset[*num_filtered_groups-1] = groupset[i];
     }
   }
   return filtered_groupset;

@@ -10,85 +10,85 @@ void assign_fptr(struct branch_info *binfos, int num_threads) {
     for (int i = 0; i < num_threads; i++) {
 
 
-        /* for loop for the filter */
-        for (int j = 0; j < binfos[i].num_filter_rules; j++) {
-          switch (binfos[i].filter_rules[j].op) {
+      /* for loop for the filter */
+      for (int j = 0; j < binfos[i].num_filter_rules; j++) {
+        switch (binfos[i].filter_rules[j].op) {
 
-                case RULE_EQ | RULE_S1_8:
-                    binfos[i].filter_rules[j].func = filter_eq_uint8_t;
-                    break;
-                case RULE_EQ | RULE_S1_16:
-                    binfos[i].filter_rules[j].func = filter_eq_uint16_t;
-                    break;
-                case RULE_EQ | RULE_S1_32:
-                    binfos[i].filter_rules[j].func = filter_eq_uint32_t;
-                    break;
-                case RULE_EQ | RULE_S1_64:
-                    binfos[i].filter_rules[j].func = filter_eq_uint64_t;
-                    break;
-                case RULE_NE | RULE_S1_8:
-                    binfos[i].filter_rules[j].func = filter_ne_uint8_t;
-                    break;
-                case RULE_NE | RULE_S1_16:
-                    binfos[i].filter_rules[j].func = filter_ne_uint16_t;
-                    break;
-                case RULE_NE | RULE_S1_32:
-                    binfos[i].filter_rules[j].func = filter_ne_uint32_t;
-                    break;
-                case RULE_NE | RULE_S1_64:
-                    binfos[i].filter_rules[j].func = filter_ne_uint64_t;
-                    break;
-                case RULE_GT | RULE_S1_8:
-                    binfos[i].filter_rules[j].func = filter_gt_uint8_t;
-                    break;
-                case RULE_GT | RULE_S1_16:
-                    binfos[i].filter_rules[j].func = filter_gt_uint16_t;
-                    break;
-                case RULE_GT | RULE_S1_32:
-                    binfos[i].filter_rules[j].func = filter_gt_uint32_t;
-                    break;
-                case RULE_GT | RULE_S1_64:
-                    binfos[i].filter_rules[j].func = filter_gt_uint64_t;
-                    break;
-                case RULE_LT | RULE_S1_8:
-                    binfos[i].filter_rules[j].func = filter_lt_uint8_t;
-                    break;
-                case RULE_LT | RULE_S1_16:
-                    binfos[i].filter_rules[j].func = filter_lt_uint16_t;
-                    break;
-                case RULE_LT | RULE_S1_32:
-                    binfos[i].filter_rules[j].func = filter_lt_uint32_t;
-                    break;
-                case RULE_LT | RULE_S1_64:
-                    binfos[i].filter_rules[j].func = filter_lt_uint64_t;
-                    break;
-                case RULE_LE | RULE_S1_8:
-                    binfos[i].filter_rules[j].func = filter_le_uint8_t;
-                    break;
-                case RULE_LE | RULE_S1_16:
-                    binfos[i].filter_rules[j].func = filter_le_uint16_t;
-                    break;
-                case RULE_LE | RULE_S1_32:
-                    binfos[i].filter_rules[j].func = filter_le_uint32_t;
-                    break;
-                case RULE_LE | RULE_S1_64:
-                    binfos[i].filter_rules[j].func = filter_le_uint64_t;
-                    break;
-                case RULE_GE | RULE_S1_8:
-                    binfos[i].filter_rules[j].func = filter_ge_uint8_t;
-                    break;
-                case RULE_GE | RULE_S1_16:
-                    binfos[i].filter_rules[j].func = filter_ge_uint16_t;
-                    break;
-                case RULE_GE | RULE_S1_32:
-                    binfos[i].filter_rules[j].func = filter_ge_uint32_t;
-                    break;
-                case RULE_GE | RULE_S1_64:
-                    binfos[i].filter_rules[j].func = filter_ge_uint64_t;
-                    break;
+              case RULE_EQ | RULE_S1_8:
+                  binfos[i].filter_rules[j].func = filter_eq_uint8_t;
+                  break;
+              case RULE_EQ | RULE_S1_16:
+                  binfos[i].filter_rules[j].func = filter_eq_uint16_t;
+                  break;
+              case RULE_EQ | RULE_S1_32:
+                  binfos[i].filter_rules[j].func = filter_eq_uint32_t;
+                  break;
+              case RULE_EQ | RULE_S1_64:
+                  binfos[i].filter_rules[j].func = filter_eq_uint64_t;
+                  break;
+              case RULE_NE | RULE_S1_8:
+                  binfos[i].filter_rules[j].func = filter_ne_uint8_t;
+                  break;
+              case RULE_NE | RULE_S1_16:
+                  binfos[i].filter_rules[j].func = filter_ne_uint16_t;
+                  break;
+              case RULE_NE | RULE_S1_32:
+                  binfos[i].filter_rules[j].func = filter_ne_uint32_t;
+                  break;
+              case RULE_NE | RULE_S1_64:
+                  binfos[i].filter_rules[j].func = filter_ne_uint64_t;
+                  break;
+              case RULE_GT | RULE_S1_8:
+                  binfos[i].filter_rules[j].func = filter_gt_uint8_t;
+                  break;
+              case RULE_GT | RULE_S1_16:
+                  binfos[i].filter_rules[j].func = filter_gt_uint16_t;
+                  break;
+              case RULE_GT | RULE_S1_32:
+                  binfos[i].filter_rules[j].func = filter_gt_uint32_t;
+                  break;
+              case RULE_GT | RULE_S1_64:
+                  binfos[i].filter_rules[j].func = filter_gt_uint64_t;
+                  break;
+              case RULE_LT | RULE_S1_8:
+                  binfos[i].filter_rules[j].func = filter_lt_uint8_t;
+                  break;
+              case RULE_LT | RULE_S1_16:
+                  binfos[i].filter_rules[j].func = filter_lt_uint16_t;
+                  break;
+              case RULE_LT | RULE_S1_32:
+                  binfos[i].filter_rules[j].func = filter_lt_uint32_t;
+                  break;
+              case RULE_LT | RULE_S1_64:
+                  binfos[i].filter_rules[j].func = filter_lt_uint64_t;
+                  break;
+              case RULE_LE | RULE_S1_8:
+                  binfos[i].filter_rules[j].func = filter_le_uint8_t;
+                  break;
+              case RULE_LE | RULE_S1_16:
+                  binfos[i].filter_rules[j].func = filter_le_uint16_t;
+                  break;
+              case RULE_LE | RULE_S1_32:
+                  binfos[i].filter_rules[j].func = filter_le_uint32_t;
+                  break;
+              case RULE_LE | RULE_S1_64:
+                  binfos[i].filter_rules[j].func = filter_le_uint64_t;
+                  break;
+              case RULE_GE | RULE_S1_8:
+                  binfos[i].filter_rules[j].func = filter_ge_uint8_t;
+                  break;
+              case RULE_GE | RULE_S1_16:
+                  binfos[i].filter_rules[j].func = filter_ge_uint16_t;
+                  break;
+              case RULE_GE | RULE_S1_32:
+                  binfos[i].filter_rules[j].func = filter_ge_uint32_t;
+                  break;
+              case RULE_GE | RULE_S1_64:
+                  binfos[i].filter_rules[j].func = filter_ge_uint64_t;
+                  break;
 
-            }
-        }
+          }
+      }
 
   
       /* for loop for the grouper */
@@ -961,5 +961,32 @@ void assign_fptr(struct branch_info *binfos, int num_threads) {
 
             }
         }
+      
+
+      /* for loop for the group-filter */
+      for (int j = 0; j < binfos[i].num_gfilter_rules; j++) {
+        switch (binfos[i].gfilter_rules[j].op) {
+            
+          case RULE_EQ:
+            binfos[i].gfilter_rules[j].func = gfilter_eq;
+            break;
+          case RULE_NE:
+            binfos[i].gfilter_rules[j].func = gfilter_ne;
+            break;
+          case RULE_LT:
+            binfos[i].gfilter_rules[j].func = gfilter_lt;
+            break;
+          case RULE_GT:
+            binfos[i].gfilter_rules[j].func = gfilter_gt;
+            break;
+          case RULE_LE:
+            binfos[i].gfilter_rules[j].func = gfilter_le;
+            break;
+          case RULE_GE:
+            binfos[i].gfilter_rules[j].func = gfilter_ge;
+            break;            
+        }
+      }
+      
     }
 }

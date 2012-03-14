@@ -149,6 +149,7 @@ struct gfilter_rule {
   size_t field;
   uint64_t value;
   uint64_t delta;
+  uint16_t op;
   bool (*func)(struct group *group,
                size_t field,
                uint64_t value,

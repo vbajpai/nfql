@@ -2947,12 +2947,13 @@ bool gfilter_lt(struct group *group, size_t field, uint64_t value, uint64_t delt
     return group->aggr[field].values[0] < value + delta;
 }
 
-bool gfilter_gt(struct group *group, size_t field, uint64_t value, uint64_t delta)
-{
-    if (group->aggr[field].num_values == 0) {
-        return false;
-    }
-    return group->aggr[field].values[0] > value - delta;
+bool gfilter_gt(struct group *group, 
+                size_t field_offset, 
+                uint64_t value, 
+                uint64_t delta) {
+  
+    uint64_t gr_value = *(group->group_aggr_record + field_offset);
+    return gr_value > value - delta;
 }
 
 bool gfilter_le(struct group *group, size_t field, uint64_t value, uint64_t delta)
