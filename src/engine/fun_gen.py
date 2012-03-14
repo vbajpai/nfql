@@ -68,7 +68,7 @@ preamble = """
 
 """%argv[0]
 
-header = open("auto_comps.h", 'w')
+header = open("auto_comps.h", "w")
 source = open("auto_comps.c", "w")
 
 header.write(preamble)
@@ -292,20 +292,24 @@ def groupaggr_body(op, atype):
     result += "}\n\n"
     return result
 
-gfilter_proto = "bool gfilter_%s(struct group *group, size_t field, uint64_t value, uint64_t delta)"
+
+gfilter_proto = """bool gfilter_%s(struct group *group, 
+                                   size_t field_offset, 
+                                   uint64_t value, 
+                                   uint64_t delta)"""
+
 def gfilter_body(op):
-    result = "\n{\n"
-    result += "    if (group->aggr[field].num_values == 0) {\n"
-    result += "        return false;\n"
-    result += "    }\n"
+    result = " {\n\n"
+    result += "uint64_t aggr_value = *(group->group_aggr_record + field_offset);\n"
+  
     if op == "eq":
-        result += "    return (group->aggr[field].values[0] >= value - delta) && (group->aggr[field].values[0] <= value + delta);\n"
+        result += "    return (aggr_value >= value - delta) && (aggr_value <= value + delta);\n"
     elif op == "ne":
-        result += "    return (group->aggr[field].values[0] < value - delta) || (group->aggr[field].values[0] > value + delta);\n";
+        result += "    return (aggr_value < value - delta) || (aggr_value > value + delta);\n";
     elif op in ['lt', 'le']:
-        result += "    return group->aggr[field].values[0] %s value + delta;\n"%operation_map[op]
+        result += "    return aggr_value %s value + delta;\n"%operation_map[op]
     elif op in ['gt', 'ge']:
-        result += "    return group->aggr[field].values[0] %s value - delta;\n"%operation_map[op]
+        result += "    return aggr_value %s value - delta;\n"%operation_map[op]
     else:
         raise ValueError(op)
     result += "}\n\n"
