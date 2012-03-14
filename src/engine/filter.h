@@ -27,7 +27,6 @@
 #ifndef flowy_engine_filter_h
 #define flowy_engine_filter_h
 
-#include "base.h"
 #include "error_functions.h"
 #include "pipeline.h"
 #include "ftreader.h"

@@ -28,77 +28,6 @@
 #define _GNU_SOURCE
 #include "flowy.h"
 
-/* TODO
- * TODO: allow OR in filters
- * TODO: allow grouping and merging with more than one module
- *
- * for bitwise operations the delta is the value with which the operation is
- * done as in: bitAND(flags, delta) = value
- *
- *
- * specifying two record numbers and what fields to compare
- *
- * for allen operations, the offsets are the offsets of First and Last
- * respectively and field_lengths are FIRST and LAST
- */
-
-struct group **
-group_filter(struct group **groups, size_t num_groups, 
-             struct gfilter_rule *rules, size_t num_gfilter_rules,
-             size_t *num_filtered_groups) {
-  int i, j;
-  struct group **filtered_groups;
-  
-  *num_filtered_groups = 0;
-  filtered_groups = (struct group **)malloc(sizeof(struct group *)**num_filtered_groups);
-  
-  printf("foobar3\n");
-  for (i = num_groups-1; i > num_groups-10; i--) {
-    printf("%p\n", groups[i]);
-    if (groups[i] == NULL) {
-      perror("found nil");
-      exit(EXIT_FAILURE);
-    }
-  }
-  
-  for (i = 0; i < num_groups; i++) {
-    for (j = 0; j < num_gfilter_rules; j++) {
-      if (!rules[j].func(groups[i], rules[j].field, rules[j].value, rules[j].delta))
-        break;
-    }
-    
-    if (j < num_gfilter_rules) {
-      free(groups[i]->members);
-      free(groups[i]->aggr);
-      free(groups[i]);
-      groups[i] = NULL;
-      continue;
-    }
-    
-    (*num_filtered_groups)++;
-    filtered_groups = (struct group **)realloc(filtered_groups, sizeof(struct group *)**num_filtered_groups);
-    filtered_groups[*num_filtered_groups-1] = groups[i];
-  }
-  
-  filtered_groups = (struct group **)realloc(filtered_groups, sizeof(struct group *)**num_filtered_groups+1);
-  if (filtered_groups == NULL) {
-    perror("malloc");
-    exit(EXIT_FAILURE);
-  }
-  filtered_groups[*num_filtered_groups] = groups[i];
-  
-  printf("foobar2\n");
-  for (i = *num_filtered_groups-1; i > *num_filtered_groups-10; i--) {
-    printf("%p\n", filtered_groups[i]);
-    if (filtered_groups[i] == NULL) {
-      perror("found nil");
-      exit(EXIT_FAILURE);
-    }
-  }
-  
-  return filtered_groups;
-}
-
 static void *
 branch_start(void *arg) {
   
@@ -115,7 +44,7 @@ branch_start(void *arg) {
   
   /* group-filter stage variables */  
 #ifdef GROUPFILTER
-  struct group**              filtered_groups; /* returned */
+  struct group**              filtered_groupset; /* returned */
   size_t                      num_filtered_groups = 0; /* stored in binfo */
 #endif
 
@@ -214,14 +143,14 @@ branch_start(void *arg) {
   /*                            grouper-filter                              */
   /* -----------------------------------------------------------------------*/  
   
-  filtered_groups = group_filter(binfo->groupset, 
-                                 binfo->num_groups, 
-                                 binfo->gfilter_rules, 
-                                 binfo->num_gfilter_rules, 
-                                 &num_filtered_groups);
+  filtered_groupset = group_filter(binfo->groupset, 
+                                   binfo->num_groups, 
+                                   binfo->gfilter_rules, 
+                                   binfo->num_gfilter_rules, 
+                                   &num_filtered_groups);
  
   binfo->num_filtered_groups = num_filtered_groups;
-  binfo->filtered_groups = filtered_groups;
+  binfo->filtered_groups = filtered_groupset;
 
   /* -----------------------------------------------------------------------*/
   
