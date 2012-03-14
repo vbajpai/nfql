@@ -80,19 +80,23 @@ header.write("#define flowy_engine_auto_comps_h\n\n")
 header.write('#include "pipeline.h"\n\n')
 header.write("#include <math.h>\n")
 
-source.write("#include \"auto_comps.h\"\n")
+source.write('#include "auto_comps.h"\n')
 
 source.write("""
-int compar(const void *a, const void *b)
-{
+int 
+compar(const void *a, const void *b) {
     return (*(uint64_t *)a > *(uint64_t *)b) - (*(uint64_t *)b > *(uint64_t *)a);
 }
 
 """)
 
-filter_proto = "bool filter_%s_%s(char *record, size_t field_offset, uint64_t value, uint64_t delta)"
+filter_proto = """bool 
+                  filter_%s_%s(char *record, 
+                               size_t field_offset, 
+                               uint64_t value, 
+                               uint64_t delta)"""
 def filter_body(op, atype):
-    result = "\n{\n"
+    result = " {\n\n"
     if op == "eq":
         result += "    %s rec = *(%s *)(record + field_offset);\n"%(atype, atype)
         result += "    return (rec >= value - delta) && (rec <= value + delta);\n"
@@ -108,9 +112,14 @@ def filter_body(op, atype):
     result += "}\n\n"
     return result
 
-grouper_proto = "bool grouper_%s_%s_%s_%s(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)"
+grouper_proto = """bool
+                   grouper_%s_%s_%s_%s(struct group *group, 
+                                       size_t field_offset1, 
+                                       char *record2, 
+                                       size_t field_offset2, 
+                                       uint64_t delta)"""
 def grouper_body(op, atype1, atype2, dtype):
-    result = "\n{\n"
+    result = " {\n\n"
     if op == "eq":
         if dtype == 'no':
             result += "    return *(%s *)(group->members[0] + field_offset1) == *(%s *)(record2 + field_offset2);\n"%(atype1, atype2)
@@ -150,9 +159,14 @@ def grouper_body(op, atype1, atype2, dtype):
     result += "}\n\n"
     return result;
 
-groupaggr_proto = """struct aggr aggr_%s_%s(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)"""
+groupaggr_proto = """struct aggr 
+                     aggr_%s_%s(char **records, 
+                                size_t num_records, 
+                                size_t field_offset, 
+                                bool if_aggr_common)"""
+
 def groupaggr_body(op, atype):
-    result = "\n{\n"
+    result = " {\n\n"
     result += "    struct aggr aggr;\n"
     result += "    if (num_records == 0) {\n"
     result += "        aggr.num_values = 0;\n"
@@ -315,9 +329,14 @@ def gfilter_body(op):
     result += "}\n\n"
     return result
 
-merger_proto = "bool merger_%s(struct group *group1, size_t field1, struct group *group2, size_t field2, uint64_t delta)"
+merger_proto = """bool 
+                  merger_%s(struct group *group1, 
+                            size_t field1, 
+                            struct group *group2, 
+                            size_t field2, 
+                            uint64_t delta)"""
 def merger_body(op):
-    result = "\n{\n"
+    result = " {\n\n"
     if op in ['eq', 'ne', 'lt', 'gt', 'le', 'ge', 'in']:
         result += "    if (group1->aggr[field1].num_values == 0 || group2->aggr[field2].num_values == 0) {\n"
         result += "        return false;\n"
@@ -427,7 +446,8 @@ header.write("void\nassign_fptr(struct branch_info *binfos, int num_threads);\n\
 source.write("#include \"auto_assign.h\"\n")
 
 source.write("""
-void assign_fptr(struct branch_info *binfos, int num_threads) {
+void 
+assign_fptr(struct branch_info *binfos, int num_threads) {
     for (int i = 0; i < num_threads; i++) {
 """)
   

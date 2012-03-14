@@ -6,1741 +6,3281 @@
 
 #include "auto_comps.h"
 
-int compar(const void *a, const void *b)
-{
+int 
+compar(const void *a, const void *b) {
   return (*(uint64_t *)a > *(uint64_t *)b) - (*(uint64_t *)b > *(uint64_t *)a);
 }
 
-bool filter_eq_uint8_t(char *record, size_t field_offset, uint64_t value, uint64_t delta)
-{
+bool 
+filter_eq_uint8_t(char *record, 
+                  size_t field_offset, 
+                  uint64_t value, 
+                  uint64_t delta) {
+  
   uint8_t rec = *(uint8_t *)(record + field_offset);
   return (rec >= value - delta) && (rec <= value + delta);
 }
 
-bool filter_eq_uint16_t(char *record, size_t field_offset, uint64_t value, uint64_t delta)
-{
+bool 
+filter_eq_uint16_t(char *record, 
+                   size_t field_offset, 
+                   uint64_t value, 
+                   uint64_t delta) {
+  
   uint16_t rec = *(uint16_t *)(record + field_offset);
   return (rec >= value - delta) && (rec <= value + delta);
 }
 
-bool filter_eq_uint32_t(char *record, size_t field_offset, uint64_t value, uint64_t delta)
-{
+bool 
+filter_eq_uint32_t(char *record, 
+                   size_t field_offset, 
+                   uint64_t value, 
+                   uint64_t delta) {
+  
   uint32_t rec = *(uint32_t *)(record + field_offset);
   return (rec >= value - delta) && (rec <= value + delta);
 }
 
-bool filter_eq_uint64_t(char *record, size_t field_offset, uint64_t value, uint64_t delta)
-{
+bool 
+filter_eq_uint64_t(char *record, 
+                   size_t field_offset, 
+                   uint64_t value, 
+                   uint64_t delta) {
+  
   uint64_t rec = *(uint64_t *)(record + field_offset);
   return (rec >= value - delta) && (rec <= value + delta);
 }
 
-bool filter_ne_uint8_t(char *record, size_t field_offset, uint64_t value, uint64_t delta)
-{
+bool 
+filter_ne_uint8_t(char *record, 
+                  size_t field_offset, 
+                  uint64_t value, 
+                  uint64_t delta) {
+  
   uint8_t rec = *(uint8_t *)(record + field_offset);
   return (rec < value - delta) || (rec > value + delta);
 }
 
-bool filter_ne_uint16_t(char *record, size_t field_offset, uint64_t value, uint64_t delta)
-{
+bool 
+filter_ne_uint16_t(char *record, 
+                   size_t field_offset, 
+                   uint64_t value, 
+                   uint64_t delta) {
+  
   uint16_t rec = *(uint16_t *)(record + field_offset);
   return (rec < value - delta) || (rec > value + delta);
 }
 
-bool filter_ne_uint32_t(char *record, size_t field_offset, uint64_t value, uint64_t delta)
-{
+bool 
+filter_ne_uint32_t(char *record, 
+                   size_t field_offset, 
+                   uint64_t value, 
+                   uint64_t delta) {
+  
   uint32_t rec = *(uint32_t *)(record + field_offset);
   return (rec < value - delta) || (rec > value + delta);
 }
 
-bool filter_ne_uint64_t(char *record, size_t field_offset, uint64_t value, uint64_t delta)
-{
+bool 
+filter_ne_uint64_t(char *record, 
+                   size_t field_offset, 
+                   uint64_t value, 
+                   uint64_t delta) {
+  
   uint64_t rec = *(uint64_t *)(record + field_offset);
   return (rec < value - delta) || (rec > value + delta);
 }
 
-bool filter_lt_uint8_t(char *record, size_t field_offset, uint64_t value, uint64_t delta)
-{
+bool 
+filter_lt_uint8_t(char *record, 
+                  size_t field_offset, 
+                  uint64_t value, 
+                  uint64_t delta) {
+  
   return *(uint8_t *)(record + field_offset) < value + delta;
 }
 
-bool filter_lt_uint16_t(char *record, size_t field_offset, uint64_t value, uint64_t delta)
-{
+bool 
+filter_lt_uint16_t(char *record, 
+                   size_t field_offset, 
+                   uint64_t value, 
+                   uint64_t delta) {
+  
   return *(uint16_t *)(record + field_offset) < value + delta;
 }
 
-bool filter_lt_uint32_t(char *record, size_t field_offset, uint64_t value, uint64_t delta)
-{
+bool 
+filter_lt_uint32_t(char *record, 
+                   size_t field_offset, 
+                   uint64_t value, 
+                   uint64_t delta) {
+  
   return *(uint32_t *)(record + field_offset) < value + delta;
 }
 
-bool filter_lt_uint64_t(char *record, size_t field_offset, uint64_t value, uint64_t delta)
-{
+bool 
+filter_lt_uint64_t(char *record, 
+                   size_t field_offset, 
+                   uint64_t value, 
+                   uint64_t delta) {
+  
   return *(uint64_t *)(record + field_offset) < value + delta;
 }
 
-bool filter_gt_uint8_t(char *record, size_t field_offset, uint64_t value, uint64_t delta)
-{
+bool 
+filter_gt_uint8_t(char *record, 
+                  size_t field_offset, 
+                  uint64_t value, 
+                  uint64_t delta) {
+  
   return *(uint8_t *)(record + field_offset) > value - delta;
 }
 
-bool filter_gt_uint16_t(char *record, size_t field_offset, uint64_t value, uint64_t delta)
-{
+bool 
+filter_gt_uint16_t(char *record, 
+                   size_t field_offset, 
+                   uint64_t value, 
+                   uint64_t delta) {
+  
   return *(uint16_t *)(record + field_offset) > value - delta;
 }
 
-bool filter_gt_uint32_t(char *record, size_t field_offset, uint64_t value, uint64_t delta)
-{
+bool 
+filter_gt_uint32_t(char *record, 
+                   size_t field_offset, 
+                   uint64_t value, 
+                   uint64_t delta) {
+  
   return *(uint32_t *)(record + field_offset) > value - delta;
 }
 
-bool filter_gt_uint64_t(char *record, size_t field_offset, uint64_t value, uint64_t delta)
-{
+bool 
+filter_gt_uint64_t(char *record, 
+                   size_t field_offset, 
+                   uint64_t value, 
+                   uint64_t delta) {
+  
   return *(uint64_t *)(record + field_offset) > value - delta;
 }
 
-bool filter_le_uint8_t(char *record, size_t field_offset, uint64_t value, uint64_t delta)
-{
+bool 
+filter_le_uint8_t(char *record, 
+                  size_t field_offset, 
+                  uint64_t value, 
+                  uint64_t delta) {
+  
   return *(uint8_t *)(record + field_offset) <= value + delta;
 }
 
-bool filter_le_uint16_t(char *record, size_t field_offset, uint64_t value, uint64_t delta)
-{
+bool 
+filter_le_uint16_t(char *record, 
+                   size_t field_offset, 
+                   uint64_t value, 
+                   uint64_t delta) {
+  
   return *(uint16_t *)(record + field_offset) <= value + delta;
 }
 
-bool filter_le_uint32_t(char *record, size_t field_offset, uint64_t value, uint64_t delta)
-{
+bool 
+filter_le_uint32_t(char *record, 
+                   size_t field_offset, 
+                   uint64_t value, 
+                   uint64_t delta) {
+  
   return *(uint32_t *)(record + field_offset) <= value + delta;
 }
 
-bool filter_le_uint64_t(char *record, size_t field_offset, uint64_t value, uint64_t delta)
-{
+bool 
+filter_le_uint64_t(char *record, 
+                   size_t field_offset, 
+                   uint64_t value, 
+                   uint64_t delta) {
+  
   return *(uint64_t *)(record + field_offset) <= value + delta;
 }
 
-bool filter_ge_uint8_t(char *record, size_t field_offset, uint64_t value, uint64_t delta)
-{
+bool 
+filter_ge_uint8_t(char *record, 
+                  size_t field_offset, 
+                  uint64_t value, 
+                  uint64_t delta) {
+  
   return *(uint8_t *)(record + field_offset) >= value - delta;
 }
 
-bool filter_ge_uint16_t(char *record, size_t field_offset, uint64_t value, uint64_t delta)
-{
+bool 
+filter_ge_uint16_t(char *record, 
+                   size_t field_offset, 
+                   uint64_t value, 
+                   uint64_t delta) {
+  
   return *(uint16_t *)(record + field_offset) >= value - delta;
 }
 
-bool filter_ge_uint32_t(char *record, size_t field_offset, uint64_t value, uint64_t delta)
-{
+bool 
+filter_ge_uint32_t(char *record, 
+                   size_t field_offset, 
+                   uint64_t value, 
+                   uint64_t delta) {
+  
   return *(uint32_t *)(record + field_offset) >= value - delta;
 }
 
-bool filter_ge_uint64_t(char *record, size_t field_offset, uint64_t value, uint64_t delta)
-{
+bool 
+filter_ge_uint64_t(char *record, 
+                   size_t field_offset, 
+                   uint64_t value, 
+                   uint64_t delta) {
+  
   return *(uint64_t *)(record + field_offset) >= value - delta;
 }
 
-bool grouper_eq_uint8_t_uint8_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint8_t_uint8_t_no(struct group *group, 
+                              size_t field_offset1, 
+                              char *record2, 
+                              size_t field_offset2, 
+                              uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) == *(uint8_t *)(record2 + field_offset2);
 }
 
-bool grouper_eq_uint8_t_uint8_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint8_t_uint8_t_abs(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   uint8_t rec1 = *(uint8_t *)(group->members[0] + field_offset1);
   uint8_t rec2 = *(uint8_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint8_t_uint8_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint8_t_uint8_t_rel(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   uint8_t rec1 = *(uint8_t *)(group->members[group->num_members-1] + field_offset1);
   uint8_t rec2 = *(uint8_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint8_t_uint16_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint8_t_uint16_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) == *(uint16_t *)(record2 + field_offset2);
 }
 
-bool grouper_eq_uint8_t_uint16_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint8_t_uint16_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   uint8_t rec1 = *(uint8_t *)(group->members[0] + field_offset1);
   uint16_t rec2 = *(uint16_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint8_t_uint16_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint8_t_uint16_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   uint8_t rec1 = *(uint8_t *)(group->members[group->num_members-1] + field_offset1);
   uint16_t rec2 = *(uint16_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint8_t_uint32_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint8_t_uint32_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) == *(uint32_t *)(record2 + field_offset2);
 }
 
-bool grouper_eq_uint8_t_uint32_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint8_t_uint32_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   uint8_t rec1 = *(uint8_t *)(group->members[0] + field_offset1);
   uint32_t rec2 = *(uint32_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint8_t_uint32_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint8_t_uint32_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   uint8_t rec1 = *(uint8_t *)(group->members[group->num_members-1] + field_offset1);
   uint32_t rec2 = *(uint32_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint8_t_uint64_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint8_t_uint64_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) == *(uint64_t *)(record2 + field_offset2);
 }
 
-bool grouper_eq_uint8_t_uint64_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint8_t_uint64_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   uint8_t rec1 = *(uint8_t *)(group->members[0] + field_offset1);
   uint64_t rec2 = *(uint64_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint8_t_uint64_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint8_t_uint64_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   uint8_t rec1 = *(uint8_t *)(group->members[group->num_members-1] + field_offset1);
   uint64_t rec2 = *(uint64_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint16_t_uint8_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint16_t_uint8_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) == *(uint8_t *)(record2 + field_offset2);
 }
 
-bool grouper_eq_uint16_t_uint8_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint16_t_uint8_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   uint16_t rec1 = *(uint16_t *)(group->members[0] + field_offset1);
   uint8_t rec2 = *(uint8_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint16_t_uint8_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint16_t_uint8_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   uint16_t rec1 = *(uint16_t *)(group->members[group->num_members-1] + field_offset1);
   uint8_t rec2 = *(uint8_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint16_t_uint16_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint16_t_uint16_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) == *(uint16_t *)(record2 + field_offset2);
 }
 
-bool grouper_eq_uint16_t_uint16_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint16_t_uint16_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint16_t rec1 = *(uint16_t *)(group->members[0] + field_offset1);
   uint16_t rec2 = *(uint16_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint16_t_uint16_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint16_t_uint16_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint16_t rec1 = *(uint16_t *)(group->members[group->num_members-1] + field_offset1);
   uint16_t rec2 = *(uint16_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint16_t_uint32_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint16_t_uint32_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) == *(uint32_t *)(record2 + field_offset2);
 }
 
-bool grouper_eq_uint16_t_uint32_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint16_t_uint32_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint16_t rec1 = *(uint16_t *)(group->members[0] + field_offset1);
   uint32_t rec2 = *(uint32_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint16_t_uint32_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint16_t_uint32_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint16_t rec1 = *(uint16_t *)(group->members[group->num_members-1] + field_offset1);
   uint32_t rec2 = *(uint32_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint16_t_uint64_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint16_t_uint64_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) == *(uint64_t *)(record2 + field_offset2);
 }
 
-bool grouper_eq_uint16_t_uint64_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint16_t_uint64_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint16_t rec1 = *(uint16_t *)(group->members[0] + field_offset1);
   uint64_t rec2 = *(uint64_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint16_t_uint64_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint16_t_uint64_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint16_t rec1 = *(uint16_t *)(group->members[group->num_members-1] + field_offset1);
   uint64_t rec2 = *(uint64_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint32_t_uint8_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint32_t_uint8_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) == *(uint8_t *)(record2 + field_offset2);
 }
 
-bool grouper_eq_uint32_t_uint8_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint32_t_uint8_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   uint32_t rec1 = *(uint32_t *)(group->members[0] + field_offset1);
   uint8_t rec2 = *(uint8_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint32_t_uint8_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint32_t_uint8_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   uint32_t rec1 = *(uint32_t *)(group->members[group->num_members-1] + field_offset1);
   uint8_t rec2 = *(uint8_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint32_t_uint16_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint32_t_uint16_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) == *(uint16_t *)(record2 + field_offset2);
 }
 
-bool grouper_eq_uint32_t_uint16_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint32_t_uint16_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint32_t rec1 = *(uint32_t *)(group->members[0] + field_offset1);
   uint16_t rec2 = *(uint16_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint32_t_uint16_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint32_t_uint16_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint32_t rec1 = *(uint32_t *)(group->members[group->num_members-1] + field_offset1);
   uint16_t rec2 = *(uint16_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint32_t_uint32_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint32_t_uint32_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) == *(uint32_t *)(record2 + field_offset2);
 }
 
-bool grouper_eq_uint32_t_uint32_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint32_t_uint32_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint32_t rec1 = *(uint32_t *)(group->members[0] + field_offset1);
   uint32_t rec2 = *(uint32_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint32_t_uint32_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint32_t_uint32_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint32_t rec1 = *(uint32_t *)(group->members[group->num_members-1] + field_offset1);
   uint32_t rec2 = *(uint32_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint32_t_uint64_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint32_t_uint64_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) == *(uint64_t *)(record2 + field_offset2);
 }
 
-bool grouper_eq_uint32_t_uint64_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint32_t_uint64_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint32_t rec1 = *(uint32_t *)(group->members[0] + field_offset1);
   uint64_t rec2 = *(uint64_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint32_t_uint64_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint32_t_uint64_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint32_t rec1 = *(uint32_t *)(group->members[group->num_members-1] + field_offset1);
   uint64_t rec2 = *(uint64_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint64_t_uint8_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint64_t_uint8_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) == *(uint8_t *)(record2 + field_offset2);
 }
 
-bool grouper_eq_uint64_t_uint8_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint64_t_uint8_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   uint64_t rec1 = *(uint64_t *)(group->members[0] + field_offset1);
   uint8_t rec2 = *(uint8_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint64_t_uint8_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint64_t_uint8_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   uint64_t rec1 = *(uint64_t *)(group->members[group->num_members-1] + field_offset1);
   uint8_t rec2 = *(uint8_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint64_t_uint16_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint64_t_uint16_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) == *(uint16_t *)(record2 + field_offset2);
 }
 
-bool grouper_eq_uint64_t_uint16_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint64_t_uint16_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint64_t rec1 = *(uint64_t *)(group->members[0] + field_offset1);
   uint16_t rec2 = *(uint16_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint64_t_uint16_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint64_t_uint16_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint64_t rec1 = *(uint64_t *)(group->members[group->num_members-1] + field_offset1);
   uint16_t rec2 = *(uint16_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint64_t_uint32_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint64_t_uint32_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) == *(uint32_t *)(record2 + field_offset2);
 }
 
-bool grouper_eq_uint64_t_uint32_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint64_t_uint32_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint64_t rec1 = *(uint64_t *)(group->members[0] + field_offset1);
   uint32_t rec2 = *(uint32_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint64_t_uint32_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint64_t_uint32_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint64_t rec1 = *(uint64_t *)(group->members[group->num_members-1] + field_offset1);
   uint32_t rec2 = *(uint32_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint64_t_uint64_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint64_t_uint64_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) == *(uint64_t *)(record2 + field_offset2);
 }
 
-bool grouper_eq_uint64_t_uint64_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint64_t_uint64_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint64_t rec1 = *(uint64_t *)(group->members[0] + field_offset1);
   uint64_t rec2 = *(uint64_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_eq_uint64_t_uint64_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_eq_uint64_t_uint64_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint64_t rec1 = *(uint64_t *)(group->members[group->num_members-1] + field_offset1);
   uint64_t rec2 = *(uint64_t *)(record2 + field_offset2);
   return (rec1 >= rec2 - delta) && (rec1 <= rec2 + delta);
 }
 
-bool grouper_ne_uint8_t_uint8_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint8_t_uint8_t_no(struct group *group, 
+                              size_t field_offset1, 
+                              char *record2, 
+                              size_t field_offset2, 
+                              uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) != *(uint8_t *)(record2 + field_offset2);
 }
 
-bool grouper_ne_uint8_t_uint8_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint8_t_uint8_t_abs(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   uint8_t rec1 = *(uint8_t *)(group->members[0] + field_offset1);
   uint8_t rec2 = *(uint8_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint8_t_uint8_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint8_t_uint8_t_rel(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   uint8_t rec1 = *(uint8_t *)(group->members[group->num_members-1] + field_offset1);
   uint8_t rec2 = *(uint8_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint8_t_uint16_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint8_t_uint16_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) != *(uint16_t *)(record2 + field_offset2);
 }
 
-bool grouper_ne_uint8_t_uint16_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint8_t_uint16_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   uint8_t rec1 = *(uint8_t *)(group->members[0] + field_offset1);
   uint16_t rec2 = *(uint16_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint8_t_uint16_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint8_t_uint16_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   uint8_t rec1 = *(uint8_t *)(group->members[group->num_members-1] + field_offset1);
   uint16_t rec2 = *(uint16_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint8_t_uint32_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint8_t_uint32_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) != *(uint32_t *)(record2 + field_offset2);
 }
 
-bool grouper_ne_uint8_t_uint32_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint8_t_uint32_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   uint8_t rec1 = *(uint8_t *)(group->members[0] + field_offset1);
   uint32_t rec2 = *(uint32_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint8_t_uint32_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint8_t_uint32_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   uint8_t rec1 = *(uint8_t *)(group->members[group->num_members-1] + field_offset1);
   uint32_t rec2 = *(uint32_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint8_t_uint64_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint8_t_uint64_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) != *(uint64_t *)(record2 + field_offset2);
 }
 
-bool grouper_ne_uint8_t_uint64_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint8_t_uint64_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   uint8_t rec1 = *(uint8_t *)(group->members[0] + field_offset1);
   uint64_t rec2 = *(uint64_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint8_t_uint64_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint8_t_uint64_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   uint8_t rec1 = *(uint8_t *)(group->members[group->num_members-1] + field_offset1);
   uint64_t rec2 = *(uint64_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint16_t_uint8_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint16_t_uint8_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) != *(uint8_t *)(record2 + field_offset2);
 }
 
-bool grouper_ne_uint16_t_uint8_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint16_t_uint8_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   uint16_t rec1 = *(uint16_t *)(group->members[0] + field_offset1);
   uint8_t rec2 = *(uint8_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint16_t_uint8_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint16_t_uint8_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   uint16_t rec1 = *(uint16_t *)(group->members[group->num_members-1] + field_offset1);
   uint8_t rec2 = *(uint8_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint16_t_uint16_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint16_t_uint16_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) != *(uint16_t *)(record2 + field_offset2);
 }
 
-bool grouper_ne_uint16_t_uint16_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint16_t_uint16_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint16_t rec1 = *(uint16_t *)(group->members[0] + field_offset1);
   uint16_t rec2 = *(uint16_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint16_t_uint16_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint16_t_uint16_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint16_t rec1 = *(uint16_t *)(group->members[group->num_members-1] + field_offset1);
   uint16_t rec2 = *(uint16_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint16_t_uint32_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint16_t_uint32_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) != *(uint32_t *)(record2 + field_offset2);
 }
 
-bool grouper_ne_uint16_t_uint32_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint16_t_uint32_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint16_t rec1 = *(uint16_t *)(group->members[0] + field_offset1);
   uint32_t rec2 = *(uint32_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint16_t_uint32_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint16_t_uint32_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint16_t rec1 = *(uint16_t *)(group->members[group->num_members-1] + field_offset1);
   uint32_t rec2 = *(uint32_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint16_t_uint64_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint16_t_uint64_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) != *(uint64_t *)(record2 + field_offset2);
 }
 
-bool grouper_ne_uint16_t_uint64_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint16_t_uint64_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint16_t rec1 = *(uint16_t *)(group->members[0] + field_offset1);
   uint64_t rec2 = *(uint64_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint16_t_uint64_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint16_t_uint64_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint16_t rec1 = *(uint16_t *)(group->members[group->num_members-1] + field_offset1);
   uint64_t rec2 = *(uint64_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint32_t_uint8_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint32_t_uint8_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) != *(uint8_t *)(record2 + field_offset2);
 }
 
-bool grouper_ne_uint32_t_uint8_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint32_t_uint8_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   uint32_t rec1 = *(uint32_t *)(group->members[0] + field_offset1);
   uint8_t rec2 = *(uint8_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint32_t_uint8_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint32_t_uint8_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   uint32_t rec1 = *(uint32_t *)(group->members[group->num_members-1] + field_offset1);
   uint8_t rec2 = *(uint8_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint32_t_uint16_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint32_t_uint16_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) != *(uint16_t *)(record2 + field_offset2);
 }
 
-bool grouper_ne_uint32_t_uint16_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint32_t_uint16_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint32_t rec1 = *(uint32_t *)(group->members[0] + field_offset1);
   uint16_t rec2 = *(uint16_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint32_t_uint16_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint32_t_uint16_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint32_t rec1 = *(uint32_t *)(group->members[group->num_members-1] + field_offset1);
   uint16_t rec2 = *(uint16_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint32_t_uint32_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint32_t_uint32_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) != *(uint32_t *)(record2 + field_offset2);
 }
 
-bool grouper_ne_uint32_t_uint32_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint32_t_uint32_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint32_t rec1 = *(uint32_t *)(group->members[0] + field_offset1);
   uint32_t rec2 = *(uint32_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint32_t_uint32_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint32_t_uint32_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint32_t rec1 = *(uint32_t *)(group->members[group->num_members-1] + field_offset1);
   uint32_t rec2 = *(uint32_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint32_t_uint64_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint32_t_uint64_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) != *(uint64_t *)(record2 + field_offset2);
 }
 
-bool grouper_ne_uint32_t_uint64_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint32_t_uint64_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint32_t rec1 = *(uint32_t *)(group->members[0] + field_offset1);
   uint64_t rec2 = *(uint64_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint32_t_uint64_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint32_t_uint64_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint32_t rec1 = *(uint32_t *)(group->members[group->num_members-1] + field_offset1);
   uint64_t rec2 = *(uint64_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint64_t_uint8_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint64_t_uint8_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) != *(uint8_t *)(record2 + field_offset2);
 }
 
-bool grouper_ne_uint64_t_uint8_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint64_t_uint8_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   uint64_t rec1 = *(uint64_t *)(group->members[0] + field_offset1);
   uint8_t rec2 = *(uint8_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint64_t_uint8_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint64_t_uint8_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   uint64_t rec1 = *(uint64_t *)(group->members[group->num_members-1] + field_offset1);
   uint8_t rec2 = *(uint8_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint64_t_uint16_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint64_t_uint16_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) != *(uint16_t *)(record2 + field_offset2);
 }
 
-bool grouper_ne_uint64_t_uint16_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint64_t_uint16_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint64_t rec1 = *(uint64_t *)(group->members[0] + field_offset1);
   uint16_t rec2 = *(uint16_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint64_t_uint16_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint64_t_uint16_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint64_t rec1 = *(uint64_t *)(group->members[group->num_members-1] + field_offset1);
   uint16_t rec2 = *(uint16_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint64_t_uint32_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint64_t_uint32_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) != *(uint32_t *)(record2 + field_offset2);
 }
 
-bool grouper_ne_uint64_t_uint32_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint64_t_uint32_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint64_t rec1 = *(uint64_t *)(group->members[0] + field_offset1);
   uint32_t rec2 = *(uint32_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint64_t_uint32_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint64_t_uint32_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint64_t rec1 = *(uint64_t *)(group->members[group->num_members-1] + field_offset1);
   uint32_t rec2 = *(uint32_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint64_t_uint64_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint64_t_uint64_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) != *(uint64_t *)(record2 + field_offset2);
 }
 
-bool grouper_ne_uint64_t_uint64_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint64_t_uint64_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint64_t rec1 = *(uint64_t *)(group->members[0] + field_offset1);
   uint64_t rec2 = *(uint64_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_ne_uint64_t_uint64_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ne_uint64_t_uint64_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   uint64_t rec1 = *(uint64_t *)(group->members[group->num_members-1] + field_offset1);
   uint64_t rec2 = *(uint64_t *)(record2 + field_offset2);
   return (rec1 < rec2 - delta) || (rec1 > rec2 + delta);
 }
 
-bool grouper_lt_uint8_t_uint8_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint8_t_uint8_t_no(struct group *group, 
+                              size_t field_offset1, 
+                              char *record2, 
+                              size_t field_offset2, 
+                              uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) < *(uint8_t *)(record2 + field_offset2);
 }
 
-bool grouper_lt_uint8_t_uint8_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint8_t_uint8_t_abs(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) < *(uint8_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint8_t_uint8_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint8_t_uint8_t_rel(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[group->num_members-1] + field_offset1) < *(uint8_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint8_t_uint16_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint8_t_uint16_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) < *(uint16_t *)(record2 + field_offset2);
 }
 
-bool grouper_lt_uint8_t_uint16_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint8_t_uint16_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) < *(uint16_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint8_t_uint16_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint8_t_uint16_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint8_t *)(group->members[group->num_members-1] + field_offset1) < *(uint16_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint8_t_uint32_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint8_t_uint32_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) < *(uint32_t *)(record2 + field_offset2);
 }
 
-bool grouper_lt_uint8_t_uint32_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint8_t_uint32_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) < *(uint32_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint8_t_uint32_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint8_t_uint32_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint8_t *)(group->members[group->num_members-1] + field_offset1) < *(uint32_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint8_t_uint64_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint8_t_uint64_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) < *(uint64_t *)(record2 + field_offset2);
 }
 
-bool grouper_lt_uint8_t_uint64_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint8_t_uint64_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) < *(uint64_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint8_t_uint64_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint8_t_uint64_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint8_t *)(group->members[group->num_members-1] + field_offset1) < *(uint64_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint16_t_uint8_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint16_t_uint8_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) < *(uint8_t *)(record2 + field_offset2);
 }
 
-bool grouper_lt_uint16_t_uint8_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint16_t_uint8_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) < *(uint8_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint16_t_uint8_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint16_t_uint8_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[group->num_members-1] + field_offset1) < *(uint8_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint16_t_uint16_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint16_t_uint16_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) < *(uint16_t *)(record2 + field_offset2);
 }
 
-bool grouper_lt_uint16_t_uint16_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint16_t_uint16_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) < *(uint16_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint16_t_uint16_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint16_t_uint16_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint16_t *)(group->members[group->num_members-1] + field_offset1) < *(uint16_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint16_t_uint32_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint16_t_uint32_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) < *(uint32_t *)(record2 + field_offset2);
 }
 
-bool grouper_lt_uint16_t_uint32_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint16_t_uint32_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) < *(uint32_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint16_t_uint32_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint16_t_uint32_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint16_t *)(group->members[group->num_members-1] + field_offset1) < *(uint32_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint16_t_uint64_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint16_t_uint64_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) < *(uint64_t *)(record2 + field_offset2);
 }
 
-bool grouper_lt_uint16_t_uint64_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint16_t_uint64_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) < *(uint64_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint16_t_uint64_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint16_t_uint64_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint16_t *)(group->members[group->num_members-1] + field_offset1) < *(uint64_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint32_t_uint8_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint32_t_uint8_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) < *(uint8_t *)(record2 + field_offset2);
 }
 
-bool grouper_lt_uint32_t_uint8_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint32_t_uint8_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) < *(uint8_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint32_t_uint8_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint32_t_uint8_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[group->num_members-1] + field_offset1) < *(uint8_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint32_t_uint16_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint32_t_uint16_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) < *(uint16_t *)(record2 + field_offset2);
 }
 
-bool grouper_lt_uint32_t_uint16_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint32_t_uint16_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) < *(uint16_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint32_t_uint16_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint32_t_uint16_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint32_t *)(group->members[group->num_members-1] + field_offset1) < *(uint16_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint32_t_uint32_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint32_t_uint32_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) < *(uint32_t *)(record2 + field_offset2);
 }
 
-bool grouper_lt_uint32_t_uint32_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint32_t_uint32_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) < *(uint32_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint32_t_uint32_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint32_t_uint32_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint32_t *)(group->members[group->num_members-1] + field_offset1) < *(uint32_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint32_t_uint64_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint32_t_uint64_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) < *(uint64_t *)(record2 + field_offset2);
 }
 
-bool grouper_lt_uint32_t_uint64_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint32_t_uint64_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) < *(uint64_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint32_t_uint64_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint32_t_uint64_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint32_t *)(group->members[group->num_members-1] + field_offset1) < *(uint64_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint64_t_uint8_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint64_t_uint8_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) < *(uint8_t *)(record2 + field_offset2);
 }
 
-bool grouper_lt_uint64_t_uint8_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint64_t_uint8_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) < *(uint8_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint64_t_uint8_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint64_t_uint8_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[group->num_members-1] + field_offset1) < *(uint8_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint64_t_uint16_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint64_t_uint16_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) < *(uint16_t *)(record2 + field_offset2);
 }
 
-bool grouper_lt_uint64_t_uint16_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint64_t_uint16_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) < *(uint16_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint64_t_uint16_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint64_t_uint16_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint64_t *)(group->members[group->num_members-1] + field_offset1) < *(uint16_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint64_t_uint32_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint64_t_uint32_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) < *(uint32_t *)(record2 + field_offset2);
 }
 
-bool grouper_lt_uint64_t_uint32_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint64_t_uint32_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) < *(uint32_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint64_t_uint32_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint64_t_uint32_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint64_t *)(group->members[group->num_members-1] + field_offset1) < *(uint32_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint64_t_uint64_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint64_t_uint64_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) < *(uint64_t *)(record2 + field_offset2);
 }
 
-bool grouper_lt_uint64_t_uint64_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint64_t_uint64_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) < *(uint64_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_lt_uint64_t_uint64_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_lt_uint64_t_uint64_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint64_t *)(group->members[group->num_members-1] + field_offset1) < *(uint64_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_gt_uint8_t_uint8_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint8_t_uint8_t_no(struct group *group, 
+                              size_t field_offset1, 
+                              char *record2, 
+                              size_t field_offset2, 
+                              uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) > *(uint8_t *)(record2 + field_offset2);
   return *(uint8_t *)(group->members[0] + field_offset1) > *(uint8_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint8_t_uint8_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint8_t_uint8_t_abs(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) > *(uint8_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint8_t_uint8_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint8_t_uint8_t_rel(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[group->num_members-1] + field_offset1) > *(uint8_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint8_t_uint16_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint8_t_uint16_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) > *(uint16_t *)(record2 + field_offset2);
   return *(uint8_t *)(group->members[0] + field_offset1) > *(uint16_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint8_t_uint16_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint8_t_uint16_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) > *(uint16_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint8_t_uint16_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint8_t_uint16_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint8_t *)(group->members[group->num_members-1] + field_offset1) > *(uint16_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint8_t_uint32_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint8_t_uint32_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) > *(uint32_t *)(record2 + field_offset2);
   return *(uint8_t *)(group->members[0] + field_offset1) > *(uint32_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint8_t_uint32_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint8_t_uint32_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) > *(uint32_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint8_t_uint32_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint8_t_uint32_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint8_t *)(group->members[group->num_members-1] + field_offset1) > *(uint32_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint8_t_uint64_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint8_t_uint64_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) > *(uint64_t *)(record2 + field_offset2);
   return *(uint8_t *)(group->members[0] + field_offset1) > *(uint64_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint8_t_uint64_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint8_t_uint64_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) > *(uint64_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint8_t_uint64_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint8_t_uint64_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint8_t *)(group->members[group->num_members-1] + field_offset1) > *(uint64_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint16_t_uint8_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint16_t_uint8_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) > *(uint8_t *)(record2 + field_offset2);
   return *(uint16_t *)(group->members[0] + field_offset1) > *(uint8_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint16_t_uint8_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint16_t_uint8_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) > *(uint8_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint16_t_uint8_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint16_t_uint8_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[group->num_members-1] + field_offset1) > *(uint8_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint16_t_uint16_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint16_t_uint16_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) > *(uint16_t *)(record2 + field_offset2);
   return *(uint16_t *)(group->members[0] + field_offset1) > *(uint16_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint16_t_uint16_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint16_t_uint16_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) > *(uint16_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint16_t_uint16_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint16_t_uint16_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint16_t *)(group->members[group->num_members-1] + field_offset1) > *(uint16_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint16_t_uint32_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint16_t_uint32_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) > *(uint32_t *)(record2 + field_offset2);
   return *(uint16_t *)(group->members[0] + field_offset1) > *(uint32_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint16_t_uint32_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint16_t_uint32_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) > *(uint32_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint16_t_uint32_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint16_t_uint32_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint16_t *)(group->members[group->num_members-1] + field_offset1) > *(uint32_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint16_t_uint64_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint16_t_uint64_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) > *(uint64_t *)(record2 + field_offset2);
   return *(uint16_t *)(group->members[0] + field_offset1) > *(uint64_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint16_t_uint64_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint16_t_uint64_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) > *(uint64_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint16_t_uint64_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint16_t_uint64_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint16_t *)(group->members[group->num_members-1] + field_offset1) > *(uint64_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint32_t_uint8_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint32_t_uint8_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) > *(uint8_t *)(record2 + field_offset2);
   return *(uint32_t *)(group->members[0] + field_offset1) > *(uint8_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint32_t_uint8_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint32_t_uint8_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) > *(uint8_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint32_t_uint8_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint32_t_uint8_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[group->num_members-1] + field_offset1) > *(uint8_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint32_t_uint16_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint32_t_uint16_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) > *(uint16_t *)(record2 + field_offset2);
   return *(uint32_t *)(group->members[0] + field_offset1) > *(uint16_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint32_t_uint16_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint32_t_uint16_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) > *(uint16_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint32_t_uint16_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint32_t_uint16_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint32_t *)(group->members[group->num_members-1] + field_offset1) > *(uint16_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint32_t_uint32_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint32_t_uint32_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) > *(uint32_t *)(record2 + field_offset2);
   return *(uint32_t *)(group->members[0] + field_offset1) > *(uint32_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint32_t_uint32_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint32_t_uint32_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) > *(uint32_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint32_t_uint32_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint32_t_uint32_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint32_t *)(group->members[group->num_members-1] + field_offset1) > *(uint32_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint32_t_uint64_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint32_t_uint64_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) > *(uint64_t *)(record2 + field_offset2);
   return *(uint32_t *)(group->members[0] + field_offset1) > *(uint64_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint32_t_uint64_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint32_t_uint64_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) > *(uint64_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint32_t_uint64_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint32_t_uint64_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint32_t *)(group->members[group->num_members-1] + field_offset1) > *(uint64_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint64_t_uint8_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint64_t_uint8_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) > *(uint8_t *)(record2 + field_offset2);
   return *(uint64_t *)(group->members[0] + field_offset1) > *(uint8_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint64_t_uint8_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint64_t_uint8_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) > *(uint8_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint64_t_uint8_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint64_t_uint8_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[group->num_members-1] + field_offset1) > *(uint8_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint64_t_uint16_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint64_t_uint16_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) > *(uint16_t *)(record2 + field_offset2);
   return *(uint64_t *)(group->members[0] + field_offset1) > *(uint16_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint64_t_uint16_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint64_t_uint16_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) > *(uint16_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint64_t_uint16_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint64_t_uint16_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint64_t *)(group->members[group->num_members-1] + field_offset1) > *(uint16_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint64_t_uint32_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint64_t_uint32_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) > *(uint32_t *)(record2 + field_offset2);
   return *(uint64_t *)(group->members[0] + field_offset1) > *(uint32_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint64_t_uint32_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint64_t_uint32_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) > *(uint32_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint64_t_uint32_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint64_t_uint32_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint64_t *)(group->members[group->num_members-1] + field_offset1) > *(uint32_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint64_t_uint64_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint64_t_uint64_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) > *(uint64_t *)(record2 + field_offset2);
   return *(uint64_t *)(group->members[0] + field_offset1) > *(uint64_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint64_t_uint64_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint64_t_uint64_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) > *(uint64_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_gt_uint64_t_uint64_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_gt_uint64_t_uint64_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint64_t *)(group->members[group->num_members-1] + field_offset1) > *(uint64_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_le_uint8_t_uint8_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint8_t_uint8_t_no(struct group *group, 
+                              size_t field_offset1, 
+                              char *record2, 
+                              size_t field_offset2, 
+                              uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) <= *(uint8_t *)(record2 + field_offset2);
 }
 
-bool grouper_le_uint8_t_uint8_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint8_t_uint8_t_abs(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) <= *(uint8_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint8_t_uint8_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint8_t_uint8_t_rel(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[group->num_members-1] + field_offset1) <= *(uint8_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint8_t_uint16_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint8_t_uint16_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) <= *(uint16_t *)(record2 + field_offset2);
 }
 
-bool grouper_le_uint8_t_uint16_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint8_t_uint16_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) <= *(uint16_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint8_t_uint16_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint8_t_uint16_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint8_t *)(group->members[group->num_members-1] + field_offset1) <= *(uint16_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint8_t_uint32_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint8_t_uint32_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) <= *(uint32_t *)(record2 + field_offset2);
 }
 
-bool grouper_le_uint8_t_uint32_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint8_t_uint32_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) <= *(uint32_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint8_t_uint32_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint8_t_uint32_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint8_t *)(group->members[group->num_members-1] + field_offset1) <= *(uint32_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint8_t_uint64_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint8_t_uint64_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) <= *(uint64_t *)(record2 + field_offset2);
 }
 
-bool grouper_le_uint8_t_uint64_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint8_t_uint64_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) <= *(uint64_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint8_t_uint64_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint8_t_uint64_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint8_t *)(group->members[group->num_members-1] + field_offset1) <= *(uint64_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint16_t_uint8_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint16_t_uint8_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) <= *(uint8_t *)(record2 + field_offset2);
 }
 
-bool grouper_le_uint16_t_uint8_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint16_t_uint8_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) <= *(uint8_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint16_t_uint8_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint16_t_uint8_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[group->num_members-1] + field_offset1) <= *(uint8_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint16_t_uint16_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint16_t_uint16_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) <= *(uint16_t *)(record2 + field_offset2);
 }
 
-bool grouper_le_uint16_t_uint16_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint16_t_uint16_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) <= *(uint16_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint16_t_uint16_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint16_t_uint16_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint16_t *)(group->members[group->num_members-1] + field_offset1) <= *(uint16_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint16_t_uint32_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint16_t_uint32_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) <= *(uint32_t *)(record2 + field_offset2);
 }
 
-bool grouper_le_uint16_t_uint32_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint16_t_uint32_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) <= *(uint32_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint16_t_uint32_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint16_t_uint32_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint16_t *)(group->members[group->num_members-1] + field_offset1) <= *(uint32_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint16_t_uint64_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint16_t_uint64_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) <= *(uint64_t *)(record2 + field_offset2);
 }
 
-bool grouper_le_uint16_t_uint64_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint16_t_uint64_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) <= *(uint64_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint16_t_uint64_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint16_t_uint64_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint16_t *)(group->members[group->num_members-1] + field_offset1) <= *(uint64_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint32_t_uint8_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint32_t_uint8_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) <= *(uint8_t *)(record2 + field_offset2);
 }
 
-bool grouper_le_uint32_t_uint8_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint32_t_uint8_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) <= *(uint8_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint32_t_uint8_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint32_t_uint8_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[group->num_members-1] + field_offset1) <= *(uint8_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint32_t_uint16_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint32_t_uint16_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) <= *(uint16_t *)(record2 + field_offset2);
 }
 
-bool grouper_le_uint32_t_uint16_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint32_t_uint16_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) <= *(uint16_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint32_t_uint16_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint32_t_uint16_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint32_t *)(group->members[group->num_members-1] + field_offset1) <= *(uint16_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint32_t_uint32_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint32_t_uint32_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) <= *(uint32_t *)(record2 + field_offset2);
 }
 
-bool grouper_le_uint32_t_uint32_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint32_t_uint32_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) <= *(uint32_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint32_t_uint32_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint32_t_uint32_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint32_t *)(group->members[group->num_members-1] + field_offset1) <= *(uint32_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint32_t_uint64_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint32_t_uint64_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) <= *(uint64_t *)(record2 + field_offset2);
 }
 
-bool grouper_le_uint32_t_uint64_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint32_t_uint64_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) <= *(uint64_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint32_t_uint64_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint32_t_uint64_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint32_t *)(group->members[group->num_members-1] + field_offset1) <= *(uint64_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint64_t_uint8_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint64_t_uint8_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) <= *(uint8_t *)(record2 + field_offset2);
 }
 
-bool grouper_le_uint64_t_uint8_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint64_t_uint8_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) <= *(uint8_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint64_t_uint8_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint64_t_uint8_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[group->num_members-1] + field_offset1) <= *(uint8_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint64_t_uint16_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint64_t_uint16_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) <= *(uint16_t *)(record2 + field_offset2);
 }
 
-bool grouper_le_uint64_t_uint16_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint64_t_uint16_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) <= *(uint16_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint64_t_uint16_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint64_t_uint16_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint64_t *)(group->members[group->num_members-1] + field_offset1) <= *(uint16_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint64_t_uint32_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint64_t_uint32_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) <= *(uint32_t *)(record2 + field_offset2);
 }
 
-bool grouper_le_uint64_t_uint32_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint64_t_uint32_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) <= *(uint32_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint64_t_uint32_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint64_t_uint32_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint64_t *)(group->members[group->num_members-1] + field_offset1) <= *(uint32_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint64_t_uint64_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint64_t_uint64_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) <= *(uint64_t *)(record2 + field_offset2);
 }
 
-bool grouper_le_uint64_t_uint64_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint64_t_uint64_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) <= *(uint64_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_le_uint64_t_uint64_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_le_uint64_t_uint64_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint64_t *)(group->members[group->num_members-1] + field_offset1) <= *(uint64_t *)(record2 + field_offset2) + delta;
 }
 
-bool grouper_ge_uint8_t_uint8_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint8_t_uint8_t_no(struct group *group, 
+                              size_t field_offset1, 
+                              char *record2, 
+                              size_t field_offset2, 
+                              uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) >= *(uint8_t *)(record2 + field_offset2);
   return *(uint8_t *)(group->members[0] + field_offset1) >= *(uint8_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint8_t_uint8_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint8_t_uint8_t_abs(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) >= *(uint8_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint8_t_uint8_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint8_t_uint8_t_rel(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[group->num_members-1] + field_offset1) >= *(uint8_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint8_t_uint16_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint8_t_uint16_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) >= *(uint16_t *)(record2 + field_offset2);
   return *(uint8_t *)(group->members[0] + field_offset1) >= *(uint16_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint8_t_uint16_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint8_t_uint16_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) >= *(uint16_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint8_t_uint16_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint8_t_uint16_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint8_t *)(group->members[group->num_members-1] + field_offset1) >= *(uint16_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint8_t_uint32_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint8_t_uint32_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) >= *(uint32_t *)(record2 + field_offset2);
   return *(uint8_t *)(group->members[0] + field_offset1) >= *(uint32_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint8_t_uint32_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint8_t_uint32_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) >= *(uint32_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint8_t_uint32_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint8_t_uint32_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint8_t *)(group->members[group->num_members-1] + field_offset1) >= *(uint32_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint8_t_uint64_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint8_t_uint64_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) >= *(uint64_t *)(record2 + field_offset2);
   return *(uint8_t *)(group->members[0] + field_offset1) >= *(uint64_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint8_t_uint64_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint8_t_uint64_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint8_t *)(group->members[0] + field_offset1) >= *(uint64_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint8_t_uint64_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint8_t_uint64_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint8_t *)(group->members[group->num_members-1] + field_offset1) >= *(uint64_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint16_t_uint8_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint16_t_uint8_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) >= *(uint8_t *)(record2 + field_offset2);
   return *(uint16_t *)(group->members[0] + field_offset1) >= *(uint8_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint16_t_uint8_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint16_t_uint8_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) >= *(uint8_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint16_t_uint8_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint16_t_uint8_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[group->num_members-1] + field_offset1) >= *(uint8_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint16_t_uint16_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint16_t_uint16_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) >= *(uint16_t *)(record2 + field_offset2);
   return *(uint16_t *)(group->members[0] + field_offset1) >= *(uint16_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint16_t_uint16_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint16_t_uint16_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) >= *(uint16_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint16_t_uint16_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint16_t_uint16_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint16_t *)(group->members[group->num_members-1] + field_offset1) >= *(uint16_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint16_t_uint32_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint16_t_uint32_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) >= *(uint32_t *)(record2 + field_offset2);
   return *(uint16_t *)(group->members[0] + field_offset1) >= *(uint32_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint16_t_uint32_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint16_t_uint32_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) >= *(uint32_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint16_t_uint32_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint16_t_uint32_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint16_t *)(group->members[group->num_members-1] + field_offset1) >= *(uint32_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint16_t_uint64_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint16_t_uint64_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) >= *(uint64_t *)(record2 + field_offset2);
   return *(uint16_t *)(group->members[0] + field_offset1) >= *(uint64_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint16_t_uint64_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint16_t_uint64_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint16_t *)(group->members[0] + field_offset1) >= *(uint64_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint16_t_uint64_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint16_t_uint64_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint16_t *)(group->members[group->num_members-1] + field_offset1) >= *(uint64_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint32_t_uint8_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint32_t_uint8_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) >= *(uint8_t *)(record2 + field_offset2);
   return *(uint32_t *)(group->members[0] + field_offset1) >= *(uint8_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint32_t_uint8_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint32_t_uint8_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) >= *(uint8_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint32_t_uint8_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint32_t_uint8_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[group->num_members-1] + field_offset1) >= *(uint8_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint32_t_uint16_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint32_t_uint16_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) >= *(uint16_t *)(record2 + field_offset2);
   return *(uint32_t *)(group->members[0] + field_offset1) >= *(uint16_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint32_t_uint16_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint32_t_uint16_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) >= *(uint16_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint32_t_uint16_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint32_t_uint16_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint32_t *)(group->members[group->num_members-1] + field_offset1) >= *(uint16_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint32_t_uint32_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint32_t_uint32_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) >= *(uint32_t *)(record2 + field_offset2);
   return *(uint32_t *)(group->members[0] + field_offset1) >= *(uint32_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint32_t_uint32_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint32_t_uint32_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) >= *(uint32_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint32_t_uint32_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint32_t_uint32_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint32_t *)(group->members[group->num_members-1] + field_offset1) >= *(uint32_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint32_t_uint64_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint32_t_uint64_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) >= *(uint64_t *)(record2 + field_offset2);
   return *(uint32_t *)(group->members[0] + field_offset1) >= *(uint64_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint32_t_uint64_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint32_t_uint64_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint32_t *)(group->members[0] + field_offset1) >= *(uint64_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint32_t_uint64_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint32_t_uint64_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint32_t *)(group->members[group->num_members-1] + field_offset1) >= *(uint64_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint64_t_uint8_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint64_t_uint8_t_no(struct group *group, 
+                               size_t field_offset1, 
+                               char *record2, 
+                               size_t field_offset2, 
+                               uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) >= *(uint8_t *)(record2 + field_offset2);
   return *(uint64_t *)(group->members[0] + field_offset1) >= *(uint8_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint64_t_uint8_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint64_t_uint8_t_abs(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) >= *(uint8_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint64_t_uint8_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint64_t_uint8_t_rel(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[group->num_members-1] + field_offset1) >= *(uint8_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint64_t_uint16_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint64_t_uint16_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) >= *(uint16_t *)(record2 + field_offset2);
   return *(uint64_t *)(group->members[0] + field_offset1) >= *(uint16_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint64_t_uint16_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint64_t_uint16_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) >= *(uint16_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint64_t_uint16_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint64_t_uint16_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint64_t *)(group->members[group->num_members-1] + field_offset1) >= *(uint16_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint64_t_uint32_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint64_t_uint32_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) >= *(uint32_t *)(record2 + field_offset2);
   return *(uint64_t *)(group->members[0] + field_offset1) >= *(uint32_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint64_t_uint32_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint64_t_uint32_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) >= *(uint32_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint64_t_uint32_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint64_t_uint32_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint64_t *)(group->members[group->num_members-1] + field_offset1) >= *(uint32_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint64_t_uint64_t_no(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint64_t_uint64_t_no(struct group *group, 
+                                size_t field_offset1, 
+                                char *record2, 
+                                size_t field_offset2, 
+                                uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) >= *(uint64_t *)(record2 + field_offset2);
   return *(uint64_t *)(group->members[0] + field_offset1) >= *(uint64_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint64_t_uint64_t_abs(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint64_t_uint64_t_abs(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint64_t *)(group->members[0] + field_offset1) >= *(uint64_t *)(record2 + field_offset2) - delta;
 }
 
-bool grouper_ge_uint64_t_uint64_t_rel(struct group *group, size_t field_offset1, char *record2, size_t field_offset2, uint64_t delta)
-{
+bool
+grouper_ge_uint64_t_uint64_t_rel(struct group *group, 
+                                 size_t field_offset1, 
+                                 char *record2, 
+                                 size_t field_offset2, 
+                                 uint64_t delta) {
+  
   return *(uint64_t *)(group->members[group->num_members-1] + field_offset1) >= *(uint64_t *)(record2 + field_offset2) - delta;
 }
 
-struct aggr aggr_static_uint8_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_static_uint8_t(char **records, 
+                    size_t num_records, 
+                    size_t field_offset, 
+                    bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -1757,8 +3297,12 @@ struct aggr aggr_static_uint8_t(char **records, size_t num_records, size_t field
   return aggr;
 }
 
-struct aggr aggr_static_uint16_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_static_uint16_t(char **records, 
+                     size_t num_records, 
+                     size_t field_offset, 
+                     bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -1775,8 +3319,12 @@ struct aggr aggr_static_uint16_t(char **records, size_t num_records, size_t fiel
   return aggr;
 }
 
-struct aggr aggr_static_uint32_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_static_uint32_t(char **records, 
+                     size_t num_records, 
+                     size_t field_offset, 
+                     bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -1793,8 +3341,12 @@ struct aggr aggr_static_uint32_t(char **records, size_t num_records, size_t fiel
   return aggr;
 }
 
-struct aggr aggr_static_uint64_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_static_uint64_t(char **records, 
+                     size_t num_records, 
+                     size_t field_offset, 
+                     bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -1811,8 +3363,12 @@ struct aggr aggr_static_uint64_t(char **records, size_t num_records, size_t fiel
   return aggr;
 }
 
-struct aggr aggr_count_uint8_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_count_uint8_t(char **records, 
+                   size_t num_records, 
+                   size_t field_offset, 
+                   bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -1828,8 +3384,12 @@ struct aggr aggr_count_uint8_t(char **records, size_t num_records, size_t field_
   return aggr;
 }
 
-struct aggr aggr_count_uint16_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_count_uint16_t(char **records, 
+                    size_t num_records, 
+                    size_t field_offset, 
+                    bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -1845,8 +3405,12 @@ struct aggr aggr_count_uint16_t(char **records, size_t num_records, size_t field
   return aggr;
 }
 
-struct aggr aggr_count_uint32_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_count_uint32_t(char **records, 
+                    size_t num_records, 
+                    size_t field_offset, 
+                    bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -1862,8 +3426,12 @@ struct aggr aggr_count_uint32_t(char **records, size_t num_records, size_t field
   return aggr;
 }
 
-struct aggr aggr_count_uint64_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_count_uint64_t(char **records, 
+                    size_t num_records, 
+                    size_t field_offset, 
+                    bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -1879,8 +3447,12 @@ struct aggr aggr_count_uint64_t(char **records, size_t num_records, size_t field
   return aggr;
 }
 
-struct aggr aggr_union_uint8_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_union_uint8_t(char **records, 
+                   size_t num_records, 
+                   size_t field_offset, 
+                   bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -1919,8 +3491,12 @@ struct aggr aggr_union_uint8_t(char **records, size_t num_records, size_t field_
   return aggr;
 }
 
-struct aggr aggr_union_uint16_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_union_uint16_t(char **records, 
+                    size_t num_records, 
+                    size_t field_offset, 
+                    bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -1959,8 +3535,12 @@ struct aggr aggr_union_uint16_t(char **records, size_t num_records, size_t field
   return aggr;
 }
 
-struct aggr aggr_union_uint32_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_union_uint32_t(char **records, 
+                    size_t num_records, 
+                    size_t field_offset, 
+                    bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -1999,8 +3579,12 @@ struct aggr aggr_union_uint32_t(char **records, size_t num_records, size_t field
   return aggr;
 }
 
-struct aggr aggr_union_uint64_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_union_uint64_t(char **records, 
+                    size_t num_records, 
+                    size_t field_offset, 
+                    bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2039,8 +3623,12 @@ struct aggr aggr_union_uint64_t(char **records, size_t num_records, size_t field
   return aggr;
 }
 
-struct aggr aggr_min_uint8_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_min_uint8_t(char **records, 
+                 size_t num_records, 
+                 size_t field_offset, 
+                 bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2062,8 +3650,12 @@ struct aggr aggr_min_uint8_t(char **records, size_t num_records, size_t field_of
   return aggr;
 }
 
-struct aggr aggr_min_uint16_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_min_uint16_t(char **records, 
+                  size_t num_records, 
+                  size_t field_offset, 
+                  bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2085,8 +3677,12 @@ struct aggr aggr_min_uint16_t(char **records, size_t num_records, size_t field_o
   return aggr;
 }
 
-struct aggr aggr_min_uint32_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_min_uint32_t(char **records, 
+                  size_t num_records, 
+                  size_t field_offset, 
+                  bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2108,8 +3704,12 @@ struct aggr aggr_min_uint32_t(char **records, size_t num_records, size_t field_o
   return aggr;
 }
 
-struct aggr aggr_min_uint64_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_min_uint64_t(char **records, 
+                  size_t num_records, 
+                  size_t field_offset, 
+                  bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2131,8 +3731,12 @@ struct aggr aggr_min_uint64_t(char **records, size_t num_records, size_t field_o
   return aggr;
 }
 
-struct aggr aggr_max_uint8_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_max_uint8_t(char **records, 
+                 size_t num_records, 
+                 size_t field_offset, 
+                 bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2154,8 +3758,12 @@ struct aggr aggr_max_uint8_t(char **records, size_t num_records, size_t field_of
   return aggr;
 }
 
-struct aggr aggr_max_uint16_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_max_uint16_t(char **records, 
+                  size_t num_records, 
+                  size_t field_offset, 
+                  bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2177,8 +3785,12 @@ struct aggr aggr_max_uint16_t(char **records, size_t num_records, size_t field_o
   return aggr;
 }
 
-struct aggr aggr_max_uint32_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_max_uint32_t(char **records, 
+                  size_t num_records, 
+                  size_t field_offset, 
+                  bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2200,8 +3812,12 @@ struct aggr aggr_max_uint32_t(char **records, size_t num_records, size_t field_o
   return aggr;
 }
 
-struct aggr aggr_max_uint64_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_max_uint64_t(char **records, 
+                  size_t num_records, 
+                  size_t field_offset, 
+                  bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2223,8 +3839,12 @@ struct aggr aggr_max_uint64_t(char **records, size_t num_records, size_t field_o
   return aggr;
 }
 
-struct aggr aggr_median_uint8_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_median_uint8_t(char **records, 
+                    size_t num_records, 
+                    size_t field_offset, 
+                    bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2250,8 +3870,12 @@ struct aggr aggr_median_uint8_t(char **records, size_t num_records, size_t field
   return aggr;
 }
 
-struct aggr aggr_median_uint16_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_median_uint16_t(char **records, 
+                     size_t num_records, 
+                     size_t field_offset, 
+                     bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2277,8 +3901,12 @@ struct aggr aggr_median_uint16_t(char **records, size_t num_records, size_t fiel
   return aggr;
 }
 
-struct aggr aggr_median_uint32_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_median_uint32_t(char **records, 
+                     size_t num_records, 
+                     size_t field_offset, 
+                     bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2304,8 +3932,12 @@ struct aggr aggr_median_uint32_t(char **records, size_t num_records, size_t fiel
   return aggr;
 }
 
-struct aggr aggr_median_uint64_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_median_uint64_t(char **records, 
+                     size_t num_records, 
+                     size_t field_offset, 
+                     bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2331,8 +3963,12 @@ struct aggr aggr_median_uint64_t(char **records, size_t num_records, size_t fiel
   return aggr;
 }
 
-struct aggr aggr_mean_uint8_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_mean_uint8_t(char **records, 
+                  size_t num_records, 
+                  size_t field_offset, 
+                  bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2352,8 +3988,12 @@ struct aggr aggr_mean_uint8_t(char **records, size_t num_records, size_t field_o
   return aggr;
 }
 
-struct aggr aggr_mean_uint16_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_mean_uint16_t(char **records, 
+                   size_t num_records, 
+                   size_t field_offset, 
+                   bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2373,8 +4013,12 @@ struct aggr aggr_mean_uint16_t(char **records, size_t num_records, size_t field_
   return aggr;
 }
 
-struct aggr aggr_mean_uint32_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_mean_uint32_t(char **records, 
+                   size_t num_records, 
+                   size_t field_offset, 
+                   bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2394,8 +4038,12 @@ struct aggr aggr_mean_uint32_t(char **records, size_t num_records, size_t field_
   return aggr;
 }
 
-struct aggr aggr_mean_uint64_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_mean_uint64_t(char **records, 
+                   size_t num_records, 
+                   size_t field_offset, 
+                   bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2415,8 +4063,12 @@ struct aggr aggr_mean_uint64_t(char **records, size_t num_records, size_t field_
   return aggr;
 }
 
-struct aggr aggr_stddev_uint8_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_stddev_uint8_t(char **records, 
+                    size_t num_records, 
+                    size_t field_offset, 
+                    bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2442,8 +4094,12 @@ struct aggr aggr_stddev_uint8_t(char **records, size_t num_records, size_t field
   return aggr;
 }
 
-struct aggr aggr_stddev_uint16_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_stddev_uint16_t(char **records, 
+                     size_t num_records, 
+                     size_t field_offset, 
+                     bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2469,8 +4125,12 @@ struct aggr aggr_stddev_uint16_t(char **records, size_t num_records, size_t fiel
   return aggr;
 }
 
-struct aggr aggr_stddev_uint32_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_stddev_uint32_t(char **records, 
+                     size_t num_records, 
+                     size_t field_offset, 
+                     bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2496,8 +4156,12 @@ struct aggr aggr_stddev_uint32_t(char **records, size_t num_records, size_t fiel
   return aggr;
 }
 
-struct aggr aggr_stddev_uint64_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_stddev_uint64_t(char **records, 
+                     size_t num_records, 
+                     size_t field_offset, 
+                     bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2523,8 +4187,12 @@ struct aggr aggr_stddev_uint64_t(char **records, size_t num_records, size_t fiel
   return aggr;
 }
 
-struct aggr aggr_prod_uint8_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_prod_uint8_t(char **records, 
+                  size_t num_records, 
+                  size_t field_offset, 
+                  bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2543,8 +4211,12 @@ struct aggr aggr_prod_uint8_t(char **records, size_t num_records, size_t field_o
   return aggr;
 }
 
-struct aggr aggr_prod_uint16_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_prod_uint16_t(char **records, 
+                   size_t num_records, 
+                   size_t field_offset, 
+                   bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2563,8 +4235,12 @@ struct aggr aggr_prod_uint16_t(char **records, size_t num_records, size_t field_
   return aggr;
 }
 
-struct aggr aggr_prod_uint32_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_prod_uint32_t(char **records, 
+                   size_t num_records, 
+                   size_t field_offset, 
+                   bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2583,8 +4259,12 @@ struct aggr aggr_prod_uint32_t(char **records, size_t num_records, size_t field_
   return aggr;
 }
 
-struct aggr aggr_prod_uint64_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_prod_uint64_t(char **records, 
+                   size_t num_records, 
+                   size_t field_offset, 
+                   bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2603,8 +4283,12 @@ struct aggr aggr_prod_uint64_t(char **records, size_t num_records, size_t field_
   return aggr;
 }
 
-struct aggr aggr_sum_uint8_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_sum_uint8_t(char **records, 
+                 size_t num_records, 
+                 size_t field_offset, 
+                 bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2623,8 +4307,12 @@ struct aggr aggr_sum_uint8_t(char **records, size_t num_records, size_t field_of
   return aggr;
 }
 
-struct aggr aggr_sum_uint16_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_sum_uint16_t(char **records, 
+                  size_t num_records, 
+                  size_t field_offset, 
+                  bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2643,8 +4331,12 @@ struct aggr aggr_sum_uint16_t(char **records, size_t num_records, size_t field_o
   return aggr;
 }
 
-struct aggr aggr_sum_uint32_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_sum_uint32_t(char **records, 
+                  size_t num_records, 
+                  size_t field_offset, 
+                  bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2663,8 +4355,12 @@ struct aggr aggr_sum_uint32_t(char **records, size_t num_records, size_t field_o
   return aggr;
 }
 
-struct aggr aggr_sum_uint64_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_sum_uint64_t(char **records, 
+                  size_t num_records, 
+                  size_t field_offset, 
+                  bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2683,8 +4379,12 @@ struct aggr aggr_sum_uint64_t(char **records, size_t num_records, size_t field_o
   return aggr;
 }
 
-struct aggr aggr_and_uint8_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_and_uint8_t(char **records, 
+                 size_t num_records, 
+                 size_t field_offset, 
+                 bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2703,8 +4403,12 @@ struct aggr aggr_and_uint8_t(char **records, size_t num_records, size_t field_of
   return aggr;
 }
 
-struct aggr aggr_and_uint16_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_and_uint16_t(char **records, 
+                  size_t num_records, 
+                  size_t field_offset, 
+                  bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2723,8 +4427,12 @@ struct aggr aggr_and_uint16_t(char **records, size_t num_records, size_t field_o
   return aggr;
 }
 
-struct aggr aggr_and_uint32_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_and_uint32_t(char **records, 
+                  size_t num_records, 
+                  size_t field_offset, 
+                  bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2743,8 +4451,12 @@ struct aggr aggr_and_uint32_t(char **records, size_t num_records, size_t field_o
   return aggr;
 }
 
-struct aggr aggr_and_uint64_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_and_uint64_t(char **records, 
+                  size_t num_records, 
+                  size_t field_offset, 
+                  bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2763,8 +4475,12 @@ struct aggr aggr_and_uint64_t(char **records, size_t num_records, size_t field_o
   return aggr;
 }
 
-struct aggr aggr_or_uint8_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_or_uint8_t(char **records, 
+                size_t num_records, 
+                size_t field_offset, 
+                bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2783,8 +4499,12 @@ struct aggr aggr_or_uint8_t(char **records, size_t num_records, size_t field_off
   return aggr;
 }
 
-struct aggr aggr_or_uint16_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_or_uint16_t(char **records, 
+                 size_t num_records, 
+                 size_t field_offset, 
+                 bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2803,8 +4523,12 @@ struct aggr aggr_or_uint16_t(char **records, size_t num_records, size_t field_of
   return aggr;
 }
 
-struct aggr aggr_or_uint32_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_or_uint32_t(char **records, 
+                 size_t num_records, 
+                 size_t field_offset, 
+                 bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2823,8 +4547,12 @@ struct aggr aggr_or_uint32_t(char **records, size_t num_records, size_t field_of
   return aggr;
 }
 
-struct aggr aggr_or_uint64_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_or_uint64_t(char **records, 
+                 size_t num_records, 
+                 size_t field_offset, 
+                 bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2843,8 +4571,12 @@ struct aggr aggr_or_uint64_t(char **records, size_t num_records, size_t field_of
   return aggr;
 }
 
-struct aggr aggr_xor_uint8_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_xor_uint8_t(char **records, 
+                 size_t num_records, 
+                 size_t field_offset, 
+                 bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2863,8 +4595,12 @@ struct aggr aggr_xor_uint8_t(char **records, size_t num_records, size_t field_of
   return aggr;
 }
 
-struct aggr aggr_xor_uint16_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_xor_uint16_t(char **records, 
+                  size_t num_records, 
+                  size_t field_offset, 
+                  bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2883,8 +4619,12 @@ struct aggr aggr_xor_uint16_t(char **records, size_t num_records, size_t field_o
   return aggr;
 }
 
-struct aggr aggr_xor_uint32_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_xor_uint32_t(char **records, 
+                  size_t num_records, 
+                  size_t field_offset, 
+                  bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2903,8 +4643,12 @@ struct aggr aggr_xor_uint32_t(char **records, size_t num_records, size_t field_o
   return aggr;
 }
 
-struct aggr aggr_xor_uint64_t(char **records, size_t num_records, size_t field_offset, bool if_aggr_common)
-{
+struct aggr 
+aggr_xor_uint64_t(char **records, 
+                  size_t num_records, 
+                  size_t field_offset, 
+                  bool if_aggr_common) {
+  
   struct aggr aggr;
   if (num_records == 0) {
     aggr.num_values = 0;
@@ -2977,121 +4721,221 @@ bool gfilter_ge(struct group *group,
   return aggr_value >= value - delta;
 }
 
-bool merger_eq(struct group *group1, size_t field1, struct group *group2, size_t field2, uint64_t delta)
-{
+bool 
+merger_eq(struct group *group1, 
+          size_t field1, 
+          struct group *group2, 
+          size_t field2, 
+          uint64_t delta) {
+  
   if (group1->aggr[field1].num_values == 0 || group2->aggr[field2].num_values == 0) {
     return false;
   }
   return (group1->aggr[field1].values[0] >= group2->aggr[field2].values[0] - delta) && (group1->aggr[field1].values[0] <= group2->aggr[field2].values[0] + delta);
 }
 
-bool merger_ne(struct group *group1, size_t field1, struct group *group2, size_t field2, uint64_t delta)
-{
+bool 
+merger_ne(struct group *group1, 
+          size_t field1, 
+          struct group *group2, 
+          size_t field2, 
+          uint64_t delta) {
+  
   if (group1->aggr[field1].num_values == 0 || group2->aggr[field2].num_values == 0) {
     return false;
   }
   return (group1->aggr[field1].values[0] < group2->aggr[field2].values[0] - delta) || (group1->aggr[field1].values[0] > group2->aggr[field2].values[0] + delta);
 }
 
-bool merger_lt(struct group *group1, size_t field1, struct group *group2, size_t field2, uint64_t delta)
-{
+bool 
+merger_lt(struct group *group1, 
+          size_t field1, 
+          struct group *group2, 
+          size_t field2, 
+          uint64_t delta) {
+  
   if (group1->aggr[field1].num_values == 0 || group2->aggr[field2].num_values == 0) {
     return false;
   }
   return group1->aggr[field1].values[0] < group2->aggr[field2].values[0] + delta;
 }
 
-bool merger_gt(struct group *group1, size_t field1, struct group *group2, size_t field2, uint64_t delta)
-{
+bool 
+merger_gt(struct group *group1, 
+          size_t field1, 
+          struct group *group2, 
+          size_t field2, 
+          uint64_t delta) {
+  
   if (group1->aggr[field1].num_values == 0 || group2->aggr[field2].num_values == 0) {
     return false;
   }
   return group1->aggr[field1].values[0] > group2->aggr[field2].values[0] - delta;
 }
 
-bool merger_le(struct group *group1, size_t field1, struct group *group2, size_t field2, uint64_t delta)
-{
+bool 
+merger_le(struct group *group1, 
+          size_t field1, 
+          struct group *group2, 
+          size_t field2, 
+          uint64_t delta) {
+  
   if (group1->aggr[field1].num_values == 0 || group2->aggr[field2].num_values == 0) {
     return false;
   }
   return group1->aggr[field1].values[0] <= group2->aggr[field2].values[0] + delta;
 }
 
-bool merger_ge(struct group *group1, size_t field1, struct group *group2, size_t field2, uint64_t delta)
-{
+bool 
+merger_ge(struct group *group1, 
+          size_t field1, 
+          struct group *group2, 
+          size_t field2, 
+          uint64_t delta) {
+  
   if (group1->aggr[field1].num_values == 0 || group2->aggr[field2].num_values == 0) {
     return false;
   }
   return group1->aggr[field1].values[0] >= group2->aggr[field2].values[0] - delta;
 }
 
-bool merger_a_bf(struct group *group1, size_t field1, struct group *group2, size_t field2, uint64_t delta)
-{
+bool 
+merger_a_bf(struct group *group1, 
+            size_t field1, 
+            struct group *group2, 
+            size_t field2, 
+            uint64_t delta) {
+  
   return group1->end < group2->start;
 }
 
-bool merger_a_af(struct group *group1, size_t field1, struct group *group2, size_t field2, uint64_t delta)
-{
+bool 
+merger_a_af(struct group *group1, 
+            size_t field1, 
+            struct group *group2, 
+            size_t field2, 
+            uint64_t delta) {
+  
   return group1->start > group2->end;
 }
 
-bool merger_a_m(struct group *group1, size_t field1, struct group *group2, size_t field2, uint64_t delta)
-{
+bool 
+merger_a_m(struct group *group1, 
+           size_t field1, 
+           struct group *group2, 
+           size_t field2, 
+           uint64_t delta) {
+  
   return group1->end == group2->start;
 }
 
-bool merger_a_mi(struct group *group1, size_t field1, struct group *group2, size_t field2, uint64_t delta)
-{
+bool 
+merger_a_mi(struct group *group1, 
+            size_t field1, 
+            struct group *group2, 
+            size_t field2, 
+            uint64_t delta) {
+  
   return group1->start == group2->end;
 }
 
-bool merger_a_o(struct group *group1, size_t field1, struct group *group2, size_t field2, uint64_t delta)
-{
+bool 
+merger_a_o(struct group *group1, 
+           size_t field1, 
+           struct group *group2, 
+           size_t field2, 
+           uint64_t delta) {
+  
   return group1->start < group2->start && group1->end > group2->start;
 }
 
-bool merger_a_oi(struct group *group1, size_t field1, struct group *group2, size_t field2, uint64_t delta)
-{
+bool 
+merger_a_oi(struct group *group1, 
+            size_t field1, 
+            struct group *group2, 
+            size_t field2, 
+            uint64_t delta) {
+  
   return group1->end > group2->end && group1->start < group2->end;
 }
 
-bool merger_a_s(struct group *group1, size_t field1, struct group *group2, size_t field2, uint64_t delta)
-{
+bool 
+merger_a_s(struct group *group1, 
+           size_t field1, 
+           struct group *group2, 
+           size_t field2, 
+           uint64_t delta) {
+  
   return group1->start == group2->start && group1->end < group2->end;
 }
 
-bool merger_a_si(struct group *group1, size_t field1, struct group *group2, size_t field2, uint64_t delta)
-{
+bool 
+merger_a_si(struct group *group1, 
+            size_t field1, 
+            struct group *group2, 
+            size_t field2, 
+            uint64_t delta) {
+  
   return group1->start == group2->start && group1->end > group2->end;
 }
 
-bool merger_a_d(struct group *group1, size_t field1, struct group *group2, size_t field2, uint64_t delta)
-{
+bool 
+merger_a_d(struct group *group1, 
+           size_t field1, 
+           struct group *group2, 
+           size_t field2, 
+           uint64_t delta) {
+  
   return group1->start > group2->start && group1->end < group2->end;
 }
 
-bool merger_a_di(struct group *group1, size_t field1, struct group *group2, size_t field2, uint64_t delta)
-{
+bool 
+merger_a_di(struct group *group1, 
+            size_t field1, 
+            struct group *group2, 
+            size_t field2, 
+            uint64_t delta) {
+  
   return group1->start < group2->start && group1->end > group2->end;
 }
 
-bool merger_a_f(struct group *group1, size_t field1, struct group *group2, size_t field2, uint64_t delta)
-{
+bool 
+merger_a_f(struct group *group1, 
+           size_t field1, 
+           struct group *group2, 
+           size_t field2, 
+           uint64_t delta) {
+  
   return group1->end == group2->end && group1->start > group2->start;
 }
 
-bool merger_a_fi(struct group *group1, size_t field1, struct group *group2, size_t field2, uint64_t delta)
-{
+bool 
+merger_a_fi(struct group *group1, 
+            size_t field1, 
+            struct group *group2, 
+            size_t field2, 
+            uint64_t delta) {
+  
   return group1->end == group2->end && group1->start < group2->start;
 }
 
-bool merger_a_eq(struct group *group1, size_t field1, struct group *group2, size_t field2, uint64_t delta)
-{
+bool 
+merger_a_eq(struct group *group1, 
+            size_t field1, 
+            struct group *group2, 
+            size_t field2, 
+            uint64_t delta) {
+  
   return group1->start == group2->start && group1->end == group2->end;
 }
 
-bool merger_in(struct group *group1, size_t field1, struct group *group2, size_t field2, uint64_t delta)
-{
+bool 
+merger_in(struct group *group1, 
+          size_t field1, 
+          struct group *group2, 
+          size_t field2, 
+          uint64_t delta) {
+  
   if (group1->aggr[field1].num_values == 0 || group2->aggr[field2].num_values == 0) {
     return false;
   }
