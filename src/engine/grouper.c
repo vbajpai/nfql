@@ -111,7 +111,7 @@ build_record_trees(struct branch_info *binfo,
           (void *)&group_modules[0].field_offset2,
           comp_uint32_t);
   
-  if(debug){  
+  if(verbose_vv){  
     binfo->sorted_records = (char**)
                              malloc(num_filtered_records * sizeof(char*));
     if (binfo->sorted_records == NULL)
@@ -220,7 +220,7 @@ grouper(char **filtered_records,
                                             num_filtered_records, 
                                             group_modules);
 
-    if(debug){  
+    if(verbose_vv){  
       binfo->num_unique_records = uniq_records_trees->num_uniq_records;
       binfo->unique_records = (char**)
       malloc(binfo->num_unique_records * sizeof(char*));      

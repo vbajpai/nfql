@@ -70,7 +70,7 @@ ft_open(int fd) {
    */
   
 
-  if(debug){
+  if(verbose_vvv){
   
     /* print flow header */
     ftio_header_print(&data->io, stdout, '#');  
@@ -84,7 +84,7 @@ ft_open(int fd) {
     data->records[data->num_records-1] = (char *)malloc(data->rec_size);
     memcpy(data->records[data->num_records-1], record, data->rec_size);
     
-  if(debug)
+  if(verbose_vvv)
     flow_print_record(data, record);
   }
   

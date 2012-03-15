@@ -28,3 +28,7 @@
 
 bool debug;
 bool if_group_modules_exist;
+
+bool verbose_v;
+bool verbose_vv;
+bool verbose_vvv;

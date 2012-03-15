@@ -59,7 +59,7 @@ branch_start(void *arg) {
                             binfo->num_filter_rules, 
                             &num_filtered_records);
   
-  if(debug){
+  if(verbose_v){
     
     binfo->filtered_records = (char**)
                               malloc(num_filtered_records * sizeof(char*));
@@ -90,7 +90,7 @@ branch_start(void *arg) {
                      binfo->num_aggr, 
                      &num_groups);
   
-  if(debug){
+  if(verbose_v){
     
     binfo->groupset = (struct group**)
     malloc(num_groups * sizeof(struct group**));
@@ -164,10 +164,13 @@ main(int argc, char **argv) {
   
   /* command line parsing variables */
   int                                 opt;
+  enum verbosity_levels               verbose_level;
   char*                               trace_filename;
   char*                               query_filename;
   static struct option                longopts[] = {
-    { "debug",      no_argument,      NULL,           'd' }
+    { "debug",      no_argument,        NULL,           'd' },
+    { "verbose",    required_argument,  NULL,           'v' },    
+    {  NULL,        0,                  NULL,            0  }
   };
 
   
@@ -208,11 +211,20 @@ main(int argc, char **argv) {
   /*         parsing command line arguments        */
   /* ----------------------------------------------*/
   
-  while ((opt = getopt_long(argc, argv, "da", longopts, NULL)) != -1) {
+  while ((opt = getopt_long(argc, argv, "v:d", longopts, NULL)) != -1) {
     switch (opt) {
-      case 'd': debug = TRUE; break;
-      case ':': exit(EXIT_FAILURE); 
-      case '?': exit(EXIT_FAILURE); 
+      case 'd': debug = TRUE; verbose_level = HIGH;
+      case 'v': if (optarg)
+                  verbose_level = atoi(optarg); 
+                switch (verbose_level) {
+                  case HIGH: verbose_vvv = TRUE;                       
+                  case MEDIUM: verbose_vv = TRUE;                       
+                  case LOW: verbose_v = TRUE; break;
+                  default: errExit("valid verbosity levels: (1-3)");                      
+                }
+                break;        
+      case ':': usageError(argv[0], "Missing argument", optopt);
+      default: exit(EXIT_FAILURE);
     }
   }
   
@@ -528,13 +540,10 @@ main(int argc, char **argv) {
     if (ret != 0)
       errExit("pthread_join");
 
-#ifdef GROUPFILTER    
-    
+#ifdef GROUPFILTER        
     /* fetch the filtered groups */
     num_filtered_groups[i] = binfos[i].num_filtered_groups;
-    filtered_groups[i] = binfos[i].filtered_groups;
-    printf("%zd\n", num_filtered_groups[i]);    
-    
+    filtered_groups[i] = binfos[i].filtered_groups;    
 #endif
     
   }
@@ -542,7 +551,7 @@ main(int argc, char **argv) {
   free(thread_ids);
   free(thread_attrs);
   
-  if(debug){
+  if(verbose_v){
     
     /* process each record */
     for (int i = 0; i < num_threads; i++) {
@@ -557,45 +566,48 @@ main(int argc, char **argv) {
       }      
       free(binfos[i].filtered_records);
       
-      if(if_group_modules_exist){
-        
-        printf("\nNo. of Sorted Records: %zd\n", binfos[i].num_filtered_records);      
-        puts(FLOWHEADER);      
-        for (int j = 0; j < binfos[i].num_filtered_records; j++) {
-          flow_print_record(binfos[i].data, binfos[i].sorted_records[j]);
+      if (verbose_vv){
+        if(if_group_modules_exist){
           
-          /* not free'd since they point to original records */
-          binfos[i].sorted_records[j] = NULL;
-        }      
-        free(binfos[i].sorted_records);
-        
-        
-        printf("\nNo. of Unique Records: %zd\n", binfos[i].num_unique_records);      
-        puts(FLOWHEADER);      
-        for (int j = 0; j < binfos[i].num_unique_records; j++) {
-          flow_print_record(binfos[i].data, binfos[i].unique_records[j]);
+          printf("\nNo. of Sorted Records: %zd\n", binfos[i].num_filtered_records);      
+          puts(FLOWHEADER);      
+          for (int j = 0; j < binfos[i].num_filtered_records; j++) {
+            flow_print_record(binfos[i].data, binfos[i].sorted_records[j]);
+            
+            /* not free'd since they point to original records */
+            binfos[i].sorted_records[j] = NULL;
+          }      
+          free(binfos[i].sorted_records);
           
-          /* not free'd since they point to original records */
-          binfos[i].unique_records[j] = NULL;
+          
+          printf("\nNo. of Unique Records: %zd\n", binfos[i].num_unique_records);      
+          puts(FLOWHEADER);      
+          for (int j = 0; j < binfos[i].num_unique_records; j++) {
+            flow_print_record(binfos[i].data, binfos[i].unique_records[j]);
+            
+            /* not free'd since they point to original records */
+            binfos[i].unique_records[j] = NULL;
+          }      
+          free(binfos[i].unique_records);      
+          
         }      
-        free(binfos[i].unique_records);      
-      
-      } 
-      
-      printf("\nNo. of Groups: %zu (Verbose Output)\n", binfos[i].num_groups);
-      puts(FLOWHEADER); 
-      for (int j = 0; j < binfos[i].num_groups; j++) {
         
-       printf("\n");
-       struct group* group = binfos[i].groupset[j];
-        
-       /* print group members */ 
-       for (int k = 0; k < group->num_members; k++) {
-         flow_print_record(binfos[i].data, group->members[k]);
-         group->members[k] = NULL;
-       }     
-       free(group->members);
+        printf("\nNo. of Groups: %zu (Verbose Output)\n", binfos[i].num_groups);
+        puts(FLOWHEADER); 
+        for (int j = 0; j < binfos[i].num_groups; j++) {
+          
+          printf("\n");
+          struct group* group = binfos[i].groupset[j];
+          
+          /* print group members */ 
+          for (int k = 0; k < group->num_members; k++) {
+            flow_print_record(binfos[i].data, group->members[k]);
+            group->members[k] = NULL;
+          }     
+          free(group->members);
+        }
       }
+      
       
 #ifdef GROUPERAGGREGATIONS
       printf("\nNo. of Groups: %zu (Aggregations)\n", binfos[i].num_groups);
@@ -623,6 +635,7 @@ main(int argc, char **argv) {
       }
 #endif
       
+      /* free memory */
       for (int j = 0; j < binfos[i].num_groups; j++) {        
         struct group* group = binfos[i].groupset[j];
         free(group->group_aggr_record);

@@ -60,8 +60,8 @@ group_filter(struct group **groupset,
     /* free the group, if it did not pass the filter rules  */
     if (j < num_gfilter_rules) {
       
-      /* free only when --debug is NOT set, otherwise free later. */
-      if(!debug){
+      /* free only when NO verbosity is set, otherwise free later. */
+      if(!verbose_v){
         free(group->members);
         free(group->aggr);
         free(group);

@@ -42,4 +42,15 @@
 extern bool debug;
 extern bool if_group_modules_exist;
 
+/* verbose levels */
+extern bool verbose_v;
+extern bool verbose_vv;
+extern bool verbose_vvv;
+
+enum verbosity_levels {
+  HIGH      =     3,
+  MEDIUM    =     2,
+  LOW       =     1
+};
+
 #endif
