@@ -314,16 +314,16 @@ gfilter_proto = """bool gfilter_%s(struct group *group,
 
 def gfilter_body(op):
     result = " {\n\n"
-    result += "uint64_t aggr_value = *(group->group_aggr_record + field_offset);\n"
+    result += "uint32_t* aggr_value = (u_int32_t*)(group->group_aggr_record + field_offset);\n"
   
     if op == "eq":
-        result += "    return (aggr_value >= value - delta) && (aggr_value <= value + delta);\n"
+        result += "    return (*aggr_value >= value - delta) && (*aggr_value <= value + delta);\n"
     elif op == "ne":
-        result += "    return (aggr_value < value - delta) || (aggr_value > value + delta);\n";
+        result += "    return (*aggr_value < value - delta) || (*aggr_value > value + delta);\n";
     elif op in ['lt', 'le']:
-        result += "    return aggr_value %s value + delta;\n"%operation_map[op]
+        result += "    return *aggr_value %s value + delta;\n"%operation_map[op]
     elif op in ['gt', 'ge']:
-        result += "    return aggr_value %s value - delta;\n"%operation_map[op]
+        result += "    return *aggr_value %s value - delta;\n"%operation_map[op]
     else:
         raise ValueError(op)
     result += "}\n\n"

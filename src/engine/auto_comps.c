@@ -4672,8 +4672,8 @@ bool gfilter_eq(struct group *group,
                 uint64_t value, 
                 uint64_t delta) {
   
-  uint64_t aggr_value = *(group->group_aggr_record + field_offset);
-  return (aggr_value >= value - delta) && (aggr_value <= value + delta);
+  uint32_t* aggr_value = (u_int32_t*)(group->group_aggr_record + field_offset);
+  return (*aggr_value >= value - delta) && (*aggr_value <= value + delta);
 }
 
 bool gfilter_ne(struct group *group, 
@@ -4681,8 +4681,8 @@ bool gfilter_ne(struct group *group,
                 uint64_t value, 
                 uint64_t delta) {
   
-  uint64_t aggr_value = *(group->group_aggr_record + field_offset);
-  return (aggr_value < value - delta) || (aggr_value > value + delta);
+  uint32_t* aggr_value = (u_int32_t*)(group->group_aggr_record + field_offset);
+  return (*aggr_value < value - delta) || (*aggr_value > value + delta);
 }
 
 bool gfilter_lt(struct group *group, 
@@ -4690,8 +4690,8 @@ bool gfilter_lt(struct group *group,
                 uint64_t value, 
                 uint64_t delta) {
   
-  uint64_t aggr_value = *(group->group_aggr_record + field_offset);
-  return aggr_value < value + delta;
+  uint32_t* aggr_value = (u_int32_t*)(group->group_aggr_record + field_offset);
+  return *aggr_value < value + delta;
 }
 
 bool gfilter_gt(struct group *group, 
@@ -4699,8 +4699,8 @@ bool gfilter_gt(struct group *group,
                 uint64_t value, 
                 uint64_t delta) {
   
-  uint64_t aggr_value = *(group->group_aggr_record + field_offset);
-  return aggr_value > value - delta;
+  uint32_t* aggr_value = (u_int32_t*)(group->group_aggr_record + field_offset);
+  return *aggr_value > value - delta;
 }
 
 bool gfilter_le(struct group *group, 
@@ -4708,8 +4708,8 @@ bool gfilter_le(struct group *group,
                 uint64_t value, 
                 uint64_t delta) {
   
-  uint64_t aggr_value = *(group->group_aggr_record + field_offset);
-  return aggr_value <= value + delta;
+  uint32_t* aggr_value = (u_int32_t*)(group->group_aggr_record + field_offset);
+  return *aggr_value <= value + delta;
 }
 
 bool gfilter_ge(struct group *group, 
@@ -4717,8 +4717,8 @@ bool gfilter_ge(struct group *group,
                 uint64_t value, 
                 uint64_t delta) {
   
-  uint64_t aggr_value = *(group->group_aggr_record + field_offset);
-  return aggr_value >= value - delta;
+  uint32_t* aggr_value = (u_int32_t*)(group->group_aggr_record + field_offset);
+  return *aggr_value >= value - delta;
 }
 
 bool 
