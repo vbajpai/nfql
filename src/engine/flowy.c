@@ -376,10 +376,10 @@ main(int argc, char **argv) {
   struct grouper_aggr group_aggr_branch1[4] = {
     
     // shouldn't the first field be -1 as indicated?
-    { 0, trace_data->offsets.srcaddr, aggr_static_uint32_t },
-    { 0, trace_data->offsets.dPkts, aggr_sum_uint32_t },
-    { 0, trace_data->offsets.dOctets, aggr_sum_uint32_t },
-    { 0, trace_data->offsets.tcp_flags, aggr_or_uint16_t }
+    { 0, trace_data->offsets.srcaddr, RULE_STATIC | RULE_S1_32, NULL },
+    { 0, trace_data->offsets.dPkts, RULE_SUM | RULE_S1_32, NULL },
+    { 0, trace_data->offsets.dOctets, RULE_SUM | RULE_S1_32, NULL },
+    { 0, trace_data->offsets.tcp_flags, RULE_OR | RULE_S1_16, NULL }
   };
 
   
@@ -435,10 +435,10 @@ main(int argc, char **argv) {
   
   /* array of grouper aggregation rules, with 4 grouper aggrs */
   struct grouper_aggr group_aggr_branch2[4] = {
-    { 0, trace_data->offsets.srcaddr, aggr_static_uint32_t },
-    { 0, trace_data->offsets.dPkts, aggr_sum_uint32_t },
-    { 0, trace_data->offsets.dOctets, aggr_sum_uint32_t },
-    { 0, trace_data->offsets.tcp_flags, aggr_or_uint16_t }
+    { 0, trace_data->offsets.srcaddr, RULE_STATIC | RULE_S1_32, NULL },
+    { 0, trace_data->offsets.dPkts, RULE_SUM | RULE_S1_32, NULL },
+    { 0, trace_data->offsets.dOctets, RULE_SUM | RULE_S1_32, NULL },
+    { 0, trace_data->offsets.tcp_flags, RULE_OR | RULE_S1_16, NULL }
   };
 
   

@@ -964,6 +964,170 @@ assign_fptr(struct branch_info *binfos, int num_threads) {
     }
     
     
+    /* for loop for the group-aggregation */
+    for (int j = 0; j < binfos[i].num_aggr; j++) {
+      switch (binfos[i].aggr[j].op) {
+        case RULE_STATIC | RULE_S1_8:
+          binfos[i].aggr[j].func = aggr_static_uint8_t;
+          break;
+        case RULE_STATIC | RULE_S1_16:
+          binfos[i].aggr[j].func = aggr_static_uint16_t;
+          break;
+        case RULE_STATIC | RULE_S1_32:
+          binfos[i].aggr[j].func = aggr_static_uint32_t;
+          break;
+        case RULE_STATIC | RULE_S1_64:
+          binfos[i].aggr[j].func = aggr_static_uint64_t;
+          break;
+        case RULE_COUNT | RULE_S1_8:
+          binfos[i].aggr[j].func = aggr_count_uint8_t;
+          break;
+        case RULE_COUNT | RULE_S1_16:
+          binfos[i].aggr[j].func = aggr_count_uint16_t;
+          break;
+        case RULE_COUNT | RULE_S1_32:
+          binfos[i].aggr[j].func = aggr_count_uint32_t;
+          break;
+        case RULE_COUNT | RULE_S1_64:
+          binfos[i].aggr[j].func = aggr_count_uint64_t;
+          break;
+        case RULE_UNION | RULE_S1_8:
+          binfos[i].aggr[j].func = aggr_union_uint8_t;
+          break;
+        case RULE_UNION | RULE_S1_16:
+          binfos[i].aggr[j].func = aggr_union_uint16_t;
+          break;
+        case RULE_UNION | RULE_S1_32:
+          binfos[i].aggr[j].func = aggr_union_uint32_t;
+          break;
+        case RULE_UNION | RULE_S1_64:
+          binfos[i].aggr[j].func = aggr_union_uint64_t;
+          break;
+        case RULE_MIN | RULE_S1_8:
+          binfos[i].aggr[j].func = aggr_min_uint8_t;
+          break;
+        case RULE_MIN | RULE_S1_16:
+          binfos[i].aggr[j].func = aggr_min_uint16_t;
+          break;
+        case RULE_MIN | RULE_S1_32:
+          binfos[i].aggr[j].func = aggr_min_uint32_t;
+          break;
+        case RULE_MIN | RULE_S1_64:
+          binfos[i].aggr[j].func = aggr_min_uint64_t;
+          break;
+        case RULE_MAX | RULE_S1_8:
+          binfos[i].aggr[j].func = aggr_max_uint8_t;
+          break;
+        case RULE_MAX | RULE_S1_16:
+          binfos[i].aggr[j].func = aggr_max_uint16_t;
+          break;
+        case RULE_MAX | RULE_S1_32:
+          binfos[i].aggr[j].func = aggr_max_uint32_t;
+          break;
+        case RULE_MAX | RULE_S1_64:
+          binfos[i].aggr[j].func = aggr_max_uint64_t;
+          break;
+        case RULE_MEDIAN | RULE_S1_8:
+          binfos[i].aggr[j].func = aggr_median_uint8_t;
+          break;
+        case RULE_MEDIAN | RULE_S1_16:
+          binfos[i].aggr[j].func = aggr_median_uint16_t;
+          break;
+        case RULE_MEDIAN | RULE_S1_32:
+          binfos[i].aggr[j].func = aggr_median_uint32_t;
+          break;
+        case RULE_MEDIAN | RULE_S1_64:
+          binfos[i].aggr[j].func = aggr_median_uint64_t;
+          break;
+        case RULE_MEAN | RULE_S1_8:
+          binfos[i].aggr[j].func = aggr_mean_uint8_t;
+          break;
+        case RULE_MEAN | RULE_S1_16:
+          binfos[i].aggr[j].func = aggr_mean_uint16_t;
+          break;
+        case RULE_MEAN | RULE_S1_32:
+          binfos[i].aggr[j].func = aggr_mean_uint32_t;
+          break;
+        case RULE_MEAN | RULE_S1_64:
+          binfos[i].aggr[j].func = aggr_mean_uint64_t;
+          break;
+        case RULE_STDDEV | RULE_S1_8:
+          binfos[i].aggr[j].func = aggr_stddev_uint8_t;
+          break;
+        case RULE_STDDEV | RULE_S1_16:
+          binfos[i].aggr[j].func = aggr_stddev_uint16_t;
+          break;
+        case RULE_STDDEV | RULE_S1_32:
+          binfos[i].aggr[j].func = aggr_stddev_uint32_t;
+          break;
+        case RULE_STDDEV | RULE_S1_64:
+          binfos[i].aggr[j].func = aggr_stddev_uint64_t;
+          break;
+        case RULE_XOR | RULE_S1_8:
+          binfos[i].aggr[j].func = aggr_xor_uint8_t;
+          break;
+        case RULE_XOR | RULE_S1_16:
+          binfos[i].aggr[j].func = aggr_xor_uint16_t;
+          break;
+        case RULE_XOR | RULE_S1_32:
+          binfos[i].aggr[j].func = aggr_xor_uint32_t;
+          break;
+        case RULE_XOR | RULE_S1_64:
+          binfos[i].aggr[j].func = aggr_xor_uint64_t;
+          break;
+        case RULE_SUM | RULE_S1_8:
+          binfos[i].aggr[j].func = aggr_sum_uint8_t;
+          break;
+        case RULE_SUM | RULE_S1_16:
+          binfos[i].aggr[j].func = aggr_sum_uint16_t;
+          break;
+        case RULE_SUM | RULE_S1_32:
+          binfos[i].aggr[j].func = aggr_sum_uint32_t;
+          break;
+        case RULE_SUM | RULE_S1_64:
+          binfos[i].aggr[j].func = aggr_sum_uint64_t;
+          break;
+        case RULE_PROD | RULE_S1_8:
+          binfos[i].aggr[j].func = aggr_prod_uint8_t;
+          break;
+        case RULE_PROD | RULE_S1_16:
+          binfos[i].aggr[j].func = aggr_prod_uint16_t;
+          break;
+        case RULE_PROD | RULE_S1_32:
+          binfos[i].aggr[j].func = aggr_prod_uint32_t;
+          break;
+        case RULE_PROD | RULE_S1_64:
+          binfos[i].aggr[j].func = aggr_prod_uint64_t;
+          break;
+        case RULE_AND | RULE_S1_8:
+          binfos[i].aggr[j].func = aggr_and_uint8_t;
+          break;
+        case RULE_AND | RULE_S1_16:
+          binfos[i].aggr[j].func = aggr_and_uint16_t;
+          break;
+        case RULE_AND | RULE_S1_32:
+          binfos[i].aggr[j].func = aggr_and_uint32_t;
+          break;
+        case RULE_AND | RULE_S1_64:
+          binfos[i].aggr[j].func = aggr_and_uint64_t;
+          break;
+        case RULE_OR | RULE_S1_8:
+          binfos[i].aggr[j].func = aggr_or_uint8_t;
+          break;
+        case RULE_OR | RULE_S1_16:
+          binfos[i].aggr[j].func = aggr_or_uint16_t;
+          break;
+        case RULE_OR | RULE_S1_32:
+          binfos[i].aggr[j].func = aggr_or_uint32_t;
+          break;
+        case RULE_OR | RULE_S1_64:
+          binfos[i].aggr[j].func = aggr_or_uint64_t;
+          break;
+          
+      }
+    }
+    
+    
     /* for loop for the group-filter */
     for (int j = 0; j < binfos[i].num_gfilter_rules; j++) {
       switch (binfos[i].gfilter_rules[j].op) {

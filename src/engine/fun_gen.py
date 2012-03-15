@@ -40,6 +40,22 @@ operation_map = {
     'xor': '^'
 }
 
+aggr_map = {
+  'RULE_STATIC' : 'static',
+  'RULE_COUNT' : 'count',
+  'RULE_UNION' : 'union',  
+  'RULE_MIN' : 'min',
+  'RULE_MAX' : 'max',  
+  'RULE_MEDIAN' : 'median', 
+  'RULE_MEAN' : 'mean',
+  'RULE_STDDEV' : 'stddev',    
+  'RULE_XOR' : 'xor',
+  'RULE_SUM' : 'sum',
+  'RULE_PROD' : 'prod',  
+  'RULE_AND' : 'and',
+  'RULE_OR' : 'or',
+}
+
 enum_map = {
     'RULE_S2_8': 'uint8_t',
     'RULE_S2_16': 'uint16_t',
@@ -307,10 +323,11 @@ def groupaggr_body(op, atype):
     return result
 
 
-gfilter_proto = """bool gfilter_%s(struct group *group, 
-                                   size_t field_offset, 
-                                   uint64_t value, 
-                                   uint64_t delta)"""
+gfilter_proto = """bool 
+                   gfilter_%s(struct group *group, 
+                              size_t field_offset, 
+                              uint64_t value, 
+                              uint64_t delta)"""
 
 def gfilter_body(op):
     result = " {\n\n"
@@ -495,6 +512,45 @@ source.write("""
             }
         }
 """)
+
+
+# switch statement for the group-aggregation
+
+source.write("""
+  
+  /* for loop for the group-aggregation */
+  for (int j = 0; j < binfos[i].num_aggr; j++) {
+  switch (binfos[i].aggr[j].op) {
+  """)
+
+for op in 'RULE_STATIC', \
+          'RULE_COUNT',  \
+          'RULE_UNION',  \
+          'RULE_MIN',    \
+          'RULE_MAX',    \
+          'RULE_MEDIAN', \
+          'RULE_MEAN',   \
+          'RULE_STDDEV', \
+          'RULE_XOR',    \
+          'RULE_SUM',    \
+          'RULE_PROD',   \
+          'RULE_AND',    \
+          'RULE_OR':     \
+            
+  for atype in 'RULE_S1_8',  \
+               'RULE_S1_16', \
+               'RULE_S1_32', \
+               'RULE_S1_64': \
+                  
+        source.write("case %s | %s:\n"%(op, atype))
+        source.write("binfos[i].aggr[j].func = aggr_%s_%s;\n"
+                     %(aggr_map[op], enum_map[atype]))
+        source.write("break;\n")
+
+source.write("""
+  }
+  }
+  """)
 
 
 # switch statement for the grouper-filter

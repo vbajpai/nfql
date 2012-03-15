@@ -81,7 +81,7 @@ struct filter_rule {
   size_t field_offset;
   uint64_t value;
   uint64_t delta;
-  uint16_t op;
+  uint32_t op;
   bool (*func)(
                char *record,
                size_t field_offset,
@@ -122,7 +122,7 @@ struct grouper_rule {
   size_t field_offset1;
   size_t field_offset2;
   uint64_t delta;
-  uint16_t op;
+  uint32_t op;
   bool (*func)(
                struct group *group,
                size_t field_offset1,
@@ -134,6 +134,7 @@ struct grouper_rule {
 struct grouper_aggr {
   int module; // NEW: indicate module, -1 for all
   size_t field_offset;
+  uint32_t op;
   struct aggr (*func)(
                       char **group_records,
                       size_t num_records,
@@ -149,7 +150,7 @@ struct gfilter_rule {
   size_t field;
   uint64_t value;
   uint64_t delta;
-  uint16_t op;
+  uint32_t op;
   bool (*func)(struct group *group,
                size_t field,
                uint64_t value,
@@ -216,6 +217,21 @@ enum {
   RULE_LT = 192,
   RULE_LE = 256,
   RULE_GE = 320,
+  
+  /* aggregation options */
+  RULE_STATIC = 512,
+  RULE_COUNT = 1024,
+  RULE_UNION = 2048,  
+  RULE_MIN = 4096,
+  RULE_MAX = 8192,  
+  RULE_MEDIAN = 16384, 
+  RULE_MEAN = 32768,
+  RULE_STDDEV = 65536,    
+  RULE_XOR = 131072,
+  RULE_SUM = 262144,
+  RULE_PROD = 524288,  
+  RULE_AND = 1048576,
+  RULE_OR = 2097152,  
 };
 
 enum field_length {

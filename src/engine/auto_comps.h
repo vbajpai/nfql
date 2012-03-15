@@ -2118,30 +2118,36 @@ aggr_xor_uint64_t(char **records,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
-bool gfilter_eq(struct group *group, 
-                size_t field_offset, 
-                uint64_t value, 
-                uint64_t delta);
-bool gfilter_ne(struct group *group, 
-                size_t field_offset, 
-                uint64_t value, 
-                uint64_t delta);
-bool gfilter_lt(struct group *group, 
-                size_t field_offset, 
-                uint64_t value, 
-                uint64_t delta);
-bool gfilter_gt(struct group *group, 
-                size_t field_offset, 
-                uint64_t value, 
-                uint64_t delta);
-bool gfilter_le(struct group *group, 
-                size_t field_offset, 
-                uint64_t value, 
-                uint64_t delta);
-bool gfilter_ge(struct group *group, 
-                size_t field_offset, 
-                uint64_t value, 
-                uint64_t delta);
+bool 
+gfilter_eq(struct group *group, 
+           size_t field_offset, 
+           uint64_t value, 
+           uint64_t delta);
+bool 
+gfilter_ne(struct group *group, 
+           size_t field_offset, 
+           uint64_t value, 
+           uint64_t delta);
+bool 
+gfilter_lt(struct group *group, 
+           size_t field_offset, 
+           uint64_t value, 
+           uint64_t delta);
+bool 
+gfilter_gt(struct group *group, 
+           size_t field_offset, 
+           uint64_t value, 
+           uint64_t delta);
+bool 
+gfilter_le(struct group *group, 
+           size_t field_offset, 
+           uint64_t value, 
+           uint64_t delta);
+bool 
+gfilter_ge(struct group *group, 
+           size_t field_offset, 
+           uint64_t value, 
+           uint64_t delta);
 bool 
 merger_eq(struct group *group1, 
           size_t field1, 
