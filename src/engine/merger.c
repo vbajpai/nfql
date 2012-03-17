@@ -30,8 +30,8 @@
 #include "merger.h"
 
 struct group ***
-merger(struct group ***filtered_groups, 
-       size_t *num_filtered_groups, 
+merger(struct group ***filtered_groupset_collection, 
+       size_t *num_filtered_groupset, 
        int num_threads, 
        struct merger_rule *filter, 
        int num_filter_rules) {
@@ -41,34 +41,17 @@ merger(struct group ***filtered_groups,
   //    struct group **temp_tuple;
   //    int i, j;
   int i;
-  struct permut_iter *iter;
-  size_t *offsets;
   
-  offsets = (size_t *)malloc(sizeof(size_t)*num_threads);
-  if (offsets == NULL) {
-    perror("malloc");
-    exit(EXIT_FAILURE);
-  }
-  
-  for (i = 0; i < num_threads; i++) offsets[i] = 0;
-  
-  iter = iter_init(offsets, num_filtered_groups, num_threads);
+  size_t* offsets = (size_t *)calloc(num_threads, sizeof(size_t));  
+  if (offsets == NULL)
+    errExit("calloc");
+    
+  struct permut_iter* iter = iter_init(offsets, num_filtered_groupset, num_threads);
 
-#ifdef PP  
-  printf("foobar\n");
-  for (i = num_filtered_groups[0]-1; i > num_filtered_groups[0]-10; i--) {
-    printf("%p\n", filtered_groups[0][i]);
-    if (filtered_groups[0][i] == NULL) {
-      perror("is NULL");
-      exit(EXIT_FAILURE);
-    }
-  }
-#endif
-  
   do {
     // break if any of the groups is already grouped
     for (i = 0; i < num_threads; i++) {
-      if (filtered_groups[i][iter->array[i]] == NULL) goto cont;
+      if (filtered_groupset_collection[i][iter->array[i]] == NULL) goto cont;
     }
 
 #ifdef PP    

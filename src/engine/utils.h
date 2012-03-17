@@ -29,6 +29,7 @@
 #define flowy_engine_utils_h
 
 #include "base.h"
+#include "error_functions.h"
 
 struct permut_iter {
   size_t len;

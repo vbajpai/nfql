@@ -59,3 +59,77 @@ bsearch_r(const void *key,
   }
   return NULL;
 }
+
+
+/*
+ * those functions just go through all possible permutations of sequential
+ * numbers from N lists. Each of those lists is parameterized by an offset
+ * (the beginning of the sequence) and a length.
+ *
+ * The lists are not stored but only the current permutation and the list
+ * properties are carried along.
+ */
+
+/*
+ * initialize a new permutation vector, given the initial offsets
+ */
+struct permut_iter *
+iter_init(size_t *offsets, size_t *lengths, size_t arr_len) {
+  
+  struct permut_iter* iter = (struct permut_iter *)
+  malloc(sizeof(struct permut_iter));
+  if (iter == NULL)
+    errExit("malloc");
+  
+  iter->len = arr_len;  
+  iter->array = (size_t *)calloc(arr_len, sizeof(size_t));
+  if (iter->array == NULL)
+    errExit("calloc");  
+  iter->offsets = (size_t *)calloc(arr_len, sizeof(size_t));
+  if (iter->offsets == NULL)
+    errExit("calloc");  
+  iter->lengths = (size_t *)calloc(arr_len, sizeof(size_t));  
+  if (iter->lengths == NULL)
+    errExit("calloc");
+  
+  for (int i = 0; i < arr_len; i++) {
+    iter->array[i] = offsets[i];
+    iter->offsets[i] = offsets[i];
+    iter->lengths[i] = lengths[i];
+  }  
+  return iter;
+}
+
+/*
+ * given the iterator, modify its 'array' permutation vector to represent the
+ * next permutation and return 1. If the last permutation is reached, return
+ * 0.
+ */
+int 
+iter_next(struct permut_iter *iter) {
+  int i;
+  
+  // count up by one
+  // if overflow occurs, carry one
+  for (i = iter->len-1; i >= 0; --i) {
+    if (iter->array[i] < (iter->offsets[i] + iter->lengths[i])) {
+      iter->array[i]++;
+      return 1;
+    } else {
+      iter->array[i] = iter->offsets[i];
+    }
+  }
+  
+  return 0;
+}
+
+/*
+ * free the iterator struct and its members
+ */
+void 
+iter_destroy(struct permut_iter *iter) {
+  free(iter->array);
+  free(iter->offsets);
+  free(iter->lengths);
+  free(iter);
+}
