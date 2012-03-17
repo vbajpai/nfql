@@ -662,15 +662,6 @@ main(int argc, char **argv) {
     { 0, 2, 1, 2, 0, merger_lt },
   };
   
-  printf("foobar1\n");
-  for (i = num_filtered_groups[0]-1; i > num_filtered_groups[0]-10; i--) {
-    printf("%p\n", filtered_groups[0][i]);
-    if (filtered_groups[0][i] == NULL) {
-      perror("found nil");
-      exit(EXIT_FAILURE);
-    }
-  }
-  
   group_tuples = merger(filtered_groups, 
                         num_filtered_groups, 
                         num_threads, 

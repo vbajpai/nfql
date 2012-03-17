@@ -42,7 +42,7 @@
 #include "filter.h"
 #include "grouper.h"
 #include "group_filter.h"
-#include "merger_fptr.h"
+#include "merger.h"
 #include "auto_assign.h"
 #include "error_functions.h"
 #include "ftreader.h"

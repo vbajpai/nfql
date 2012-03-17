@@ -33,7 +33,10 @@
 struct merger_rule;
 
 struct group ***
-merger(struct group ***filtered_groups, size_t *num_filtered_groups, 
-       int num_threads, struct merger_rule *filter, int num_filter_rules);
+merger(struct group ***filtered_groups, 
+       size_t *num_filtered_groups, 
+       int num_threads, 
+       struct merger_rule *filter, 
+       int num_filter_rules);
 
 #endif

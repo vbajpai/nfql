@@ -37,7 +37,7 @@
 
 #define GROUPERAGGREGATIONS
 #define GROUPFILTER
-
+#define MERGER
 
 extern bool debug;
 extern bool if_group_modules_exist;

@@ -27,11 +27,15 @@
 
 #define _GNU_SOURCE
 
-#include "merger_fptr.h"
+#include "merger.h"
 
 struct group ***
-merger(struct group ***filtered_groups, size_t *num_filtered_groups, 
-       int num_threads, struct merger_rule *filter, int num_filter_rules) {
+merger(struct group ***filtered_groups, 
+       size_t *num_filtered_groups, 
+       int num_threads, 
+       struct merger_rule *filter, 
+       int num_filter_rules) {
+  
   struct group ***group_tuples;
   //    int num_group_tuples;
   //    struct group **temp_tuple;

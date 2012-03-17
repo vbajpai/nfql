@@ -73,7 +73,7 @@ groupfilter_fptr.c
 merger_switch.c
 ---------------
 
-merger_fptr.c
+merger.c
 -------------
 
 iterate.c
