@@ -41,6 +41,25 @@ grouper_aggregations(struct group* group,
   if (group->aggr == NULL)
     errExit("malloc");
 
+  
+  /* save common fields (coming from the filter rule) in aggregation record 
+   * currently assumes that the filter rule was `eq`, such that each record
+   * member has the same value for that field in the group, still need
+   * to investigate how it might affect other filter operations */  
+  for (int i = 0; i < binfo->num_filter_rules; i++) {
+    *((u_int32_t*)(group_aggregation + binfo->filter_rules[i].field_offset)) = 
+    *aggr_static_uint64_t(group->members,
+                          group->num_members, 
+                          binfo->filter_rules[i].field_offset, 
+                          TRUE).values;      
+    
+  }  
+  
+  
+  /* save common fields (coming from the grouper rule) in aggregation record 
+   * currently assumes that the grouper rule was `eq`, such that each record
+   * member has the same value for that field in the group, still need
+   * to investigate how it might affect other grouper operations */
   for (int i = 0; i < binfo->num_group_modules; i++) {
     size_t group_offset_1 = binfo->group_modules[i].field_offset1;
     size_t group_offset_2 = binfo->group_modules[i].field_offset2;
@@ -51,7 +70,7 @@ grouper_aggregations(struct group* group,
                                         group->num_members, 
                                         group_offset_1, 
                                         TRUE).values;
-      
+
     *((u_int32_t*)(group_aggregation+group_offset_2)) = 
     *aggr_static_uint64_t(group->members, 
                           group->num_members, 
@@ -59,15 +78,30 @@ grouper_aggregations(struct group* group,
                           TRUE).values;      
 
   }
+  
+  
+  /* aggregate the fields, but ignore fields used in grouper and filter 
+   * module. Again it assume that the operation is `eq`. Need to investigate 
+   * more on how it might affect for other type of operations */
   for (int i = 0; i < binfo->num_aggr; i++){    
     bool if_ignore_aggr_rule = false;
     size_t aggr_offset = binfo->aggr[i].field_offset;
+
+    /* if aggr rule is same as any filter rule, just ignore it */
+    for (int j = 0; j < binfo->num_filter_rules; j++) {
+      
+      size_t filter_offset = binfo->filter_rules[j].field_offset;      
+      if (aggr_offset == filter_offset){
+        if_ignore_aggr_rule = true;
+        break;
+      }
+    }    
     
+    /* if aggr rule is same as any grouper rule, just ignore it */
     for (int j = 0; j < binfo->num_group_modules; j++) {
       size_t group_offset_1 = binfo->group_modules[j].field_offset1;
-      size_t group_offset_2 = binfo->group_modules[j].field_offset2;
-      
-      /* if aggr rule is same as grouping rule, just ignore it */
+      size_t group_offset_2 = binfo->group_modules[j].field_offset2;      
+
       if (aggr_offset == group_offset_1 || aggr_offset == group_offset_2){
         if_ignore_aggr_rule = true;
         break;
@@ -81,8 +115,9 @@ grouper_aggregations(struct group* group,
     if(!if_ignore_aggr_rule)
       *((u_int32_t*)(group_aggregation+aggr_offset)) = *group->aggr[i].values; 
   }
-
-  return group_aggregation;
+  
+  
+  return group_aggregation;  
 }
 
 struct uniq_records_tree *

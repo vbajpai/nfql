@@ -53,7 +53,8 @@ merger(struct group ***filtered_groups,
   for (i = 0; i < num_threads; i++) offsets[i] = 0;
   
   iter = iter_init(offsets, num_filtered_groups, num_threads);
-  
+
+#ifdef PP  
   printf("foobar\n");
   for (i = num_filtered_groups[0]-1; i > num_filtered_groups[0]-10; i--) {
     printf("%p\n", filtered_groups[0][i]);
@@ -62,13 +63,15 @@ merger(struct group ***filtered_groups,
       exit(EXIT_FAILURE);
     }
   }
+#endif
   
   do {
     // break if any of the groups is already grouped
     for (i = 0; i < num_threads; i++) {
       if (filtered_groups[i][iter->array[i]] == NULL) goto cont;
     }
-    
+
+#ifdef PP    
     for (i = 0; i < num_filter_rules; i++) {
       printf("%p\n", filtered_groups[filter[i].branch1][iter->array[filter[i].branch1]]);
       printf("%p\n", filtered_groups[filter[i].branch1][iter->array[filter[i].branch1]]->aggr);
@@ -84,11 +87,11 @@ merger(struct group ***filtered_groups,
      }
      printf("\n");
      */
+#endif    
     
   cont:   continue;
   } while (iter_next(iter));
   
-  printf("foobar\n");
   group_tuples = NULL;
   //    num_group_tuples = 0;
   
