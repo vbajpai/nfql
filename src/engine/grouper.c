@@ -37,9 +37,9 @@ grouper_aggregations(struct group* group,
   if (group_aggregation == NULL)
     errExit("calloc");
   
-  group->aggr = (struct aggr *) malloc(sizeof(struct aggr)*binfo->num_aggr);
+  group->aggr = (struct aggr *)calloc(binfo->num_aggr, sizeof(struct aggr));
   if (group->aggr == NULL)
-    errExit("malloc");
+    errExit("calloc");
 
   
   /* save common fields (coming from the filter rule) in aggregation record 
@@ -47,12 +47,13 @@ grouper_aggregations(struct group* group,
    * member has the same value for that field in the group, still need
    * to investigate how it might affect other filter operations */  
   for (int i = 0; i < binfo->num_filter_rules; i++) {
-    *((u_int32_t*)(group_aggregation + binfo->filter_rules[i].field_offset)) = 
+    
+    size_t field_offset = binfo->filter_rules[i].field_offset;
+    *((u_int16_t*)(group_aggregation + field_offset)) =
     *aggr_static_uint64_t(group->members,
                           group->num_members, 
-                          binfo->filter_rules[i].field_offset, 
-                          TRUE).values;      
-    
+                          field_offset, 
+                          TRUE).values;          
   }  
   
   
