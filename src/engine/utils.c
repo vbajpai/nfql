@@ -27,6 +27,11 @@
 
 #include "utils.h"
 
+
+/* -----------------------------------------------------------------------*/  
+/*                         grouper utilities                              */
+/* -----------------------------------------------------------------------*/
+
 /*
  * adapted from ./stdlib/bsearch.c from the GNU C Library
  * pass additional argument thunk to compar to allow it access additional data
@@ -60,71 +65,82 @@ bsearch_r(const void *key,
   return NULL;
 }
 
+/* -----------------------------------------------------------------------*/  
+
+
+
+
+
+
+
+
+
+
+
+/* -----------------------------------------------------------------------*/  
+/*                         merger utilities                               */
+/* -----------------------------------------------------------------------*/
 
 /*
- * those functions just go through all possible permutations of sequential
- * numbers from N lists. Each of those lists is parameterized by an offset
- * (the beginning of the sequence) and a length.
- *
- * The lists are not stored but only the current permutation and the list
- * properties are carried along.
- */
-
-/*
- * initialize a new permutation vector, given the initial offsets
+ * Initialize a permutation iterator. 
+ * Iterator goes through all possible permutations of filtered group tuples
+ * which are used to make a match. This technique is an alternative to using
+ * deep nested loops which cannot be used in C since the level of nesting
+ * depends on the number of branches which is evaluation when the query is 
+ * parsed at RUNTIME
  */
 struct permut_iter *
-iter_init(size_t *lengths, size_t arr_len) 
-{ 
-  struct permut_iter *iter;
-  int i;
-  
-  iter = (struct permut_iter *)malloc(sizeof(struct permut_iter));
+iter_init(size_t *num_filtered_groups, size_t num_branches) { 
+  struct permut_iter *iter = (struct permut_iter *)
+                              malloc(sizeof(struct permut_iter));
   if (iter == NULL)
-    errExit("malloc");
-  
-  iter->len = arr_len;  
-  iter->array = (size_t *)malloc(sizeof(size_t)*arr_len);  
-  if (iter->array == NULL)
     errExit("malloc");  
-  iter->lengths = (size_t *)malloc(sizeof(size_t)*arr_len);  
-  if (iter->lengths == NULL)
+  iter->num_branches = num_branches;  
+  iter->filtered_group_tuple = (size_t *)malloc(sizeof(size_t)*num_branches);  
+  if (iter->filtered_group_tuple == NULL)
+    errExit("malloc");  
+  iter->num_filtered_groups = (size_t *)malloc(sizeof(size_t)*num_branches);  
+  if (iter->num_filtered_groups == NULL)
     errExit("malloc");
   
-  for (i = 0; i < arr_len; i++) {
-    iter->array[i] = 1;
-    iter->lengths[i] = lengths[i];
-  }
-  
+  /* the first group tuple is (g1_b1, g1_b2, ...) */
+  for (int i = 0; i < num_branches; i++) {
+    iter->filtered_group_tuple[i] = 1;
+    iter->num_filtered_groups[i] = num_filtered_groups[i];
+  }  
   return iter;
 }
 
 /*
- * given the iterator, modify its 'array' permutation vector to represent the
- * next permutation and return 1. If the last permutation is reached, return
- * 0.
+ * given the iterator, modify to represent the next permutation
+ * and return true. if the last permutation is reached, return false.
  */
-int iter_next(struct permut_iter *iter)
-{
-  int i;
-  
-  // count up by one
-  // if overflow occurs, carry one
-  for (i = iter->len-1; i >= 0; --i) {
-    if (iter->array[i] < iter->lengths[i]) {
-      iter->array[i]++;
-      return 1;
+bool iter_next(struct permut_iter *iter) {
+  /* start from right to left in the group tuple */
+  for (int i = iter->num_branches-1; i >= 0; --i) {
+    
+    /* if the item in particular index of the tuple has more left elements,
+     * choose the next element, and return
+     */
+    if (iter->filtered_group_tuple[i] < iter->num_filtered_groups[i]) {
+      iter->filtered_group_tuple[i]++;
+      return true;
+    /* if all the elements in this particular index of the tuple have been
+       checked, wrap the group around, and move to another (left) index      
+     */  
     } else {
-      iter->array[i] = 1;
+      iter->filtered_group_tuple[i] = 1;
     }
   }
   
-  return 0;
+  /* if everything is matched, return false */
+  return false;
 }
 
-void iter_destroy(struct permut_iter *iter)
-{
-  free(iter->array);
-  free(iter->lengths);
+void iter_destroy(struct permut_iter *iter) {
+  free(iter->filtered_group_tuple);
+  free(iter->num_filtered_groups);
   free(iter);
 }
+
+/* -----------------------------------------------------------------------*/

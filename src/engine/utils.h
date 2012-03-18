@@ -31,26 +31,20 @@
 #include "base.h"
 #include "error_functions.h"
 
-struct permut_iter {
-  size_t len;
-  size_t *array;
-  size_t *offsets;
-  size_t *lengths;
-};
+
+
+
+
+
+/* -----------------------------------------------------------------------*/  
+/*                         grouper utilities                              */
+/* -----------------------------------------------------------------------*/
+
 struct bsearch_handle {
   char **ordered_records;
   char ***uniq_records;
   size_t num_uniq_records;
 };
-
-struct permut_iter *
-iter_init(size_t *lengths, size_t arr_len);
-
-int 
-iter_next(struct permut_iter *iter);
-
-void 
-iter_destroy(struct permut_iter *iter);
 
 void *
 bsearch_r(const void *key, 
@@ -59,4 +53,36 @@ bsearch_r(const void *key,
           size_t size,
           void *thunk,
           int (*compar) (void *thunk, const void *, const void *));
+
+/* -----------------------------------------------------------------------*/  
+
+
+
+
+
+
+
+
+
+/* -----------------------------------------------------------------------*/  
+/*                         merger utilities                               */
+/* -----------------------------------------------------------------------*/
+
+struct permut_iter {
+  size_t num_branches;
+  size_t *num_filtered_groups;
+  size_t *filtered_group_tuple;
+};
+
+struct permut_iter *
+iter_init(size_t *lengths, size_t arr_len);
+
+bool 
+iter_next(struct permut_iter *iter);
+
+void 
+iter_destroy(struct permut_iter *iter);
+
+/* -----------------------------------------------------------------------*/  
+
 #endif

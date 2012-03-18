@@ -31,18 +31,19 @@
 
 struct group ***
 merger(struct branch_info* binfo_set, 
-       int num_threads, 
+       int num_branches, 
        struct merger_rule* m_rules, 
        int num_merger_rules) {
   
   struct permut_iter *iter;
   size_t num_filtered_groups[] = {6, 3};
   
-  iter = iter_init(num_filtered_groups, num_threads);
+  iter = iter_init(num_filtered_groups, num_branches);
   unsigned int index = 0;
   do {
     index++;
-    printf("%d: (%zu %zu)\n", index, iter->array[0], iter->array[1]);
+    printf("%d: (%zu %zu)\n", index, iter->filtered_group_tuple[0], 
+                                     iter->filtered_group_tuple[1]);
   } while (iter_next(iter));
   
   iter_destroy(iter);
