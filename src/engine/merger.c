@@ -35,10 +35,7 @@ merger(struct branch_info* binfo_set,
        struct merger_rule* m_rules, 
        int num_merger_rules) {
   
-  struct permut_iter *iter;
-  size_t num_filtered_groups[] = {6, 3};
-  
-  iter = iter_init(num_filtered_groups, num_branches);
+  struct permut_iter *iter = iter_init(binfo_set, num_branches);
   unsigned int index = 0;
   do {
     index++;
@@ -47,6 +44,8 @@ merger(struct branch_info* binfo_set,
   } while (iter_next(iter));
   
   iter_destroy(iter);
+  
+
   
 #ifdef OLDMERGER  
   

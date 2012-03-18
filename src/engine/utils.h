@@ -29,6 +29,7 @@
 #define flowy_engine_utils_h
 
 #include "base.h"
+#include "pipeline.h"
 #include "error_functions.h"
 
 
@@ -75,7 +76,7 @@ struct permut_iter {
 };
 
 struct permut_iter *
-iter_init(size_t *lengths, size_t arr_len);
+iter_init(struct branch_info* binfo_set, int num_branches);
 
 bool 
 iter_next(struct permut_iter *iter);

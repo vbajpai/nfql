@@ -90,7 +90,7 @@ bsearch_r(const void *key,
  * parsed at RUNTIME
  */
 struct permut_iter *
-iter_init(size_t *num_filtered_groups, size_t num_branches) { 
+iter_init(struct branch_info* binfo_set, int num_branches) { 
   struct permut_iter *iter = (struct permut_iter *)
                               malloc(sizeof(struct permut_iter));
   if (iter == NULL)
@@ -106,7 +106,7 @@ iter_init(size_t *num_filtered_groups, size_t num_branches) {
   /* the first group tuple is (g1_b1, g1_b2, ...) */
   for (int i = 0; i < num_branches; i++) {
     iter->filtered_group_tuple[i] = 1;
-    iter->num_filtered_groups[i] = num_filtered_groups[i];
+    iter->num_filtered_groups[i] = binfo_set[i].num_filtered_groups;
   }  
   return iter;
 }

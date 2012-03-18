@@ -37,17 +37,6 @@ branch_start(void *arg) {
   char**                      filtered_records;
   size_t                      num_filtered_records = 0;
   
-  /* grouper stage variables */
-  struct group**              groupset;
-  size_t                      num_groups = 0;
-
-  
-  /* group-filter stage variables */  
-#ifdef GROUPFILTER
-  struct group**              filtered_groupset; /* returned */
-  size_t                      num_filtered_groups = 0; /* stored in binfo */
-#endif
-
   
   
   /* -----------------------------------------------------------------------*/  
@@ -81,30 +70,15 @@ branch_start(void *arg) {
   /* -----------------------------------------------------------------------*/  
   
  
-  groupset = grouper(filtered_records, 
+  binfo->groupset = grouper(filtered_records, 
                      num_filtered_records, 
                      binfo,
                      binfo->group_modules, 
                      binfo->num_group_modules, 
                      binfo->aggr, 
                      binfo->num_aggr, 
-                     &num_groups);
+                     &binfo->num_groups);
   
-  if(verbose_v){
-    
-    binfo->groupset = (struct group**)
-    malloc(num_groups * sizeof(struct group**));
-    if (binfo->groupset == NULL)
-      errExit("malloc");
-    
-    for (int i = 0; i < num_groups; i++){
-      binfo->groupset[i] = groupset[i];
-      groupset[i] = NULL;
-    }
-    
-    binfo->num_groups = num_groups;
-    free(groupset);
-  }  
 
   /* -----------------------------------------------------------------------*/
   
@@ -143,15 +117,12 @@ branch_start(void *arg) {
   /*                            grouper-filter                              */
   /* -----------------------------------------------------------------------*/  
   
-  filtered_groupset = group_filter(binfo->groupset, 
-                                   binfo->num_groups, 
-                                   binfo->gfilter_rules, 
-                                   binfo->num_gfilter_rules, 
-                                   &num_filtered_groups);
+  binfo->filtered_groupset = group_filter(binfo->groupset, 
+                                          binfo->num_groups, 
+                                          binfo->gfilter_rules, 
+                                          binfo->num_gfilter_rules, 
+                                          &binfo->num_filtered_groups);
  
-  binfo->num_filtered_groups = num_filtered_groups;
-  binfo->filtered_groupset = filtered_groupset;
-
   /* -----------------------------------------------------------------------*/
   
 #endif  
