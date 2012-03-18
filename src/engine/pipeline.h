@@ -36,7 +36,8 @@
 struct flowquery {
   size_t num_branches;
   struct branch_info *branches;
-  struct merger_rule **mrules;
+  struct merger_rule *mrules;
+  size_t num_merger_rules;
 };
 
 /*
@@ -81,7 +82,7 @@ struct filter_rule {
   size_t field_offset;
   uint64_t value;
   uint64_t delta;
-  uint32_t op;
+  uint64_t op;
   bool (*func)(
                char *record,
                size_t field_offset,
@@ -122,7 +123,7 @@ struct grouper_rule {
   size_t field_offset1;
   size_t field_offset2;
   uint64_t delta;
-  uint32_t op;
+  uint64_t op;
   bool (*func)(
                struct group *group,
                size_t field_offset1,
@@ -134,7 +135,7 @@ struct grouper_rule {
 struct grouper_aggr {
   int module; // NEW: indicate module, -1 for all
   size_t field_offset;
-  uint32_t op;
+  uint64_t op;
   struct aggr (*func)(
                       char **group_records,
                       size_t num_records,
@@ -150,7 +151,7 @@ struct gfilter_rule {
   size_t field;
   uint64_t value;
   uint64_t delta;
-  uint32_t op;
+  uint64_t op;
   bool (*func)(struct group *group,
                size_t field,
                uint64_t value,
@@ -166,6 +167,7 @@ struct merger_rule {
   size_t field1;
   struct branch_info *branch2;
   size_t field2;
+  uint64_t op;
   uint64_t delta;
   bool (*func)(struct group *group1,
                size_t field1,
@@ -196,20 +198,24 @@ struct merger_rule {
  */
 
 enum {
+  
   /* size2 */
   RULE_S2_8 = 0,
   RULE_S2_16 = 1,
   RULE_S2_32 = 2,
   RULE_S2_64 = 3,
+  
   /* size1 */
   RULE_S1_8 = 0,
   RULE_S1_16 = 4,
   RULE_S1_32 = 8,
   RULE_S1_64 = 12,
+  
   /* D */
   RULE_ABS = 0,
   RULE_REL = 16,
   RULE_NO = 32,
+  
   /* comp */
   RULE_EQ = 0,
   RULE_NE = 64,
@@ -232,6 +238,22 @@ enum {
   RULE_PROD = 524288,  
   RULE_AND = 1048576,
   RULE_OR = 2097152,  
+  
+  /* merger allen operations */
+  RULE_IN = 4194304,
+  RULE_ALLEN_BF = 8388608,
+  RULE_ALLEN_AF = 16777216,
+  RULE_ALLEN_M = 33554432,
+  RULE_ALLEN_MI = 67108864,
+  RULE_ALLEN_O = 134217728,
+  RULE_ALLEN_OI = 268435456,
+  RULE_ALLEN_S = 536870912,
+  RULE_ALLEN_SI = 1073741824,
+  RULE_ALLEN_D = 2147483648,
+  RULE_ALLEN_DI = 4294967296,
+  RULE_ALLEN_F = 8589934592,
+  RULE_ALLEN_FI = 17179869184,
+  RULE_ALLEN_EQ = 34359738368  
 };
 
 enum field_length {

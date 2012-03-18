@@ -57,14 +57,18 @@ aggr_map = {
 }
 
 enum_map = {
-    'RULE_S2_8': 'uint8_t',
-    'RULE_S2_16': 'uint16_t',
-    'RULE_S2_32': 'uint32_t',
-    'RULE_S2_64': 'uint64_t',
+  
     'RULE_S1_8': 'uint8_t',
     'RULE_S1_16': 'uint16_t',
     'RULE_S1_32': 'uint32_t',
     'RULE_S1_64': 'uint64_t',
+  
+    'RULE_S2_8': 'uint8_t',
+    'RULE_S2_16': 'uint16_t',
+    'RULE_S2_32': 'uint32_t',
+    'RULE_S2_64': 'uint64_t',
+
+  
     'RULE_ABS': 'abs',
     'RULE_REL': 'rel',
     'RULE_NO': 'no',
@@ -74,6 +78,22 @@ enum_map = {
     'RULE_LT': 'lt',
     'RULE_LE': 'le',
     'RULE_GE': 'ge',
+    'RULE_IN': 'in',
+
+  
+    'RULE_ALLEN_BF': 'allen_bf',
+    'RULE_ALLEN_AF': 'allen_af', 
+    'RULE_ALLEN_M': 'allen_m',  
+    'RULE_ALLEN_MI': 'allen_mi', 
+    'RULE_ALLEN_O': 'allen_o',  
+    'RULE_ALLEN_OI': 'allen_oi', 
+    'RULE_ALLEN_S': 'allen_s',  
+    'RULE_ALLEN_SI': 'allen_si', 
+    'RULE_ALLEN_D': 'allen_d',  
+    'RULE_ALLEN_DI': 'allen_di', 
+    'RULE_ALLEN_F': 'allen_f',  
+    'RULE_ALLEN_FI': 'allen_fi', 
+    'RULE_ALLEN_EQ': 'allen_eq'  
 }
 
 preamble = """
@@ -346,17 +366,18 @@ def gfilter_body(op):
     result += "}\n\n"
     return result
 
-merger_proto = """bool 
-                  merger_%s_%s(struct group *group1, 
-                               size_t field1_offset, 
-                               struct group *group2, 
-                               size_t field2_offset, 
-                               uint64_t delta)"""
-def merger_body(op, atype):
+#merger: part I: operation on field offsets
+merger1_proto = """bool 
+                  merger_%s_%s_%s(struct group *group1, 
+                                  size_t field1_offset, 
+                                  struct group *group2, 
+                                  size_t field2_offset, 
+                                  uint64_t delta)"""
+def merger1_body(op, atype1, atype2):
     result = " {\n\n"
     if op in ['eq', 'ne', 'lt', 'gt', 'le', 'ge', 'in']:
-        result += "    if (*(%s*)(group1->group_aggr_record + field1_offset) == 0 ||\n"%atype
-        result += "        *(%s*)(group2->group_aggr_record + field2_offset) == 0)\n"%atype
+        result += "    if (*(%s*)(group1->group_aggr_record + field1_offset) == 0 ||\n"%atype1
+        result += "        *(%s*)(group2->group_aggr_record + field2_offset) == 0)\n"%atype2
         result += "      return false;\n\n"
     if op == "eq":
       result += """    return (*(%s*)(group1->group_aggr_record + field1_offset) >= 
@@ -365,48 +386,23 @@ def merger_body(op, atype):
                                (*(%s*)(group1->group_aggr_record + field1_offset) <= 
                                *(%s*)(group2->group_aggr_record + field2_offset) + delta);  
           
-                  """%(atype, atype, atype, atype)
+                  """%(atype1, atype2, atype1, atype2)
     elif op == "ne":
       result += """    return (*(%s*)(group1->group_aggr_record + field1_offset) < 
                                *(%s*)(group2->group_aggr_record + field2_offset) - delta) 
                               || 
                               (*(%s*)(group1->group_aggr_record + field1_offset) > 
                               *(%s*)(group2->group_aggr_record + field2_offset) + delta);          
-                  """%(atype, atype, atype, atype)
+                  """%(atype1, atype2, atype1, atype2)
     elif op in ['lt', 'le']:
-        result += """  return group1->group_aggr_record + field1_offset %s 
-                              group2->group_aggr_record + field2_offset + delta;\n
-                  """%operation_map[op]
+        result += """  return (*(%s*)(group1->group_aggr_record + field1_offset) %s 
+                              *(%s*)(group2->group_aggr_record + field2_offset) + delta);\n
+                  """%(atype1, operation_map[op], atype2)
     elif op in ['gt', 'ge']:
-        result += """    return group1->group_aggr_record + field1_offset %s 
-                                group2->group_aggr_record + field2_offset - delta;\n          
-                  """%operation_map[op]
-    elif op == 'a_bf':
-        result += "    return group1->end < group2->start;\n"
-    elif op == 'a_af':
-        result += "    return group1->start > group2->end;\n"
-    elif op == 'a_m':
-        result += "    return group1->end == group2->start;\n"
-    elif op == 'a_mi':
-        result += "    return group1->start == group2->end;\n"
-    elif op == 'a_o':
-        result += "    return group1->start < group2->start && group1->end > group2->start;\n"
-    elif op == 'a_oi':
-        result += "    return group1->end > group2->end && group1->start < group2->end;\n"
-    elif op == 'a_s':
-        result += "    return group1->start == group2->start && group1->end < group2->end;\n"
-    elif op == 'a_si':
-        result += "    return group1->start == group2->start && group1->end > group2->end;\n"
-    elif op == 'a_d':
-        result += "    return group1->start > group2->start && group1->end < group2->end;\n"
-    elif op == 'a_di':
-        result += "    return group1->start < group2->start && group1->end > group2->end;\n"
-    elif op == 'a_f':
-        result += "    return group1->end == group2->end && group1->start > group2->start;\n"
-    elif op == 'a_fi':
-        result += "    return group1->end == group2->end && group1->start < group2->start;\n"
-    elif op == 'a_eq':
-        result += "    return group1->start == group2->start && group1->end == group2->end;\n"
+        result += """  return (*(%s*)(group1->group_aggr_record + field1_offset) %s 
+                              *(%s*)(group2->group_aggr_record + field2_offset) - delta);\n          
+                  """%(atype1, operation_map[op], atype2)
+    #TODO: need to cross-check
     elif op == 'in':
         result += "    for (int i=0; i<group2->aggr[field2_offset].num_values; i++) {\n"
         result += "        if (group1->aggr[field1_offset].values[0] >= group2->aggr[field2_offset].values[i] - delta && group1->aggr[field1_offset].values[0] <= group2->aggr[field2_offset].values[i] + delta) {\n"
@@ -418,6 +414,48 @@ def merger_body(op, atype):
         raise ValueError(op)
     result += "}\n\n"
     return result;
+
+#merger: part II: operation on allen intervals
+
+merger2_proto = """bool 
+                   merger_%s(struct group *group1, 
+                             size_t field1_offset, 
+                             struct group *group2, 
+                             size_t field2_offset, 
+                             uint64_t delta)"""
+
+def merger2_body(op):
+  result = " {\n\n"
+  if op == 'allen_bf':
+    result += "    return group1->end < group2->start;\n"
+  elif op == 'allen_af':
+    result += "    return group1->start > group2->end;\n"
+  elif op == 'allen_m':
+    result += "    return group1->end == group2->start;\n"
+  elif op == 'allen_mi':
+    result += "    return group1->start == group2->end;\n"
+  elif op == 'allen_o':
+    result += "    return group1->start < group2->start && group1->end > group2->start;\n"
+  elif op == 'allen_oi':
+    result += "    return group1->end > group2->end && group1->start < group2->end;\n"
+  elif op == 'allen_s':
+    result += "    return group1->start == group2->start && group1->end < group2->end;\n"
+  elif op == 'allen_si':
+    result += "    return group1->start == group2->start && group1->end > group2->end;\n"
+  elif op == 'allen_d':
+    result += "    return group1->start > group2->start && group1->end < group2->end;\n"
+  elif op == 'allen_di':
+    result += "    return group1->start < group2->start && group1->end > group2->end;\n"
+  elif op == 'allen_f':
+    result += "    return group1->end == group2->end && group1->start > group2->start;\n"
+  elif op == 'allen_fi':
+    result += "    return group1->end == group2->end && group1->start < group2->start;\n"
+  elif op == 'allen_eq':
+    result += "    return group1->start == group2->start && group1->end == group2->end;\n"
+  else:
+    raise ValueError(op)
+  result += "}\n\n"
+  return result;
 
 # filter
 for op in 'eq', 'ne', 'lt', 'gt', 'le', 'ge':
@@ -436,8 +474,8 @@ for op in 'eq', 'ne', 'lt', 'gt', 'le', 'ge':
                 source.write(grouper_body(op, atype1, atype2, dtype))
 
 # group aggr
-for op in 'static', 'count', 'union', 'min', 'max', 'median', 'mean', 'stddev', \
-          'prod', 'sum', 'and', 'or', 'xor':
+for op in 'static', 'count', 'union', 'min', 'max', \
+          'median', 'mean', 'stddev', 'prod', 'sum', 'and', 'or', 'xor':
     for atype in 'uint8_t', 'uint16_t', 'uint32_t', 'uint64_t':
         header.write(groupaggr_proto%(op, atype)+";\n")
         source.write(groupaggr_proto%(op, atype))
@@ -449,15 +487,23 @@ for op in 'eq', 'ne', 'lt', 'gt', 'le', 'ge':
     source.write(gfilter_proto%(op))
     source.write(gfilter_body(op))
 
-# merger
-for op in 'eq', 'ne', 'lt', 'gt', 'le', 'ge', \
-          'a_bf', 'a_af', 'a_m', 'a_mi', 'a_o', \
-          'a_oi', 'a_s', 'a_si', 'a_d', 'a_di', \
-          'a_f', 'a_fi', 'a_eq', 'in':
-    for atype in 'uint8_t', 'uint16_t', 'uint32_t', 'uint64_t':            
-        header.write(merger_proto%(op,atype)+";\n")
-        source.write(merger_proto%(op,atype))
-        source.write(merger_body(op,atype))
+# merger: part I
+for op in 'eq', 'ne', 'lt', 'gt', 'le', 'ge', 'in':
+    for atype1 in 'uint8_t', 'uint16_t', 'uint32_t', 'uint64_t':
+        for atype2 in 'uint8_t', 'uint16_t', 'uint32_t', 'uint64_t':      
+            header.write(merger1_proto%(op,atype1,atype2)+";\n")
+            source.write(merger1_proto%(op,atype1,atype2))
+            source.write(merger1_body(op,atype1,atype2))
+
+
+# merger: part II
+for op in 'allen_bf', 'allen_af', 'allen_m', 'allen_mi', 'allen_o', \
+          'allen_oi', 'allen_s', 'allen_si', 'allen_d', 'allen_di', \
+          'allen_f', 'allen_fi', 'allen_eq':
+    header.write(merger2_proto%(op)+";\n")
+    source.write(merger2_proto%(op))
+    source.write(merger2_body(op))
+
 
 header.write("#endif\n")
 header.close()
@@ -473,14 +519,19 @@ header.write("#ifndef flowy_engine_auto_assign_h\n")
 header.write("#define flowy_engine_auto_assign_h\n\n")
 
 header.write("#include \"auto_comps.h\"\n\n")
-header.write("void\nassign_fptr(struct branch_info *binfos, int num_threads);\n\n")
+header.write("""void
+                assign_fptr(struct flowquery *fquery,
+                            struct branch_info *binfos, 
+                            int num_threads);\n\n""")
 
 
 source.write("#include \"auto_assign.h\"\n")
 
 source.write("""
 void 
-assign_fptr(struct branch_info *binfos, int num_threads) {
+assign_fptr(struct flowquery *fquery,
+            struct branch_info *binfos, 
+            int num_threads) {
     for (int i = 0; i < num_threads; i++) {
 """)
   
@@ -584,10 +635,52 @@ for op in 'RULE_EQ', 'RULE_NE', 'RULE_GT', 'RULE_LT', 'RULE_LE', 'RULE_GE':
   source.write("                    break;\n")
 
 source.write("""
+  }
+  }
+  }
+  """)
+
+
+# switch statement for the merger
+
+source.write("""
+  
+  /* for loop for the merger */
+  for (int j = 0; j < fquery->num_merger_rules; j++) {
+  switch (fquery->mrules[j].op) {
+  """)
+
+for op in 'RULE_EQ', 'RULE_NE', 'RULE_GT', 'RULE_LT', 'RULE_LE', 'RULE_GE', 'RULE_IN':
+  for atype1 in 'RULE_S1_8', 'RULE_S1_16', 'RULE_S1_32', 'RULE_S1_64':
+    for atype2 in 'RULE_S2_8', 'RULE_S2_16', 'RULE_S2_32', 'RULE_S2_64':
+      source.write("case %s | %s | %s:\n"%(op, atype1, atype2))
+      source.write("fquery->mrules[j].func = merger_%s_%s_%s;\n"
+                   %(enum_map[op], enum_map[atype1], enum_map[atype2]))
+      source.write("break;\n")
+
+for op in 'RULE_ALLEN_BF',  \
+          'RULE_ALLEN_AF',  \
+          'RULE_ALLEN_M',   \
+          'RULE_ALLEN_MI',  \
+          'RULE_ALLEN_O',   \
+          'RULE_ALLEN_OI',  \
+          'RULE_ALLEN_S',   \
+          'RULE_ALLEN_SI',  \
+          'RULE_ALLEN_D',   \
+          'RULE_ALLEN_DI',  \
+          'RULE_ALLEN_F',   \
+          'RULE_ALLEN_FI',  \
+          'RULE_ALLEN_EQ':  
+  source.write("case %s:\n"%(op))
+  source.write("fquery->mrules[j].func = merger_%s;\n"
+               %(enum_map[op]))
+  source.write("break;\n")
+
+
+source.write("""
             }
         }
     }
-}
 """)
 
 header.write("#endif\n")

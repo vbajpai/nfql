@@ -10,6 +10,8 @@
 #include "auto_comps.h"
 
 void
-assign_fptr(struct branch_info *binfos, int num_threads);
+assign_fptr(struct flowquery *fquery,
+            struct branch_info *binfos, 
+            int num_threads);
 
 #endif

@@ -157,6 +157,10 @@ main(int argc, char **argv) {
   struct filter_offset*               filter_offset;
   struct filter_rules_params*         filter_rules_params;
   
+  /* flowquery variables */
+  struct flowquery*                   fquery;
+  
+  
   /* branch_info variables */
   int                                 num_threads;
   int                                 i, ret;
@@ -294,12 +298,16 @@ main(int argc, char **argv) {
   /*    creating branch_info for each thread      */
   /* ---------------------------------------------*/  
   
+  fquery = (struct flowquery *)malloc(sizeof(struct flowquery));
+  if (fquery == NULL) 
+    errExit("malloc");
+  
   num_threads = 2;
   binfos = (struct branch_info *)
             calloc(num_threads, 
                    sizeof(struct branch_info));
   if (binfos == NULL)
-    errExit("malloc");  
+    errExit("calloc");  
   
   /* ----------------------------------------------*/
 
@@ -425,15 +433,55 @@ main(int argc, char **argv) {
   binfos[1].num_aggr = 4;
   binfos[1].gfilter_rules = gfilter_branch2;
   binfos[1].num_gfilter_rules = 1;
-
-  /* -----------------------------------------------------------------------*/
-  
   
   
   /* deallocate the query buffers */
   free(filter_offset);
   free(filter_rules_params);
 
+  /* -----------------------------------------------------------------------*/
+  
+  
+  
+
+  
+  
+  
+  
+  
+  
+  
+  /* -----------------------------------------------------------------------*/  
+  /*                           merger rules                                 */
+  /* -----------------------------------------------------------------------*/
+  
+  
+  struct merger_rule mfilter[2] = {
+    {&binfos[0], trace_data->offsets.srcaddr, 
+     &binfos[1], trace_data->offsets.dstaddr, 
+     RULE_EQ | RULE_S1_32 | RULE_S2_32,  
+     0,
+     NULL},
+    
+    {&binfos[0], trace_data->offsets.dstaddr, 
+     &binfos[1], trace_data->offsets.srcaddr,
+     RULE_EQ | RULE_S1_32 | RULE_S2_32, 
+     0,
+     NULL},
+  };
+  
+  fquery->num_merger_rules = 2;
+  fquery->mrules = mfilter;
+
+  /* -----------------------------------------------------------------------*/  
+  
+  
+  
+
+  
+  
+  
+  
   
   
   
@@ -443,10 +491,13 @@ main(int argc, char **argv) {
   /*             by falling through a huge switch statement                 */
   /* -----------------------------------------------------------------------*/    
   
-  assign_fptr(binfos, num_threads);
+  assign_fptr(fquery, binfos, num_threads);
   
   /* -----------------------------------------------------------------------*/
 
+  
+  
+  
   
   
   
@@ -504,29 +555,20 @@ main(int argc, char **argv) {
   
   
   
+  
+  
+  
+  
 #ifdef MERGER
   
   /* -----------------------------------------------------------------------*/  
   /*                                 merger                                 */
   /* -----------------------------------------------------------------------*/
   
-  int num_merger_rules = 2;
-  
-  struct merger_rule mfilter[2] = {
-    {&binfos[0], trace_data->offsets.srcaddr, 
-     &binfos[1], trace_data->offsets.dstaddr, 
-     0, merger_eq_uint32_t},
-    
-    {&binfos[0], trace_data->offsets.dstaddr, 
-     &binfos[1], trace_data->offsets.srcaddr, 
-     0, merger_eq_uint32_t},
-  };
-  
-
   group_tuples = merger(binfos,
                         num_threads, 
                         mfilter, 
-                        num_merger_rules);
+                        fquery->num_merger_rules);
   
   free(group_tuples);
 
@@ -536,6 +578,10 @@ main(int argc, char **argv) {
   
   
 
+  
+  
+  
+  
   
   
   
@@ -549,6 +595,11 @@ main(int argc, char **argv) {
   
   
 #endif  
+  
+  
+  
+  
+  
   
   
   
