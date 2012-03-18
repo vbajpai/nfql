@@ -35,28 +35,68 @@ merger(struct branch_info* binfo_set,
        struct merger_rule* m_rules, 
        int num_merger_rules) {
   
+  /* initialize the iterator */
   struct permut_iter *iter = iter_init(binfo_set, num_branches);
+  struct group*** group_tuples = NULL;
+  
+  /* iterate over all permutations */
   unsigned int index = 0;
   do {
+    bool if_all_rules_matched = true;
     index++;
-    printf("%d: (%zu %zu)\n", index, iter->filtered_group_tuple[0], 
-                                     iter->filtered_group_tuple[1]);
+    if(debug){
+      for (int j = 0; j < num_branches; j++) {
+        /* first item */
+        if(j == 0)
+          printf("\n%d: (%zu ", index, iter->filtered_group_tuple[j]);
+        /* last item */
+        else if(j == num_branches -1)
+          printf("%zu)", iter->filtered_group_tuple[j]);
+        else
+          printf("%zu ", iter->filtered_group_tuple[j]);
+      }
+    }    
+    
+    /* match the groups against each merger rule */
+    for (int i = 0; i < num_merger_rules; i++) {
+      
+      struct merger_rule rule = m_rules[i];
+      size_t group1_id = iter->filtered_group_tuple[rule.branch1->branch_id];
+      size_t group2_id = iter->filtered_group_tuple[rule.branch2->branch_id];                                                    
+
+      if (!rule.func(rule.branch1->filtered_groupset[group1_id-1],
+                     rule.field1,
+                     rule.branch2->filtered_groupset[group2_id-1],
+                     rule.field2,
+                     0)){        
+        if_all_rules_matched = false;
+        break;
+      }      
+    }
+    
+    /* add the groups to the group tuple, if all rules matched */
+    if(if_all_rules_matched){
+      for (int j = 0; j < num_branches; j++) {
+        /* first item */
+        if(j == 0)
+          printf("\n%d: (%zu ", index, iter->filtered_group_tuple[j]);
+        /* last item */
+        else if(j == num_branches -1)
+          printf("%zu)", iter->filtered_group_tuple[j]);
+        else
+          printf("%zu ", iter->filtered_group_tuple[j]);
+      }      
+    }
+    
+ 
   } while (iter_next(iter));
   
-  iter_destroy(iter);
-  
+  iter_destroy(iter); 
 
   
-#ifdef OLDMERGER  
   
-  size_t* offsets = (size_t *)calloc(num_threads, sizeof(size_t));  
-  if (offsets == NULL)
-    errExit("calloc");
-    
-  struct permut_iter* iter = iter_init(offsets, 
-                                       num_filtered_groupset, 
-                                       num_threads);
 
+#ifdef MM  
   do {
     // break if any of the groups is already grouped
     bool ifgrouped = false;
@@ -82,8 +122,7 @@ merger(struct branch_info* binfo_set,
 
   } while (iter_next(iter));
 
-#endif
-  
+
   struct group ***group_tuples = NULL;
   
   //    int num_group_tuples;
@@ -129,7 +168,7 @@ merger(struct branch_info* binfo_set,
    printf("number of group tuples: %d\n", num_group_tuples);
    
    */
-
+#endif
   
   return group_tuples;
 }

@@ -4734,15 +4734,15 @@ merger_eq(struct group *group1,
           size_t field2_offset, 
           uint64_t delta) {
   
-  if (*(group1->group_aggr_record + field1_offset) == 0 ||
-      *(group2->group_aggr_record + field2_offset) == 0 )
+  if (*(uint32_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->group_aggr_record + field2_offset) == 0 )
     return false;
   
-  return (*(group1->group_aggr_record + field1_offset) >= 
-          *(group2->group_aggr_record + field2_offset) - delta)
+  return (*(uint32_t*)(group1->group_aggr_record + field1_offset) >= 
+          *(uint32_t*)(group2->group_aggr_record + field2_offset) - delta)
          && 
-         (*(group1->group_aggr_record + field1_offset) <= 
-          *(group2->group_aggr_record + field2_offset) + delta);
+         (*(uint32_t*)(group1->group_aggr_record + field1_offset) <= 
+          *(uint32_t*)(group2->group_aggr_record + field2_offset) + delta);
 }
 
 bool 

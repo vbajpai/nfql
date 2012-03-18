@@ -162,7 +162,9 @@ struct gfilter_rule {
  */
 
 struct merger_rule {
+  struct branch_info *branch1;
   size_t field1;
+  struct branch_info *branch2;
   size_t field2;
   uint64_t delta;
   bool (*func)(struct group *group1,

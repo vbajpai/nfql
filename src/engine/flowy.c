@@ -513,8 +513,13 @@ main(int argc, char **argv) {
   int num_merger_rules = 2;
   
   struct merger_rule mfilter[2] = {
-    {trace_data->offsets.srcaddr, trace_data->offsets.dstaddr, 0, merger_eq },
-    {trace_data->offsets.dstaddr, trace_data->offsets.srcaddr, 0, merger_eq },
+    {&binfos[0], trace_data->offsets.srcaddr, 
+     &binfos[1], trace_data->offsets.dstaddr, 
+     0, merger_eq },
+    
+    {&binfos[0], trace_data->offsets.dstaddr, 
+     &binfos[1], trace_data->offsets.srcaddr, 
+     0, merger_eq },
   };
   
 

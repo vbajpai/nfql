@@ -36,7 +36,7 @@
 struct merger_rule;
 
 struct group ***
-merger(struct branch_info *binfo_set, 
+merger(struct branch_info* binfo_set,
        int num_threads, 
        struct merger_rule *m_rule, 
        int num_merger_rule);
