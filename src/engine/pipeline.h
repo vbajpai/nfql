@@ -69,7 +69,7 @@ struct branch_info {
   size_t num_groups;
   
   /* will be filled by individual branches */
-  struct group **filtered_groups;
+  struct group **filtered_groupset;
   size_t num_filtered_groups;
 };
 
@@ -162,9 +162,7 @@ struct gfilter_rule {
  */
 
 struct merger_rule {
-  size_t branch1;
   size_t field1;
-  size_t branch2;
   size_t field2;
   uint64_t delta;
   bool (*func)(struct group *group1,

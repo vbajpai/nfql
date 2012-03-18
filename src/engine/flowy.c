@@ -150,7 +150,7 @@ branch_start(void *arg) {
                                    &num_filtered_groups);
  
   binfo->num_filtered_groups = num_filtered_groups;
-  binfo->filtered_groups = filtered_groupset;
+  binfo->filtered_groupset = filtered_groupset;
 
   /* -----------------------------------------------------------------------*/
   
@@ -193,11 +193,6 @@ main(int argc, char **argv) {
   pthread_attr_t*                     thread_attrs;
   struct branch_info*                 binfos;
 
-#ifdef GROUPFILTER  
-  struct group***                     filtered_groups;
-  size_t*                             num_filtered_groups;
-#endif
-  
 #ifdef MERGER  
   struct group***                     group_tuples;
 #endif
@@ -499,19 +494,6 @@ main(int argc, char **argv) {
   if (thread_attrs == NULL)
     errExit("malloc");
   
-#ifdef GROUPFILTER
-  
-  /* allocate space for an array of pointers to filtered groups */
-  filtered_groups = (struct group ***)malloc(num_threads*sizeof(struct group **));
-  if (filtered_groups == NULL)
-    errExit("malloc");    
-  num_filtered_groups = (size_t *)malloc(num_threads*sizeof(size_t));
-  if (num_filtered_groups == NULL)
-    errExit("malloc");  
-  
-#endif
-
-  
   for (i = 0; i < num_threads; i++) {
 
     /* initialize each thread attributes */
@@ -539,18 +521,67 @@ main(int argc, char **argv) {
     ret = pthread_join(thread_ids[i], NULL);
     if (ret != 0)
       errExit("pthread_join");
-
-#ifdef GROUPFILTER        
-    /* fetch the filtered groups */
-    num_filtered_groups[i] = binfos[i].num_filtered_groups;
-    filtered_groups[i] = binfos[i].filtered_groups;    
-#endif
-    
   }
   
   free(thread_ids);
   free(thread_attrs);
   
+  /* -----------------------------------------------------------------------*/    
+  
+  
+  
+  
+  
+  
+#ifdef MERGER
+  
+  /* -----------------------------------------------------------------------*/  
+  /*                                 merger                                 */
+  /* -----------------------------------------------------------------------*/
+  
+  int num_merger_rules = 2;
+  
+  struct merger_rule mfilter[2] = {
+    {trace_data->offsets.srcaddr, trace_data->offsets.dstaddr, 0, merger_eq },
+    {trace_data->offsets.dstaddr, trace_data->offsets.srcaddr, 0, merger_eq },
+  };
+  
+
+  group_tuples = merger(binfos,
+                        num_threads, 
+                        mfilter, 
+                        num_merger_rules);
+  
+  free(group_tuples);
+
+  /* -----------------------------------------------------------------------*/    
+  
+#endif  
+  
+  
+
+  
+  
+  
+#ifdef UNGROUPER  
+  
+  /* -----------------------------------------------------------------------*/  
+  /*                                ungrouper                               */
+  /* -----------------------------------------------------------------------*/  
+  // TODO: free group_collections at some point
+  /* -----------------------------------------------------------------------*/    
+  
+  
+#endif  
+  
+  
+  
+  
+  
+  /* -----------------------------------------------------------------------*/  
+  /*                                debugging                               */
+  /* -----------------------------------------------------------------------*/  
+
   if(verbose_v){
     
     /* process each record */
@@ -621,7 +652,7 @@ main(int argc, char **argv) {
         free(group->aggr); 
       }
 #endif
-
+      
       
 #ifdef GROUPFILTER
       printf("\nNo. of Filtered Groups: %zu (Aggregations)\n", 
@@ -630,7 +661,7 @@ main(int argc, char **argv) {
       
       for (int j = 0; j < binfos[i].num_filtered_groups; j++) {
         
-        struct group* filtered_group = binfos[i].filtered_groups[j];
+        struct group* filtered_group = binfos[i].filtered_groupset[j];
         flow_print_record(binfos[i].data, filtered_group->group_aggr_record);
       }
 #endif
@@ -643,53 +674,11 @@ main(int argc, char **argv) {
       }
       free(binfos[i].groupset);
     }
-  }
-  
-  /* -----------------------------------------------------------------------*/    
-  
-  
-  
-  
-  
-  
-#ifdef MERGER
-  
-  /* -----------------------------------------------------------------------*/  
-  /*                                 merger                                 */
-  /* -----------------------------------------------------------------------*/
-  
-  struct merger_rule mfilter[2] = {
-    { 0, 0, 1, 1, 0, merger_eq },
-    { 0, 2, 1, 2, 0, merger_lt },
-  };
-  
-  group_tuples = merger(filtered_groups, 
-                        num_filtered_groups, 
-                        num_threads, 
-                        mfilter, 
-                        2);
-  
-  free(group_tuples);
+  }    
 
-  /* -----------------------------------------------------------------------*/    
-  
-#endif  
+  /* -----------------------------------------------------------------------*/      
   
   
-  
-  
-  
-  
-#ifdef UNGROUPER  
-  
-  /* -----------------------------------------------------------------------*/  
-  /*                                ungrouper                               */
-  /* -----------------------------------------------------------------------*/  
-  // TODO: free group_collections at some point
-  /* -----------------------------------------------------------------------*/    
-  
-  
-#endif  
   
 
 /* free branch_info */

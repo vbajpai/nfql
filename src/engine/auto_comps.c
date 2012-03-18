@@ -4729,15 +4729,20 @@ gfilter_ge(struct group *group,
 
 bool 
 merger_eq(struct group *group1, 
-          size_t field1, 
+          size_t field1_offset, 
           struct group *group2, 
-          size_t field2, 
+          size_t field2_offset, 
           uint64_t delta) {
   
-  if (group1->aggr[field1].num_values == 0 || group2->aggr[field2].num_values == 0) {
+  if (*(group1->group_aggr_record + field1_offset) == 0 ||
+      *(group2->group_aggr_record + field2_offset) == 0 )
     return false;
-  }
-  return (group1->aggr[field1].values[0] >= group2->aggr[field2].values[0] - delta) && (group1->aggr[field1].values[0] <= group2->aggr[field2].values[0] + delta);
+  
+  return (*(group1->group_aggr_record + field1_offset) >= 
+          *(group2->group_aggr_record + field2_offset) - delta)
+         && 
+         (*(group1->group_aggr_record + field1_offset) <= 
+          *(group2->group_aggr_record + field2_offset) + delta);
 }
 
 bool 

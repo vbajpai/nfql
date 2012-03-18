@@ -27,6 +27,7 @@
 #ifndef flowy_engine_merger_fptr_h
 #define flowy_engine_merger_fptr_h
 
+#include "pipeline.h"
 #include "error_functions.h"
 
 #include "auto_comps.h"
@@ -35,10 +36,9 @@
 struct merger_rule;
 
 struct group ***
-merger(struct group ***filtered_groups, 
-       size_t *num_filtered_groups, 
+merger(struct branch_info *binfo_set, 
        int num_threads, 
-       struct merger_rule *filter, 
-       int num_filter_rules);
+       struct merger_rule *m_rule, 
+       int num_merger_rule);
 
 #endif

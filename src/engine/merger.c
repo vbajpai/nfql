@@ -30,52 +30,49 @@
 #include "merger.h"
 
 struct group ***
-merger(struct group ***filtered_groupset_collection, 
-       size_t *num_filtered_groupset, 
+merger(struct branch_info* binfo_set, 
        int num_threads, 
-       struct merger_rule *filter, 
-       int num_filter_rules) {
-  
-  struct group ***group_tuples;
-  //    int num_group_tuples;
-  //    struct group **temp_tuple;
-  //    int i, j;
-  int i;
+       struct merger_rule* m_rules, 
+       int num_merger_rules) {
   
   size_t* offsets = (size_t *)calloc(num_threads, sizeof(size_t));  
   if (offsets == NULL)
     errExit("calloc");
     
-  struct permut_iter* iter = iter_init(offsets, num_filtered_groupset, num_threads);
+  struct permut_iter* iter = iter_init(offsets, 
+                                       num_filtered_groupset, 
+                                       num_threads);
 
   do {
     // break if any of the groups is already grouped
-    for (i = 0; i < num_threads; i++) {
-      if (filtered_groupset_collection[i][iter->array[i]] == NULL) goto cont;
+    bool ifgrouped = false;
+    for (int i = 0; i < num_threads; i++) {
+      struct group** filtered_groupset = binfo_set[i].filtered_groupset;
+      if (filtered_groupset[iter->array[i]] == NULL){
+        ifgrouped = true;
+        break;
+      } 
+    }  
+    
+    if(!ifgrouped) {    
+      for (int i = 0; i < num_merger_rules; i++) {
+        struct merger_rule rule = m_rules[i];
+        if (!m_rules[i].func(binfo_set[i].filtered_groupset[j], 
+                             rule.field1,
+                             filtered_groupset_collection[rule.branch2][iter->array[rule.branch2]], 
+                             rule.field2,
+                             rule.delta))
+          break;
+      }      
     }
 
-#ifdef PP    
-    for (i = 0; i < num_filter_rules; i++) {
-      printf("%p\n", filtered_groups[filter[i].branch1][iter->array[filter[i].branch1]]);
-      printf("%p\n", filtered_groups[filter[i].branch1][iter->array[filter[i].branch1]]->aggr);
-      /*
-       if (!filter[i].func(filtered_groups[filter[i].branch1][iter->array[filter[i].branch1]], filter[i].field1,
-       filtered_groups[filter[i].branch2][iter->array[filter[i].branch2]], filter[i].field2,
-       filter[i].delta)) goto cont;
-       */
-    }
-    /*
-     for (i = 0; i < num_threads; i++) {
-     printf("%zd ", iter->array[i]);
-     }
-     printf("\n");
-     */
-#endif    
-    
-  cont:   continue;
   } while (iter_next(iter));
   
-  group_tuples = NULL;
+  struct group ***group_tuples = NULL;
+  
+  //    int num_group_tuples;
+  //    struct group **temp_tuple;
+  //    int i, j;
   //    num_group_tuples = 0;
   
   /*
