@@ -44,7 +44,7 @@ struct bsearch_handle {
 };
 
 struct permut_iter *
-iter_init(size_t *offsets, size_t *lengths, size_t arr_len);
+iter_init(size_t *lengths, size_t arr_len);
 
 int 
 iter_next(struct permut_iter *iter);

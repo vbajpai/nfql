@@ -74,29 +74,28 @@ bsearch_r(const void *key,
  * initialize a new permutation vector, given the initial offsets
  */
 struct permut_iter *
-iter_init(size_t *offsets, size_t *lengths, size_t arr_len) {
+iter_init(size_t *lengths, size_t arr_len) 
+{ 
+  struct permut_iter *iter;
+  int i;
   
-  struct permut_iter* iter = (struct permut_iter *)
-  malloc(sizeof(struct permut_iter));
+  iter = (struct permut_iter *)malloc(sizeof(struct permut_iter));
   if (iter == NULL)
     errExit("malloc");
   
   iter->len = arr_len;  
-  iter->array = (size_t *)calloc(arr_len, sizeof(size_t));
+  iter->array = (size_t *)malloc(sizeof(size_t)*arr_len);  
   if (iter->array == NULL)
-    errExit("calloc");  
-  iter->offsets = (size_t *)calloc(arr_len, sizeof(size_t));
-  if (iter->offsets == NULL)
-    errExit("calloc");  
-  iter->lengths = (size_t *)calloc(arr_len, sizeof(size_t));  
+    errExit("malloc");  
+  iter->lengths = (size_t *)malloc(sizeof(size_t)*arr_len);  
   if (iter->lengths == NULL)
-    errExit("calloc");
+    errExit("malloc");
   
-  for (int i = 0; i < arr_len; i++) {
-    iter->array[i] = offsets[i];
-    iter->offsets[i] = offsets[i];
+  for (i = 0; i < arr_len; i++) {
+    iter->array[i] = 1;
     iter->lengths[i] = lengths[i];
-  }  
+  }
+  
   return iter;
 }
 
@@ -105,31 +104,27 @@ iter_init(size_t *offsets, size_t *lengths, size_t arr_len) {
  * next permutation and return 1. If the last permutation is reached, return
  * 0.
  */
-int 
-iter_next(struct permut_iter *iter) {
+int iter_next(struct permut_iter *iter)
+{
   int i;
   
   // count up by one
   // if overflow occurs, carry one
   for (i = iter->len-1; i >= 0; --i) {
-    if (iter->array[i] < (iter->offsets[i] + iter->lengths[i])) {
+    if (iter->array[i] < iter->lengths[i]) {
       iter->array[i]++;
       return 1;
     } else {
-      iter->array[i] = iter->offsets[i];
+      iter->array[i] = 1;
     }
   }
   
   return 0;
 }
 
-/*
- * free the iterator struct and its members
- */
-void 
-iter_destroy(struct permut_iter *iter) {
+void iter_destroy(struct permut_iter *iter)
+{
   free(iter->array);
-  free(iter->offsets);
   free(iter->lengths);
   free(iter);
 }

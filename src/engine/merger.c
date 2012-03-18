@@ -35,6 +35,20 @@ merger(struct branch_info* binfo_set,
        struct merger_rule* m_rules, 
        int num_merger_rules) {
   
+  struct permut_iter *iter;
+  size_t num_filtered_groups[] = {6, 3};
+  
+  iter = iter_init(num_filtered_groups, num_threads);
+  unsigned int index = 0;
+  do {
+    index++;
+    printf("%d: (%zu %zu)\n", index, iter->array[0], iter->array[1]);
+  } while (iter_next(iter));
+  
+  iter_destroy(iter);
+  
+#ifdef OLDMERGER  
+  
   size_t* offsets = (size_t *)calloc(num_threads, sizeof(size_t));  
   if (offsets == NULL)
     errExit("calloc");
@@ -67,6 +81,8 @@ merger(struct branch_info* binfo_set,
     }
 
   } while (iter_next(iter));
+
+#endif
   
   struct group ***group_tuples = NULL;
   
@@ -113,5 +129,7 @@ merger(struct branch_info* binfo_set,
    printf("number of group tuples: %d\n", num_group_tuples);
    
    */
+
+  
   return group_tuples;
 }
