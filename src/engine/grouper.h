@@ -81,4 +81,28 @@ grouper(char **filtered_records,
         size_t num_group_aggr, 
         size_t *num_groups);
 
+int 
+comp_uint8_t(void *thunk, const void *e1, const void *e2);
+
+int 
+comp_uint16_t(void *thunk, const void *e1, const void *e2);
+
+int 
+comp_uint32_t(void *thunk, const void *e1, const void *e2);
+
+int 
+comp_uint64_t(void *thunk, const void *e1, const void *e2);
+
+int 
+comp_uint8_t_p(void *thunk, const void *e1, const void *e2);
+
+int 
+comp_uint16_t_p(void *thunk, const void *e1, const void *e2);
+
+int 
+comp_uint32_t_p(void *thunk, const void *e1, const void *e2);
+
+int 
+comp_uint64_t_p(void *thunk, const void *e1, const void *e2);
+
 #endif
