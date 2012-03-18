@@ -4728,234 +4728,1001 @@ gfilter_ge(struct group *group,
 }
 
 bool 
-merger_eq(struct group *group1, 
-          size_t field1_offset, 
-          struct group *group2, 
-          size_t field2_offset, 
-          uint64_t delta) {
+merger_eq_uint8_t(struct group *group1, 
+                  size_t field1_offset, 
+                  struct group *group2, 
+                  size_t field2_offset, 
+                  uint64_t delta) {
+  
+  if (*(uint8_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->group_aggr_record + field2_offset) == 0)
+    return false;
+  
+  return (*(uint8_t*)(group1->group_aggr_record + field1_offset) >= 
+          *(uint8_t*)(group2->group_aggr_record + field2_offset) - delta)
+  && 
+  (*(uint8_t*)(group1->group_aggr_record + field1_offset) <= 
+   *(uint8_t*)(group2->group_aggr_record + field2_offset) + delta);  
+  
+}
+
+bool 
+merger_eq_uint16_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
+  
+  if (*(uint16_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->group_aggr_record + field2_offset) == 0)
+    return false;
+  
+  return (*(uint16_t*)(group1->group_aggr_record + field1_offset) >= 
+          *(uint16_t*)(group2->group_aggr_record + field2_offset) - delta)
+  && 
+  (*(uint16_t*)(group1->group_aggr_record + field1_offset) <= 
+   *(uint16_t*)(group2->group_aggr_record + field2_offset) + delta);  
+  
+}
+
+bool 
+merger_eq_uint32_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
   
   if (*(uint32_t*)(group1->group_aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->group_aggr_record + field2_offset) == 0 )
+      *(uint32_t*)(group2->group_aggr_record + field2_offset) == 0)
     return false;
   
   return (*(uint32_t*)(group1->group_aggr_record + field1_offset) >= 
           *(uint32_t*)(group2->group_aggr_record + field2_offset) - delta)
-         && 
-         (*(uint32_t*)(group1->group_aggr_record + field1_offset) <= 
-          *(uint32_t*)(group2->group_aggr_record + field2_offset) + delta);
-}
-
-bool 
-merger_ne(struct group *group1, 
-          size_t field1, 
-          struct group *group2, 
-          size_t field2, 
-          uint64_t delta) {
+  && 
+  (*(uint32_t*)(group1->group_aggr_record + field1_offset) <= 
+   *(uint32_t*)(group2->group_aggr_record + field2_offset) + delta);  
   
-  if (group1->aggr[field1].num_values == 0 || group2->aggr[field2].num_values == 0) {
-    return false;
-  }
-  return (group1->aggr[field1].values[0] < group2->aggr[field2].values[0] - delta) || (group1->aggr[field1].values[0] > group2->aggr[field2].values[0] + delta);
 }
 
 bool 
-merger_lt(struct group *group1, 
-          size_t field1, 
-          struct group *group2, 
-          size_t field2, 
-          uint64_t delta) {
+merger_eq_uint64_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
   
-  if (group1->aggr[field1].num_values == 0 || group2->aggr[field2].num_values == 0) {
+  if (*(uint64_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->group_aggr_record + field2_offset) == 0)
     return false;
-  }
-  return group1->aggr[field1].values[0] < group2->aggr[field2].values[0] + delta;
-}
-
-bool 
-merger_gt(struct group *group1, 
-          size_t field1, 
-          struct group *group2, 
-          size_t field2, 
-          uint64_t delta) {
   
-  if (group1->aggr[field1].num_values == 0 || group2->aggr[field2].num_values == 0) {
-    return false;
-  }
-  return group1->aggr[field1].values[0] > group2->aggr[field2].values[0] - delta;
-}
-
-bool 
-merger_le(struct group *group1, 
-          size_t field1, 
-          struct group *group2, 
-          size_t field2, 
-          uint64_t delta) {
+  return (*(uint64_t*)(group1->group_aggr_record + field1_offset) >= 
+          *(uint64_t*)(group2->group_aggr_record + field2_offset) - delta)
+  && 
+  (*(uint64_t*)(group1->group_aggr_record + field1_offset) <= 
+   *(uint64_t*)(group2->group_aggr_record + field2_offset) + delta);  
   
-  if (group1->aggr[field1].num_values == 0 || group2->aggr[field2].num_values == 0) {
-    return false;
-  }
-  return group1->aggr[field1].values[0] <= group2->aggr[field2].values[0] + delta;
 }
 
 bool 
-merger_ge(struct group *group1, 
-          size_t field1, 
-          struct group *group2, 
-          size_t field2, 
-          uint64_t delta) {
+merger_ne_uint8_t(struct group *group1, 
+                  size_t field1_offset, 
+                  struct group *group2, 
+                  size_t field2_offset, 
+                  uint64_t delta) {
   
-  if (group1->aggr[field1].num_values == 0 || group2->aggr[field2].num_values == 0) {
+  if (*(uint8_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->group_aggr_record + field2_offset) == 0)
     return false;
-  }
-  return group1->aggr[field1].values[0] >= group2->aggr[field2].values[0] - delta;
+  
+  return (*(uint8_t*)(group1->group_aggr_record + field1_offset) < 
+          *(uint8_t*)(group2->group_aggr_record + field2_offset) - delta) 
+  || 
+  (*(uint8_t*)(group1->group_aggr_record + field1_offset) > 
+   *(uint8_t*)(group2->group_aggr_record + field2_offset) + delta);          
 }
 
 bool 
-merger_a_bf(struct group *group1, 
-            size_t field1, 
-            struct group *group2, 
-            size_t field2, 
-            uint64_t delta) {
+merger_ne_uint16_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
+  
+  if (*(uint16_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->group_aggr_record + field2_offset) == 0)
+    return false;
+  
+  return (*(uint16_t*)(group1->group_aggr_record + field1_offset) < 
+          *(uint16_t*)(group2->group_aggr_record + field2_offset) - delta) 
+  || 
+  (*(uint16_t*)(group1->group_aggr_record + field1_offset) > 
+   *(uint16_t*)(group2->group_aggr_record + field2_offset) + delta);          
+}
+
+bool 
+merger_ne_uint32_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
+  
+  if (*(uint32_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->group_aggr_record + field2_offset) == 0)
+    return false;
+  
+  return (*(uint32_t*)(group1->group_aggr_record + field1_offset) < 
+          *(uint32_t*)(group2->group_aggr_record + field2_offset) - delta) 
+  || 
+  (*(uint32_t*)(group1->group_aggr_record + field1_offset) > 
+   *(uint32_t*)(group2->group_aggr_record + field2_offset) + delta);          
+}
+
+bool 
+merger_ne_uint64_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
+  
+  if (*(uint64_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->group_aggr_record + field2_offset) == 0)
+    return false;
+  
+  return (*(uint64_t*)(group1->group_aggr_record + field1_offset) < 
+          *(uint64_t*)(group2->group_aggr_record + field2_offset) - delta) 
+  || 
+  (*(uint64_t*)(group1->group_aggr_record + field1_offset) > 
+   *(uint64_t*)(group2->group_aggr_record + field2_offset) + delta);          
+}
+
+bool 
+merger_lt_uint8_t(struct group *group1, 
+                  size_t field1_offset, 
+                  struct group *group2, 
+                  size_t field2_offset, 
+                  uint64_t delta) {
+  
+  if (*(uint8_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->group_aggr_record + field2_offset) == 0)
+    return false;
+  
+  return group1->group_aggr_record + field1_offset < 
+  group2->group_aggr_record + field2_offset + delta;
+  
+}
+
+bool 
+merger_lt_uint16_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
+  
+  if (*(uint16_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->group_aggr_record + field2_offset) == 0)
+    return false;
+  
+  return group1->group_aggr_record + field1_offset < 
+  group2->group_aggr_record + field2_offset + delta;
+  
+}
+
+bool 
+merger_lt_uint32_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
+  
+  if (*(uint32_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->group_aggr_record + field2_offset) == 0)
+    return false;
+  
+  return group1->group_aggr_record + field1_offset < 
+  group2->group_aggr_record + field2_offset + delta;
+  
+}
+
+bool 
+merger_lt_uint64_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
+  
+  if (*(uint64_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->group_aggr_record + field2_offset) == 0)
+    return false;
+  
+  return group1->group_aggr_record + field1_offset < 
+  group2->group_aggr_record + field2_offset + delta;
+  
+}
+
+bool 
+merger_gt_uint8_t(struct group *group1, 
+                  size_t field1_offset, 
+                  struct group *group2, 
+                  size_t field2_offset, 
+                  uint64_t delta) {
+  
+  if (*(uint8_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->group_aggr_record + field2_offset) == 0)
+    return false;
+  
+  return group1->group_aggr_record + field1_offset > 
+  group2->group_aggr_record + field2_offset - delta;
+  
+}
+
+bool 
+merger_gt_uint16_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
+  
+  if (*(uint16_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->group_aggr_record + field2_offset) == 0)
+    return false;
+  
+  return group1->group_aggr_record + field1_offset > 
+  group2->group_aggr_record + field2_offset - delta;
+  
+}
+
+bool 
+merger_gt_uint32_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
+  
+  if (*(uint32_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->group_aggr_record + field2_offset) == 0)
+    return false;
+  
+  return group1->group_aggr_record + field1_offset > 
+  group2->group_aggr_record + field2_offset - delta;
+  
+}
+
+bool 
+merger_gt_uint64_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
+  
+  if (*(uint64_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->group_aggr_record + field2_offset) == 0)
+    return false;
+  
+  return group1->group_aggr_record + field1_offset > 
+  group2->group_aggr_record + field2_offset - delta;
+  
+}
+
+bool 
+merger_le_uint8_t(struct group *group1, 
+                  size_t field1_offset, 
+                  struct group *group2, 
+                  size_t field2_offset, 
+                  uint64_t delta) {
+  
+  if (*(uint8_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->group_aggr_record + field2_offset) == 0)
+    return false;
+  
+  return group1->group_aggr_record + field1_offset <= 
+  group2->group_aggr_record + field2_offset + delta;
+  
+}
+
+bool 
+merger_le_uint16_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
+  
+  if (*(uint16_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->group_aggr_record + field2_offset) == 0)
+    return false;
+  
+  return group1->group_aggr_record + field1_offset <= 
+  group2->group_aggr_record + field2_offset + delta;
+  
+}
+
+bool 
+merger_le_uint32_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
+  
+  if (*(uint32_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->group_aggr_record + field2_offset) == 0)
+    return false;
+  
+  return group1->group_aggr_record + field1_offset <= 
+  group2->group_aggr_record + field2_offset + delta;
+  
+}
+
+bool 
+merger_le_uint64_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
+  
+  if (*(uint64_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->group_aggr_record + field2_offset) == 0)
+    return false;
+  
+  return group1->group_aggr_record + field1_offset <= 
+  group2->group_aggr_record + field2_offset + delta;
+  
+}
+
+bool 
+merger_ge_uint8_t(struct group *group1, 
+                  size_t field1_offset, 
+                  struct group *group2, 
+                  size_t field2_offset, 
+                  uint64_t delta) {
+  
+  if (*(uint8_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->group_aggr_record + field2_offset) == 0)
+    return false;
+  
+  return group1->group_aggr_record + field1_offset >= 
+  group2->group_aggr_record + field2_offset - delta;
+  
+}
+
+bool 
+merger_ge_uint16_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
+  
+  if (*(uint16_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->group_aggr_record + field2_offset) == 0)
+    return false;
+  
+  return group1->group_aggr_record + field1_offset >= 
+  group2->group_aggr_record + field2_offset - delta;
+  
+}
+
+bool 
+merger_ge_uint32_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
+  
+  if (*(uint32_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->group_aggr_record + field2_offset) == 0)
+    return false;
+  
+  return group1->group_aggr_record + field1_offset >= 
+  group2->group_aggr_record + field2_offset - delta;
+  
+}
+
+bool 
+merger_ge_uint64_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
+  
+  if (*(uint64_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->group_aggr_record + field2_offset) == 0)
+    return false;
+  
+  return group1->group_aggr_record + field1_offset >= 
+  group2->group_aggr_record + field2_offset - delta;
+  
+}
+
+bool 
+merger_a_bf_uint8_t(struct group *group1, 
+                    size_t field1_offset, 
+                    struct group *group2, 
+                    size_t field2_offset, 
+                    uint64_t delta) {
   
   return group1->end < group2->start;
 }
 
 bool 
-merger_a_af(struct group *group1, 
-            size_t field1, 
-            struct group *group2, 
-            size_t field2, 
-            uint64_t delta) {
+merger_a_bf_uint16_t(struct group *group1, 
+                     size_t field1_offset, 
+                     struct group *group2, 
+                     size_t field2_offset, 
+                     uint64_t delta) {
+  
+  return group1->end < group2->start;
+}
+
+bool 
+merger_a_bf_uint32_t(struct group *group1, 
+                     size_t field1_offset, 
+                     struct group *group2, 
+                     size_t field2_offset, 
+                     uint64_t delta) {
+  
+  return group1->end < group2->start;
+}
+
+bool 
+merger_a_bf_uint64_t(struct group *group1, 
+                     size_t field1_offset, 
+                     struct group *group2, 
+                     size_t field2_offset, 
+                     uint64_t delta) {
+  
+  return group1->end < group2->start;
+}
+
+bool 
+merger_a_af_uint8_t(struct group *group1, 
+                    size_t field1_offset, 
+                    struct group *group2, 
+                    size_t field2_offset, 
+                    uint64_t delta) {
   
   return group1->start > group2->end;
 }
 
 bool 
-merger_a_m(struct group *group1, 
-           size_t field1, 
-           struct group *group2, 
-           size_t field2, 
-           uint64_t delta) {
+merger_a_af_uint16_t(struct group *group1, 
+                     size_t field1_offset, 
+                     struct group *group2, 
+                     size_t field2_offset, 
+                     uint64_t delta) {
+  
+  return group1->start > group2->end;
+}
+
+bool 
+merger_a_af_uint32_t(struct group *group1, 
+                     size_t field1_offset, 
+                     struct group *group2, 
+                     size_t field2_offset, 
+                     uint64_t delta) {
+  
+  return group1->start > group2->end;
+}
+
+bool 
+merger_a_af_uint64_t(struct group *group1, 
+                     size_t field1_offset, 
+                     struct group *group2, 
+                     size_t field2_offset, 
+                     uint64_t delta) {
+  
+  return group1->start > group2->end;
+}
+
+bool 
+merger_a_m_uint8_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
   
   return group1->end == group2->start;
 }
 
 bool 
-merger_a_mi(struct group *group1, 
-            size_t field1, 
-            struct group *group2, 
-            size_t field2, 
-            uint64_t delta) {
+merger_a_m_uint16_t(struct group *group1, 
+                    size_t field1_offset, 
+                    struct group *group2, 
+                    size_t field2_offset, 
+                    uint64_t delta) {
+  
+  return group1->end == group2->start;
+}
+
+bool 
+merger_a_m_uint32_t(struct group *group1, 
+                    size_t field1_offset, 
+                    struct group *group2, 
+                    size_t field2_offset, 
+                    uint64_t delta) {
+  
+  return group1->end == group2->start;
+}
+
+bool 
+merger_a_m_uint64_t(struct group *group1, 
+                    size_t field1_offset, 
+                    struct group *group2, 
+                    size_t field2_offset, 
+                    uint64_t delta) {
+  
+  return group1->end == group2->start;
+}
+
+bool 
+merger_a_mi_uint8_t(struct group *group1, 
+                    size_t field1_offset, 
+                    struct group *group2, 
+                    size_t field2_offset, 
+                    uint64_t delta) {
   
   return group1->start == group2->end;
 }
 
 bool 
-merger_a_o(struct group *group1, 
-           size_t field1, 
-           struct group *group2, 
-           size_t field2, 
-           uint64_t delta) {
+merger_a_mi_uint16_t(struct group *group1, 
+                     size_t field1_offset, 
+                     struct group *group2, 
+                     size_t field2_offset, 
+                     uint64_t delta) {
+  
+  return group1->start == group2->end;
+}
+
+bool 
+merger_a_mi_uint32_t(struct group *group1, 
+                     size_t field1_offset, 
+                     struct group *group2, 
+                     size_t field2_offset, 
+                     uint64_t delta) {
+  
+  return group1->start == group2->end;
+}
+
+bool 
+merger_a_mi_uint64_t(struct group *group1, 
+                     size_t field1_offset, 
+                     struct group *group2, 
+                     size_t field2_offset, 
+                     uint64_t delta) {
+  
+  return group1->start == group2->end;
+}
+
+bool 
+merger_a_o_uint8_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
   
   return group1->start < group2->start && group1->end > group2->start;
 }
 
 bool 
-merger_a_oi(struct group *group1, 
-            size_t field1, 
-            struct group *group2, 
-            size_t field2, 
-            uint64_t delta) {
+merger_a_o_uint16_t(struct group *group1, 
+                    size_t field1_offset, 
+                    struct group *group2, 
+                    size_t field2_offset, 
+                    uint64_t delta) {
+  
+  return group1->start < group2->start && group1->end > group2->start;
+}
+
+bool 
+merger_a_o_uint32_t(struct group *group1, 
+                    size_t field1_offset, 
+                    struct group *group2, 
+                    size_t field2_offset, 
+                    uint64_t delta) {
+  
+  return group1->start < group2->start && group1->end > group2->start;
+}
+
+bool 
+merger_a_o_uint64_t(struct group *group1, 
+                    size_t field1_offset, 
+                    struct group *group2, 
+                    size_t field2_offset, 
+                    uint64_t delta) {
+  
+  return group1->start < group2->start && group1->end > group2->start;
+}
+
+bool 
+merger_a_oi_uint8_t(struct group *group1, 
+                    size_t field1_offset, 
+                    struct group *group2, 
+                    size_t field2_offset, 
+                    uint64_t delta) {
   
   return group1->end > group2->end && group1->start < group2->end;
 }
 
 bool 
-merger_a_s(struct group *group1, 
-           size_t field1, 
-           struct group *group2, 
-           size_t field2, 
-           uint64_t delta) {
+merger_a_oi_uint16_t(struct group *group1, 
+                     size_t field1_offset, 
+                     struct group *group2, 
+                     size_t field2_offset, 
+                     uint64_t delta) {
+  
+  return group1->end > group2->end && group1->start < group2->end;
+}
+
+bool 
+merger_a_oi_uint32_t(struct group *group1, 
+                     size_t field1_offset, 
+                     struct group *group2, 
+                     size_t field2_offset, 
+                     uint64_t delta) {
+  
+  return group1->end > group2->end && group1->start < group2->end;
+}
+
+bool 
+merger_a_oi_uint64_t(struct group *group1, 
+                     size_t field1_offset, 
+                     struct group *group2, 
+                     size_t field2_offset, 
+                     uint64_t delta) {
+  
+  return group1->end > group2->end && group1->start < group2->end;
+}
+
+bool 
+merger_a_s_uint8_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
   
   return group1->start == group2->start && group1->end < group2->end;
 }
 
 bool 
-merger_a_si(struct group *group1, 
-            size_t field1, 
-            struct group *group2, 
-            size_t field2, 
-            uint64_t delta) {
+merger_a_s_uint16_t(struct group *group1, 
+                    size_t field1_offset, 
+                    struct group *group2, 
+                    size_t field2_offset, 
+                    uint64_t delta) {
+  
+  return group1->start == group2->start && group1->end < group2->end;
+}
+
+bool 
+merger_a_s_uint32_t(struct group *group1, 
+                    size_t field1_offset, 
+                    struct group *group2, 
+                    size_t field2_offset, 
+                    uint64_t delta) {
+  
+  return group1->start == group2->start && group1->end < group2->end;
+}
+
+bool 
+merger_a_s_uint64_t(struct group *group1, 
+                    size_t field1_offset, 
+                    struct group *group2, 
+                    size_t field2_offset, 
+                    uint64_t delta) {
+  
+  return group1->start == group2->start && group1->end < group2->end;
+}
+
+bool 
+merger_a_si_uint8_t(struct group *group1, 
+                    size_t field1_offset, 
+                    struct group *group2, 
+                    size_t field2_offset, 
+                    uint64_t delta) {
   
   return group1->start == group2->start && group1->end > group2->end;
 }
 
 bool 
-merger_a_d(struct group *group1, 
-           size_t field1, 
-           struct group *group2, 
-           size_t field2, 
-           uint64_t delta) {
+merger_a_si_uint16_t(struct group *group1, 
+                     size_t field1_offset, 
+                     struct group *group2, 
+                     size_t field2_offset, 
+                     uint64_t delta) {
+  
+  return group1->start == group2->start && group1->end > group2->end;
+}
+
+bool 
+merger_a_si_uint32_t(struct group *group1, 
+                     size_t field1_offset, 
+                     struct group *group2, 
+                     size_t field2_offset, 
+                     uint64_t delta) {
+  
+  return group1->start == group2->start && group1->end > group2->end;
+}
+
+bool 
+merger_a_si_uint64_t(struct group *group1, 
+                     size_t field1_offset, 
+                     struct group *group2, 
+                     size_t field2_offset, 
+                     uint64_t delta) {
+  
+  return group1->start == group2->start && group1->end > group2->end;
+}
+
+bool 
+merger_a_d_uint8_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
   
   return group1->start > group2->start && group1->end < group2->end;
 }
 
 bool 
-merger_a_di(struct group *group1, 
-            size_t field1, 
-            struct group *group2, 
-            size_t field2, 
-            uint64_t delta) {
+merger_a_d_uint16_t(struct group *group1, 
+                    size_t field1_offset, 
+                    struct group *group2, 
+                    size_t field2_offset, 
+                    uint64_t delta) {
+  
+  return group1->start > group2->start && group1->end < group2->end;
+}
+
+bool 
+merger_a_d_uint32_t(struct group *group1, 
+                    size_t field1_offset, 
+                    struct group *group2, 
+                    size_t field2_offset, 
+                    uint64_t delta) {
+  
+  return group1->start > group2->start && group1->end < group2->end;
+}
+
+bool 
+merger_a_d_uint64_t(struct group *group1, 
+                    size_t field1_offset, 
+                    struct group *group2, 
+                    size_t field2_offset, 
+                    uint64_t delta) {
+  
+  return group1->start > group2->start && group1->end < group2->end;
+}
+
+bool 
+merger_a_di_uint8_t(struct group *group1, 
+                    size_t field1_offset, 
+                    struct group *group2, 
+                    size_t field2_offset, 
+                    uint64_t delta) {
   
   return group1->start < group2->start && group1->end > group2->end;
 }
 
 bool 
-merger_a_f(struct group *group1, 
-           size_t field1, 
-           struct group *group2, 
-           size_t field2, 
-           uint64_t delta) {
+merger_a_di_uint16_t(struct group *group1, 
+                     size_t field1_offset, 
+                     struct group *group2, 
+                     size_t field2_offset, 
+                     uint64_t delta) {
+  
+  return group1->start < group2->start && group1->end > group2->end;
+}
+
+bool 
+merger_a_di_uint32_t(struct group *group1, 
+                     size_t field1_offset, 
+                     struct group *group2, 
+                     size_t field2_offset, 
+                     uint64_t delta) {
+  
+  return group1->start < group2->start && group1->end > group2->end;
+}
+
+bool 
+merger_a_di_uint64_t(struct group *group1, 
+                     size_t field1_offset, 
+                     struct group *group2, 
+                     size_t field2_offset, 
+                     uint64_t delta) {
+  
+  return group1->start < group2->start && group1->end > group2->end;
+}
+
+bool 
+merger_a_f_uint8_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
   
   return group1->end == group2->end && group1->start > group2->start;
 }
 
 bool 
-merger_a_fi(struct group *group1, 
-            size_t field1, 
-            struct group *group2, 
-            size_t field2, 
-            uint64_t delta) {
+merger_a_f_uint16_t(struct group *group1, 
+                    size_t field1_offset, 
+                    struct group *group2, 
+                    size_t field2_offset, 
+                    uint64_t delta) {
+  
+  return group1->end == group2->end && group1->start > group2->start;
+}
+
+bool 
+merger_a_f_uint32_t(struct group *group1, 
+                    size_t field1_offset, 
+                    struct group *group2, 
+                    size_t field2_offset, 
+                    uint64_t delta) {
+  
+  return group1->end == group2->end && group1->start > group2->start;
+}
+
+bool 
+merger_a_f_uint64_t(struct group *group1, 
+                    size_t field1_offset, 
+                    struct group *group2, 
+                    size_t field2_offset, 
+                    uint64_t delta) {
+  
+  return group1->end == group2->end && group1->start > group2->start;
+}
+
+bool 
+merger_a_fi_uint8_t(struct group *group1, 
+                    size_t field1_offset, 
+                    struct group *group2, 
+                    size_t field2_offset, 
+                    uint64_t delta) {
   
   return group1->end == group2->end && group1->start < group2->start;
 }
 
 bool 
-merger_a_eq(struct group *group1, 
-            size_t field1, 
-            struct group *group2, 
-            size_t field2, 
-            uint64_t delta) {
+merger_a_fi_uint16_t(struct group *group1, 
+                     size_t field1_offset, 
+                     struct group *group2, 
+                     size_t field2_offset, 
+                     uint64_t delta) {
+  
+  return group1->end == group2->end && group1->start < group2->start;
+}
+
+bool 
+merger_a_fi_uint32_t(struct group *group1, 
+                     size_t field1_offset, 
+                     struct group *group2, 
+                     size_t field2_offset, 
+                     uint64_t delta) {
+  
+  return group1->end == group2->end && group1->start < group2->start;
+}
+
+bool 
+merger_a_fi_uint64_t(struct group *group1, 
+                     size_t field1_offset, 
+                     struct group *group2, 
+                     size_t field2_offset, 
+                     uint64_t delta) {
+  
+  return group1->end == group2->end && group1->start < group2->start;
+}
+
+bool 
+merger_a_eq_uint8_t(struct group *group1, 
+                    size_t field1_offset, 
+                    struct group *group2, 
+                    size_t field2_offset, 
+                    uint64_t delta) {
   
   return group1->start == group2->start && group1->end == group2->end;
 }
 
 bool 
-merger_in(struct group *group1, 
-          size_t field1, 
-          struct group *group2, 
-          size_t field2, 
-          uint64_t delta) {
+merger_a_eq_uint16_t(struct group *group1, 
+                     size_t field1_offset, 
+                     struct group *group2, 
+                     size_t field2_offset, 
+                     uint64_t delta) {
   
-  if (group1->aggr[field1].num_values == 0 || group2->aggr[field2].num_values == 0) {
+  return group1->start == group2->start && group1->end == group2->end;
+}
+
+bool 
+merger_a_eq_uint32_t(struct group *group1, 
+                     size_t field1_offset, 
+                     struct group *group2, 
+                     size_t field2_offset, 
+                     uint64_t delta) {
+  
+  return group1->start == group2->start && group1->end == group2->end;
+}
+
+bool 
+merger_a_eq_uint64_t(struct group *group1, 
+                     size_t field1_offset, 
+                     struct group *group2, 
+                     size_t field2_offset, 
+                     uint64_t delta) {
+  
+  return group1->start == group2->start && group1->end == group2->end;
+}
+
+bool 
+merger_in_uint8_t(struct group *group1, 
+                  size_t field1_offset, 
+                  struct group *group2, 
+                  size_t field2_offset, 
+                  uint64_t delta) {
+  
+  if (*(uint8_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->group_aggr_record + field2_offset) == 0)
     return false;
-  }
-  int i;
-  for (i=0; i<group2->aggr[field2].num_values; i++) {
-    if (group1->aggr[field1].values[0] >= group2->aggr[field2].values[i] - delta && group1->aggr[field1].values[0] <= group2->aggr[field2].values[i] + delta) {
+  
+  for (int i=0; i<group2->aggr[field2_offset].num_values; i++) {
+    if (group1->aggr[field1_offset].values[0] >= group2->aggr[field2_offset].values[i] - delta && group1->aggr[field1_offset].values[0] <= group2->aggr[field2_offset].values[i] + delta) {
       return true;
     }
   }
   return false;
 }
 
+bool 
+merger_in_uint16_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
+  
+  if (*(uint16_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->group_aggr_record + field2_offset) == 0)
+    return false;
+  
+  for (int i=0; i<group2->aggr[field2_offset].num_values; i++) {
+    if (group1->aggr[field1_offset].values[0] >= group2->aggr[field2_offset].values[i] - delta && group1->aggr[field1_offset].values[0] <= group2->aggr[field2_offset].values[i] + delta) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool 
+merger_in_uint32_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
+  
+  if (*(uint32_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->group_aggr_record + field2_offset) == 0)
+    return false;
+  
+  for (int i=0; i<group2->aggr[field2_offset].num_values; i++) {
+    if (group1->aggr[field1_offset].values[0] >= group2->aggr[field2_offset].values[i] - delta && group1->aggr[field1_offset].values[0] <= group2->aggr[field2_offset].values[i] + delta) {
+      return true;
+    }
+  }
+  return false;
+}
+
+bool 
+merger_in_uint64_t(struct group *group1, 
+                   size_t field1_offset, 
+                   struct group *group2, 
+                   size_t field2_offset, 
+                   uint64_t delta) {
+  
+  if (*(uint64_t*)(group1->group_aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->group_aggr_record + field2_offset) == 0)
+    return false;
+  
+  for (int i=0; i<group2->aggr[field2_offset].num_values; i++) {
+    if (group1->aggr[field1_offset].values[0] >= group2->aggr[field2_offset].values[i] - delta && group1->aggr[field1_offset].values[0] <= group2->aggr[field2_offset].values[i] + delta) {
+      return true;
+    }
+  }
+  return false;
+}

@@ -347,25 +347,40 @@ def gfilter_body(op):
     return result
 
 merger_proto = """bool 
-                  merger_%s(struct group *group1, 
-                            size_t field1, 
-                            struct group *group2, 
-                            size_t field2, 
-                            uint64_t delta)"""
-def merger_body(op):
+                  merger_%s_%s(struct group *group1, 
+                               size_t field1_offset, 
+                               struct group *group2, 
+                               size_t field2_offset, 
+                               uint64_t delta)"""
+def merger_body(op, atype):
     result = " {\n\n"
     if op in ['eq', 'ne', 'lt', 'gt', 'le', 'ge', 'in']:
-        result += "    if (group1->aggr[field1].num_values == 0 || group2->aggr[field2].num_values == 0) {\n"
-        result += "        return false;\n"
-        result += "    }\n"
+        result += "    if (*(%s*)(group1->group_aggr_record + field1_offset) == 0 ||\n"%atype
+        result += "        *(%s*)(group2->group_aggr_record + field2_offset) == 0)\n"%atype
+        result += "      return false;\n\n"
     if op == "eq":
-        result += "    return (group1->aggr[field1].values[0] >= group2->aggr[field2].values[0] - delta) && (group1->aggr[field1].values[0] <= group2->aggr[field2].values[0] + delta);\n"
+      result += """    return (*(%s*)(group1->group_aggr_record + field1_offset) >= 
+                               *(%s*)(group2->group_aggr_record + field2_offset) - delta)
+                               && 
+                               (*(%s*)(group1->group_aggr_record + field1_offset) <= 
+                               *(%s*)(group2->group_aggr_record + field2_offset) + delta);  
+          
+                  """%(atype, atype, atype, atype)
     elif op == "ne":
-        result += "    return (group1->aggr[field1].values[0] < group2->aggr[field2].values[0] - delta) || (group1->aggr[field1].values[0] > group2->aggr[field2].values[0] + delta);\n"
+      result += """    return (*(%s*)(group1->group_aggr_record + field1_offset) < 
+                               *(%s*)(group2->group_aggr_record + field2_offset) - delta) 
+                              || 
+                              (*(%s*)(group1->group_aggr_record + field1_offset) > 
+                              *(%s*)(group2->group_aggr_record + field2_offset) + delta);          
+                  """%(atype, atype, atype, atype)
     elif op in ['lt', 'le']:
-        result += "    return group1->aggr[field1].values[0] %s group2->aggr[field2].values[0] + delta;\n"%operation_map[op]
+        result += """  return group1->group_aggr_record + field1_offset %s 
+                              group2->group_aggr_record + field2_offset + delta;\n
+                  """%operation_map[op]
     elif op in ['gt', 'ge']:
-        result += "    return group1->aggr[field1].values[0] %s group2->aggr[field2].values[0] - delta;\n"%operation_map[op]
+        result += """    return group1->group_aggr_record + field1_offset %s 
+                                group2->group_aggr_record + field2_offset - delta;\n          
+                  """%operation_map[op]
     elif op == 'a_bf':
         result += "    return group1->end < group2->start;\n"
     elif op == 'a_af':
@@ -393,9 +408,8 @@ def merger_body(op):
     elif op == 'a_eq':
         result += "    return group1->start == group2->start && group1->end == group2->end;\n"
     elif op == 'in':
-        result += "    int i;\n"
-        result += "    for (i=0; i<group2->aggr[field2].num_values; i++) {\n"
-        result += "        if (group1->aggr[field1].values[0] >= group2->aggr[field2].values[i] - delta && group1->aggr[field1].values[0] <= group2->aggr[field2].values[i] + delta) {\n"
+        result += "    for (int i=0; i<group2->aggr[field2_offset].num_values; i++) {\n"
+        result += "        if (group1->aggr[field1_offset].values[0] >= group2->aggr[field2_offset].values[i] - delta && group1->aggr[field1_offset].values[0] <= group2->aggr[field2_offset].values[i] + delta) {\n"
         result += "            return true;\n"
         result += "        }\n"
         result += "    }\n"
@@ -437,11 +451,13 @@ for op in 'eq', 'ne', 'lt', 'gt', 'le', 'ge':
 
 # merger
 for op in 'eq', 'ne', 'lt', 'gt', 'le', 'ge', \
-          'a_bf', 'a_af', 'a_m', 'a_mi', 'a_o', 'a_oi', 'a_s', 'a_si', 'a_d', 'a_di', 'a_f', 'a_fi', 'a_eq', \
-          'in':
-    header.write(merger_proto%(op)+";\n")
-    source.write(merger_proto%(op))
-    source.write(merger_body(op))
+          'a_bf', 'a_af', 'a_m', 'a_mi', 'a_o', \
+          'a_oi', 'a_s', 'a_si', 'a_d', 'a_di', \
+          'a_f', 'a_fi', 'a_eq', 'in':
+    for atype in 'uint8_t', 'uint16_t', 'uint32_t', 'uint64_t':            
+        header.write(merger_proto%(op,atype)+";\n")
+        source.write(merger_proto%(op,atype))
+        source.write(merger_body(op,atype))
 
 header.write("#endif\n")
 header.close()

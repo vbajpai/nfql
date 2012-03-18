@@ -515,11 +515,11 @@ main(int argc, char **argv) {
   struct merger_rule mfilter[2] = {
     {&binfos[0], trace_data->offsets.srcaddr, 
      &binfos[1], trace_data->offsets.dstaddr, 
-     0, merger_eq },
+     0, merger_eq_uint32_t},
     
     {&binfos[0], trace_data->offsets.dstaddr, 
      &binfos[1], trace_data->offsets.srcaddr, 
-     0, merger_eq },
+     0, merger_eq_uint32_t},
   };
   
 
