@@ -167,10 +167,6 @@ main(int argc, char **argv) {
   pthread_t*                          thread_ids;
   pthread_attr_t*                     thread_attrs;
   struct branch_info*                 binfos;
-
-#ifdef MERGER  
-  struct group***                     group_tuples;
-#endif
   
   
   
@@ -301,13 +297,15 @@ main(int argc, char **argv) {
   fquery = (struct flowquery *)malloc(sizeof(struct flowquery));
   if (fquery == NULL) 
     errExit("malloc");
-  
   num_threads = 2;
   binfos = (struct branch_info *)
             calloc(num_threads, 
                    sizeof(struct branch_info));
   if (binfos == NULL)
-    errExit("calloc");  
+    errExit("calloc");
+  
+  fquery->num_branches = num_threads;
+  fquery->branches = binfos;
   
   /* ----------------------------------------------*/
 
@@ -565,13 +563,12 @@ main(int argc, char **argv) {
   /*                                 merger                                 */
   /* -----------------------------------------------------------------------*/
   
-  group_tuples = merger(binfos,
-                        num_threads, 
-                        mfilter, 
-                        fquery->num_merger_rules);
+  fquery->group_tuples = merger(binfos,
+                                num_threads, 
+                                mfilter, 
+                                fquery->num_merger_rules,
+                                &fquery->num_group_tuples);
   
-  free(group_tuples);
-
   /* -----------------------------------------------------------------------*/    
   
 #endif  
@@ -611,7 +608,7 @@ main(int argc, char **argv) {
 
   if(verbose_v){
     
-    /* process each record */
+    /* process each branch */
     for (int i = 0; i < num_threads; i++) {
       
       printf("\nNo. of Filtered Records: %zd\n", binfos[i].num_filtered_records);      
@@ -693,6 +690,7 @@ main(int argc, char **argv) {
       }
 #endif
       
+      
       /* free memory */
       for (int j = 0; j < binfos[i].num_groups; j++) {        
         struct group* group = binfos[i].groupset[j];
@@ -701,6 +699,23 @@ main(int argc, char **argv) {
       }
       free(binfos[i].groupset);
     }
+    
+    /* merger */
+#ifdef MERGER      
+    printf("\nNo. of Merged Groups: %zu (Tuples)\n", 
+           fquery->num_group_tuples);      
+    puts(FLOWHEADER);
+    
+    for (int j = 0; j < fquery->num_group_tuples; j++) {
+      struct group** group_tuple = fquery->group_tuples[j];
+      for (int i = 0; i < fquery->num_branches; i++) {
+        struct group* group = group_tuple[i];
+        flow_print_record(trace_data, group->group_aggr_record);
+      }
+      printf("\n");
+    }    
+#endif
+
   }    
 
   /* -----------------------------------------------------------------------*/      

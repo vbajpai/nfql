@@ -31,31 +31,34 @@
 
 struct group ***
 merger(struct branch_info* binfo_set, 
-       int num_branches, 
+       size_t num_branches, 
        struct merger_rule* m_rules, 
-       int num_merger_rules) {
+       size_t num_merger_rules,
+       size_t *num_group_tuples) {
   
   /* initialize the iterator */
   struct permut_iter *iter = iter_init(binfo_set, num_branches);
   struct group*** group_tuples = NULL;
+  *num_group_tuples = 0;
   
   /* iterate over all permutations */
   unsigned int index = 0;
   do {
     bool if_all_rules_matched = true;
     index++;
-    if(debug){
-      for (int j = 0; j < num_branches; j++) {
-        /* first item */
-        if(j == 0)
-          printf("\n%d: (%zu ", index, iter->filtered_group_tuple[j]);
-        /* last item */
-        else if(j == num_branches -1)
-          printf("%zu)", iter->filtered_group_tuple[j]);
-        else
-          printf("%zu ", iter->filtered_group_tuple[j]);
-      }
-    }    
+
+#ifdef PP
+    for (int j = 0; j < num_branches; j++) {
+      /* first item */
+      if(j == 0)
+        printf("\n%d: (%zu ", index, iter->filtered_group_tuple[j]);
+      /* last item */
+      else if(j == num_branches -1)
+        printf("%zu)", iter->filtered_group_tuple[j]);
+      else
+        printf("%zu ", iter->filtered_group_tuple[j]);
+    }
+#endif
     
     /* match the groups against each merger rule */
     for (int i = 0; i < num_merger_rules; i++) {
@@ -76,6 +79,9 @@ merger(struct branch_info* binfo_set,
     
     /* add the groups to the group tuple, if all rules matched */
     if(if_all_rules_matched){
+
+#ifdef PP      
+      /* pretty print */
       for (int j = 0; j < num_branches; j++) {
         /* first item */
         if(j == 0)
@@ -85,90 +91,32 @@ merger(struct branch_info* binfo_set,
           printf("%zu)", iter->filtered_group_tuple[j]);
         else
           printf("%zu ", iter->filtered_group_tuple[j]);
-      }      
-    }
-    
+      }
+#endif      
+      struct group **matched_tuple = (struct group **)
+                                     calloc(num_branches, 
+                                            sizeof(struct group *));
+      if (matched_tuple == NULL)
+        errExit("calloc");
+
+      /* save the groups in the matched tuple */
+      for (int j = 0; j < num_branches; j++){
+        size_t groupID = iter->filtered_group_tuple[j];
+        matched_tuple[j] = binfo_set[j].filtered_groupset[groupID-1];
+      }
+      
+      *num_group_tuples += 1;
+      group_tuples = (struct group ***)
+                     realloc(group_tuples,
+                             (*num_group_tuples)*sizeof(struct group**));
+      if (group_tuples == NULL)
+        errExit("realloc");      
+
+      group_tuples[*num_group_tuples-1] = matched_tuple;
+    }  
  
   } while (iter_next(iter));
   
-  iter_destroy(iter); 
-
-  
-  
-
-#ifdef MM  
-  do {
-    // break if any of the groups is already grouped
-    bool ifgrouped = false;
-    for (int i = 0; i < num_threads; i++) {
-      struct group** filtered_groupset = binfo_set[i].filtered_groupset;
-      if (filtered_groupset[iter->array[i]] == NULL){
-        ifgrouped = true;
-        break;
-      } 
-    }  
-    
-    if(!ifgrouped) {    
-      for (int i = 0; i < num_merger_rules; i++) {
-        struct merger_rule rule = m_rules[i];
-        if (!m_rules[i].func(binfo_set[i].filtered_groupset[j], 
-                             rule.field1,
-                             filtered_groupset_collection[rule.branch2][iter->array[rule.branch2]], 
-                             rule.field2,
-                             rule.delta))
-          break;
-      }      
-    }
-
-  } while (iter_next(iter));
-
-
-  struct group ***group_tuples = NULL;
-  
-  //    int num_group_tuples;
-  //    struct group **temp_tuple;
-  //    int i, j;
-  //    num_group_tuples = 0;
-  
-  /*
-   for (i = 0; filtered_groups[0][i]->aggr != NULL; i++) {
-   for (j = 0; filtered_groups[1][j]->aggr != NULL; j++) {
-   if (!filter[0].func(filtered_groups[0][i], filter[0].field1, filtered_groups[1][j], filter[0].field2, filter[0].delta)
-   || !filter[1].func(filtered_groups[0][i], filter[1].field1, filtered_groups[1][j], filter[1].field2, filter[1].delta)
-   )
-   continue;
-   
-   temp_tuple = (struct group **)malloc(sizeof(struct group *)*num_threads);
-   if (temp_tuple == NULL) {
-   perror("malloc");
-   exit(EXIT_FAILURE);
-   }
-   
-   temp_tuple[0] = filtered_groups[0][i];
-   temp_tuple[1] = filtered_groups[1][j];
-   
-   group_tuples = (struct group ***)realloc(group_tuples, sizeof(struct group**)*(num_group_tuples+1));
-   1if (group_tuples == NULL) {
-   perror("malloc");
-   exit(EXIT_FAILURE);
-   }
-   
-   group_tuples[num_group_tuples] = temp_tuple;
-   num_group_tuples++;
-   }
-   }
-   
-   group_tuples = (struct group ***)realloc(group_tuples, sizeof(struct group**)*(num_group_tuples+1));
-   if (group_tuples == NULL) {
-   perror("malloc");
-   exit(EXIT_FAILURE);
-   }
-   group_tuples[num_group_tuples] = NULL;
-   
-   printf("number of group tuples: %d\n", num_group_tuples);
-   
-   */
-#endif
-  
+  iter_destroy(iter);
   return group_tuples;
 }
