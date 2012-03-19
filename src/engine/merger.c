@@ -43,7 +43,7 @@ merger(struct branch_info* binfo_set,
   
   /* iterate over all permutations */
   unsigned int index = 0;
-  do {
+  while(iter_next(iter)) {
     bool if_all_rules_matched = true;
     index++;
 
@@ -58,8 +58,10 @@ merger(struct branch_info* binfo_set,
       else
         printf("%zu ", iter->filtered_group_tuple[j]);
     }
-#endif
     
+#endif
+
+
     /* match the groups against each merger rule */
     for (int i = 0; i < num_merger_rules; i++) {
       
@@ -114,8 +116,7 @@ merger(struct branch_info* binfo_set,
 
       group_tuples[*num_group_tuples-1] = matched_tuple;
     }  
- 
-  } while (iter_next(iter));
+  };
   
   iter_destroy(iter);
   return group_tuples;
