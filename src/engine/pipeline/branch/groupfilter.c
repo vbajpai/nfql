@@ -24,10 +24,10 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "group_filter.h"
+#include "groupfilter.h"
 
 struct group **
-group_filter(struct group **groupset, 
+groupfilter(struct group **groupset, 
              size_t num_groups, 
              struct gfilter_rule *rules, 
              size_t num_gfilter_rules,

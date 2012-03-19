@@ -115,7 +115,7 @@ branch_start(void *arg) {
   /*                            grouper-filter                              */
   /* -----------------------------------------------------------------------*/  
   
-  binfo->filtered_groupset = group_filter(binfo->groupset, 
+  binfo->filtered_groupset = groupfilter(binfo->groupset, 
                                           binfo->num_groups, 
                                           binfo->gfilter_rules, 
                                           binfo->num_gfilter_rules, 

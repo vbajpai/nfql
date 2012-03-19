@@ -24,17 +24,18 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef flowy_engine_group_filter_h
-#define flowy_engine_group_filter_h
+#ifndef flowy_engine_filter_h
+#define flowy_engine_filter_h
 
+#include "error_handlers.h"
 #include "pipeline.h"
-#include "error_functions.h"
+#include "ftreader.h"
 
-struct group **
-group_filter(struct group **groups, 
-             size_t num_groups, 
-             struct gfilter_rule *rules, 
-             size_t num_gfilter_rules,
-             size_t *num_filtered_groups);
+char ** 
+filter(struct ft_data *data, 
+       struct filter_rule *filter_rules, 
+       int num_filter_rules, 
+       size_t *num_filtered_records);
+
 
 #endif

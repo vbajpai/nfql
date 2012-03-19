@@ -24,18 +24,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef flowy_engine_filter_h
-#define flowy_engine_filter_h
+#ifndef flowy_engine_branch_h
+#define flowy_engine_branch_h
 
-#include "error_functions.h"
-#include "pipeline.h"
-#include "ftreader.h"
+#include "filter.h"
+#include "grouper.h"
+#include "groupfilter.h"
 
-char ** 
-filter(struct ft_data *data, 
-       struct filter_rule *filter_rules, 
-       int num_filter_rules, 
-       size_t *num_filtered_records);
-
+void *
+branch_start(void *arg);
 
 #endif

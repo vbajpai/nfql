@@ -24,14 +24,23 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef flowy_engine_branch_h
-#define flowy_engine_branch_h
+#ifndef flowy_engine_merger_fptr_h
+#define flowy_engine_merger_fptr_h
 
-#include "filter.h"
-#include "grouper.h"
-#include "group_filter.h"
+#include "pipeline.h"
+#include "error_handlers.h"
 
-void *
-branch_start(void *arg);
+#include "auto_comps.h"
+#include "utils.h"
+
+struct merger_rule;
+
+struct group ***
+merger(struct branch_info* binfo_set,
+       size_t num_threads, 
+       struct merger_rule *m_rule, 
+       size_t num_merger_rule,
+       size_t* total_num_group_tuples,
+       size_t* num_group_tuples);
 
 #endif

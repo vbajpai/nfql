@@ -24,7 +24,7 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "error_functions.h"
+#include "error_handlers.h"
 
 #ifdef __GNUC__
   __attribute__ ((__noreturn__)) 

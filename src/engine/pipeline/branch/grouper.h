@@ -29,7 +29,7 @@
 
 #include "pipeline.h"
 #include "utils.h"
-#include "error_functions.h"
+#include "error_handlers.h"
 #include "ftreader.h"
 
 struct grouper_rule;

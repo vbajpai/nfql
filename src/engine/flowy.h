@@ -42,7 +42,7 @@
 #include "branch.h"
 #include "merger.h"
 #include "auto_assign.h"
-#include "error_functions.h"
+#include "error_handlers.h"
 #include "ftreader.h"
 
 struct filter_rules_params{
