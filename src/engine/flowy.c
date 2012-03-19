@@ -567,6 +567,7 @@ main(int argc, char **argv) {
                                 num_threads, 
                                 mfilter, 
                                 fquery->num_merger_rules,
+                                &fquery->total_num_group_tuples,
                                 &fquery->num_group_tuples);
   
   /* -----------------------------------------------------------------------*/    
@@ -701,7 +702,27 @@ main(int argc, char **argv) {
     }
     
     /* merger */
-#ifdef MERGER      
+
+#ifdef MERGER    
+    if (verbose_vv) {
+      
+      struct permut_iter *iter = iter_init(fquery->branches, 
+                                           fquery->num_branches);
+      printf("\nNo. of (to be) Matched Groups: %zu \n", 
+             fquery->total_num_group_tuples);
+      puts(FLOWHEADER);      
+      while(iter_next(iter)) {
+        for (int j = 0; j < fquery->num_branches; j++) {          
+          flow_print_record(trace_data, 
+                            fquery->branches[j].
+                            filtered_groupset[iter->filtered_group_tuple[j] - 1]
+                            ->group_aggr_record);
+        }
+        printf("\n");
+      }
+      iter_destroy(iter);
+    }
+    
     printf("\nNo. of Merged Groups: %zu (Tuples)\n", 
            fquery->num_group_tuples);      
     puts(FLOWHEADER);

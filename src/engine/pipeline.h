@@ -40,7 +40,8 @@ struct flowquery {
   struct merger_rule *mrules;
   size_t num_merger_rules;
   struct group*** group_tuples;
-  size_t num_group_tuples;  
+  size_t num_group_tuples;
+  size_t total_num_group_tuples;
 };
 
 /*

@@ -34,6 +34,7 @@ merger(struct branch_info* binfo_set,
        size_t num_branches, 
        struct merger_rule* m_rules, 
        size_t num_merger_rules,
+       size_t *total_num_group_tuples,
        size_t *num_group_tuples) {
   
   /* initialize the iterator */
@@ -46,21 +47,6 @@ merger(struct branch_info* binfo_set,
   while(iter_next(iter)) {
     bool if_all_rules_matched = true;
     index++;
-
-#ifdef PP
-    for (int j = 0; j < num_branches; j++) {
-      /* first item */
-      if(j == 0)
-        printf("\n%d: (%zu ", index, iter->filtered_group_tuple[j]);
-      /* last item */
-      else if(j == num_branches -1)
-        printf("%zu)", iter->filtered_group_tuple[j]);
-      else
-        printf("%zu ", iter->filtered_group_tuple[j]);
-    }
-    
-#endif
-
 
     /* match the groups against each merger rule */
     for (int i = 0; i < num_merger_rules; i++) {
@@ -82,19 +68,6 @@ merger(struct branch_info* binfo_set,
     /* add the groups to the group tuple, if all rules matched */
     if(if_all_rules_matched){
 
-#ifdef PP      
-      /* pretty print */
-      for (int j = 0; j < num_branches; j++) {
-        /* first item */
-        if(j == 0)
-          printf("\n%d: (%zu ", index, iter->filtered_group_tuple[j]);
-        /* last item */
-        else if(j == num_branches -1)
-          printf("%zu)", iter->filtered_group_tuple[j]);
-        else
-          printf("%zu ", iter->filtered_group_tuple[j]);
-      }
-#endif      
       struct group **matched_tuple = (struct group **)
                                      calloc(num_branches, 
                                             sizeof(struct group *));
@@ -118,6 +91,7 @@ merger(struct branch_info* binfo_set,
     }  
   };
   
+  *total_num_group_tuples = index;
   iter_destroy(iter);
   return group_tuples;
 }
