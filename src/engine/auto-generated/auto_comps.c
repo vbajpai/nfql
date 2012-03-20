@@ -4668,62 +4668,242 @@ aggr_xor_uint64_t(char **records,
 }
 
 bool 
-gfilter_eq(struct group *group, 
-           size_t field_offset, 
-           uint64_t value, 
-           uint64_t delta) {
+gfilter_eq_uint8_t(struct group *group, 
+                   size_t field_offset, 
+                   uint64_t value, 
+                   uint64_t delta) {
   
-  uint32_t* aggr_value = (u_int32_t*)(group->group_aggr_record + field_offset);
+  uint8_t* aggr_value = (uint8_t*)(group->group_aggr_record + field_offset);
   return (*aggr_value >= value - delta) && (*aggr_value <= value + delta);
 }
 
 bool 
-gfilter_ne(struct group *group, 
-           size_t field_offset, 
-           uint64_t value, 
-           uint64_t delta) {
+gfilter_eq_uint16_t(struct group *group, 
+                    size_t field_offset, 
+                    uint64_t value, 
+                    uint64_t delta) {
   
-  uint32_t* aggr_value = (u_int32_t*)(group->group_aggr_record + field_offset);
+  uint16_t* aggr_value = (uint16_t*)(group->group_aggr_record + field_offset);
+  return (*aggr_value >= value - delta) && (*aggr_value <= value + delta);
+}
+
+bool 
+gfilter_eq_uint32_t(struct group *group, 
+                    size_t field_offset, 
+                    uint64_t value, 
+                    uint64_t delta) {
+  
+  uint32_t* aggr_value = (uint32_t*)(group->group_aggr_record + field_offset);
+  return (*aggr_value >= value - delta) && (*aggr_value <= value + delta);
+}
+
+bool 
+gfilter_eq_uint64_t(struct group *group, 
+                    size_t field_offset, 
+                    uint64_t value, 
+                    uint64_t delta) {
+  
+  uint64_t* aggr_value = (uint64_t*)(group->group_aggr_record + field_offset);
+  return (*aggr_value >= value - delta) && (*aggr_value <= value + delta);
+}
+
+bool 
+gfilter_ne_uint8_t(struct group *group, 
+                   size_t field_offset, 
+                   uint64_t value, 
+                   uint64_t delta) {
+  
+  uint8_t* aggr_value = (uint8_t*)(group->group_aggr_record + field_offset);
   return (*aggr_value < value - delta) || (*aggr_value > value + delta);
 }
 
 bool 
-gfilter_lt(struct group *group, 
-           size_t field_offset, 
-           uint64_t value, 
-           uint64_t delta) {
+gfilter_ne_uint16_t(struct group *group, 
+                    size_t field_offset, 
+                    uint64_t value, 
+                    uint64_t delta) {
   
-  uint32_t* aggr_value = (u_int32_t*)(group->group_aggr_record + field_offset);
+  uint16_t* aggr_value = (uint16_t*)(group->group_aggr_record + field_offset);
+  return (*aggr_value < value - delta) || (*aggr_value > value + delta);
+}
+
+bool 
+gfilter_ne_uint32_t(struct group *group, 
+                    size_t field_offset, 
+                    uint64_t value, 
+                    uint64_t delta) {
+  
+  uint32_t* aggr_value = (uint32_t*)(group->group_aggr_record + field_offset);
+  return (*aggr_value < value - delta) || (*aggr_value > value + delta);
+}
+
+bool 
+gfilter_ne_uint64_t(struct group *group, 
+                    size_t field_offset, 
+                    uint64_t value, 
+                    uint64_t delta) {
+  
+  uint64_t* aggr_value = (uint64_t*)(group->group_aggr_record + field_offset);
+  return (*aggr_value < value - delta) || (*aggr_value > value + delta);
+}
+
+bool 
+gfilter_lt_uint8_t(struct group *group, 
+                   size_t field_offset, 
+                   uint64_t value, 
+                   uint64_t delta) {
+  
+  uint8_t* aggr_value = (uint8_t*)(group->group_aggr_record + field_offset);
   return *aggr_value < value + delta;
 }
 
 bool 
-gfilter_gt(struct group *group, 
-           size_t field_offset, 
-           uint64_t value, 
-           uint64_t delta) {
+gfilter_lt_uint16_t(struct group *group, 
+                    size_t field_offset, 
+                    uint64_t value, 
+                    uint64_t delta) {
   
-  uint32_t* aggr_value = (u_int32_t*)(group->group_aggr_record + field_offset);
+  uint16_t* aggr_value = (uint16_t*)(group->group_aggr_record + field_offset);
+  return *aggr_value < value + delta;
+}
+
+bool 
+gfilter_lt_uint32_t(struct group *group, 
+                    size_t field_offset, 
+                    uint64_t value, 
+                    uint64_t delta) {
+  
+  uint32_t* aggr_value = (uint32_t*)(group->group_aggr_record + field_offset);
+  return *aggr_value < value + delta;
+}
+
+bool 
+gfilter_lt_uint64_t(struct group *group, 
+                    size_t field_offset, 
+                    uint64_t value, 
+                    uint64_t delta) {
+  
+  uint64_t* aggr_value = (uint64_t*)(group->group_aggr_record + field_offset);
+  return *aggr_value < value + delta;
+}
+
+bool 
+gfilter_gt_uint8_t(struct group *group, 
+                   size_t field_offset, 
+                   uint64_t value, 
+                   uint64_t delta) {
+  
+  uint8_t* aggr_value = (uint8_t*)(group->group_aggr_record + field_offset);
   return *aggr_value > value - delta;
 }
 
 bool 
-gfilter_le(struct group *group, 
-           size_t field_offset, 
-           uint64_t value, 
-           uint64_t delta) {
+gfilter_gt_uint16_t(struct group *group, 
+                    size_t field_offset, 
+                    uint64_t value, 
+                    uint64_t delta) {
   
-  uint32_t* aggr_value = (u_int32_t*)(group->group_aggr_record + field_offset);
+  uint16_t* aggr_value = (uint16_t*)(group->group_aggr_record + field_offset);
+  return *aggr_value > value - delta;
+}
+
+bool 
+gfilter_gt_uint32_t(struct group *group, 
+                    size_t field_offset, 
+                    uint64_t value, 
+                    uint64_t delta) {
+  
+  uint32_t* aggr_value = (uint32_t*)(group->group_aggr_record + field_offset);
+  return *aggr_value > value - delta;
+}
+
+bool 
+gfilter_gt_uint64_t(struct group *group, 
+                    size_t field_offset, 
+                    uint64_t value, 
+                    uint64_t delta) {
+  
+  uint64_t* aggr_value = (uint64_t*)(group->group_aggr_record + field_offset);
+  return *aggr_value > value - delta;
+}
+
+bool 
+gfilter_le_uint8_t(struct group *group, 
+                   size_t field_offset, 
+                   uint64_t value, 
+                   uint64_t delta) {
+  
+  uint8_t* aggr_value = (uint8_t*)(group->group_aggr_record + field_offset);
   return *aggr_value <= value + delta;
 }
 
 bool 
-gfilter_ge(struct group *group, 
-           size_t field_offset, 
-           uint64_t value, 
-           uint64_t delta) {
+gfilter_le_uint16_t(struct group *group, 
+                    size_t field_offset, 
+                    uint64_t value, 
+                    uint64_t delta) {
   
-  uint32_t* aggr_value = (u_int32_t*)(group->group_aggr_record + field_offset);
+  uint16_t* aggr_value = (uint16_t*)(group->group_aggr_record + field_offset);
+  return *aggr_value <= value + delta;
+}
+
+bool 
+gfilter_le_uint32_t(struct group *group, 
+                    size_t field_offset, 
+                    uint64_t value, 
+                    uint64_t delta) {
+  
+  uint32_t* aggr_value = (uint32_t*)(group->group_aggr_record + field_offset);
+  return *aggr_value <= value + delta;
+}
+
+bool 
+gfilter_le_uint64_t(struct group *group, 
+                    size_t field_offset, 
+                    uint64_t value, 
+                    uint64_t delta) {
+  
+  uint64_t* aggr_value = (uint64_t*)(group->group_aggr_record + field_offset);
+  return *aggr_value <= value + delta;
+}
+
+bool 
+gfilter_ge_uint8_t(struct group *group, 
+                   size_t field_offset, 
+                   uint64_t value, 
+                   uint64_t delta) {
+  
+  uint8_t* aggr_value = (uint8_t*)(group->group_aggr_record + field_offset);
+  return *aggr_value >= value - delta;
+}
+
+bool 
+gfilter_ge_uint16_t(struct group *group, 
+                    size_t field_offset, 
+                    uint64_t value, 
+                    uint64_t delta) {
+  
+  uint16_t* aggr_value = (uint16_t*)(group->group_aggr_record + field_offset);
+  return *aggr_value >= value - delta;
+}
+
+bool 
+gfilter_ge_uint32_t(struct group *group, 
+                    size_t field_offset, 
+                    uint64_t value, 
+                    uint64_t delta) {
+  
+  uint32_t* aggr_value = (uint32_t*)(group->group_aggr_record + field_offset);
+  return *aggr_value >= value - delta;
+}
+
+bool 
+gfilter_ge_uint64_t(struct group *group, 
+                    size_t field_offset, 
+                    uint64_t value, 
+                    uint64_t delta) {
+  
+  uint64_t* aggr_value = (uint64_t*)(group->group_aggr_record + field_offset);
   return *aggr_value >= value - delta;
 }
 
@@ -6776,3 +6956,4 @@ merger_allen_eq(struct group *group1,
   
   return group1->start == group2->start && group1->end == group2->end;
 }
+

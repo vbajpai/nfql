@@ -255,7 +255,7 @@ main(int argc, char **argv) {
   
   /* array of grouper filter rules, with 0 filters */
   struct gfilter_rule gfilter_branch1[1] = {
-    {trace_data->offsets.dPkts, 200, 0, RULE_GT, NULL}
+    {trace_data->offsets.dPkts, 200, 0, RULE_GT | RULE_S1_32, NULL}
   };
   
   
@@ -314,7 +314,7 @@ main(int argc, char **argv) {
   
   /* array of grouper filter rules, with 0 filters */
   struct gfilter_rule gfilter_branch2[1] = {
-    {trace_data->offsets.dPkts, 200, 0, RULE_GT, NULL}
+    {trace_data->offsets.dPkts, 200, 0, RULE_GT | RULE_S1_32, NULL}
   };
 
   

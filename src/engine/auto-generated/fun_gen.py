@@ -344,14 +344,14 @@ def groupaggr_body(op, atype):
 
 
 gfilter_proto = """bool 
-                   gfilter_%s(struct group *group, 
-                              size_t field_offset, 
-                              uint64_t value, 
-                              uint64_t delta)"""
+                   gfilter_%s_%s(struct group *group, 
+                                 size_t field_offset, 
+                                 uint64_t value, 
+                                 uint64_t delta)"""
 
-def gfilter_body(op):
+def gfilter_body(op, atype):
     result = " {\n\n"
-    result += "uint32_t* aggr_value = (u_int32_t*)(group->group_aggr_record + field_offset);\n"
+    result += "%s* aggr_value = (%s*)(group->group_aggr_record + field_offset);\n"%(atype,atype)
   
     if op == "eq":
         result += "    return (*aggr_value >= value - delta) && (*aggr_value <= value + delta);\n"
@@ -483,9 +483,10 @@ for op in 'static', 'count', 'union', 'min', 'max', \
 
 # group filter
 for op in 'eq', 'ne', 'lt', 'gt', 'le', 'ge':
-    header.write(gfilter_proto%(op)+";\n")
-    source.write(gfilter_proto%(op))
-    source.write(gfilter_body(op))
+  for atype in 'uint8_t', 'uint16_t', 'uint32_t', 'uint64_t':  
+    header.write(gfilter_proto%(op, atype)+";\n")
+    source.write(gfilter_proto%(op, atype))
+    source.write(gfilter_body(op, atype))
 
 # merger: part I
 for op in 'eq', 'ne', 'lt', 'gt', 'le', 'ge', 'in':
@@ -630,9 +631,10 @@ source.write("""
   """)
 
 for op in 'RULE_EQ', 'RULE_NE', 'RULE_GT', 'RULE_LT', 'RULE_LE', 'RULE_GE':
-  source.write("                case %s:\n"%(op))
-  source.write("                    binfos[i].gfilter_rules[j].func = gfilter_%s;\n"%(enum_map[op]))
-  source.write("                    break;\n")
+  for atype1 in 'RULE_S1_8', 'RULE_S1_16', 'RULE_S1_32', 'RULE_S1_64':
+    source.write("case %s | %s:\n"%(op,atype1))
+    source.write("binfos[i].gfilter_rules[j].func = gfilter_%s_%s;\n"%(enum_map[op], enum_map[atype1]))
+    source.write("break;\n")
 
 source.write("""
   }
