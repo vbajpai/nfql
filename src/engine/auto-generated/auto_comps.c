@@ -3298,7 +3298,8 @@ aggr_static_uint8_t(char **records,
 }
 
 struct aggr 
-aggr_static_uint16_t(char **records, 
+aggr_static_uint16_t(char **records,
+                     char *group_aggregation,
                      size_t num_records, 
                      size_t field_offset, 
                      bool if_aggr_common) {
@@ -3315,12 +3316,14 @@ aggr_static_uint16_t(char **records,
     if (aggr.values == NULL)
       perror("malloc");
     aggr.values[0] = *(uint16_t *)(records[0] + field_offset);
+    *(uint16_t*)(group_aggregation + field_offset) = aggr.values[0];
   }
   return aggr;
 }
 
 struct aggr 
-aggr_static_uint32_t(char **records, 
+aggr_static_uint32_t(char **records,
+                     char* group_aggregation,
                      size_t num_records, 
                      size_t field_offset, 
                      bool if_aggr_common) {
@@ -3337,6 +3340,7 @@ aggr_static_uint32_t(char **records,
     if (aggr.values == NULL)
       perror("malloc");
     aggr.values[0] = *(uint32_t *)(records[0] + field_offset);
+    *(uint32_t*)(group_aggregation + field_offset) = aggr.values[0];
   }
   return aggr;
 }
@@ -4332,7 +4336,8 @@ aggr_sum_uint16_t(char **records,
 }
 
 struct aggr 
-aggr_sum_uint32_t(char **records, 
+aggr_sum_uint32_t(char **records,
+                  char *group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common) {
@@ -4352,6 +4357,9 @@ aggr_sum_uint32_t(char **records,
   for (i = 0; i < num_records; i++) {
     aggr.values[0] += *(uint32_t *)(records[i] + field_offset);
   }
+  
+  *(u_int32_t*)(group_aggregation + field_offset) = aggr.values[0];
+  
   return aggr;
 }
 

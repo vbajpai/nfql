@@ -49,11 +49,11 @@ grouper_aggregations(struct group* group,
   for (int i = 0; i < binfo->num_filter_rules; i++) {
     
     size_t field_offset = binfo->filter_rules[i].field_offset;
-    *((u_int16_t*)(group_aggregation + field_offset)) =
-    *aggr_static_uint64_t(group->members,
-                          group->num_members, 
-                          field_offset, 
-                          TRUE).values;          
+    aggr_static_uint16_t(group->members,
+                         group_aggregation,
+                         group->num_members, 
+                         field_offset, 
+                         TRUE);
   }  
   
   
@@ -66,17 +66,17 @@ grouper_aggregations(struct group* group,
     size_t group_offset_2 = binfo->group_modules[i].field_offset2;
     
     if(group_offset_1 != group_offset_2)
-      *((u_int32_t*)(group_aggregation+group_offset_1)) = 
-                  *aggr_static_uint64_t(group->members, 
-                                        group->num_members, 
-                                        group_offset_1, 
-                                        TRUE).values;
+      aggr_static_uint32_t(group->members, 
+                           group_aggregation,
+                           group->num_members, 
+                           group_offset_1, 
+                           TRUE);
 
-    *((u_int32_t*)(group_aggregation+group_offset_2)) = 
-    *aggr_static_uint64_t(group->members, 
-                          group->num_members, 
-                          group_offset_2, 
-                          TRUE).values;      
+    aggr_static_uint32_t(group->members, 
+                         group_aggregation,
+                         group->num_members, 
+                         group_offset_2, 
+                         TRUE);    
 
   }
   
@@ -109,14 +109,12 @@ grouper_aggregations(struct group* group,
       }
     }
 
-    group->aggr[i] = binfo->aggr[i].func(group->members, 
+    group->aggr[i] = binfo->aggr[i].func(group->members,
+                                         group_aggregation,
                                          group->num_members, 
                                          aggr_offset, 
                                          if_ignore_aggr_rule);
-    if(!if_ignore_aggr_rule)
-      *((u_int32_t*)(group_aggregation+aggr_offset)) = *group->aggr[i].values; 
-  }
-  
+  }  
   
   return group_aggregation;  
 }

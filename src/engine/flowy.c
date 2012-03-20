@@ -247,9 +247,9 @@ main(int argc, char **argv) {
     
     // shouldn't the first field be -1 as indicated?
     { 0, trace_data->offsets.srcaddr, RULE_STATIC | RULE_S1_32, NULL },
+    { 0, trace_data->offsets.dstaddr, RULE_STATIC | RULE_S1_32, NULL },    
     { 0, trace_data->offsets.dPkts, RULE_SUM | RULE_S1_32, NULL },
     { 0, trace_data->offsets.dOctets, RULE_SUM | RULE_S1_32, NULL },
-    { 0, trace_data->offsets.tcp_flags, RULE_OR | RULE_S1_16, NULL }
   };
 
   
@@ -306,9 +306,9 @@ main(int argc, char **argv) {
   /* array of grouper aggregation rules, with 4 grouper aggrs */
   struct grouper_aggr group_aggr_branch2[4] = {
     { 0, trace_data->offsets.srcaddr, RULE_STATIC | RULE_S1_32, NULL },
+    { 0, trace_data->offsets.dstaddr, RULE_STATIC | RULE_S1_32, NULL },    
     { 0, trace_data->offsets.dPkts, RULE_SUM | RULE_S1_32, NULL },
     { 0, trace_data->offsets.dOctets, RULE_SUM | RULE_S1_32, NULL },
-    { 0, trace_data->offsets.tcp_flags, RULE_OR | RULE_S1_16, NULL }
   };
 
   

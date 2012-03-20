@@ -1864,12 +1864,14 @@ aggr_static_uint8_t(char **records,
                     size_t field_offset, 
                     bool if_aggr_common);
 struct aggr 
-aggr_static_uint16_t(char **records, 
+aggr_static_uint16_t(char **records,
+                     char *group_aggregation,
                      size_t num_records, 
                      size_t field_offset, 
                      bool if_aggr_common);
 struct aggr 
-aggr_static_uint32_t(char **records, 
+aggr_static_uint32_t(char **records,
+                     char *group_aggregation,
                      size_t num_records, 
                      size_t field_offset, 
                      bool if_aggr_common);
@@ -2049,7 +2051,8 @@ aggr_sum_uint16_t(char **records,
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr 
-aggr_sum_uint32_t(char **records, 
+aggr_sum_uint32_t(char **records,
+                  char *group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);

@@ -142,6 +142,7 @@ struct grouper_aggr {
   uint64_t op;
   struct aggr (*func)(
                       char **group_records,
+                      char *group_aggregation,
                       size_t num_records,
                       size_t field_offset,
                       bool if_aggr_common);
