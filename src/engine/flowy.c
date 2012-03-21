@@ -159,7 +159,11 @@ main(int argc, char **argv) {
   /* -----------------------------------------------------------------------*/
   
   filter_rules_params = calloc(1, sizeof(filter_rules_params));
+  if (filter_rules_params == NULL)
+    errExit("calloc");
   filter_offset = calloc(1, sizeof(filter_offset));
+  if (filter_rules_params == NULL)
+    errExit("calloc");
   filter_rules_params->off = filter_offset; 
   
   query_json = json_tokener_parse(query_mmap_data);
@@ -215,134 +219,143 @@ main(int argc, char **argv) {
   
     
   /* -----------------------------------------------------------------------*/  
-  /*       filter, grouper, grouper aggregation, group filter rules         */
+  /*                           pipeline rules                               */
   /* -----------------------------------------------------------------------*/  
  
+  fquery->branches[0].num_filter_rules = NUM_FILTER_RULES_BRANCH1;
+  fquery->branches[1].num_filter_rules = NUM_FILTER_RULES_BRANCH2;
   
-  /* BRANCH 2: array of filter rules, with one filter */
-  struct filter_rule filter_rules_branch1[1] = {
-      { trace_data->offsets.dstport, 
-        filter_rules_params->off->value, 
-        filter_rules_params->delta,
-        RULE_EQ | RULE_S1_16, 
-        NULL
-      },
-  };
+  fquery->branches[0].num_group_modules = NUM_GROUPER_RULES_BRANCH1;
+  fquery->branches[1].num_group_modules = NUM_GROUPER_RULES_BRANCH2;  
   
-  /* BRANCH 1: array of filter rules, with one filter */
-  struct filter_rule filter_rules_branch2[1] = {
-    { trace_data->offsets.srcport,
-      filter_rules_params->off->value, 
-      filter_rules_params->delta,
-      RULE_EQ | RULE_S1_16, 
-      NULL},    
-  };
+  fquery->branches[0].num_aggr = NUM_GROUPER_AGGREGATION_RULES_BRANCH1;
+  fquery->branches[1].num_aggr = NUM_GROUPER_AGGREGATION_RULES_BRANCH2;  
+  
+  fquery->branches[0].num_gfilter_rules = NUM_GROUP_FILTER_RULES_BRANCH1;
+  fquery->branches[1].num_gfilter_rules = NUM_GROUP_FILTER_RULES_BRANCH2;
+  
+  fquery->num_merger_rules = NUM_MERGER_RULES;
 
   
-  /* BRANCH 1: array of grouper rules, with 2 groupers */
-  struct grouper_rule group_module_branch1[2] = {
+  /* rules for each branch */
+  for (int i = 0; i < fquery->num_branches; i++) {
     
-    // shouldn't this be _16 ?
-    { trace_data->offsets.srcaddr, trace_data->offsets.srcaddr, 0, 
-      RULE_EQ | RULE_S1_32 | RULE_S2_32 | RULE_NO, NULL },
+    fquery->branches[i].branch_id = i;
+    fquery->branches[i].data = trace_data;
     
-    { trace_data->offsets.dstaddr, trace_data->offsets.dstaddr, 0, 
-      RULE_EQ | RULE_S1_32 | RULE_S2_32 | RULE_NO, NULL },
     
-    //{ data->offsets.Last, data->offsets.First, 1, grouper_lt_uint32_t_rel }
-  };  
-  
+    struct filter_rule* frule = calloc(fquery->branches[i].num_filter_rules, 
+                                       sizeof(struct filter_rule));    
+    for (int j = 0; j < fquery->branches[i].num_filter_rules; j++) {
+      
+      if (i == 0)
+        frule[j].field_offset     =         trace_data->offsets.dstport;
+      else if (i == 1)
+        frule[j].field_offset     =         trace_data->offsets.srcport;
+      
+        frule[j].value            =         filter_rules_params->off->value;
+        frule[j].delta            =         filter_rules_params->delta;
+        frule[j].op               =         RULE_EQ | RULE_S1_16;
+        frule[j].func             =         NULL;      
+    }    
+    fquery->branches[i].filter_rules = frule;
+    
+    
+    
+    struct grouper_rule* grule = calloc(fquery->branches[i].num_group_modules, 
+                                        sizeof(struct grouper_rule));
+    for (int j = 0; j < fquery->branches[i].num_group_modules; j++) {
+      switch (j) {
+        case 0:
+          grule[j].field_offset1     =        trace_data->offsets.srcaddr;      
+          grule[j].field_offset2     =        trace_data->offsets.srcaddr;          
+          break;
+        case 1:
+          grule[j].field_offset1     =        trace_data->offsets.dstaddr;      
+          grule[j].field_offset2     =        trace_data->offsets.dstaddr;         
+          break;
+      }
+      
+         grule[j].delta            =         0;
+         grule[j].op               =         RULE_EQ | RULE_S1_32 | RULE_S2_32 | RULE_NO;
+         grule[j].func             =         NULL;
+    }
+    fquery->branches[i].group_modules = grule;    
+    
 
-  /* BRANCH 2: array of grouper rules, with 2 groupers */
-  struct grouper_rule group_module_branch2[2] = {
-    { trace_data->offsets.srcaddr, trace_data->offsets.srcaddr, 0, 
-      RULE_EQ | RULE_NO | RULE_S2_32 | RULE_S1_32, NULL },
-    { trace_data->offsets.dstaddr, trace_data->offsets.dstaddr, 0, 
-      RULE_EQ | RULE_NO | RULE_S2_32 | RULE_S1_32, NULL },
-    
-    //{ data->offsets.Last, data->offsets.First, 1, grouper_lt_uint32_t_rel },
-  };
-  
-  
-  
-  /* BRANCH 1: array of grouper aggregation rules, with 4 grouper aggrs */
-  struct grouper_aggr group_aggr_branch1[4] = {
-    
-    // shouldn't the first field be -1 as indicated?
-    { 0, trace_data->offsets.srcaddr, RULE_STATIC | RULE_S1_32, NULL },
-    { 0, trace_data->offsets.dstaddr, RULE_STATIC | RULE_S1_32, NULL },    
-    { 0, trace_data->offsets.dPkts, RULE_SUM | RULE_S1_32, NULL },
-    { 0, trace_data->offsets.dOctets, RULE_SUM | RULE_S1_32, NULL },
-  };
-  
-  
-  /* BRANCH 2: array of grouper aggregation rules, with 4 grouper aggrs */
-  struct grouper_aggr group_aggr_branch2[4] = {
-    { 0, trace_data->offsets.srcaddr, RULE_STATIC | RULE_S1_32, NULL },
-    { 0, trace_data->offsets.dstaddr, RULE_STATIC | RULE_S1_32, NULL },    
-    { 0, trace_data->offsets.dPkts, RULE_SUM | RULE_S1_32, NULL },
-    { 0, trace_data->offsets.dOctets, RULE_SUM | RULE_S1_32, NULL },
-  };
 
-  
-  /* BRANCH 1: array of grouper filter rules, with 1 filters */
-  struct gfilter_rule gfilter_branch1[1] = {
-    {trace_data->offsets.dPkts, 200, 0, RULE_GT | RULE_S1_32, NULL}
-  };
-  
-  /* BRANCH 2: array of grouper filter rules, with 1 filters */
-  struct gfilter_rule gfilter_branch2[1] = {
-    {trace_data->offsets.dPkts, 200, 0, RULE_GT | RULE_S1_32, NULL}
-  };
-  
-  
-  /* filling up the branch_info struct */
-  binfos[0].branch_id = 0;
-  binfos[0].data = trace_data;
-  binfos[0].filter_rules = filter_rules_branch1;
-  binfos[0].num_filter_rules = 1;
-  binfos[0].group_modules = group_module_branch1;
-  binfos[0].num_group_modules = 2;
-  binfos[0].aggr = group_aggr_branch1;
-  binfos[0].num_aggr = 4;
-  binfos[0].gfilter_rules = gfilter_branch1;
-  binfos[0].num_gfilter_rules = 1;
-  
-  
-  /* filling up the branch_info struct */  
-  binfos[1].branch_id = 1;
-  binfos[1].data = trace_data;
-  binfos[1].filter_rules = filter_rules_branch2;
-  binfos[1].num_filter_rules = 1;
-  binfos[1].group_modules = group_module_branch2;
-  binfos[1].num_group_modules = 2;
-  binfos[1].aggr = group_aggr_branch2;
-  binfos[1].num_aggr = 4;
-  binfos[1].gfilter_rules = gfilter_branch2;
-  binfos[1].num_gfilter_rules = 1;
+    struct grouper_aggr* aggrule = calloc(fquery->branches[i].num_aggr, 
+                                          sizeof(struct grouper_aggr));
+    for (int j = 0; j < fquery->branches[i].num_aggr; j++) {      
+      aggrule[j].module           =         0;      
+      switch (j) {
+        case 0:
+          aggrule[j].field_offset =         trace_data->offsets.srcaddr;
+          break;
+        case 1:
+          aggrule[j].field_offset =         trace_data->offsets.dstaddr;
+          break;
+        case 2:
+          aggrule[j].field_offset =         trace_data->offsets.dPkts;
+          break;
+        case 3:
+          aggrule[j].field_offset =         trace_data->offsets.dOctets;
+          break;
+      }
+      switch (j) {
+        case 0:
+        case 1:
+          aggrule[j].op           =         RULE_STATIC | RULE_S1_32;
+          break;
+        case 2:
+        case 3:
+          aggrule[j].op           =         RULE_SUM | RULE_S1_32;
+          break;
+      }      
+      aggrule[j].func             =         NULL;
+    }
+    fquery->branches[i].aggr = aggrule;    
 
+
+    
+    struct gfilter_rule* gfrule = calloc(fquery->branches[i].num_gfilter_rules, 
+                                         sizeof(struct gfilter_rule));
+    for (int j = 0; j < fquery->branches[i].num_gfilter_rules; j++) {
+      gfrule[j].field             =         trace_data->offsets.dPkts;
+      gfrule[j].value             =         200;
+      gfrule[j].delta             =         0;
+      gfrule[j].op                =         RULE_GT | RULE_S1_32;
+      gfrule[j].func              =         NULL;
+    }    
+    fquery->branches[i].gfilter_rules = gfrule;
+    
+  }
+  
+  
+  struct merger_rule* mrule = calloc(fquery->num_merger_rules, 
+                                     sizeof(struct merger_rule));
+  for (int j = 0; j < fquery->num_merger_rules; j++) {    
+    mrule[j].branch1               =         &fquery->branches[0];
+    mrule[j].branch2               =         &fquery->branches[1];    
+    switch (j) {        
+      case 0:
+        mrule[j].field1            =         trace_data->offsets.srcaddr;
+        mrule[j].field2            =         trace_data->offsets.dstaddr;        
+        break;
+      case 1:
+        mrule[j].field1            =         trace_data->offsets.dstaddr;
+        mrule[j].field2            =         trace_data->offsets.srcaddr;        
+        break;
+    }
+    mrule[j].delta                 =         0;
+    mrule[j].op                    =         RULE_EQ | RULE_S1_32 | RULE_S2_32;
+    mrule[j].func                  =         NULL;
+  }
+  fquery->mrules = mrule;
   
   /* deallocate the query buffers */
   free(filter_offset);
   free(filter_rules_params);
-  
-  
-  struct merger_rule mfilter[2] = {
-    {&binfos[0], trace_data->offsets.srcaddr, 
-      &binfos[1], trace_data->offsets.dstaddr, 
-      RULE_EQ | RULE_S1_32 | RULE_S2_32,  
-      0,
-      NULL},
-    
-    {&binfos[0], trace_data->offsets.dstaddr, 
-      &binfos[1], trace_data->offsets.srcaddr,
-      RULE_EQ | RULE_S1_32 | RULE_S2_32, 
-      0,
-      NULL},
-  };
-  
-  fquery->num_merger_rules = 2;
-  fquery->mrules = mfilter;
   
  /* -----------------------------------------------------------------------*/
 
@@ -438,7 +451,7 @@ main(int argc, char **argv) {
   
   fquery->group_tuples = merger(binfos,
                                 fquery->num_branches, 
-                                mfilter, 
+                                mrule, 
                                 fquery->num_merger_rules,
                                 &fquery->total_num_group_tuples,
                                 &fquery->num_group_tuples);

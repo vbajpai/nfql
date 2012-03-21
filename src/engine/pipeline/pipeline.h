@@ -165,6 +165,10 @@ struct gfilter_rule {
 
 /*
  * merger rules
+ * a single rule will always compare two branches
+ * A.dstip = B.dstip = C.dstip should be broken down to
+ * A.dstip = B.dstip
+ * B.dstip = C.dstip
  */
 
 struct merger_rule {
