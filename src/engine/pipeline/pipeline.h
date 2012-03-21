@@ -42,6 +42,13 @@ struct flowquery {
   struct group*** group_tuples;
   size_t num_group_tuples;
   size_t total_num_group_tuples;
+  
+  struct stream* streamset;
+};
+
+struct stream{
+  char ** recordset;
+  size_t num_records;
 };
 
 /*

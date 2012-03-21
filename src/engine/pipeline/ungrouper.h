@@ -25,55 +25,14 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * this header contains the public flowy interface
- */
+#ifndef flowy_engine_ungrouper_h
+#define flowy_engine_ungrouper_h
 
-
-#ifndef flowy_engine_flowy_h
-#define flowy_engine_flowy_h
-
-#include <pthread.h>
-#include <getopt.h>
-#include <json/json.h>
-#include <sys/stat.h>
-#include <sys/mman.h>
-
-#include "branch.h"
-#include "merger.h"
-#include "ungrouper.h"
-
-#include "auto_assign.h"
+#include "pipeline.h"
 #include "error_handlers.h"
-#include "ftreader.h"
 
-
-
-/* this should go away once the rules come from the JSON */
-#define NUM_BRANCHES 2
-#define NUM_FILTER_RULES_BRANCH1 1
-#define NUM_FILTER_RULES_BRANCH2 1
-#define NUM_GROUPER_RULES_BRANCH1 2
-#define NUM_GROUPER_RULES_BRANCH2 2
-#define NUM_GROUPER_AGGREGATION_RULES_BRANCH1 4
-#define NUM_GROUPER_AGGREGATION_RULES_BRANCH2 4
-#define NUM_GROUP_FILTER_RULES_BRANCH1 1
-#define NUM_GROUP_FILTER_RULES_BRANCH2 1
-
-#define NUM_MERGER_RULES 2
-
-struct filter_rules_params{
-  uint64_t delta;
-  const char* op;
-  struct filter_offset* off;
-};
-
-struct filter_offset{
-  const char* name;
-  uint64_t value;
-  const char* datatype;
-};
-
-#define FLOWHEADER "\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n"
+struct stream*
+ungrouper(struct group*** group_tuples,
+          size_t num_group_tuples);
 
 #endif

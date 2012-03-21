@@ -247,16 +247,19 @@ main(int argc, char **argv) {
     struct filter_rule* frule = calloc(fquery->branches[i].num_filter_rules, 
                                        sizeof(struct filter_rule));    
     for (int j = 0; j < fquery->branches[i].num_filter_rules; j++) {
-      
-      if (i == 0)
-        frule[j].field_offset     =         trace_data->offsets.dstport;
-      else if (i == 1)
-        frule[j].field_offset     =         trace_data->offsets.srcport;
-      
-        frule[j].value            =         filter_rules_params->off->value;
-        frule[j].delta            =         filter_rules_params->delta;
-        frule[j].op               =         RULE_EQ | RULE_S1_16;
-        frule[j].func             =         NULL;      
+      /* assumes that there are 2 branches */
+      switch (i) {
+        case 0:
+          frule[j].field_offset     =         trace_data->offsets.dstport;
+          break;
+        case 1:          
+          frule[j].field_offset     =         trace_data->offsets.srcport;
+          break;
+      }
+      frule[j].value                =         filter_rules_params->off->value;
+      frule[j].delta                =         filter_rules_params->delta;
+      frule[j].op                   =         RULE_EQ | RULE_S1_16;
+      frule[j].func                 =         NULL;      
     }    
     fquery->branches[i].filter_rules = frule;
     
@@ -276,9 +279,9 @@ main(int argc, char **argv) {
           break;
       }
       
-         grule[j].delta            =         0;
-         grule[j].op               =         RULE_EQ | RULE_S1_32 | RULE_S2_32 | RULE_NO;
-         grule[j].func             =         NULL;
+      grule[j].delta                 =         0;
+      grule[j].op                    =         RULE_EQ | RULE_S1_32 | RULE_S2_32 | RULE_NO;
+      grule[j].func                  =         NULL;
     }
     fquery->branches[i].group_modules = grule;    
     
@@ -286,7 +289,7 @@ main(int argc, char **argv) {
 
     struct grouper_aggr* aggrule = calloc(fquery->branches[i].num_aggr, 
                                           sizeof(struct grouper_aggr));
-    for (int j = 0; j < fquery->branches[i].num_aggr; j++) {      
+    for (int j = 0; j < fquery->branches[i].num_aggr; j++) {
       aggrule[j].module           =         0;      
       switch (j) {
         case 0:
@@ -326,7 +329,7 @@ main(int argc, char **argv) {
       gfrule[j].delta             =         0;
       gfrule[j].op                =         RULE_GT | RULE_S1_32;
       gfrule[j].func              =         NULL;
-    }    
+    }
     fquery->branches[i].gfilter_rules = gfrule;
     
   }
@@ -475,8 +478,12 @@ main(int argc, char **argv) {
   /*                                ungrouper                               */
   /* -----------------------------------------------------------------------*/  
   // TODO: free group_collections at some point
-  /* -----------------------------------------------------------------------*/    
+  /* -----------------------------------------------------------------------*/
   
+  fquery->streamset = ungrouper(fquery->group_tuples,
+                                fquery->num_group_tuples);
+  
+  /* -----------------------------------------------------------------------*/
   
 #endif  
   
@@ -623,10 +630,37 @@ main(int argc, char **argv) {
     }    
 #endif
 
-  }    
-
+  }
+  
   /* -----------------------------------------------------------------------*/      
   
+  
+  
+  
+  
+
+  
+  
+  
+  
+  /* -----------------------------------------------------------------------*/  
+  /*                                output                                  */
+  /* -----------------------------------------------------------------------*/    
+  
+  printf("\nNo. of Streams: %zu \n", fquery->num_group_tuples);
+  printf("----------------- \n");  
+  for (int j = 0; j < fquery->num_group_tuples; j++) {
+    struct stream stream = fquery->streamset[j];
+    printf("\nNo. of Records in Stream (%d): %zu \n",j+1, 
+                                                      stream.num_records);
+    puts(FLOWHEADER);
+    for (int i = 0; i < stream.num_records; i++) {
+      char* record = stream.recordset[i];
+      flow_print_record(trace_data, record);
+    }
+    printf("\n");
+  }
+  /* -----------------------------------------------------------------------*/
   
   
 
