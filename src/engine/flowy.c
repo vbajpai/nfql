@@ -480,7 +480,8 @@ main(int argc, char **argv) {
   // TODO: free group_collections at some point
   /* -----------------------------------------------------------------------*/
   
-  fquery->streamset = ungrouper(fquery->group_tuples,
+  fquery->streamset = ungrouper(fquery,
+                                fquery->group_tuples,
                                 fquery->num_group_tuples);
   
   /* -----------------------------------------------------------------------*/
@@ -650,12 +651,12 @@ main(int argc, char **argv) {
   printf("\nNo. of Streams: %zu \n", fquery->num_group_tuples);
   printf("----------------- \n");  
   for (int j = 0; j < fquery->num_group_tuples; j++) {
-    struct stream stream = fquery->streamset[j];
+    struct stream* stream = fquery->streamset[j];
     printf("\nNo. of Records in Stream (%d): %zu \n",j+1, 
-                                                      stream.num_records);
+                                                      stream->num_records);
     puts(FLOWHEADER);
-    for (int i = 0; i < stream.num_records; i++) {
-      char* record = stream.recordset[i];
+    for (int i = 0; i < stream->num_records; i++) {
+      char* record = stream->recordset[i];
       flow_print_record(trace_data, record);
     }
     printf("\n");
