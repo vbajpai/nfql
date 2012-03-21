@@ -52,10 +52,14 @@ grouper_aggregations(struct group* group,
    * currently assumes that the filter rule was `eq`, such that each record
    * member has the same value for that field in the group, still need
    * to investigate how it might affect other filter operations */  
+  bool ifgrouper = false;
   for (int i = 0; i < binfo->num_filter_rules; i++) {
     
     size_t field_offset = binfo->filter_rules[i].field_offset;
-    aggr_function = get_aggr_fptr(binfo->filter_rules[i].op);    
+    aggr_function = get_aggr_fptr(ifgrouper, binfo->filter_rules[i].op); 
+    if(aggr_function == NULL)
+      errExit("get_aggr_fptr(...) returned NULL");
+    
     (*aggr_function)(group->members,
                      group_aggregation,
                      group->num_members, 
@@ -68,18 +72,20 @@ grouper_aggregations(struct group* group,
    * currently assumes that the grouper rule was `eq`, such that each record
    * member has the same value for that field in the group, still need
    * to investigate how it might affect other grouper operations */
+  ifgrouper = true;
   for (int i = 0; i < binfo->num_group_modules; i++) {
     
     size_t group_offset_1 = binfo->group_modules[i].field_offset1;
     size_t group_offset_2 = binfo->group_modules[i].field_offset2;
-    aggr_function = get_aggr_fptr(binfo->group_modules[i].op);
-
+    aggr_function = get_aggr_fptr(ifgrouper, binfo->group_modules[i].op);
+    if(aggr_function == NULL)
+      errExit("get_aggr_fptr(...) returned NULL");
     
     if(group_offset_1 != group_offset_2)
       (*aggr_function)(group->members, 
                        group_aggregation,
                        group->num_members, 
-                       group_offset_1, 
+                       group_offset_1,
                        TRUE);
 
     (*aggr_function)(group->members, 

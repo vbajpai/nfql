@@ -9,6 +9,8 @@
 
 #include "pipeline.h"
 
+#include "error_handlers.h"
+
 #include <math.h>
 bool 
 filter_eq_uint8_t(char *record, 
@@ -1859,7 +1861,8 @@ grouper_ge_uint64_t_uint64_t_rel(struct group *group,
                                  size_t field_offset2, 
                                  uint64_t delta);
 struct aggr 
-aggr_static_uint8_t(char **records, 
+aggr_static_uint8_t(char **records,
+                    char *group_aggregation,
                     size_t num_records, 
                     size_t field_offset, 
                     bool if_aggr_common);
@@ -1876,177 +1879,212 @@ aggr_static_uint32_t(char **records,
                      size_t field_offset, 
                      bool if_aggr_common);
 struct aggr 
-aggr_static_uint64_t(char **records, 
+aggr_static_uint64_t(char **records,
+                     char *group_aggregation,
                      size_t num_records, 
                      size_t field_offset, 
                      bool if_aggr_common);
 struct aggr 
-aggr_count_uint8_t(char **records, 
+aggr_count_uint8_t(char **records,
+                   char *group_aggregation,
                    size_t num_records, 
                    size_t field_offset, 
                    bool if_aggr_common);
 struct aggr 
-aggr_count_uint16_t(char **records, 
+aggr_count_uint16_t(char **records,
+                    char *group_aggregation,
                     size_t num_records, 
                     size_t field_offset, 
                     bool if_aggr_common);
 struct aggr 
-aggr_count_uint32_t(char **records, 
+aggr_count_uint32_t(char **records,
+                    char *group_aggregation,
                     size_t num_records, 
                     size_t field_offset, 
                     bool if_aggr_common);
 struct aggr 
-aggr_count_uint64_t(char **records, 
+aggr_count_uint64_t(char **records,
+                    char *group_aggregation,
                     size_t num_records, 
                     size_t field_offset, 
                     bool if_aggr_common);
 struct aggr 
-aggr_union_uint8_t(char **records, 
+aggr_union_uint8_t(char **records,
+                   char *group_aggregation,
                    size_t num_records, 
                    size_t field_offset, 
                    bool if_aggr_common);
 struct aggr 
-aggr_union_uint16_t(char **records, 
+aggr_union_uint16_t(char **records,
+                    char *group_aggregation,
                     size_t num_records, 
                     size_t field_offset, 
                     bool if_aggr_common);
 struct aggr 
-aggr_union_uint32_t(char **records, 
+aggr_union_uint32_t(char **records,
+                    char *group_aggregation,
                     size_t num_records, 
                     size_t field_offset, 
                     bool if_aggr_common);
 struct aggr 
-aggr_union_uint64_t(char **records, 
+aggr_union_uint64_t(char **records,
+                    char *group_aggregation,
                     size_t num_records, 
                     size_t field_offset, 
                     bool if_aggr_common);
 struct aggr 
-aggr_min_uint8_t(char **records, 
+aggr_min_uint8_t(char **records,
+                 char *group_aggregation,
                  size_t num_records, 
                  size_t field_offset, 
                  bool if_aggr_common);
 struct aggr 
-aggr_min_uint16_t(char **records, 
+aggr_min_uint16_t(char **records,
+                  char *group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr 
-aggr_min_uint32_t(char **records, 
+aggr_min_uint32_t(char **records,
+                  char *group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr 
-aggr_min_uint64_t(char **records, 
+aggr_min_uint64_t(char **records,
+                  char *group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr 
-aggr_max_uint8_t(char **records, 
+aggr_max_uint8_t(char **records,
+                 char *group_aggregation,
                  size_t num_records, 
                  size_t field_offset, 
                  bool if_aggr_common);
 struct aggr 
-aggr_max_uint16_t(char **records, 
+aggr_max_uint16_t(char **records,
+                  char *group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr 
-aggr_max_uint32_t(char **records, 
+aggr_max_uint32_t(char **records,
+                  char *group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr 
-aggr_max_uint64_t(char **records, 
+aggr_max_uint64_t(char **records,
+                  char *group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr 
-aggr_median_uint8_t(char **records, 
+aggr_median_uint8_t(char **records,
+                    char *group_aggregation,
                     size_t num_records, 
                     size_t field_offset, 
                     bool if_aggr_common);
 struct aggr 
-aggr_median_uint16_t(char **records, 
+aggr_median_uint16_t(char **records,
+                     char *group_aggregation,
                      size_t num_records, 
                      size_t field_offset, 
                      bool if_aggr_common);
 struct aggr 
-aggr_median_uint32_t(char **records, 
+aggr_median_uint32_t(char **records,
+                     char *group_aggregation,
                      size_t num_records, 
                      size_t field_offset, 
                      bool if_aggr_common);
 struct aggr 
-aggr_median_uint64_t(char **records, 
+aggr_median_uint64_t(char **records,
+                     char *group_aggregation,
                      size_t num_records, 
                      size_t field_offset, 
                      bool if_aggr_common);
 struct aggr 
-aggr_mean_uint8_t(char **records, 
+aggr_mean_uint8_t(char **records,
+                  char *group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr 
-aggr_mean_uint16_t(char **records, 
+aggr_mean_uint16_t(char **records,
+                   char *group_aggregation,
                    size_t num_records, 
                    size_t field_offset, 
                    bool if_aggr_common);
 struct aggr 
-aggr_mean_uint32_t(char **records, 
+aggr_mean_uint32_t(char **records,
+                   char *group_aggregation,
                    size_t num_records, 
                    size_t field_offset, 
                    bool if_aggr_common);
 struct aggr 
-aggr_mean_uint64_t(char **records, 
+aggr_mean_uint64_t(char **records,
+                   char *group_aggregation,
                    size_t num_records, 
                    size_t field_offset, 
                    bool if_aggr_common);
 struct aggr 
-aggr_stddev_uint8_t(char **records, 
+aggr_stddev_uint8_t(char **records,
+                    char *group_aggregation,
                     size_t num_records, 
                     size_t field_offset, 
                     bool if_aggr_common);
 struct aggr 
-aggr_stddev_uint16_t(char **records, 
+aggr_stddev_uint16_t(char **records,
+                     char *group_aggregation,
                      size_t num_records, 
                      size_t field_offset, 
                      bool if_aggr_common);
 struct aggr 
-aggr_stddev_uint32_t(char **records, 
+aggr_stddev_uint32_t(char **records,
+                     char *group_aggregation,
                      size_t num_records, 
                      size_t field_offset, 
                      bool if_aggr_common);
 struct aggr 
-aggr_stddev_uint64_t(char **records, 
+aggr_stddev_uint64_t(char **records,
+                     char *group_aggregation,
                      size_t num_records, 
                      size_t field_offset, 
                      bool if_aggr_common);
 struct aggr 
-aggr_prod_uint8_t(char **records, 
+aggr_prod_uint8_t(char **records,
+                  char *group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr 
-aggr_prod_uint16_t(char **records, 
+aggr_prod_uint16_t(char **records,
+                   char *group_aggregation,
                    size_t num_records, 
                    size_t field_offset, 
                    bool if_aggr_common);
 struct aggr 
-aggr_prod_uint32_t(char **records, 
+aggr_prod_uint32_t(char **records,
+                   char *group_aggregation,
                    size_t num_records, 
                    size_t field_offset, 
                    bool if_aggr_common);
 struct aggr 
-aggr_prod_uint64_t(char **records, 
+aggr_prod_uint64_t(char **records,
+                   char *group_aggregation,
                    size_t num_records, 
                    size_t field_offset, 
                    bool if_aggr_common);
 struct aggr 
-aggr_sum_uint8_t(char **records, 
+aggr_sum_uint8_t(char **records,
+                 char *group_aggregation,
                  size_t num_records, 
                  size_t field_offset, 
                  bool if_aggr_common);
 struct aggr 
-aggr_sum_uint16_t(char **records, 
+aggr_sum_uint16_t(char **records,
+                  char *group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
@@ -2057,67 +2095,80 @@ aggr_sum_uint32_t(char **records,
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr 
-aggr_sum_uint64_t(char **records, 
+aggr_sum_uint64_t(char **records,
+                  char *group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr 
-aggr_and_uint8_t(char **records, 
+aggr_and_uint8_t(char **records,
+                 char *group_aggregation,
                  size_t num_records, 
                  size_t field_offset, 
                  bool if_aggr_common);
 struct aggr 
-aggr_and_uint16_t(char **records, 
+aggr_and_uint16_t(char **records,
+                  char *group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr 
-aggr_and_uint32_t(char **records, 
+aggr_and_uint32_t(char **records,
+                  char *group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr 
-aggr_and_uint64_t(char **records, 
+aggr_and_uint64_t(char **records,
+                  char *group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr 
-aggr_or_uint8_t(char **records, 
+aggr_or_uint8_t(char **records,
+                char *group_aggregation,
                 size_t num_records, 
                 size_t field_offset, 
                 bool if_aggr_common);
 struct aggr 
-aggr_or_uint16_t(char **records, 
+aggr_or_uint16_t(char **records,
+                 char *group_aggregation,
                  size_t num_records, 
                  size_t field_offset, 
                  bool if_aggr_common);
 struct aggr 
-aggr_or_uint32_t(char **records, 
+aggr_or_uint32_t(char **records,
+                 char *group_aggregation,
                  size_t num_records, 
                  size_t field_offset, 
                  bool if_aggr_common);
 struct aggr 
-aggr_or_uint64_t(char **records, 
+aggr_or_uint64_t(char **records,
+                 char *group_aggregation,
                  size_t num_records, 
                  size_t field_offset, 
                  bool if_aggr_common);
 struct aggr 
-aggr_xor_uint8_t(char **records, 
+aggr_xor_uint8_t(char **records,
+                 char *group_aggregation,
                  size_t num_records, 
                  size_t field_offset, 
                  bool if_aggr_common);
 struct aggr 
-aggr_xor_uint16_t(char **records, 
+aggr_xor_uint16_t(char **records,
+                  char *group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr 
-aggr_xor_uint32_t(char **records, 
+aggr_xor_uint32_t(char **records,
+                  char *group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr 
-aggr_xor_uint64_t(char **records, 
+aggr_xor_uint64_t(char **records,
+                  char *group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);

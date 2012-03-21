@@ -14,11 +14,12 @@ assign_fptr(struct flowquery *fquery,
             struct branch_info *binfos, 
             int num_threads);
 
-
 struct aggr 
-(*get_aggr_fptr(uint64_t op))(char **records,
+(*get_aggr_fptr(bool ifgrouper,
+                uint64_t op))(char **records,
                               char *group_aggregation,
                               size_t num_records,
                               size_t field_offset,
                               bool if_aggr_common);
+
 #endif

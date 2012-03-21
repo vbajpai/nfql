@@ -1,5 +1,6 @@
 #!/bin/env python
 #
+# Copyright 2012 Vaibhav Bajpai <contact@vaibhavbajpai.com>
 # Copyright 2011 Johannes 'josch' Schauer <j.schauer@email.de>
 #
 # All rights reserved.
@@ -114,6 +115,7 @@ header.write("#ifndef flowy_engine_auto_comps_h\n")
 header.write("#define flowy_engine_auto_comps_h\n\n")
 
 header.write('#include "pipeline.h"\n\n')
+header.write('#include "error_handlers.h"\n\n')
 header.write("#include <math.h>\n")
 
 source.write('#include "auto_comps.h"\n')
@@ -196,7 +198,8 @@ def grouper_body(op, atype1, atype2, dtype):
     return result;
 
 groupaggr_proto = """struct aggr 
-                     aggr_%s_%s(char **records, 
+                     aggr_%s_%s(char **records,
+                                char *group_aggregation,
                                 size_t num_records, 
                                 size_t field_offset, 
                                 bool if_aggr_common)"""
@@ -214,23 +217,21 @@ def groupaggr_body(op, atype):
         result += "      aggr.num_values = 1;\n"
         result += "      aggr.values = (uint64_t *)malloc(sizeof(uint64_t));\n"
         result += "      if (aggr.values == NULL)\n"
-        result += "        perror(\"malloc\");\n"
+        result += "        errExit(\"malloc\");\n"
         result += "      aggr.values[0] = *(%s *)(records[0] + field_offset);\n"%atype
         result += "    }\n"
     elif op == 'count':
         result += "    aggr.num_values = 1;\n"
         result += "    aggr.values = (uint64_t *)malloc(sizeof(uint64_t)*aggr.num_values);\n"
-        result += "    if (aggr.values == NULL) {\n"
-        result += "        perror(\"malloc\");\n"
-        result += "    }\n"
+        result += "    if (aggr.values == NULL)\n"
+        result += "        errExit(\"malloc\");\n"
         result += "    aggr.values[0] = num_records;\n"
     elif op in ['prod', 'sum', 'and', 'or', 'xor']:
         result += "    int i;\n"
         result += "    aggr.num_values = 1;\n"
         result += "    aggr.values = (uint64_t *)malloc(sizeof(uint64_t)*aggr.num_values);\n"
-        result += "    if (aggr.values == NULL) {\n"
-        result += "        perror(\"malloc\");\n"
-        result += "    }\n"
+        result += "    if (aggr.values == NULL)\n"
+        result += "        errExit(\"malloc\");\n"
         result += "    for (i = 0; i < num_records; i++) {\n"
         result += "        aggr.values[0] %s= *(%s *)(records[i] + field_offset);\n"%(operation_map[op], atype)
         result += "    }\n"
@@ -238,9 +239,8 @@ def groupaggr_body(op, atype):
         result += "    int i;\n"
         result += "    aggr.num_values = 1;\n"
         result += "    aggr.values = (uint64_t *)malloc(sizeof(uint64_t)*aggr.num_values);\n"
-        result += "    if (aggr.values == NULL) {\n"
-        result += "        perror(\"malloc\");\n"
-        result += "    }\n"
+        result += "    if (aggr.values == NULL)\n"
+        result += "        errExit(\"malloc\");\n"
         result += "    for (i = 0; i < num_records; i++) {\n"
         result += "        aggr.values[0] += *(%s *)(records[i] + field_offset);\n"%atype
         result += "    }\n"
@@ -250,9 +250,8 @@ def groupaggr_body(op, atype):
         result += "    uint64_t stddev;\n"
         result += "    aggr.num_values = 1;\n"
         result += "    aggr.values = (uint64_t *)malloc(sizeof(uint64_t)*aggr.num_values);\n"
-        result += "    if (aggr.values == NULL) {\n"
-        result += "        perror(\"malloc\");\n"
-        result += "    }\n"
+        result += "    if (aggr.values == NULL)\n"
+        result += "        errExit(\"malloc\");\n"
         result += "    for (i = 0; i < num_records; i++) {\n"
         result += "        aggr.values[0] += *(%s *)(records[i] + field_offset);\n"%atype
         result += "    }\n"
@@ -267,17 +266,15 @@ def groupaggr_body(op, atype):
         result += "    uint64_t *temp;\n"
         result += "    uint64_t last;\n"
         result += "    temp = (uint64_t *)malloc(sizeof(uint64_t)*num_records);\n"
-        result += "    if (temp == NULL) {\n"
-        result += "        perror(\"malloc\");\n"
-        result += "    }\n"
+        result += "    if (temp == NULL)\n"
+        result += "        errExit(\"malloc\");\n"
         result += "    for (i=0; i < num_records; i++) {\n"
         result += "        temp[i] = *(%s *)(records[i] + field_offset);\n"%atype
         result += "    }\n"
         result += "    qsort(temp, num_records, sizeof(uint64_t), compar);\n"
         result += "    aggr.values = (uint64_t *)malloc(sizeof(uint64_t)*num_records);\n"
-        result += "    if (aggr.values == NULL) {\n"
-        result += "        perror(\"malloc\");\n"
-        result += "    }\n"
+        result += "    if (aggr.values == NULL)\n"
+        result += "        errExit(\"malloc\");\n"
         result += "    aggr.values[0] = temp[0];\n"
         result += "    last = temp[0];\n"
         result += "    aggr.num_values = 1;\n"
@@ -288,35 +285,31 @@ def groupaggr_body(op, atype):
         result += "        }\n"
         result += "    }\n"
         result += "    aggr.values = (uint64_t *)realloc(aggr.values, sizeof(uint64_t)*aggr.num_values);\n"
-        result += "    if (aggr.values == NULL) {\n"
-        result += "        perror(\"malloc\");\n"
-        result += "    }\n"
+        result += "    if (aggr.values == NULL)\n"
+        result += "        errExit(\"malloc\");\n"
         result += "    free(temp);\n"
     elif op == 'median':
         result += "    int i;\n"
         result += "    uint64_t *temp;\n"
         result += "    temp = (uint64_t *)malloc(sizeof(uint64_t)*num_records);\n"
-        result += "    if (temp == NULL) {\n"
-        result += "        perror(\"malloc\");\n"
-        result += "    }\n"
+        result += "    if (temp == NULL)\n"
+        result += "        errExit(\"malloc\");\n"
         result += "    for (i=0; i < num_records; i++) {\n"
         result += "        temp[i] = *(%s *)(records[i] + field_offset);\n"%atype
         result += "    }\n"
         result += "    qsort(temp, num_records, sizeof(uint64_t), compar);\n"
         result += "    aggr.num_values = 1;\n"
         result += "    aggr.values = (uint64_t *)malloc(sizeof(uint64_t)*aggr.num_values);\n"
-        result += "    if (aggr.values == NULL) {\n"
-        result += "        perror(\"malloc\");\n"
-        result += "    }\n"
+        result += "    if (aggr.values == NULL)\n"
+        result += "        errExit(\"malloc\");\n"
         result += "    aggr.values[0] = temp[num_records/2];"
         result += "    free(temp);\n"
     elif op == 'min':
         result += "    int i;\n"
         result += "    aggr.num_values = 1;\n"
         result += "    aggr.values = (uint64_t *)malloc(sizeof(uint64_t)*aggr.num_values);\n"
-        result += "    if (aggr.values == NULL) {\n"
-        result += "        perror(\"malloc\");\n"
-        result += "    }\n"
+        result += "    if (aggr.values == NULL)\n"
+        result += "        errExit(\"malloc\");\n"
         result += "    aggr.values[0] = *(%s *)(records[0] + field_offset);\n"%atype
         result += "    for (i = 1; i < num_records; i++) {\n"
         result += "        if (*(%s *)(records[0] + field_offset) < aggr.values[0]) {\n"%atype
@@ -327,9 +320,8 @@ def groupaggr_body(op, atype):
         result += "    int i;\n"
         result += "    aggr.num_values = 1;\n"
         result += "    aggr.values = (uint64_t *)malloc(sizeof(uint64_t)*aggr.num_values);\n"
-        result += "    if (aggr.values == NULL) {\n"
-        result += "        perror(\"malloc\");\n"
-        result += "    }\n"
+        result += "    if (aggr.values == NULL)\n"
+        result += "        errExit(\"malloc\");\n"
         result += "    aggr.values[0] = *(%s *)(records[0] + field_offset);\n"%atype
         result += "    for (i = 1; i < num_records; i++) {\n"
         result += "        if (*(%s *)(records[0] + field_offset) > aggr.values[0]) {\n"%atype
@@ -338,6 +330,7 @@ def groupaggr_body(op, atype):
         result += "    }\n"
     else:
         raise ValueError(op)
+    result += "    *(%s*)(group_aggregation + field_offset) = aggr.values[0];"%atype
     result += "    return aggr;\n"
     result += "}\n\n"
     return result
@@ -525,6 +518,15 @@ header.write("""void
                             struct branch_info *binfos, 
                             int num_threads);\n\n""")
 
+header.write("""struct aggr 
+                (*get_aggr_fptr(bool ifgrouper,
+                                uint64_t op))(char **records,
+                                              char *group_aggregation,
+                                              size_t num_records,
+                                              size_t field_offset,
+                                              bool if_aggr_common);\n
+             """)
+
 
 source.write("#include \"auto_assign.h\"\n")
 
@@ -685,6 +687,45 @@ source.write("""
     }
 """)
 
+
+# get_aggr_fptr(...)
+
+source.write("""
+                struct aggr (*get_aggr_fptr(bool ifgrouper,
+                                            uint64_t op))(char **records,
+                                                          char *group_aggregation,
+                                                          size_t num_records,
+                                                          size_t field_offset,
+                                                          bool if_aggr_common) {\n
+                  struct aggr (*aggr_function)(char **records,
+                                               char *group_aggregation,
+                                               size_t num_records,
+                                               size_t field_offset,
+                                               bool if_aggr_common) = NULL;\n
+             """)
+
+source.write("if(!ifgrouper) {\n")
+source.write("/* cases for the filter-stage */\n")
+source.write("switch (op) {\n")
+for atype in 'RULE_S1_8', 'RULE_S1_16', 'RULE_S1_32', 'RULE_S1_64':
+  for op in 'RULE_EQ', 'RULE_NE', 'RULE_GT', 'RULE_LT', 'RULE_LE', 'RULE_GE':  
+    source.write("case %s | %s:\n"%(op, atype))
+  source.write("aggr_function = aggr_static_%s;\n"%(enum_map[atype]))
+  source.write("break;\n")
+source.write("}\n} \nelse {\n")             
+
+source.write("/* cases for the grouper-stage */\n")
+source.write("switch (op) {\n")             
+for atype1 in 'RULE_S1_8', 'RULE_S1_16', 'RULE_S1_32', 'RULE_S1_64':
+  for op in 'RULE_EQ', 'RULE_NE', 'RULE_GT', 'RULE_LT', 'RULE_LE', 'RULE_GE':
+    for atype2 in 'RULE_S2_8', 'RULE_S2_16', 'RULE_S2_32', 'RULE_S2_64':
+      for dtype in 'RULE_ABS', 'RULE_REL', 'RULE_NO':
+        source.write("case %s | %s | %s | %s:\n"%(op, atype1, atype2, dtype))
+  source.write("aggr_function = aggr_static_%s;\n"%(enum_map[atype1]))        
+  source.write("break;\n")
+source.write("}\n}\n")
+source.write("return aggr_function;\n}\n")
+
 header.write("#endif\n")
 header.close()
 source.close()
@@ -728,35 +769,3 @@ def switch_cases(op, atype1, atype2, dtype):
     else:
         raise ValueError(op)
     return result;
-
-
-header = open("auto_switch.h", 'w')
-source = open("auto_switch.c", "w")
-
-header.write(preamble)
-source.write(preamble)
-
-header.write("#ifndef flowy_engine_auto_switch_h\n")
-header.write("#define flowy_engine_auto_switch_h\n\n")
-
-header.write('#include "base_header.h"\n\n')
-source.write("#include \"auto_switch.h\"\n")
-
-source.write("rule_matches = false;\n")
-source.write("switch (group_modules[k].op) {\n")
-
-for op in 'RULE_EQ', 'RULE_NE', 'RULE_GT', 'RULE_LT', 'RULE_LE', 'RULE_GE':
-    for atype1 in 'RULE_S1_8', 'RULE_S1_16', 'RULE_S1_32', 'RULE_S1_64':
-        for atype2 in 'RULE_S2_8', 'RULE_S2_16', 'RULE_S2_32', 'RULE_S2_64':
-            for dtype in 'RULE_ABS', 'RULE_REL', 'RULE_NO':
-                source.write("case %s | %s | %s | %s:\n"%(op, atype1, atype2, dtype))
-                source.write(switch_cases(enum_map[op], enum_map[atype1], enum_map[atype2], enum_map[dtype]))
-                source.write
-                source.write("    break;\n")
-
-source.write("}\n")
-source.write("if (!rule_matches) break;\n")
-
-header.write("#endif\n")
-header.close()
-source.close()
