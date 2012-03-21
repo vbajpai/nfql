@@ -233,10 +233,10 @@ main(int argc, char **argv) {
     
     // shouldn't this be _16 ?
     { trace_data->offsets.srcaddr, trace_data->offsets.srcaddr, 0, 
-      RULE_EQ | RULE_NO | RULE_S2_32 | RULE_S1_32, NULL },
+      RULE_EQ | RULE_S1_32 | RULE_S2_32 | RULE_NO, NULL },
     
     { trace_data->offsets.dstaddr, trace_data->offsets.dstaddr, 0, 
-      RULE_EQ | RULE_NO | RULE_S2_32 | RULE_S1_32, NULL },
+      RULE_EQ | RULE_S1_32 | RULE_S2_32 | RULE_NO, NULL },
     
     //{ data->offsets.Last, data->offsets.First, 1, grouper_lt_uint32_t_rel }
   };  

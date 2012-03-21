@@ -1593,3 +1593,29 @@ assign_fptr(struct flowquery *fquery,
     }
   }
 }
+
+struct aggr (*get_aggr_fptr(uint64_t op))(char **records,
+                                          char *group_aggregation,
+                                          size_t num_records,
+                                          size_t field_offset,
+                                          bool if_aggr_common) {
+  
+  struct aggr (*aggr_function)(char **records,
+                               char *group_aggregation,
+                               size_t num_records,
+                               size_t field_offset,
+                               bool if_aggr_common) = NULL; 
+  switch (op) {
+    case RULE_EQ | RULE_S1_32:
+      aggr_function = aggr_static_uint32_t;
+      break;
+    case RULE_EQ | RULE_S1_16:
+      aggr_function = aggr_static_uint16_t;
+      break;
+    case RULE_EQ | RULE_S1_32 | RULE_S2_32 | RULE_NO:
+      aggr_function = aggr_static_uint32_t;
+      break;
+  }
+  
+  return aggr_function;
+}

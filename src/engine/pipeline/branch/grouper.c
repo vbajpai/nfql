@@ -33,6 +33,12 @@ char*
 grouper_aggregations(struct group* group, 
                      struct branch_info *binfo) {
   
+  struct aggr (*aggr_function)(char **records,
+                               char *group_aggregation,
+                               size_t num_records,
+                               size_t field_offset,
+                               bool if_aggr_common) = NULL;
+  
   char* group_aggregation = (char *)calloc(1, binfo->data->rec_size);
   if (group_aggregation == NULL)
     errExit("calloc");
@@ -49,11 +55,12 @@ grouper_aggregations(struct group* group,
   for (int i = 0; i < binfo->num_filter_rules; i++) {
     
     size_t field_offset = binfo->filter_rules[i].field_offset;
-    aggr_static_uint16_t(group->members,
-                         group_aggregation,
-                         group->num_members, 
-                         field_offset, 
-                         TRUE);
+    aggr_function = get_aggr_fptr(binfo->filter_rules[i].op);    
+    (*aggr_function)(group->members,
+                     group_aggregation,
+                     group->num_members, 
+                     field_offset, 
+                     TRUE);
   }  
   
   
@@ -62,22 +69,24 @@ grouper_aggregations(struct group* group,
    * member has the same value for that field in the group, still need
    * to investigate how it might affect other grouper operations */
   for (int i = 0; i < binfo->num_group_modules; i++) {
+    
     size_t group_offset_1 = binfo->group_modules[i].field_offset1;
     size_t group_offset_2 = binfo->group_modules[i].field_offset2;
+    aggr_function = get_aggr_fptr(binfo->group_modules[i].op);
+
     
     if(group_offset_1 != group_offset_2)
-      aggr_static_uint32_t(group->members, 
-                           group_aggregation,
-                           group->num_members, 
-                           group_offset_1, 
-                           TRUE);
+      (*aggr_function)(group->members, 
+                       group_aggregation,
+                       group->num_members, 
+                       group_offset_1, 
+                       TRUE);
 
-    aggr_static_uint32_t(group->members, 
-                         group_aggregation,
-                         group->num_members, 
-                         group_offset_2, 
-                         TRUE);    
-
+    (*aggr_function)(group->members, 
+                     group_aggregation,
+                     group->num_members, 
+                     group_offset_2, 
+                     TRUE);
   }
   
   
