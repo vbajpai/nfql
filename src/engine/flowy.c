@@ -30,18 +30,22 @@
 
 int 
 main(int argc, char **argv) {
+
+  
+  /* -----------------------------------------------------------------------*/  
+  /*                            local variables                             */
+  /* -----------------------------------------------------------------------*/
   
   /* command line parsing variables */
   int                                 opt;
-  enum verbosity_levels               verbose_level;
-  char*                               trace_filename;
-  char*                               query_filename;
   static struct option                longopts[] = {
     { "debug",      no_argument,        NULL,           'd' },
     { "verbose",    required_argument,  NULL,           'v' },    
     {  NULL,        0,                  NULL,            0  }
-  };
-
+  };  
+  enum verbosity_levels               verbose_level;
+  char*                               trace_filename;
+  char*                               query_filename;
   
   /* ftreader variables */
   struct ft_data*                     trace_data;
@@ -56,24 +60,24 @@ main(int argc, char **argv) {
   struct filter_rules_params*         filter_rules_params;
   
   /* flowquery variables */
-  struct flowquery*                   fquery;
-  
+  struct flowquery*                   fquery;  
   
   /* branch_info variables */
-  int                                 num_threads;
   int                                 i, ret;
   pthread_t*                          thread_ids;
   pthread_attr_t*                     thread_attrs;
   struct branch_info*                 binfos;
   
+  /* ----------------------------------------------------------------------- */  
   
   
   
   
   
-  /* ----------------------------------------------*/  
-  /*         parsing command line arguments        */
-  /* ----------------------------------------------*/
+  
+  /* -----------------------------------------------------------------------*/  
+  /*                  parsing the command line arguments                    */
+  /* -----------------------------------------------------------------------*/
   
   while ((opt = getopt_long(argc, argv, "v:d", longopts, NULL)) != -1) {
     switch (opt) {
@@ -99,7 +103,7 @@ main(int argc, char **argv) {
     query_filename = argv[optind+1];
   }
 
-  /* ----------------------------------------------*/
+  /* ----------------------------------------------------------------------- */  
   
   
   
@@ -107,9 +111,9 @@ main(int argc, char **argv) {
   
   
   
-  /* ----------------------------------------------*/  
-  /*     reading the input trace into a struct     */
-  /* ----------------------------------------------*/   
+  /* -----------------------------------------------------------------------*/  
+  /*                  reading the input trace into struct                   */
+  /* -----------------------------------------------------------------------*/
   
   fsock = open(trace_filename, O_RDONLY);
   if (fsock == -1)
@@ -118,7 +122,7 @@ main(int argc, char **argv) {
   if (close(fsock) == -1)
     errExit("close");
   
-  /* ----------------------------------------------*/
+  /* ----------------------------------------------------------------------- */  
   
   
   
@@ -127,9 +131,9 @@ main(int argc, char **argv) {
   
   
   
-  /* ----------------------------------------------*/  
-  /*     reading the input query into a mmap       */
-  /* ----------------------------------------------*/    
+  /* -----------------------------------------------------------------------*/  
+  /*                  reading the input query into mmap                     */
+  /* -----------------------------------------------------------------------*/
   
   fsock = open(query_filename, O_RDONLY);
   if (fsock == -1)
@@ -142,7 +146,7 @@ main(int argc, char **argv) {
   if (close(fsock) == -1)
     errExit("close");
   
-  /* ----------------------------------------------*/
+  /* ----------------------------------------------------------------------- */  
   
   
   
@@ -150,10 +154,10 @@ main(int argc, char **argv) {
   
   
   
-  /* ----------------------------------------------*/  
-  /*        parse the json into a struct           */
-  /* ----------------------------------------------*/   
-
+  /* -----------------------------------------------------------------------*/  
+  /*                  parse the query json into struct                      */
+  /* -----------------------------------------------------------------------*/
+  
   filter_rules_params = calloc(1, sizeof(filter_rules_params));
   filter_offset = calloc(1, sizeof(filter_offset));
   filter_rules_params->off = filter_offset; 
@@ -177,47 +181,45 @@ main(int argc, char **argv) {
   if (munmap(query_mmap_data, sb.st_size) == -1)
     errExit("munmap");
   
-  /* ----------------------------------------------*/ 
-  
+ /* ----------------------------------------------------------------------- */  
   
   
    
   
   
+ 
   
   
-  
-  
-  /* ---------------------------------------------*/  
-  /*    creating branch_info for each thread      */
-  /* ---------------------------------------------*/  
+  /* -----------------------------------------------------------------------*/  
+  /*                      allocating fquery and binfos                      */
+  /* -----------------------------------------------------------------------*/
   
   fquery = (struct flowquery *)malloc(sizeof(struct flowquery));
   if (fquery == NULL) 
     errExit("malloc");
-  num_threads = 2;
+  fquery->num_branches = NUM_BRANCHES;
   binfos = (struct branch_info *)
-            calloc(num_threads, 
+            calloc(fquery->num_branches, 
                    sizeof(struct branch_info));
   if (binfos == NULL)
     errExit("calloc");
-  
-  fquery->num_branches = num_threads;
   fquery->branches = binfos;
   
-  /* ----------------------------------------------*/
+ /* ----------------------------------------------------------------------- */
 
+
+  
 
   
   
   
     
   /* -----------------------------------------------------------------------*/  
-  /*    filter, grouper, grouper aggregation rules for branch 1             */
+  /*       filter, grouper, grouper aggregation, group filter rules         */
   /* -----------------------------------------------------------------------*/  
  
   
-  /* array of filter rules, with one filter */
+  /* BRANCH 2: array of filter rules, with one filter */
   struct filter_rule filter_rules_branch1[1] = {
       { trace_data->offsets.dstport, 
         filter_rules_params->off->value, 
@@ -227,8 +229,17 @@ main(int argc, char **argv) {
       },
   };
   
+  /* BRANCH 1: array of filter rules, with one filter */
+  struct filter_rule filter_rules_branch2[1] = {
+    { trace_data->offsets.srcport,
+      filter_rules_params->off->value, 
+      filter_rules_params->delta,
+      RULE_EQ | RULE_S1_16, 
+      NULL},    
+  };
+
   
-  /* array of grouper rules, with 2 groupers */
+  /* BRANCH 1: array of grouper rules, with 2 groupers */
   struct grouper_rule group_module_branch1[2] = {
     
     // shouldn't this be _16 ?
@@ -242,7 +253,19 @@ main(int argc, char **argv) {
   };  
   
 
-  /* array of grouper aggregation rules, with 4 grouper aggrs */
+  /* BRANCH 2: array of grouper rules, with 2 groupers */
+  struct grouper_rule group_module_branch2[2] = {
+    { trace_data->offsets.srcaddr, trace_data->offsets.srcaddr, 0, 
+      RULE_EQ | RULE_NO | RULE_S2_32 | RULE_S1_32, NULL },
+    { trace_data->offsets.dstaddr, trace_data->offsets.dstaddr, 0, 
+      RULE_EQ | RULE_NO | RULE_S2_32 | RULE_S1_32, NULL },
+    
+    //{ data->offsets.Last, data->offsets.First, 1, grouper_lt_uint32_t_rel },
+  };
+  
+  
+  
+  /* BRANCH 1: array of grouper aggregation rules, with 4 grouper aggrs */
   struct grouper_aggr group_aggr_branch1[4] = {
     
     // shouldn't the first field be -1 as indicated?
@@ -251,10 +274,24 @@ main(int argc, char **argv) {
     { 0, trace_data->offsets.dPkts, RULE_SUM | RULE_S1_32, NULL },
     { 0, trace_data->offsets.dOctets, RULE_SUM | RULE_S1_32, NULL },
   };
+  
+  
+  /* BRANCH 2: array of grouper aggregation rules, with 4 grouper aggrs */
+  struct grouper_aggr group_aggr_branch2[4] = {
+    { 0, trace_data->offsets.srcaddr, RULE_STATIC | RULE_S1_32, NULL },
+    { 0, trace_data->offsets.dstaddr, RULE_STATIC | RULE_S1_32, NULL },    
+    { 0, trace_data->offsets.dPkts, RULE_SUM | RULE_S1_32, NULL },
+    { 0, trace_data->offsets.dOctets, RULE_SUM | RULE_S1_32, NULL },
+  };
 
   
-  /* array of grouper filter rules, with 0 filters */
+  /* BRANCH 1: array of grouper filter rules, with 1 filters */
   struct gfilter_rule gfilter_branch1[1] = {
+    {trace_data->offsets.dPkts, 200, 0, RULE_GT | RULE_S1_32, NULL}
+  };
+  
+  /* BRANCH 2: array of grouper filter rules, with 1 filters */
+  struct gfilter_rule gfilter_branch2[1] = {
     {trace_data->offsets.dPkts, 200, 0, RULE_GT | RULE_S1_32, NULL}
   };
   
@@ -271,52 +308,6 @@ main(int argc, char **argv) {
   binfos[0].gfilter_rules = gfilter_branch1;
   binfos[0].num_gfilter_rules = 1;
   
- /* -----------------------------------------------------------------------*/
-  
-  
-  
-  
-  
-  
-  /* -----------------------------------------------------------------------*/  
-  /*    filter, grouper, grouper aggregation rules for branch 2             */
-  /* -----------------------------------------------------------------------*/  
-  
-  /* array of filter rules, with one filter */
-  struct filter_rule filter_rules_branch2[1] = {
-      { trace_data->offsets.srcport,
-        filter_rules_params->off->value, 
-        filter_rules_params->delta,
-        RULE_EQ | RULE_S1_16, 
-        NULL},    
-  };
-
-
-  /* array of grouper rules, with 2 groupers */
-  struct grouper_rule group_module_branch2[2] = {
-    { trace_data->offsets.srcaddr, trace_data->offsets.srcaddr, 0, 
-      RULE_EQ | RULE_NO | RULE_S2_32 | RULE_S1_32, NULL },
-    { trace_data->offsets.dstaddr, trace_data->offsets.dstaddr, 0, 
-      RULE_EQ | RULE_NO | RULE_S2_32 | RULE_S1_32, NULL },
-    
-    //{ data->offsets.Last, data->offsets.First, 1, grouper_lt_uint32_t_rel },
-  };
-
-  
-  /* array of grouper aggregation rules, with 4 grouper aggrs */
-  struct grouper_aggr group_aggr_branch2[4] = {
-    { 0, trace_data->offsets.srcaddr, RULE_STATIC | RULE_S1_32, NULL },
-    { 0, trace_data->offsets.dstaddr, RULE_STATIC | RULE_S1_32, NULL },    
-    { 0, trace_data->offsets.dPkts, RULE_SUM | RULE_S1_32, NULL },
-    { 0, trace_data->offsets.dOctets, RULE_SUM | RULE_S1_32, NULL },
-  };
-
-  
-  /* array of grouper filter rules, with 0 filters */
-  struct gfilter_rule gfilter_branch2[1] = {
-    {trace_data->offsets.dPkts, 200, 0, RULE_GT | RULE_S1_32, NULL}
-  };
-
   
   /* filling up the branch_info struct */  
   binfos[1].branch_id = 1;
@@ -329,50 +320,31 @@ main(int argc, char **argv) {
   binfos[1].num_aggr = 4;
   binfos[1].gfilter_rules = gfilter_branch2;
   binfos[1].num_gfilter_rules = 1;
-  
+
   
   /* deallocate the query buffers */
   free(filter_offset);
   free(filter_rules_params);
-
-  /* -----------------------------------------------------------------------*/
-  
-  
-  
-
-  
-  
-  
-  
-  
-  
-  
-  /* -----------------------------------------------------------------------*/  
-  /*                           merger rules                                 */
-  /* -----------------------------------------------------------------------*/
   
   
   struct merger_rule mfilter[2] = {
     {&binfos[0], trace_data->offsets.srcaddr, 
-     &binfos[1], trace_data->offsets.dstaddr, 
-     RULE_EQ | RULE_S1_32 | RULE_S2_32,  
-     0,
-     NULL},
+      &binfos[1], trace_data->offsets.dstaddr, 
+      RULE_EQ | RULE_S1_32 | RULE_S2_32,  
+      0,
+      NULL},
     
     {&binfos[0], trace_data->offsets.dstaddr, 
-     &binfos[1], trace_data->offsets.srcaddr,
-     RULE_EQ | RULE_S1_32 | RULE_S2_32, 
-     0,
-     NULL},
+      &binfos[1], trace_data->offsets.srcaddr,
+      RULE_EQ | RULE_S1_32 | RULE_S2_32, 
+      0,
+      NULL},
   };
   
   fquery->num_merger_rules = 2;
   fquery->mrules = mfilter;
-
-  /* -----------------------------------------------------------------------*/  
   
-  
-  
+ /* -----------------------------------------------------------------------*/
 
   
   
@@ -387,7 +359,7 @@ main(int argc, char **argv) {
   /*             by falling through a huge switch statement                 */
   /* -----------------------------------------------------------------------*/    
   
-  assign_fptr(fquery, binfos, num_threads);
+  assign_fptr(fquery, binfos, fquery->num_branches);
   
   /* -----------------------------------------------------------------------*/
 
@@ -405,14 +377,17 @@ main(int argc, char **argv) {
   
 
   /* allocate space for a dedicated thread for each branch */
-  thread_ids = (pthread_t *)calloc(num_threads, sizeof(pthread_t));
+  thread_ids = (pthread_t *)calloc(fquery->num_branches, 
+                                   sizeof(pthread_t));
   if (thread_ids == NULL)
-    errExit("malloc");
-  thread_attrs = (pthread_attr_t *)calloc(num_threads, sizeof(pthread_attr_t));
-  if (thread_attrs == NULL)
-    errExit("malloc");
+    errExit("calloc");
   
-  for (i = 0; i < num_threads; i++) {
+  thread_attrs = (pthread_attr_t *)calloc(fquery->num_branches, 
+                                          sizeof(pthread_attr_t));
+  if (thread_attrs == NULL)
+    errExit("calloc");
+  
+  for (i = 0; i < fquery->num_branches; i++) {
 
     /* initialize each thread attributes */
     ret = pthread_attr_init(&thread_attrs[i]);
@@ -435,7 +410,7 @@ main(int argc, char **argv) {
   /* - wait for each thread to complete its branch
    * - save and print the number of filtered groups on completion
    * - save the filtered groups on completion */
-  for (i = 0; i < num_threads; i++) {
+  for (i = 0; i < fquery->num_branches; i++) {
     ret = pthread_join(thread_ids[i], NULL);
     if (ret != 0)
       errExit("pthread_join");
@@ -462,7 +437,7 @@ main(int argc, char **argv) {
   /* -----------------------------------------------------------------------*/
   
   fquery->group_tuples = merger(binfos,
-                                num_threads, 
+                                fquery->num_branches, 
                                 mfilter, 
                                 fquery->num_merger_rules,
                                 &fquery->total_num_group_tuples,
@@ -508,7 +483,7 @@ main(int argc, char **argv) {
   if(verbose_v){
     
     /* process each branch */
-    for (int i = 0; i < num_threads; i++) {
+    for (int i = 0; i < fquery->num_branches; i++) {
       
       printf("\nNo. of Filtered Records: %zd\n", binfos[i].num_filtered_records);      
       puts(FLOWHEADER);      

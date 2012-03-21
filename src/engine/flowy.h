@@ -45,6 +45,8 @@
 #include "error_handlers.h"
 #include "ftreader.h"
 
+#define NUM_BRANCHES 2
+
 struct filter_rules_params{
   uint64_t delta;
   const char* op;
