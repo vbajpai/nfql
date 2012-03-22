@@ -28,6 +28,143 @@
 #define _GNU_SOURCE
 #include "flowy.h"
 
+struct parameters*
+parse_cmdline_args(int argc, char**argv) {
+
+  int                                 opt;
+  char*                               shortopts = "v:d";
+  static struct option                longopts[] = {
+    { "debug",      no_argument,        NULL,           'd' },
+    { "verbose",    required_argument,  NULL,           'v' },    
+    {  NULL,        0,                  NULL,            0  }
+  };
+  enum verbosity_levels               verbose_level;
+  
+  /* free'd after calling read_param_data(...) */
+  struct parameters* param = calloc(1, sizeof(struct parameters));
+  if (param == NULL)
+    errExit("calloc");
+
+  while ((opt = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
+    switch (opt) {
+      case 'd': debug = TRUE; verbose_level = HIGH;
+      case 'v': if (optarg)
+        verbose_level = atoi(optarg); 
+        switch (verbose_level) {
+          case HIGH: verbose_vvv = TRUE;                       
+          case MEDIUM: verbose_vv = TRUE;                       
+          case LOW: verbose_v = TRUE; break;
+          default: errExit("valid verbosity levels: (1-3)");                      
+        }
+        break;        
+      case ':': usageError(argv[0], "Missing argument", optopt);
+      default: exit(EXIT_FAILURE);
+    }
+  }
+  
+  if (argc != optind + 2)
+    usageErr("%s $TRACE $QUERY\n", argv[0], argv[0]);
+  else {
+    param->trace_filename = argv[optind];
+    param->query_filename = argv[optind+1];
+  }  
+  return param;
+}
+
+struct parameters_data*
+read_param_data(struct parameters* param) {
+  
+  int                                 fsock;
+  
+  /* param_data->query_mmap is free'd after calling parse_json_query(...)
+   * TODO: param_data->query_mmap_stat: when free'd?   
+   * TODO: param_data->trace: when free'd?
+   */ 
+  struct parameters_data* param_data = calloc(1, 
+                                              sizeof(struct parameters_data));
+  if (param_data == NULL)
+    errExit("calloc");
+  
+  fsock = open(param->trace_filename, O_RDONLY);
+  if (fsock == -1)
+    errExit("open"); 
+  param_data->trace = ft_open(fsock);
+  if (close(fsock) == -1)
+    errExit("close");
+  
+  param_data->query_mmap_stat = calloc(1, sizeof(struct stat));
+  if (param_data->query_mmap_stat == NULL)
+    errExit("calloc");
+  fsock = open(param->query_filename, O_RDONLY);
+  if (fsock == -1)
+    errExit("open");
+  if (fstat(fsock, param_data->query_mmap_stat) == -1)
+    errExit("fstat");  
+  
+  param_data->query_mmap = mmap(NULL, 
+                                param_data->query_mmap_stat->st_size, 
+                                PROT_READ, 
+                                MAP_PRIVATE, 
+                                fsock, 0); 
+  if (param_data->query_mmap == MAP_FAILED)
+    errExit("mmap");
+  if (close(fsock) == -1)
+    errExit("close"); 
+  
+  return param_data;
+}
+
+struct json*
+parse_json_query(char* query_mmap) {
+  
+  /* the json_objects are free'd before returning from this function */
+  struct json_object*                 query;
+  struct json_object*                 filter_offset;
+  
+  
+  /* TODO: when free'd? */
+  struct json* json = calloc(1, sizeof(struct json));
+  if (json == NULL)
+    errExit("calloc");
+  json->num_frules = 1;
+  
+  /* TODO: when free'd? */
+  json->fruleset = calloc(json->num_frules, 
+                          sizeof(struct json_filter_rule*));
+  if (json->fruleset == NULL)
+    errExit("calloc");
+
+  /* TODO: when free'd? */
+  for (int i = 0; i < json->num_frules; i++) {
+    json->fruleset[i] = calloc(1, sizeof(struct json_filter_rule));
+    if (json->fruleset[i] == NULL)
+      errExit("calloc");
+    
+    /* TODO: when free'd? */
+    json->fruleset[i]->off = 
+    calloc(1, sizeof(struct json_filter_rule_offset));
+    if (json->fruleset[i]->off == NULL)
+      errExit("calloc");
+    
+    query = json_tokener_parse(query_mmap);
+    json->fruleset[i]->delta = json_object_get_int(json_object_object_get(query, "delta"));  
+    json->fruleset[i]->op = json_object_get_string(json_object_object_get(query, "op"));  
+    filter_offset = json_object_object_get(query, "offset");
+    json->fruleset[i]->off->name = 
+    json_object_get_string(json_object_object_get(filter_offset, "name"));  
+    json->fruleset[i]->off->value = 
+    json_object_get_int(json_object_object_get(filter_offset, "value"));
+    json->fruleset[i]->off->datatype = 
+    json_object_get_string(json_object_object_get(filter_offset, "datatype"));
+    
+    /* free the json objects */
+    json_object_object_del(filter_offset, "offset"); 
+    json_object_object_del(query, "");    
+  } 
+  
+  return json;
+}
+
 int 
 main(int argc, char **argv) {
 
@@ -35,29 +172,6 @@ main(int argc, char **argv) {
   /* -----------------------------------------------------------------------*/  
   /*                            local variables                             */
   /* -----------------------------------------------------------------------*/
-  
-  /* command line parsing variables */
-  int                                 opt;
-  static struct option                longopts[] = {
-    { "debug",      no_argument,        NULL,           'd' },
-    { "verbose",    required_argument,  NULL,           'v' },    
-    {  NULL,        0,                  NULL,            0  }
-  };  
-  enum verbosity_levels               verbose_level;
-  char*                               trace_filename;
-  char*                               query_filename;
-  
-  /* ftreader variables */
-  struct ft_data*                     trace_data;
-  int                                 fsock;
-  
-  /* json parser variables */
-  char*                               query_mmap_data;
-  struct stat                         sb;
-  struct json_object*                 query_json;
-  struct json_object*                 filter_offset_json;  
-  struct filter_offset*               filter_offset;
-  struct filter_rules_params*         filter_rules_params;
   
   /* flowquery variables */
   struct flowquery*                   fquery;  
@@ -79,29 +193,9 @@ main(int argc, char **argv) {
   /*                  parsing the command line arguments                    */
   /* -----------------------------------------------------------------------*/
   
-  while ((opt = getopt_long(argc, argv, "v:d", longopts, NULL)) != -1) {
-    switch (opt) {
-      case 'd': debug = TRUE; verbose_level = HIGH;
-      case 'v': if (optarg)
-                  verbose_level = atoi(optarg); 
-                switch (verbose_level) {
-                  case HIGH: verbose_vvv = TRUE;                       
-                  case MEDIUM: verbose_vv = TRUE;                       
-                  case LOW: verbose_v = TRUE; break;
-                  default: errExit("valid verbosity levels: (1-3)");                      
-                }
-                break;        
-      case ':': usageError(argv[0], "Missing argument", optopt);
-      default: exit(EXIT_FAILURE);
-    }
-  }
-  
-  if (argc != optind + 2)
-    usageErr("%s $TRACE $QUERY\n", argv[0], argv[0]);
-  else {
-    trace_filename = argv[optind];
-    query_filename = argv[optind+1];
-  }
+  struct parameters* param = parse_cmdline_args(argc, argv);
+  if (param == NULL)
+    errExit("parse_cmdline_args(...) returned NULL");
 
   /* ----------------------------------------------------------------------- */  
   
@@ -112,39 +206,14 @@ main(int argc, char **argv) {
   
   
   /* -----------------------------------------------------------------------*/  
-  /*                  reading the input trace into struct                   */
+  /*                  reading the input trace and query                     */
   /* -----------------------------------------------------------------------*/
   
-  fsock = open(trace_filename, O_RDONLY);
-  if (fsock == -1)
-    errExit("open"); 
-  trace_data = ft_open(fsock);
-  if (close(fsock) == -1)
-    errExit("close");
-  
-  /* ----------------------------------------------------------------------- */  
-  
-  
-  
-  
-  
-  
-  
-  
-  /* -----------------------------------------------------------------------*/  
-  /*                  reading the input query into mmap                     */
-  /* -----------------------------------------------------------------------*/
-  
-  fsock = open(query_filename, O_RDONLY);
-  if (fsock == -1)
-    errExit("open");
-  if (fstat(fsock, &sb) == -1)
-    errExit("fstat");
-  query_mmap_data = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fsock, 0); 
-  if (query_mmap_data == MAP_FAILED)
-    errExit("mmap");
-  if (close(fsock) == -1)
-    errExit("close");
+  struct parameters_data* param_data = read_param_data(param);
+  if (param_data == NULL)
+    errExit("read_param_data(...) returned NULL");
+  else
+    free(param);
   
   /* ----------------------------------------------------------------------- */  
   
@@ -158,32 +227,16 @@ main(int argc, char **argv) {
   /*                  parse the query json into struct                      */
   /* -----------------------------------------------------------------------*/
   
-  filter_rules_params = calloc(1, sizeof(filter_rules_params));
-  if (filter_rules_params == NULL)
-    errExit("calloc");
-  filter_offset = calloc(1, sizeof(filter_offset));
-  if (filter_rules_params == NULL)
-    errExit("calloc");
-  filter_rules_params->off = filter_offset; 
-  
-  query_json = json_tokener_parse(query_mmap_data);
-  filter_rules_params->delta = 
-  json_object_get_int(json_object_object_get(query_json, "delta"));
-  filter_rules_params->op = 
-  json_object_get_string(json_object_object_get(query_json, "op"));  
-  filter_offset_json = 
-  json_object_object_get(query_json, "offset");
-  filter_rules_params->off->name = 
-  json_object_get_string(json_object_object_get(filter_offset_json, "name"));  
-  filter_rules_params->off->value = 
-  json_object_get_int(json_object_object_get(filter_offset_json, "value"));
-  filter_rules_params->off->datatype = 
-  json_object_get_string(json_object_object_get(filter_offset_json, "datatype"));
-
-  json_object_object_del(filter_offset_json, "offset"); 
-  json_object_object_del(query_json, "");  
-  if (munmap(query_mmap_data, sb.st_size) == -1)
-    errExit("munmap");
+  struct json* json_query = parse_json_query(param_data->query_mmap);
+  if (json_query == NULL)
+    errExit("parse_json_query(...) returned NULL");
+  else {
+    /* free param_data->query_mmap */
+    if (munmap(param_data->query_mmap,
+               param_data->query_mmap_stat->st_size) == -1)
+      errExit("munmap");
+    free(param_data->query_mmap_stat);
+  }
   
  /* ----------------------------------------------------------------------- */  
   
@@ -241,7 +294,7 @@ main(int argc, char **argv) {
   for (int i = 0; i < fquery->num_branches; i++) {
     
     fquery->branches[i].branch_id = i;
-    fquery->branches[i].data = trace_data;
+    fquery->branches[i].data = param_data->trace;
     
     
     struct filter_rule* frule = calloc(fquery->branches[i].num_filter_rules, 
@@ -250,14 +303,14 @@ main(int argc, char **argv) {
       /* assumes that there are 2 branches */
       switch (i) {
         case 0:
-          frule[j].field_offset     =         trace_data->offsets.dstport;
+          frule[j].field_offset     =         param_data->trace->offsets.dstport;
           break;
         case 1:          
-          frule[j].field_offset     =         trace_data->offsets.srcport;
+          frule[j].field_offset     =         param_data->trace->offsets.srcport;
           break;
       }
-      frule[j].value                =         filter_rules_params->off->value;
-      frule[j].delta                =         filter_rules_params->delta;
+      frule[j].value                =         json_query->fruleset[0]->off->value;
+      frule[j].delta                =         json_query->fruleset[0]->delta;
       frule[j].op                   =         RULE_EQ | RULE_S1_16;
       frule[j].func                 =         NULL;      
     }    
@@ -270,17 +323,18 @@ main(int argc, char **argv) {
     for (int j = 0; j < fquery->branches[i].num_group_modules; j++) {
       switch (j) {
         case 0:
-          grule[j].field_offset1     =        trace_data->offsets.srcaddr;      
-          grule[j].field_offset2     =        trace_data->offsets.srcaddr;          
+          grule[j].field_offset1     =        param_data->trace->offsets.srcaddr;      
+          grule[j].field_offset2     =        param_data->trace->offsets.srcaddr;          
           break;
         case 1:
-          grule[j].field_offset1     =        trace_data->offsets.dstaddr;      
-          grule[j].field_offset2     =        trace_data->offsets.dstaddr;         
+          grule[j].field_offset1     =        param_data->trace->offsets.dstaddr;      
+          grule[j].field_offset2     =        param_data->trace->offsets.dstaddr;         
           break;
       }
       
       grule[j].delta                 =         0;
-      grule[j].op                    =         RULE_EQ | RULE_S1_32 | RULE_S2_32 | RULE_NO;
+      grule[j].op                    =         RULE_EQ | RULE_S1_32 | 
+                                               RULE_S2_32 | RULE_NO;
       grule[j].func                  =         NULL;
     }
     fquery->branches[i].group_modules = grule;    
@@ -293,16 +347,16 @@ main(int argc, char **argv) {
       aggrule[j].module           =         0;      
       switch (j) {
         case 0:
-          aggrule[j].field_offset =         trace_data->offsets.srcaddr;
+          aggrule[j].field_offset =         param_data->trace->offsets.srcaddr;
           break;
         case 1:
-          aggrule[j].field_offset =         trace_data->offsets.dstaddr;
+          aggrule[j].field_offset =         param_data->trace->offsets.dstaddr;
           break;
         case 2:
-          aggrule[j].field_offset =         trace_data->offsets.dPkts;
+          aggrule[j].field_offset =         param_data->trace->offsets.dPkts;
           break;
         case 3:
-          aggrule[j].field_offset =         trace_data->offsets.dOctets;
+          aggrule[j].field_offset =         param_data->trace->offsets.dOctets;
           break;
       }
       switch (j) {
@@ -324,7 +378,7 @@ main(int argc, char **argv) {
     struct gfilter_rule* gfrule = calloc(fquery->branches[i].num_gfilter_rules, 
                                          sizeof(struct gfilter_rule));
     for (int j = 0; j < fquery->branches[i].num_gfilter_rules; j++) {
-      gfrule[j].field             =         trace_data->offsets.dPkts;
+      gfrule[j].field             =         param_data->trace->offsets.dPkts;
       gfrule[j].value             =         200;
       gfrule[j].delta             =         0;
       gfrule[j].op                =         RULE_GT | RULE_S1_32;
@@ -342,12 +396,12 @@ main(int argc, char **argv) {
     mrule[j].branch2               =         &fquery->branches[1];    
     switch (j) {        
       case 0:
-        mrule[j].field1            =         trace_data->offsets.srcaddr;
-        mrule[j].field2            =         trace_data->offsets.dstaddr;        
+        mrule[j].field1            =         param_data->trace->offsets.srcaddr;
+        mrule[j].field2            =         param_data->trace->offsets.dstaddr;        
         break;
       case 1:
-        mrule[j].field1            =         trace_data->offsets.dstaddr;
-        mrule[j].field2            =         trace_data->offsets.srcaddr;        
+        mrule[j].field1            =         param_data->trace->offsets.dstaddr;
+        mrule[j].field2            =         param_data->trace->offsets.srcaddr;        
         break;
     }
     mrule[j].delta                 =         0;
@@ -356,9 +410,14 @@ main(int argc, char **argv) {
   }
   fquery->mrules = mrule;
   
-  /* deallocate the query buffers */
-  free(filter_offset);
-  free(filter_rules_params);
+  /* deallocate the json query buffers */
+  for (int i = 0; i < json_query->num_frules; i++) {
+    struct json_filter_rule* frule = json_query->fruleset[i];
+    free(frule->off);
+    free(frule);
+  }
+  free(json_query->fruleset);
+  free(json_query);
   
  /* -----------------------------------------------------------------------*/
 
@@ -607,7 +666,7 @@ main(int argc, char **argv) {
       puts(FLOWHEADER);      
       while(iter_next(iter)) {
         for (int j = 0; j < fquery->num_branches; j++) {          
-          flow_print_record(trace_data, 
+          flow_print_record(param_data->trace, 
                             fquery->branches[j].
                             filtered_groupset[iter->filtered_group_tuple[j] - 1]
                             ->group_aggr_record);
@@ -625,7 +684,7 @@ main(int argc, char **argv) {
       struct group** group_tuple = fquery->group_tuples[j];
       for (int i = 0; i < fquery->num_branches; i++) {
         struct group* group = group_tuple[i];
-        flow_print_record(trace_data, group->group_aggr_record);
+        flow_print_record(param_data->trace, group->group_aggr_record);
       }
       printf("\n");
     }    
@@ -657,7 +716,7 @@ main(int argc, char **argv) {
     puts(FLOWHEADER);
     for (int i = 0; i < stream->num_records; i++) {
       char* record = stream->recordset[i];
-      flow_print_record(trace_data, record);
+      flow_print_record(param_data->trace, record);
     }
     printf("\n");
   }

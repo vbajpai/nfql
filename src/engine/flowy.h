@@ -62,13 +62,29 @@
 
 #define NUM_MERGER_RULES 2
 
-struct filter_rules_params{
-  uint64_t delta;
-  const char* op;
-  struct filter_offset* off;
+struct parameters {
+  char*                           query_filename;
+  char*                           trace_filename;
 };
 
-struct filter_offset{
+struct parameters_data {
+  char*                           query_mmap;
+  struct stat*                    query_mmap_stat;  
+  struct ft_data*                 trace;  
+};
+
+struct json {
+  struct json_filter_rule**       fruleset;
+  size_t                          num_frules;
+};
+
+struct json_filter_rule {
+  const char* op;
+  uint64_t delta;
+  struct json_filter_rule_offset* off;
+};
+
+struct json_filter_rule_offset{
   const char* name;
   uint64_t value;
   const char* datatype;
