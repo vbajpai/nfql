@@ -77,8 +77,9 @@ read_param_data(struct parameters* param) {
   int                                 fsock;
   
   /* param_data->query_mmap is free'd after calling parse_json_query(...)
-   * TODO: param_data->query_mmap_stat: when free'd?   
+   * param_data->query_mmap_stat is free'd after freeing param_data->query_mmap
    * TODO: param_data->trace: when free'd?
+   * TODO: param_data: when free'd?
    */ 
   struct parameters_data* param_data = calloc(1, 
                                               sizeof(struct parameters_data));
@@ -91,7 +92,10 @@ read_param_data(struct parameters* param) {
   param_data->trace = ft_open(fsock);
   if (close(fsock) == -1)
     errExit("close");
-  
+
+  /* param_data->query_mmap_stat is free'd after freeing 
+   * param_data->query_mmap  
+   */
   param_data->query_mmap_stat = calloc(1, sizeof(struct stat));
   if (param_data->query_mmap_stat == NULL)
     errExit("calloc");
@@ -100,7 +104,10 @@ read_param_data(struct parameters* param) {
     errExit("open");
   if (fstat(fsock, param_data->query_mmap_stat) == -1)
     errExit("fstat");  
-  
+
+  /* param_data->query_mmap_stat is free'd after freeing 
+   * param_data->query_mmap  
+   */
   param_data->query_mmap = mmap(NULL, 
                                 param_data->query_mmap_stat->st_size, 
                                 PROT_READ, 
@@ -147,9 +154,12 @@ parse_json_query(char* query_mmap) {
       errExit("calloc");
     
     query = json_tokener_parse(query_mmap);
-    json->fruleset[i]->delta = json_object_get_int(json_object_object_get(query, "delta"));  
-    json->fruleset[i]->op = json_object_get_string(json_object_object_get(query, "op"));  
-    filter_offset = json_object_object_get(query, "offset");
+    json->fruleset[i]->delta = 
+    json_object_get_int(json_object_object_get(query, "delta"));  
+    json->fruleset[i]->op = 
+    json_object_get_string(json_object_object_get(query, "op"));  
+    filter_offset = 
+    json_object_object_get(query, "offset");
     json->fruleset[i]->off->name = 
     json_object_get_string(json_object_object_get(filter_offset, "name"));  
     json->fruleset[i]->off->value = 
@@ -167,26 +177,6 @@ parse_json_query(char* query_mmap) {
 
 int 
 main(int argc, char **argv) {
-
-  
-  /* -----------------------------------------------------------------------*/  
-  /*                            local variables                             */
-  /* -----------------------------------------------------------------------*/
-  
-  /* flowquery variables */
-  struct flowquery*                   fquery;  
-  
-  /* branch_info variables */
-  int                                 i, ret;
-  pthread_t*                          thread_ids;
-  pthread_attr_t*                     thread_attrs;
-  struct branch_info*                 binfos;
-  
-  /* ----------------------------------------------------------------------- */  
-  
-  
-  
-  
   
   
   /* -----------------------------------------------------------------------*/  
@@ -251,16 +241,19 @@ main(int argc, char **argv) {
   /*                      allocating fquery and binfos                      */
   /* -----------------------------------------------------------------------*/
   
-  fquery = (struct flowquery *)malloc(sizeof(struct flowquery));
+  /* TODO: when free'd? */
+  struct flowquery* fquery = (struct flowquery *)
+                             calloc(1, sizeof(struct flowquery));
   if (fquery == NULL) 
-    errExit("malloc");
-  fquery->num_branches = NUM_BRANCHES;
-  binfos = (struct branch_info *)
-            calloc(fquery->num_branches, 
-                   sizeof(struct branch_info));
-  if (binfos == NULL)
     errExit("calloc");
-  fquery->branches = binfos;
+  fquery->num_branches = NUM_BRANCHES;
+  
+  /* TODO: when free'd? */
+  fquery->branches = (struct branch_info *)
+                      calloc(fquery->num_branches, 
+                      sizeof(struct branch_info));
+  if (fquery->branches == NULL)
+    errExit("calloc");
   
  /* ----------------------------------------------------------------------- */
 
@@ -434,7 +427,9 @@ main(int argc, char **argv) {
   /*             by falling through a huge switch statement                 */
   /* -----------------------------------------------------------------------*/    
   
-  assign_fptr(fquery, binfos, fquery->num_branches);
+  assign_fptr(fquery, 
+              fquery->branches, 
+              fquery->num_branches);
   
   /* -----------------------------------------------------------------------*/
 
@@ -452,17 +447,18 @@ main(int argc, char **argv) {
   
 
   /* allocate space for a dedicated thread for each branch */
-  thread_ids = (pthread_t *)calloc(fquery->num_branches, 
-                                   sizeof(pthread_t));
+  pthread_t* thread_ids = (pthread_t *)calloc(fquery->num_branches, 
+                                              sizeof(pthread_t));
   if (thread_ids == NULL)
     errExit("calloc");
   
-  thread_attrs = (pthread_attr_t *)calloc(fquery->num_branches, 
-                                          sizeof(pthread_attr_t));
+  pthread_attr_t* thread_attrs = (pthread_attr_t *)
+                                  calloc(fquery->num_branches, 
+                                         sizeof(pthread_attr_t));
   if (thread_attrs == NULL)
     errExit("calloc");
   
-  for (i = 0; i < fquery->num_branches; i++) {
+  for (int i = 0, ret = 0; i < fquery->num_branches; i++) {
 
     /* initialize each thread attributes */
     ret = pthread_attr_init(&thread_attrs[i]);
@@ -470,8 +466,10 @@ main(int argc, char **argv) {
       errExit("pthread_attr_init");
     
     /* start each thread for a dedicated branch */      
-    ret = pthread_create(&thread_ids[i], &thread_attrs[i], 
-                         &branch_start, (void *)(&binfos[i]));    
+    ret = pthread_create(&thread_ids[i], 
+                         &thread_attrs[i], 
+                         &branch_start, 
+                         (void *)(&fquery->branches[i]));    
     if (ret != 0)
       errExit("pthread_create");
     
@@ -485,7 +483,7 @@ main(int argc, char **argv) {
   /* - wait for each thread to complete its branch
    * - save and print the number of filtered groups on completion
    * - save the filtered groups on completion */
-  for (i = 0; i < fquery->num_branches; i++) {
+  for (int i = 0, ret = 0; i < fquery->num_branches; i++) {
     ret = pthread_join(thread_ids[i], NULL);
     if (ret != 0)
       errExit("pthread_join");
@@ -511,7 +509,7 @@ main(int argc, char **argv) {
   /*                                 merger                                 */
   /* -----------------------------------------------------------------------*/
   
-  fquery->group_tuples = merger(binfos,
+  fquery->group_tuples = merger(fquery->branches,
                                 fquery->num_branches, 
                                 mrule, 
                                 fquery->num_merger_rules,
@@ -564,53 +562,53 @@ main(int argc, char **argv) {
     
     /* process each branch */
     for (int i = 0; i < fquery->num_branches; i++) {
+      struct branch_info* branch = &fquery->branches[i];
       
-      printf("\nNo. of Filtered Records: %zd\n", binfos[i].num_filtered_records);      
+      printf("\nNo. of Filtered Records: %zd\n", branch->num_filtered_records);      
       puts(FLOWHEADER);      
-      for (int j = 0; j < binfos[i].num_filtered_records; j++) {
-        flow_print_record(binfos[i].data, binfos[i].filtered_records[j]);
+      for (int j = 0; j < branch->num_filtered_records; j++) {
+        flow_print_record(branch->data, branch->filtered_records[j]);
         
         /* not free'd since they point to original records */
-        binfos[i].filtered_records[j] = NULL;
+        branch->filtered_records[j] = NULL;
       }      
-      free(binfos[i].filtered_records);
+      free(branch->filtered_records);
       
       if (verbose_vv){
         if(if_group_modules_exist){
           
-          printf("\nNo. of Sorted Records: %zd\n", binfos[i].num_filtered_records);      
+          printf("\nNo. of Sorted Records: %zd\n", branch->num_filtered_records);      
           puts(FLOWHEADER);      
-          for (int j = 0; j < binfos[i].num_filtered_records; j++) {
-            flow_print_record(binfos[i].data, binfos[i].sorted_records[j]);
+          for (int j = 0; j < branch->num_filtered_records; j++) {
+            flow_print_record(branch->data, branch->sorted_records[j]);
             
             /* not free'd since they point to original records */
-            binfos[i].sorted_records[j] = NULL;
+            branch->sorted_records[j] = NULL;
           }      
-          free(binfos[i].sorted_records);
+          free(branch->sorted_records);
           
           
-          printf("\nNo. of Unique Records: %zd\n", binfos[i].num_unique_records);      
+          printf("\nNo. of Unique Records: %zd\n", branch->num_unique_records);      
           puts(FLOWHEADER);      
-          for (int j = 0; j < binfos[i].num_unique_records; j++) {
-            flow_print_record(binfos[i].data, binfos[i].unique_records[j]);
+          for (int j = 0; j < branch->num_unique_records; j++) {
+            flow_print_record(branch->data, branch->unique_records[j]);
             
             /* not free'd since they point to original records */
-            binfos[i].unique_records[j] = NULL;
+            branch->unique_records[j] = NULL;
           }      
-          free(binfos[i].unique_records);      
-          
+          free(branch->unique_records);                
         }      
         
-        printf("\nNo. of Groups: %zu (Verbose Output)\n", binfos[i].num_groups);
+        printf("\nNo. of Groups: %zu (Verbose Output)\n", branch->num_groups);
         puts(FLOWHEADER); 
-        for (int j = 0; j < binfos[i].num_groups; j++) {
+        for (int j = 0; j < branch->num_groups; j++) {
           
           printf("\n");
-          struct group* group = binfos[i].groupset[j];
+          struct group* group = branch->groupset[j];
           
           /* print group members */ 
           for (int k = 0; k < group->num_members; k++) {
-            flow_print_record(binfos[i].data, group->members[k]);
+            flow_print_record(branch->data, group->members[k]);
             group->members[k] = NULL;
           }     
           free(group->members);
@@ -619,13 +617,13 @@ main(int argc, char **argv) {
       
       
 #ifdef GROUPERAGGREGATIONS
-      printf("\nNo. of Groups: %zu (Aggregations)\n", binfos[i].num_groups);
+      printf("\nNo. of Groups: %zu (Aggregations)\n", branch->num_groups);
       puts(FLOWHEADER); 
-      for (int j = 0; j < binfos[i].num_groups; j++) {        
-        struct group* group = binfos[i].groupset[j];
-        flow_print_record(binfos[i].data, group->group_aggr_record);  
+      for (int j = 0; j < branch->num_groups; j++) {        
+        struct group* group = branch->groupset[j];
+        flow_print_record(branch->data, group->group_aggr_record);  
         
-        for (int x = 0; x < binfos[i].num_aggr; x++)
+        for (int x = 0; x < branch->num_aggr; x++)
           free(group->aggr[x].values);
         free(group->aggr); 
       }
@@ -634,24 +632,24 @@ main(int argc, char **argv) {
       
 #ifdef GROUPFILTER
       printf("\nNo. of Filtered Groups: %zu (Aggregations)\n", 
-             binfos[i].num_filtered_groups);      
+             branch->num_filtered_groups);      
       puts(FLOWHEADER); 
       
-      for (int j = 0; j < binfos[i].num_filtered_groups; j++) {
+      for (int j = 0; j < branch->num_filtered_groups; j++) {
         
-        struct group* filtered_group = binfos[i].filtered_groupset[j];
-        flow_print_record(binfos[i].data, filtered_group->group_aggr_record);
+        struct group* filtered_group = branch->filtered_groupset[j];
+        flow_print_record(branch->data, filtered_group->group_aggr_record);
       }
 #endif
       
       
       /* free memory */
-      for (int j = 0; j < binfos[i].num_groups; j++) {        
-        struct group* group = binfos[i].groupset[j];
+      for (int j = 0; j < branch->num_groups; j++) {        
+        struct group* group = branch->groupset[j];
         free(group->group_aggr_record);
         free(group);
       }
-      free(binfos[i].groupset);
+      free(branch->groupset);
     }
     
     /* merger */

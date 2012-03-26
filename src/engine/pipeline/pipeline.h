@@ -29,21 +29,15 @@
 
 #include "base.h"
 
-/*
- * query definition
- */
-
 struct flowquery {
-  size_t num_branches;
-  struct branch_info *branches;
-  
-  struct merger_rule *mrules;
-  size_t num_merger_rules;
-  struct group*** group_tuples;
-  size_t num_group_tuples;
-  size_t total_num_group_tuples;
-  
-  struct stream** streamset;
+  size_t                          num_branches;
+  struct branch_info*             branches;  
+  struct merger_rule*             mrules;
+  size_t                          num_merger_rules;
+  struct group***                 group_tuples;
+  size_t                          num_group_tuples;
+  size_t                          total_num_group_tuples;  
+  struct stream**                 streamset;
 };
 
 struct stream{
