@@ -10,9 +10,7 @@
 #include "auto_comps.h"
 
 void
-assign_fptr(struct flowquery *fquery,
-            struct branch_info *binfos, 
-            int num_threads);
+assign_fptr(struct flowquery *fquery);
 
 struct aggr 
 (*get_aggr_fptr(bool ifgrouper,

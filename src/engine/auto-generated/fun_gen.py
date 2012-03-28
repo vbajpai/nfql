@@ -514,9 +514,7 @@ header.write("#define flowy_engine_auto_assign_h\n\n")
 
 header.write("#include \"auto_comps.h\"\n\n")
 header.write("""void
-                assign_fptr(struct flowquery *fquery,
-                            struct branch_info *binfos, 
-                            int num_threads);\n\n""")
+                assign_fptr(struct flowquery *fquery);\n\n""")
 
 header.write("""struct aggr 
                 (*get_aggr_fptr(bool ifgrouper,
@@ -532,10 +530,9 @@ source.write("#include \"auto_assign.h\"\n")
 
 source.write("""
 void 
-assign_fptr(struct flowquery *fquery,
-            struct branch_info *binfos, 
-            int num_threads) {
-    for (int i = 0; i < num_threads; i++) {
+assign_fptr(struct flowquery *fquery) {
+    for (int i = 0; i < fquery->num_branches; i++) {
+    struct branch_info* branch = &fquery->branchset[i];
 """)
   
 
@@ -544,15 +541,16 @@ assign_fptr(struct flowquery *fquery,
 source.write("""
 
         /* for loop for the filter */
-        for (int j = 0; j < binfos[i].num_filter_rules; j++) {
-          switch (binfos[i].filter_rules[j].op) {
+        for (int j = 0; j < branch->num_filter_rules; j++) {
+          struct filter_rule* frule = &branch->filter_rules[j];          
+          switch (frule->op) {
 
 """)  
   
 for op in 'RULE_EQ', 'RULE_NE', 'RULE_GT', 'RULE_LT', 'RULE_LE', 'RULE_GE':
   for atype in 'RULE_S1_8', 'RULE_S1_16', 'RULE_S1_32', 'RULE_S1_64':
     source.write("                case %s | %s:\n"%(op, atype))
-    source.write("                    binfos[i].filter_rules[j].func = filter_%s_%s;\n"%(                                                                                                     enum_map[op], enum_map[atype]))
+    source.write("                    frule->func = filter_%s_%s;\n"%(                                                                                                     enum_map[op], enum_map[atype]))
     source.write("                    break;\n")
 
 source.write("""
@@ -565,8 +563,9 @@ source.write("""
 source.write("""
   
       /* for loop for the grouper */
-        for (int j = 0; j < binfos[i].num_group_modules; j++) {
-          switch (binfos[i].group_modules[j].op) {
+        for (int j = 0; j < branch->num_group_modules; j++) {
+          struct grouper_rule* grule = &branch->group_modules[j];  
+          switch (grule->op) {
 """)
 
 for op in 'RULE_EQ', 'RULE_NE', 'RULE_GT', 'RULE_LT', 'RULE_LE', 'RULE_GE':
@@ -574,7 +573,7 @@ for op in 'RULE_EQ', 'RULE_NE', 'RULE_GT', 'RULE_LT', 'RULE_LE', 'RULE_GE':
         for atype2 in 'RULE_S2_8', 'RULE_S2_16', 'RULE_S2_32', 'RULE_S2_64':
             for dtype in 'RULE_ABS', 'RULE_REL', 'RULE_NO':
                 source.write("                case %s | %s | %s | %s:\n"%(op, atype1, atype2, dtype))
-                source.write("                    binfos[i].group_modules[j].func = grouper_%s_%s_%s_%s;\n"%(
+                source.write("                    grule->func = grouper_%s_%s_%s_%s;\n"%(
                     enum_map[op], enum_map[atype1], enum_map[atype2], enum_map[dtype]))
                 source.write("                    break;\n")
 
@@ -589,8 +588,9 @@ source.write("""
 source.write("""
   
   /* for loop for the group-aggregation */
-  for (int j = 0; j < binfos[i].num_aggr; j++) {
-  switch (binfos[i].aggr[j].op) {
+  for (int j = 0; j < branch->num_aggr; j++) {
+  struct grouper_aggr* aggrule = &branch->aggr[j];  
+  switch (aggrule->op) {
   """)
 
 for op in 'RULE_STATIC', \
@@ -613,7 +613,7 @@ for op in 'RULE_STATIC', \
                'RULE_S1_64': \
                   
         source.write("case %s | %s:\n"%(op, atype))
-        source.write("binfos[i].aggr[j].func = aggr_%s_%s;\n"
+        source.write("aggrule->func = aggr_%s_%s;\n"
                      %(aggr_map[op], enum_map[atype]))
         source.write("break;\n")
 
@@ -628,14 +628,15 @@ source.write("""
 source.write("""
   
   /* for loop for the group-filter */
-  for (int j = 0; j < binfos[i].num_gfilter_rules; j++) {
-  switch (binfos[i].gfilter_rules[j].op) {
+  for (int j = 0; j < branch->num_gfilter_rules; j++) {
+  struct gfilter_rule* gfrule = &branch->gfilter_rules[j];  
+  switch (gfrule->op) {
   """)
 
 for op in 'RULE_EQ', 'RULE_NE', 'RULE_GT', 'RULE_LT', 'RULE_LE', 'RULE_GE':
   for atype1 in 'RULE_S1_8', 'RULE_S1_16', 'RULE_S1_32', 'RULE_S1_64':
     source.write("case %s | %s:\n"%(op,atype1))
-    source.write("binfos[i].gfilter_rules[j].func = gfilter_%s_%s;\n"%(enum_map[op], enum_map[atype1]))
+    source.write("gfrule->func = gfilter_%s_%s;\n"%(enum_map[op], enum_map[atype1]))
     source.write("break;\n")
 
 source.write("""
@@ -651,14 +652,15 @@ source.write("""
   
   /* for loop for the merger */
   for (int j = 0; j < fquery->num_merger_rules; j++) {
-  switch (fquery->mruleset[j].op) {
+  struct merger_rule* mrule = &fquery->mruleset[j];  
+  switch (mrule->op) {
   """)
 
 for op in 'RULE_EQ', 'RULE_NE', 'RULE_GT', 'RULE_LT', 'RULE_LE', 'RULE_GE', 'RULE_IN':
   for atype1 in 'RULE_S1_8', 'RULE_S1_16', 'RULE_S1_32', 'RULE_S1_64':
     for atype2 in 'RULE_S2_8', 'RULE_S2_16', 'RULE_S2_32', 'RULE_S2_64':
       source.write("case %s | %s | %s:\n"%(op, atype1, atype2))
-      source.write("fquery->mruleset[j].func = merger_%s_%s_%s;\n"
+      source.write("mrule->func = merger_%s_%s_%s;\n"
                    %(enum_map[op], enum_map[atype1], enum_map[atype2]))
       source.write("break;\n")
 
@@ -676,7 +678,7 @@ for op in 'RULE_ALLEN_BF',  \
           'RULE_ALLEN_FI',  \
           'RULE_ALLEN_EQ':  
   source.write("case %s:\n"%(op))
-  source.write("fquery->mruleset[j].func = merger_%s;\n"
+  source.write("mrule->func = merger_%s;\n"
                %(enum_map[op]))
   source.write("break;\n")
 

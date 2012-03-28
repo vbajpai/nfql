@@ -393,6 +393,25 @@ prepare_flowquery(struct ft_data* trace,
   
   
   
+  
+  /* -----------------------------------------------------------------------*/  
+  /*             fills filter_rule.func, grouper_rule.func                  */
+  /*               gfilter_rule.func, merger_rule.func by                   */
+  /*              falling through a huge switch statement                   */
+  /* -----------------------------------------------------------------------*/    
+  
+  assign_fptr(fquery);
+  
+  /* -----------------------------------------------------------------------*/
+  
+  
+  
+  
+  
+  
+  
+  
+  
   return fquery;
 }
 
@@ -480,24 +499,6 @@ main(int argc, char **argv) {
   
  /* -----------------------------------------------------------------------*/
 
-  
-  
-  
-  
-  
-  
-  
-  /* -----------------------------------------------------------------------*/  
-  /*            fills filter_rule.func and grouper_rule.func                */
-  /*                        from the grouper_rule.op                        */
-  /*             by falling through a huge switch statement                 */
-  /* -----------------------------------------------------------------------*/    
-  
-  assign_fptr(fquery, 
-              fquery->branchset, 
-              fquery->num_branches);
-  
-  /* -----------------------------------------------------------------------*/
 
   
   

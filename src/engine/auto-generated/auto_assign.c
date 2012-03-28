@@ -7,87 +7,87 @@
 #include "auto_assign.h"
 
 void 
-assign_fptr(struct flowquery *fquery,
-            struct branch_info *binfos, 
-            int num_threads) {
-  for (int i = 0; i < num_threads; i++) {
+assign_fptr(struct flowquery *fquery) {
+  for (int i = 0; i < fquery->num_branches; i++) {
+    struct branch_info* branch = &fquery->branchset[i];
     
     
     /* for loop for the filter */
-    for (int j = 0; j < binfos[i].num_filter_rules; j++) {
-      switch (binfos[i].filter_rules[j].op) {
+    for (int j = 0; j < branch->num_filter_rules; j++) {
+      struct filter_rule* frule = &branch->filter_rules[j];          
+      switch (frule->op) {
           
         case RULE_EQ | RULE_S1_8:
-          binfos[i].filter_rules[j].func = filter_eq_uint8_t;
+          frule->func = filter_eq_uint8_t;
           break;
         case RULE_EQ | RULE_S1_16:
-          binfos[i].filter_rules[j].func = filter_eq_uint16_t;
+          frule->func = filter_eq_uint16_t;
           break;
         case RULE_EQ | RULE_S1_32:
-          binfos[i].filter_rules[j].func = filter_eq_uint32_t;
+          frule->func = filter_eq_uint32_t;
           break;
         case RULE_EQ | RULE_S1_64:
-          binfos[i].filter_rules[j].func = filter_eq_uint64_t;
+          frule->func = filter_eq_uint64_t;
           break;
         case RULE_NE | RULE_S1_8:
-          binfos[i].filter_rules[j].func = filter_ne_uint8_t;
+          frule->func = filter_ne_uint8_t;
           break;
         case RULE_NE | RULE_S1_16:
-          binfos[i].filter_rules[j].func = filter_ne_uint16_t;
+          frule->func = filter_ne_uint16_t;
           break;
         case RULE_NE | RULE_S1_32:
-          binfos[i].filter_rules[j].func = filter_ne_uint32_t;
+          frule->func = filter_ne_uint32_t;
           break;
         case RULE_NE | RULE_S1_64:
-          binfos[i].filter_rules[j].func = filter_ne_uint64_t;
+          frule->func = filter_ne_uint64_t;
           break;
         case RULE_GT | RULE_S1_8:
-          binfos[i].filter_rules[j].func = filter_gt_uint8_t;
+          frule->func = filter_gt_uint8_t;
           break;
         case RULE_GT | RULE_S1_16:
-          binfos[i].filter_rules[j].func = filter_gt_uint16_t;
+          frule->func = filter_gt_uint16_t;
           break;
         case RULE_GT | RULE_S1_32:
-          binfos[i].filter_rules[j].func = filter_gt_uint32_t;
+          frule->func = filter_gt_uint32_t;
           break;
         case RULE_GT | RULE_S1_64:
-          binfos[i].filter_rules[j].func = filter_gt_uint64_t;
+          frule->func = filter_gt_uint64_t;
           break;
         case RULE_LT | RULE_S1_8:
-          binfos[i].filter_rules[j].func = filter_lt_uint8_t;
+          frule->func = filter_lt_uint8_t;
           break;
         case RULE_LT | RULE_S1_16:
-          binfos[i].filter_rules[j].func = filter_lt_uint16_t;
+          frule->func = filter_lt_uint16_t;
           break;
         case RULE_LT | RULE_S1_32:
-          binfos[i].filter_rules[j].func = filter_lt_uint32_t;
+          frule->func = filter_lt_uint32_t;
           break;
         case RULE_LT | RULE_S1_64:
-          binfos[i].filter_rules[j].func = filter_lt_uint64_t;
+          frule->func = filter_lt_uint64_t;
           break;
         case RULE_LE | RULE_S1_8:
-          binfos[i].filter_rules[j].func = filter_le_uint8_t;
+          frule->func = filter_le_uint8_t;
           break;
         case RULE_LE | RULE_S1_16:
-          binfos[i].filter_rules[j].func = filter_le_uint16_t;
+          frule->func = filter_le_uint16_t;
           break;
         case RULE_LE | RULE_S1_32:
-          binfos[i].filter_rules[j].func = filter_le_uint32_t;
+          frule->func = filter_le_uint32_t;
           break;
         case RULE_LE | RULE_S1_64:
-          binfos[i].filter_rules[j].func = filter_le_uint64_t;
+          frule->func = filter_le_uint64_t;
           break;
         case RULE_GE | RULE_S1_8:
-          binfos[i].filter_rules[j].func = filter_ge_uint8_t;
+          frule->func = filter_ge_uint8_t;
           break;
         case RULE_GE | RULE_S1_16:
-          binfos[i].filter_rules[j].func = filter_ge_uint16_t;
+          frule->func = filter_ge_uint16_t;
           break;
         case RULE_GE | RULE_S1_32:
-          binfos[i].filter_rules[j].func = filter_ge_uint32_t;
+          frule->func = filter_ge_uint32_t;
           break;
         case RULE_GE | RULE_S1_64:
-          binfos[i].filter_rules[j].func = filter_ge_uint64_t;
+          frule->func = filter_ge_uint64_t;
           break;
           
       }
@@ -95,871 +95,872 @@ assign_fptr(struct flowquery *fquery,
     
     
     /* for loop for the grouper */
-    for (int j = 0; j < binfos[i].num_group_modules; j++) {
-      switch (binfos[i].group_modules[j].op) {
+    for (int j = 0; j < branch->num_group_modules; j++) {
+      struct grouper_rule* grule = &branch->group_modules[j];  
+      switch (grule->op) {
         case RULE_EQ | RULE_S1_8 | RULE_S2_8 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_eq_uint8_t_uint8_t_abs;
+          grule->func = grouper_eq_uint8_t_uint8_t_abs;
           break;
         case RULE_EQ | RULE_S1_8 | RULE_S2_8 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_eq_uint8_t_uint8_t_rel;
+          grule->func = grouper_eq_uint8_t_uint8_t_rel;
           break;
         case RULE_EQ | RULE_S1_8 | RULE_S2_8 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_eq_uint8_t_uint8_t_no;
+          grule->func = grouper_eq_uint8_t_uint8_t_no;
           break;
         case RULE_EQ | RULE_S1_8 | RULE_S2_16 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_eq_uint8_t_uint16_t_abs;
+          grule->func = grouper_eq_uint8_t_uint16_t_abs;
           break;
         case RULE_EQ | RULE_S1_8 | RULE_S2_16 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_eq_uint8_t_uint16_t_rel;
+          grule->func = grouper_eq_uint8_t_uint16_t_rel;
           break;
         case RULE_EQ | RULE_S1_8 | RULE_S2_16 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_eq_uint8_t_uint16_t_no;
+          grule->func = grouper_eq_uint8_t_uint16_t_no;
           break;
         case RULE_EQ | RULE_S1_8 | RULE_S2_32 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_eq_uint8_t_uint32_t_abs;
+          grule->func = grouper_eq_uint8_t_uint32_t_abs;
           break;
         case RULE_EQ | RULE_S1_8 | RULE_S2_32 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_eq_uint8_t_uint32_t_rel;
+          grule->func = grouper_eq_uint8_t_uint32_t_rel;
           break;
         case RULE_EQ | RULE_S1_8 | RULE_S2_32 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_eq_uint8_t_uint32_t_no;
+          grule->func = grouper_eq_uint8_t_uint32_t_no;
           break;
         case RULE_EQ | RULE_S1_8 | RULE_S2_64 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_eq_uint8_t_uint64_t_abs;
+          grule->func = grouper_eq_uint8_t_uint64_t_abs;
           break;
         case RULE_EQ | RULE_S1_8 | RULE_S2_64 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_eq_uint8_t_uint64_t_rel;
+          grule->func = grouper_eq_uint8_t_uint64_t_rel;
           break;
         case RULE_EQ | RULE_S1_8 | RULE_S2_64 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_eq_uint8_t_uint64_t_no;
+          grule->func = grouper_eq_uint8_t_uint64_t_no;
           break;
         case RULE_EQ | RULE_S1_16 | RULE_S2_8 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_eq_uint16_t_uint8_t_abs;
+          grule->func = grouper_eq_uint16_t_uint8_t_abs;
           break;
         case RULE_EQ | RULE_S1_16 | RULE_S2_8 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_eq_uint16_t_uint8_t_rel;
+          grule->func = grouper_eq_uint16_t_uint8_t_rel;
           break;
         case RULE_EQ | RULE_S1_16 | RULE_S2_8 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_eq_uint16_t_uint8_t_no;
+          grule->func = grouper_eq_uint16_t_uint8_t_no;
           break;
         case RULE_EQ | RULE_S1_16 | RULE_S2_16 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_eq_uint16_t_uint16_t_abs;
+          grule->func = grouper_eq_uint16_t_uint16_t_abs;
           break;
         case RULE_EQ | RULE_S1_16 | RULE_S2_16 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_eq_uint16_t_uint16_t_rel;
+          grule->func = grouper_eq_uint16_t_uint16_t_rel;
           break;
         case RULE_EQ | RULE_S1_16 | RULE_S2_16 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_eq_uint16_t_uint16_t_no;
+          grule->func = grouper_eq_uint16_t_uint16_t_no;
           break;
         case RULE_EQ | RULE_S1_16 | RULE_S2_32 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_eq_uint16_t_uint32_t_abs;
+          grule->func = grouper_eq_uint16_t_uint32_t_abs;
           break;
         case RULE_EQ | RULE_S1_16 | RULE_S2_32 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_eq_uint16_t_uint32_t_rel;
+          grule->func = grouper_eq_uint16_t_uint32_t_rel;
           break;
         case RULE_EQ | RULE_S1_16 | RULE_S2_32 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_eq_uint16_t_uint32_t_no;
+          grule->func = grouper_eq_uint16_t_uint32_t_no;
           break;
         case RULE_EQ | RULE_S1_16 | RULE_S2_64 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_eq_uint16_t_uint64_t_abs;
+          grule->func = grouper_eq_uint16_t_uint64_t_abs;
           break;
         case RULE_EQ | RULE_S1_16 | RULE_S2_64 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_eq_uint16_t_uint64_t_rel;
+          grule->func = grouper_eq_uint16_t_uint64_t_rel;
           break;
         case RULE_EQ | RULE_S1_16 | RULE_S2_64 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_eq_uint16_t_uint64_t_no;
+          grule->func = grouper_eq_uint16_t_uint64_t_no;
           break;
         case RULE_EQ | RULE_S1_32 | RULE_S2_8 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_eq_uint32_t_uint8_t_abs;
+          grule->func = grouper_eq_uint32_t_uint8_t_abs;
           break;
         case RULE_EQ | RULE_S1_32 | RULE_S2_8 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_eq_uint32_t_uint8_t_rel;
+          grule->func = grouper_eq_uint32_t_uint8_t_rel;
           break;
         case RULE_EQ | RULE_S1_32 | RULE_S2_8 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_eq_uint32_t_uint8_t_no;
+          grule->func = grouper_eq_uint32_t_uint8_t_no;
           break;
         case RULE_EQ | RULE_S1_32 | RULE_S2_16 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_eq_uint32_t_uint16_t_abs;
+          grule->func = grouper_eq_uint32_t_uint16_t_abs;
           break;
         case RULE_EQ | RULE_S1_32 | RULE_S2_16 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_eq_uint32_t_uint16_t_rel;
+          grule->func = grouper_eq_uint32_t_uint16_t_rel;
           break;
         case RULE_EQ | RULE_S1_32 | RULE_S2_16 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_eq_uint32_t_uint16_t_no;
+          grule->func = grouper_eq_uint32_t_uint16_t_no;
           break;
         case RULE_EQ | RULE_S1_32 | RULE_S2_32 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_eq_uint32_t_uint32_t_abs;
+          grule->func = grouper_eq_uint32_t_uint32_t_abs;
           break;
         case RULE_EQ | RULE_S1_32 | RULE_S2_32 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_eq_uint32_t_uint32_t_rel;
+          grule->func = grouper_eq_uint32_t_uint32_t_rel;
           break;
         case RULE_EQ | RULE_S1_32 | RULE_S2_32 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_eq_uint32_t_uint32_t_no;
+          grule->func = grouper_eq_uint32_t_uint32_t_no;
           break;
         case RULE_EQ | RULE_S1_32 | RULE_S2_64 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_eq_uint32_t_uint64_t_abs;
+          grule->func = grouper_eq_uint32_t_uint64_t_abs;
           break;
         case RULE_EQ | RULE_S1_32 | RULE_S2_64 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_eq_uint32_t_uint64_t_rel;
+          grule->func = grouper_eq_uint32_t_uint64_t_rel;
           break;
         case RULE_EQ | RULE_S1_32 | RULE_S2_64 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_eq_uint32_t_uint64_t_no;
+          grule->func = grouper_eq_uint32_t_uint64_t_no;
           break;
         case RULE_EQ | RULE_S1_64 | RULE_S2_8 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_eq_uint64_t_uint8_t_abs;
+          grule->func = grouper_eq_uint64_t_uint8_t_abs;
           break;
         case RULE_EQ | RULE_S1_64 | RULE_S2_8 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_eq_uint64_t_uint8_t_rel;
+          grule->func = grouper_eq_uint64_t_uint8_t_rel;
           break;
         case RULE_EQ | RULE_S1_64 | RULE_S2_8 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_eq_uint64_t_uint8_t_no;
+          grule->func = grouper_eq_uint64_t_uint8_t_no;
           break;
         case RULE_EQ | RULE_S1_64 | RULE_S2_16 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_eq_uint64_t_uint16_t_abs;
+          grule->func = grouper_eq_uint64_t_uint16_t_abs;
           break;
         case RULE_EQ | RULE_S1_64 | RULE_S2_16 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_eq_uint64_t_uint16_t_rel;
+          grule->func = grouper_eq_uint64_t_uint16_t_rel;
           break;
         case RULE_EQ | RULE_S1_64 | RULE_S2_16 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_eq_uint64_t_uint16_t_no;
+          grule->func = grouper_eq_uint64_t_uint16_t_no;
           break;
         case RULE_EQ | RULE_S1_64 | RULE_S2_32 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_eq_uint64_t_uint32_t_abs;
+          grule->func = grouper_eq_uint64_t_uint32_t_abs;
           break;
         case RULE_EQ | RULE_S1_64 | RULE_S2_32 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_eq_uint64_t_uint32_t_rel;
+          grule->func = grouper_eq_uint64_t_uint32_t_rel;
           break;
         case RULE_EQ | RULE_S1_64 | RULE_S2_32 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_eq_uint64_t_uint32_t_no;
+          grule->func = grouper_eq_uint64_t_uint32_t_no;
           break;
         case RULE_EQ | RULE_S1_64 | RULE_S2_64 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_eq_uint64_t_uint64_t_abs;
+          grule->func = grouper_eq_uint64_t_uint64_t_abs;
           break;
         case RULE_EQ | RULE_S1_64 | RULE_S2_64 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_eq_uint64_t_uint64_t_rel;
+          grule->func = grouper_eq_uint64_t_uint64_t_rel;
           break;
         case RULE_EQ | RULE_S1_64 | RULE_S2_64 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_eq_uint64_t_uint64_t_no;
+          grule->func = grouper_eq_uint64_t_uint64_t_no;
           break;
         case RULE_NE | RULE_S1_8 | RULE_S2_8 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ne_uint8_t_uint8_t_abs;
+          grule->func = grouper_ne_uint8_t_uint8_t_abs;
           break;
         case RULE_NE | RULE_S1_8 | RULE_S2_8 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ne_uint8_t_uint8_t_rel;
+          grule->func = grouper_ne_uint8_t_uint8_t_rel;
           break;
         case RULE_NE | RULE_S1_8 | RULE_S2_8 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ne_uint8_t_uint8_t_no;
+          grule->func = grouper_ne_uint8_t_uint8_t_no;
           break;
         case RULE_NE | RULE_S1_8 | RULE_S2_16 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ne_uint8_t_uint16_t_abs;
+          grule->func = grouper_ne_uint8_t_uint16_t_abs;
           break;
         case RULE_NE | RULE_S1_8 | RULE_S2_16 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ne_uint8_t_uint16_t_rel;
+          grule->func = grouper_ne_uint8_t_uint16_t_rel;
           break;
         case RULE_NE | RULE_S1_8 | RULE_S2_16 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ne_uint8_t_uint16_t_no;
+          grule->func = grouper_ne_uint8_t_uint16_t_no;
           break;
         case RULE_NE | RULE_S1_8 | RULE_S2_32 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ne_uint8_t_uint32_t_abs;
+          grule->func = grouper_ne_uint8_t_uint32_t_abs;
           break;
         case RULE_NE | RULE_S1_8 | RULE_S2_32 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ne_uint8_t_uint32_t_rel;
+          grule->func = grouper_ne_uint8_t_uint32_t_rel;
           break;
         case RULE_NE | RULE_S1_8 | RULE_S2_32 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ne_uint8_t_uint32_t_no;
+          grule->func = grouper_ne_uint8_t_uint32_t_no;
           break;
         case RULE_NE | RULE_S1_8 | RULE_S2_64 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ne_uint8_t_uint64_t_abs;
+          grule->func = grouper_ne_uint8_t_uint64_t_abs;
           break;
         case RULE_NE | RULE_S1_8 | RULE_S2_64 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ne_uint8_t_uint64_t_rel;
+          grule->func = grouper_ne_uint8_t_uint64_t_rel;
           break;
         case RULE_NE | RULE_S1_8 | RULE_S2_64 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ne_uint8_t_uint64_t_no;
+          grule->func = grouper_ne_uint8_t_uint64_t_no;
           break;
         case RULE_NE | RULE_S1_16 | RULE_S2_8 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ne_uint16_t_uint8_t_abs;
+          grule->func = grouper_ne_uint16_t_uint8_t_abs;
           break;
         case RULE_NE | RULE_S1_16 | RULE_S2_8 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ne_uint16_t_uint8_t_rel;
+          grule->func = grouper_ne_uint16_t_uint8_t_rel;
           break;
         case RULE_NE | RULE_S1_16 | RULE_S2_8 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ne_uint16_t_uint8_t_no;
+          grule->func = grouper_ne_uint16_t_uint8_t_no;
           break;
         case RULE_NE | RULE_S1_16 | RULE_S2_16 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ne_uint16_t_uint16_t_abs;
+          grule->func = grouper_ne_uint16_t_uint16_t_abs;
           break;
         case RULE_NE | RULE_S1_16 | RULE_S2_16 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ne_uint16_t_uint16_t_rel;
+          grule->func = grouper_ne_uint16_t_uint16_t_rel;
           break;
         case RULE_NE | RULE_S1_16 | RULE_S2_16 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ne_uint16_t_uint16_t_no;
+          grule->func = grouper_ne_uint16_t_uint16_t_no;
           break;
         case RULE_NE | RULE_S1_16 | RULE_S2_32 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ne_uint16_t_uint32_t_abs;
+          grule->func = grouper_ne_uint16_t_uint32_t_abs;
           break;
         case RULE_NE | RULE_S1_16 | RULE_S2_32 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ne_uint16_t_uint32_t_rel;
+          grule->func = grouper_ne_uint16_t_uint32_t_rel;
           break;
         case RULE_NE | RULE_S1_16 | RULE_S2_32 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ne_uint16_t_uint32_t_no;
+          grule->func = grouper_ne_uint16_t_uint32_t_no;
           break;
         case RULE_NE | RULE_S1_16 | RULE_S2_64 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ne_uint16_t_uint64_t_abs;
+          grule->func = grouper_ne_uint16_t_uint64_t_abs;
           break;
         case RULE_NE | RULE_S1_16 | RULE_S2_64 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ne_uint16_t_uint64_t_rel;
+          grule->func = grouper_ne_uint16_t_uint64_t_rel;
           break;
         case RULE_NE | RULE_S1_16 | RULE_S2_64 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ne_uint16_t_uint64_t_no;
+          grule->func = grouper_ne_uint16_t_uint64_t_no;
           break;
         case RULE_NE | RULE_S1_32 | RULE_S2_8 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ne_uint32_t_uint8_t_abs;
+          grule->func = grouper_ne_uint32_t_uint8_t_abs;
           break;
         case RULE_NE | RULE_S1_32 | RULE_S2_8 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ne_uint32_t_uint8_t_rel;
+          grule->func = grouper_ne_uint32_t_uint8_t_rel;
           break;
         case RULE_NE | RULE_S1_32 | RULE_S2_8 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ne_uint32_t_uint8_t_no;
+          grule->func = grouper_ne_uint32_t_uint8_t_no;
           break;
         case RULE_NE | RULE_S1_32 | RULE_S2_16 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ne_uint32_t_uint16_t_abs;
+          grule->func = grouper_ne_uint32_t_uint16_t_abs;
           break;
         case RULE_NE | RULE_S1_32 | RULE_S2_16 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ne_uint32_t_uint16_t_rel;
+          grule->func = grouper_ne_uint32_t_uint16_t_rel;
           break;
         case RULE_NE | RULE_S1_32 | RULE_S2_16 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ne_uint32_t_uint16_t_no;
+          grule->func = grouper_ne_uint32_t_uint16_t_no;
           break;
         case RULE_NE | RULE_S1_32 | RULE_S2_32 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ne_uint32_t_uint32_t_abs;
+          grule->func = grouper_ne_uint32_t_uint32_t_abs;
           break;
         case RULE_NE | RULE_S1_32 | RULE_S2_32 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ne_uint32_t_uint32_t_rel;
+          grule->func = grouper_ne_uint32_t_uint32_t_rel;
           break;
         case RULE_NE | RULE_S1_32 | RULE_S2_32 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ne_uint32_t_uint32_t_no;
+          grule->func = grouper_ne_uint32_t_uint32_t_no;
           break;
         case RULE_NE | RULE_S1_32 | RULE_S2_64 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ne_uint32_t_uint64_t_abs;
+          grule->func = grouper_ne_uint32_t_uint64_t_abs;
           break;
         case RULE_NE | RULE_S1_32 | RULE_S2_64 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ne_uint32_t_uint64_t_rel;
+          grule->func = grouper_ne_uint32_t_uint64_t_rel;
           break;
         case RULE_NE | RULE_S1_32 | RULE_S2_64 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ne_uint32_t_uint64_t_no;
+          grule->func = grouper_ne_uint32_t_uint64_t_no;
           break;
         case RULE_NE | RULE_S1_64 | RULE_S2_8 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ne_uint64_t_uint8_t_abs;
+          grule->func = grouper_ne_uint64_t_uint8_t_abs;
           break;
         case RULE_NE | RULE_S1_64 | RULE_S2_8 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ne_uint64_t_uint8_t_rel;
+          grule->func = grouper_ne_uint64_t_uint8_t_rel;
           break;
         case RULE_NE | RULE_S1_64 | RULE_S2_8 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ne_uint64_t_uint8_t_no;
+          grule->func = grouper_ne_uint64_t_uint8_t_no;
           break;
         case RULE_NE | RULE_S1_64 | RULE_S2_16 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ne_uint64_t_uint16_t_abs;
+          grule->func = grouper_ne_uint64_t_uint16_t_abs;
           break;
         case RULE_NE | RULE_S1_64 | RULE_S2_16 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ne_uint64_t_uint16_t_rel;
+          grule->func = grouper_ne_uint64_t_uint16_t_rel;
           break;
         case RULE_NE | RULE_S1_64 | RULE_S2_16 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ne_uint64_t_uint16_t_no;
+          grule->func = grouper_ne_uint64_t_uint16_t_no;
           break;
         case RULE_NE | RULE_S1_64 | RULE_S2_32 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ne_uint64_t_uint32_t_abs;
+          grule->func = grouper_ne_uint64_t_uint32_t_abs;
           break;
         case RULE_NE | RULE_S1_64 | RULE_S2_32 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ne_uint64_t_uint32_t_rel;
+          grule->func = grouper_ne_uint64_t_uint32_t_rel;
           break;
         case RULE_NE | RULE_S1_64 | RULE_S2_32 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ne_uint64_t_uint32_t_no;
+          grule->func = grouper_ne_uint64_t_uint32_t_no;
           break;
         case RULE_NE | RULE_S1_64 | RULE_S2_64 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ne_uint64_t_uint64_t_abs;
+          grule->func = grouper_ne_uint64_t_uint64_t_abs;
           break;
         case RULE_NE | RULE_S1_64 | RULE_S2_64 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ne_uint64_t_uint64_t_rel;
+          grule->func = grouper_ne_uint64_t_uint64_t_rel;
           break;
         case RULE_NE | RULE_S1_64 | RULE_S2_64 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ne_uint64_t_uint64_t_no;
+          grule->func = grouper_ne_uint64_t_uint64_t_no;
           break;
         case RULE_GT | RULE_S1_8 | RULE_S2_8 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_gt_uint8_t_uint8_t_abs;
+          grule->func = grouper_gt_uint8_t_uint8_t_abs;
           break;
         case RULE_GT | RULE_S1_8 | RULE_S2_8 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_gt_uint8_t_uint8_t_rel;
+          grule->func = grouper_gt_uint8_t_uint8_t_rel;
           break;
         case RULE_GT | RULE_S1_8 | RULE_S2_8 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_gt_uint8_t_uint8_t_no;
+          grule->func = grouper_gt_uint8_t_uint8_t_no;
           break;
         case RULE_GT | RULE_S1_8 | RULE_S2_16 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_gt_uint8_t_uint16_t_abs;
+          grule->func = grouper_gt_uint8_t_uint16_t_abs;
           break;
         case RULE_GT | RULE_S1_8 | RULE_S2_16 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_gt_uint8_t_uint16_t_rel;
+          grule->func = grouper_gt_uint8_t_uint16_t_rel;
           break;
         case RULE_GT | RULE_S1_8 | RULE_S2_16 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_gt_uint8_t_uint16_t_no;
+          grule->func = grouper_gt_uint8_t_uint16_t_no;
           break;
         case RULE_GT | RULE_S1_8 | RULE_S2_32 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_gt_uint8_t_uint32_t_abs;
+          grule->func = grouper_gt_uint8_t_uint32_t_abs;
           break;
         case RULE_GT | RULE_S1_8 | RULE_S2_32 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_gt_uint8_t_uint32_t_rel;
+          grule->func = grouper_gt_uint8_t_uint32_t_rel;
           break;
         case RULE_GT | RULE_S1_8 | RULE_S2_32 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_gt_uint8_t_uint32_t_no;
+          grule->func = grouper_gt_uint8_t_uint32_t_no;
           break;
         case RULE_GT | RULE_S1_8 | RULE_S2_64 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_gt_uint8_t_uint64_t_abs;
+          grule->func = grouper_gt_uint8_t_uint64_t_abs;
           break;
         case RULE_GT | RULE_S1_8 | RULE_S2_64 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_gt_uint8_t_uint64_t_rel;
+          grule->func = grouper_gt_uint8_t_uint64_t_rel;
           break;
         case RULE_GT | RULE_S1_8 | RULE_S2_64 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_gt_uint8_t_uint64_t_no;
+          grule->func = grouper_gt_uint8_t_uint64_t_no;
           break;
         case RULE_GT | RULE_S1_16 | RULE_S2_8 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_gt_uint16_t_uint8_t_abs;
+          grule->func = grouper_gt_uint16_t_uint8_t_abs;
           break;
         case RULE_GT | RULE_S1_16 | RULE_S2_8 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_gt_uint16_t_uint8_t_rel;
+          grule->func = grouper_gt_uint16_t_uint8_t_rel;
           break;
         case RULE_GT | RULE_S1_16 | RULE_S2_8 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_gt_uint16_t_uint8_t_no;
+          grule->func = grouper_gt_uint16_t_uint8_t_no;
           break;
         case RULE_GT | RULE_S1_16 | RULE_S2_16 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_gt_uint16_t_uint16_t_abs;
+          grule->func = grouper_gt_uint16_t_uint16_t_abs;
           break;
         case RULE_GT | RULE_S1_16 | RULE_S2_16 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_gt_uint16_t_uint16_t_rel;
+          grule->func = grouper_gt_uint16_t_uint16_t_rel;
           break;
         case RULE_GT | RULE_S1_16 | RULE_S2_16 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_gt_uint16_t_uint16_t_no;
+          grule->func = grouper_gt_uint16_t_uint16_t_no;
           break;
         case RULE_GT | RULE_S1_16 | RULE_S2_32 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_gt_uint16_t_uint32_t_abs;
+          grule->func = grouper_gt_uint16_t_uint32_t_abs;
           break;
         case RULE_GT | RULE_S1_16 | RULE_S2_32 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_gt_uint16_t_uint32_t_rel;
+          grule->func = grouper_gt_uint16_t_uint32_t_rel;
           break;
         case RULE_GT | RULE_S1_16 | RULE_S2_32 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_gt_uint16_t_uint32_t_no;
+          grule->func = grouper_gt_uint16_t_uint32_t_no;
           break;
         case RULE_GT | RULE_S1_16 | RULE_S2_64 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_gt_uint16_t_uint64_t_abs;
+          grule->func = grouper_gt_uint16_t_uint64_t_abs;
           break;
         case RULE_GT | RULE_S1_16 | RULE_S2_64 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_gt_uint16_t_uint64_t_rel;
+          grule->func = grouper_gt_uint16_t_uint64_t_rel;
           break;
         case RULE_GT | RULE_S1_16 | RULE_S2_64 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_gt_uint16_t_uint64_t_no;
+          grule->func = grouper_gt_uint16_t_uint64_t_no;
           break;
         case RULE_GT | RULE_S1_32 | RULE_S2_8 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_gt_uint32_t_uint8_t_abs;
+          grule->func = grouper_gt_uint32_t_uint8_t_abs;
           break;
         case RULE_GT | RULE_S1_32 | RULE_S2_8 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_gt_uint32_t_uint8_t_rel;
+          grule->func = grouper_gt_uint32_t_uint8_t_rel;
           break;
         case RULE_GT | RULE_S1_32 | RULE_S2_8 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_gt_uint32_t_uint8_t_no;
+          grule->func = grouper_gt_uint32_t_uint8_t_no;
           break;
         case RULE_GT | RULE_S1_32 | RULE_S2_16 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_gt_uint32_t_uint16_t_abs;
+          grule->func = grouper_gt_uint32_t_uint16_t_abs;
           break;
         case RULE_GT | RULE_S1_32 | RULE_S2_16 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_gt_uint32_t_uint16_t_rel;
+          grule->func = grouper_gt_uint32_t_uint16_t_rel;
           break;
         case RULE_GT | RULE_S1_32 | RULE_S2_16 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_gt_uint32_t_uint16_t_no;
+          grule->func = grouper_gt_uint32_t_uint16_t_no;
           break;
         case RULE_GT | RULE_S1_32 | RULE_S2_32 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_gt_uint32_t_uint32_t_abs;
+          grule->func = grouper_gt_uint32_t_uint32_t_abs;
           break;
         case RULE_GT | RULE_S1_32 | RULE_S2_32 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_gt_uint32_t_uint32_t_rel;
+          grule->func = grouper_gt_uint32_t_uint32_t_rel;
           break;
         case RULE_GT | RULE_S1_32 | RULE_S2_32 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_gt_uint32_t_uint32_t_no;
+          grule->func = grouper_gt_uint32_t_uint32_t_no;
           break;
         case RULE_GT | RULE_S1_32 | RULE_S2_64 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_gt_uint32_t_uint64_t_abs;
+          grule->func = grouper_gt_uint32_t_uint64_t_abs;
           break;
         case RULE_GT | RULE_S1_32 | RULE_S2_64 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_gt_uint32_t_uint64_t_rel;
+          grule->func = grouper_gt_uint32_t_uint64_t_rel;
           break;
         case RULE_GT | RULE_S1_32 | RULE_S2_64 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_gt_uint32_t_uint64_t_no;
+          grule->func = grouper_gt_uint32_t_uint64_t_no;
           break;
         case RULE_GT | RULE_S1_64 | RULE_S2_8 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_gt_uint64_t_uint8_t_abs;
+          grule->func = grouper_gt_uint64_t_uint8_t_abs;
           break;
         case RULE_GT | RULE_S1_64 | RULE_S2_8 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_gt_uint64_t_uint8_t_rel;
+          grule->func = grouper_gt_uint64_t_uint8_t_rel;
           break;
         case RULE_GT | RULE_S1_64 | RULE_S2_8 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_gt_uint64_t_uint8_t_no;
+          grule->func = grouper_gt_uint64_t_uint8_t_no;
           break;
         case RULE_GT | RULE_S1_64 | RULE_S2_16 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_gt_uint64_t_uint16_t_abs;
+          grule->func = grouper_gt_uint64_t_uint16_t_abs;
           break;
         case RULE_GT | RULE_S1_64 | RULE_S2_16 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_gt_uint64_t_uint16_t_rel;
+          grule->func = grouper_gt_uint64_t_uint16_t_rel;
           break;
         case RULE_GT | RULE_S1_64 | RULE_S2_16 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_gt_uint64_t_uint16_t_no;
+          grule->func = grouper_gt_uint64_t_uint16_t_no;
           break;
         case RULE_GT | RULE_S1_64 | RULE_S2_32 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_gt_uint64_t_uint32_t_abs;
+          grule->func = grouper_gt_uint64_t_uint32_t_abs;
           break;
         case RULE_GT | RULE_S1_64 | RULE_S2_32 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_gt_uint64_t_uint32_t_rel;
+          grule->func = grouper_gt_uint64_t_uint32_t_rel;
           break;
         case RULE_GT | RULE_S1_64 | RULE_S2_32 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_gt_uint64_t_uint32_t_no;
+          grule->func = grouper_gt_uint64_t_uint32_t_no;
           break;
         case RULE_GT | RULE_S1_64 | RULE_S2_64 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_gt_uint64_t_uint64_t_abs;
+          grule->func = grouper_gt_uint64_t_uint64_t_abs;
           break;
         case RULE_GT | RULE_S1_64 | RULE_S2_64 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_gt_uint64_t_uint64_t_rel;
+          grule->func = grouper_gt_uint64_t_uint64_t_rel;
           break;
         case RULE_GT | RULE_S1_64 | RULE_S2_64 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_gt_uint64_t_uint64_t_no;
+          grule->func = grouper_gt_uint64_t_uint64_t_no;
           break;
         case RULE_LT | RULE_S1_8 | RULE_S2_8 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_lt_uint8_t_uint8_t_abs;
+          grule->func = grouper_lt_uint8_t_uint8_t_abs;
           break;
         case RULE_LT | RULE_S1_8 | RULE_S2_8 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_lt_uint8_t_uint8_t_rel;
+          grule->func = grouper_lt_uint8_t_uint8_t_rel;
           break;
         case RULE_LT | RULE_S1_8 | RULE_S2_8 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_lt_uint8_t_uint8_t_no;
+          grule->func = grouper_lt_uint8_t_uint8_t_no;
           break;
         case RULE_LT | RULE_S1_8 | RULE_S2_16 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_lt_uint8_t_uint16_t_abs;
+          grule->func = grouper_lt_uint8_t_uint16_t_abs;
           break;
         case RULE_LT | RULE_S1_8 | RULE_S2_16 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_lt_uint8_t_uint16_t_rel;
+          grule->func = grouper_lt_uint8_t_uint16_t_rel;
           break;
         case RULE_LT | RULE_S1_8 | RULE_S2_16 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_lt_uint8_t_uint16_t_no;
+          grule->func = grouper_lt_uint8_t_uint16_t_no;
           break;
         case RULE_LT | RULE_S1_8 | RULE_S2_32 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_lt_uint8_t_uint32_t_abs;
+          grule->func = grouper_lt_uint8_t_uint32_t_abs;
           break;
         case RULE_LT | RULE_S1_8 | RULE_S2_32 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_lt_uint8_t_uint32_t_rel;
+          grule->func = grouper_lt_uint8_t_uint32_t_rel;
           break;
         case RULE_LT | RULE_S1_8 | RULE_S2_32 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_lt_uint8_t_uint32_t_no;
+          grule->func = grouper_lt_uint8_t_uint32_t_no;
           break;
         case RULE_LT | RULE_S1_8 | RULE_S2_64 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_lt_uint8_t_uint64_t_abs;
+          grule->func = grouper_lt_uint8_t_uint64_t_abs;
           break;
         case RULE_LT | RULE_S1_8 | RULE_S2_64 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_lt_uint8_t_uint64_t_rel;
+          grule->func = grouper_lt_uint8_t_uint64_t_rel;
           break;
         case RULE_LT | RULE_S1_8 | RULE_S2_64 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_lt_uint8_t_uint64_t_no;
+          grule->func = grouper_lt_uint8_t_uint64_t_no;
           break;
         case RULE_LT | RULE_S1_16 | RULE_S2_8 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_lt_uint16_t_uint8_t_abs;
+          grule->func = grouper_lt_uint16_t_uint8_t_abs;
           break;
         case RULE_LT | RULE_S1_16 | RULE_S2_8 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_lt_uint16_t_uint8_t_rel;
+          grule->func = grouper_lt_uint16_t_uint8_t_rel;
           break;
         case RULE_LT | RULE_S1_16 | RULE_S2_8 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_lt_uint16_t_uint8_t_no;
+          grule->func = grouper_lt_uint16_t_uint8_t_no;
           break;
         case RULE_LT | RULE_S1_16 | RULE_S2_16 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_lt_uint16_t_uint16_t_abs;
+          grule->func = grouper_lt_uint16_t_uint16_t_abs;
           break;
         case RULE_LT | RULE_S1_16 | RULE_S2_16 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_lt_uint16_t_uint16_t_rel;
+          grule->func = grouper_lt_uint16_t_uint16_t_rel;
           break;
         case RULE_LT | RULE_S1_16 | RULE_S2_16 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_lt_uint16_t_uint16_t_no;
+          grule->func = grouper_lt_uint16_t_uint16_t_no;
           break;
         case RULE_LT | RULE_S1_16 | RULE_S2_32 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_lt_uint16_t_uint32_t_abs;
+          grule->func = grouper_lt_uint16_t_uint32_t_abs;
           break;
         case RULE_LT | RULE_S1_16 | RULE_S2_32 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_lt_uint16_t_uint32_t_rel;
+          grule->func = grouper_lt_uint16_t_uint32_t_rel;
           break;
         case RULE_LT | RULE_S1_16 | RULE_S2_32 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_lt_uint16_t_uint32_t_no;
+          grule->func = grouper_lt_uint16_t_uint32_t_no;
           break;
         case RULE_LT | RULE_S1_16 | RULE_S2_64 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_lt_uint16_t_uint64_t_abs;
+          grule->func = grouper_lt_uint16_t_uint64_t_abs;
           break;
         case RULE_LT | RULE_S1_16 | RULE_S2_64 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_lt_uint16_t_uint64_t_rel;
+          grule->func = grouper_lt_uint16_t_uint64_t_rel;
           break;
         case RULE_LT | RULE_S1_16 | RULE_S2_64 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_lt_uint16_t_uint64_t_no;
+          grule->func = grouper_lt_uint16_t_uint64_t_no;
           break;
         case RULE_LT | RULE_S1_32 | RULE_S2_8 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_lt_uint32_t_uint8_t_abs;
+          grule->func = grouper_lt_uint32_t_uint8_t_abs;
           break;
         case RULE_LT | RULE_S1_32 | RULE_S2_8 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_lt_uint32_t_uint8_t_rel;
+          grule->func = grouper_lt_uint32_t_uint8_t_rel;
           break;
         case RULE_LT | RULE_S1_32 | RULE_S2_8 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_lt_uint32_t_uint8_t_no;
+          grule->func = grouper_lt_uint32_t_uint8_t_no;
           break;
         case RULE_LT | RULE_S1_32 | RULE_S2_16 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_lt_uint32_t_uint16_t_abs;
+          grule->func = grouper_lt_uint32_t_uint16_t_abs;
           break;
         case RULE_LT | RULE_S1_32 | RULE_S2_16 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_lt_uint32_t_uint16_t_rel;
+          grule->func = grouper_lt_uint32_t_uint16_t_rel;
           break;
         case RULE_LT | RULE_S1_32 | RULE_S2_16 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_lt_uint32_t_uint16_t_no;
+          grule->func = grouper_lt_uint32_t_uint16_t_no;
           break;
         case RULE_LT | RULE_S1_32 | RULE_S2_32 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_lt_uint32_t_uint32_t_abs;
+          grule->func = grouper_lt_uint32_t_uint32_t_abs;
           break;
         case RULE_LT | RULE_S1_32 | RULE_S2_32 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_lt_uint32_t_uint32_t_rel;
+          grule->func = grouper_lt_uint32_t_uint32_t_rel;
           break;
         case RULE_LT | RULE_S1_32 | RULE_S2_32 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_lt_uint32_t_uint32_t_no;
+          grule->func = grouper_lt_uint32_t_uint32_t_no;
           break;
         case RULE_LT | RULE_S1_32 | RULE_S2_64 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_lt_uint32_t_uint64_t_abs;
+          grule->func = grouper_lt_uint32_t_uint64_t_abs;
           break;
         case RULE_LT | RULE_S1_32 | RULE_S2_64 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_lt_uint32_t_uint64_t_rel;
+          grule->func = grouper_lt_uint32_t_uint64_t_rel;
           break;
         case RULE_LT | RULE_S1_32 | RULE_S2_64 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_lt_uint32_t_uint64_t_no;
+          grule->func = grouper_lt_uint32_t_uint64_t_no;
           break;
         case RULE_LT | RULE_S1_64 | RULE_S2_8 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_lt_uint64_t_uint8_t_abs;
+          grule->func = grouper_lt_uint64_t_uint8_t_abs;
           break;
         case RULE_LT | RULE_S1_64 | RULE_S2_8 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_lt_uint64_t_uint8_t_rel;
+          grule->func = grouper_lt_uint64_t_uint8_t_rel;
           break;
         case RULE_LT | RULE_S1_64 | RULE_S2_8 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_lt_uint64_t_uint8_t_no;
+          grule->func = grouper_lt_uint64_t_uint8_t_no;
           break;
         case RULE_LT | RULE_S1_64 | RULE_S2_16 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_lt_uint64_t_uint16_t_abs;
+          grule->func = grouper_lt_uint64_t_uint16_t_abs;
           break;
         case RULE_LT | RULE_S1_64 | RULE_S2_16 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_lt_uint64_t_uint16_t_rel;
+          grule->func = grouper_lt_uint64_t_uint16_t_rel;
           break;
         case RULE_LT | RULE_S1_64 | RULE_S2_16 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_lt_uint64_t_uint16_t_no;
+          grule->func = grouper_lt_uint64_t_uint16_t_no;
           break;
         case RULE_LT | RULE_S1_64 | RULE_S2_32 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_lt_uint64_t_uint32_t_abs;
+          grule->func = grouper_lt_uint64_t_uint32_t_abs;
           break;
         case RULE_LT | RULE_S1_64 | RULE_S2_32 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_lt_uint64_t_uint32_t_rel;
+          grule->func = grouper_lt_uint64_t_uint32_t_rel;
           break;
         case RULE_LT | RULE_S1_64 | RULE_S2_32 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_lt_uint64_t_uint32_t_no;
+          grule->func = grouper_lt_uint64_t_uint32_t_no;
           break;
         case RULE_LT | RULE_S1_64 | RULE_S2_64 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_lt_uint64_t_uint64_t_abs;
+          grule->func = grouper_lt_uint64_t_uint64_t_abs;
           break;
         case RULE_LT | RULE_S1_64 | RULE_S2_64 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_lt_uint64_t_uint64_t_rel;
+          grule->func = grouper_lt_uint64_t_uint64_t_rel;
           break;
         case RULE_LT | RULE_S1_64 | RULE_S2_64 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_lt_uint64_t_uint64_t_no;
+          grule->func = grouper_lt_uint64_t_uint64_t_no;
           break;
         case RULE_LE | RULE_S1_8 | RULE_S2_8 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_le_uint8_t_uint8_t_abs;
+          grule->func = grouper_le_uint8_t_uint8_t_abs;
           break;
         case RULE_LE | RULE_S1_8 | RULE_S2_8 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_le_uint8_t_uint8_t_rel;
+          grule->func = grouper_le_uint8_t_uint8_t_rel;
           break;
         case RULE_LE | RULE_S1_8 | RULE_S2_8 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_le_uint8_t_uint8_t_no;
+          grule->func = grouper_le_uint8_t_uint8_t_no;
           break;
         case RULE_LE | RULE_S1_8 | RULE_S2_16 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_le_uint8_t_uint16_t_abs;
+          grule->func = grouper_le_uint8_t_uint16_t_abs;
           break;
         case RULE_LE | RULE_S1_8 | RULE_S2_16 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_le_uint8_t_uint16_t_rel;
+          grule->func = grouper_le_uint8_t_uint16_t_rel;
           break;
         case RULE_LE | RULE_S1_8 | RULE_S2_16 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_le_uint8_t_uint16_t_no;
+          grule->func = grouper_le_uint8_t_uint16_t_no;
           break;
         case RULE_LE | RULE_S1_8 | RULE_S2_32 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_le_uint8_t_uint32_t_abs;
+          grule->func = grouper_le_uint8_t_uint32_t_abs;
           break;
         case RULE_LE | RULE_S1_8 | RULE_S2_32 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_le_uint8_t_uint32_t_rel;
+          grule->func = grouper_le_uint8_t_uint32_t_rel;
           break;
         case RULE_LE | RULE_S1_8 | RULE_S2_32 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_le_uint8_t_uint32_t_no;
+          grule->func = grouper_le_uint8_t_uint32_t_no;
           break;
         case RULE_LE | RULE_S1_8 | RULE_S2_64 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_le_uint8_t_uint64_t_abs;
+          grule->func = grouper_le_uint8_t_uint64_t_abs;
           break;
         case RULE_LE | RULE_S1_8 | RULE_S2_64 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_le_uint8_t_uint64_t_rel;
+          grule->func = grouper_le_uint8_t_uint64_t_rel;
           break;
         case RULE_LE | RULE_S1_8 | RULE_S2_64 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_le_uint8_t_uint64_t_no;
+          grule->func = grouper_le_uint8_t_uint64_t_no;
           break;
         case RULE_LE | RULE_S1_16 | RULE_S2_8 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_le_uint16_t_uint8_t_abs;
+          grule->func = grouper_le_uint16_t_uint8_t_abs;
           break;
         case RULE_LE | RULE_S1_16 | RULE_S2_8 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_le_uint16_t_uint8_t_rel;
+          grule->func = grouper_le_uint16_t_uint8_t_rel;
           break;
         case RULE_LE | RULE_S1_16 | RULE_S2_8 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_le_uint16_t_uint8_t_no;
+          grule->func = grouper_le_uint16_t_uint8_t_no;
           break;
         case RULE_LE | RULE_S1_16 | RULE_S2_16 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_le_uint16_t_uint16_t_abs;
+          grule->func = grouper_le_uint16_t_uint16_t_abs;
           break;
         case RULE_LE | RULE_S1_16 | RULE_S2_16 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_le_uint16_t_uint16_t_rel;
+          grule->func = grouper_le_uint16_t_uint16_t_rel;
           break;
         case RULE_LE | RULE_S1_16 | RULE_S2_16 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_le_uint16_t_uint16_t_no;
+          grule->func = grouper_le_uint16_t_uint16_t_no;
           break;
         case RULE_LE | RULE_S1_16 | RULE_S2_32 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_le_uint16_t_uint32_t_abs;
+          grule->func = grouper_le_uint16_t_uint32_t_abs;
           break;
         case RULE_LE | RULE_S1_16 | RULE_S2_32 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_le_uint16_t_uint32_t_rel;
+          grule->func = grouper_le_uint16_t_uint32_t_rel;
           break;
         case RULE_LE | RULE_S1_16 | RULE_S2_32 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_le_uint16_t_uint32_t_no;
+          grule->func = grouper_le_uint16_t_uint32_t_no;
           break;
         case RULE_LE | RULE_S1_16 | RULE_S2_64 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_le_uint16_t_uint64_t_abs;
+          grule->func = grouper_le_uint16_t_uint64_t_abs;
           break;
         case RULE_LE | RULE_S1_16 | RULE_S2_64 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_le_uint16_t_uint64_t_rel;
+          grule->func = grouper_le_uint16_t_uint64_t_rel;
           break;
         case RULE_LE | RULE_S1_16 | RULE_S2_64 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_le_uint16_t_uint64_t_no;
+          grule->func = grouper_le_uint16_t_uint64_t_no;
           break;
         case RULE_LE | RULE_S1_32 | RULE_S2_8 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_le_uint32_t_uint8_t_abs;
+          grule->func = grouper_le_uint32_t_uint8_t_abs;
           break;
         case RULE_LE | RULE_S1_32 | RULE_S2_8 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_le_uint32_t_uint8_t_rel;
+          grule->func = grouper_le_uint32_t_uint8_t_rel;
           break;
         case RULE_LE | RULE_S1_32 | RULE_S2_8 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_le_uint32_t_uint8_t_no;
+          grule->func = grouper_le_uint32_t_uint8_t_no;
           break;
         case RULE_LE | RULE_S1_32 | RULE_S2_16 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_le_uint32_t_uint16_t_abs;
+          grule->func = grouper_le_uint32_t_uint16_t_abs;
           break;
         case RULE_LE | RULE_S1_32 | RULE_S2_16 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_le_uint32_t_uint16_t_rel;
+          grule->func = grouper_le_uint32_t_uint16_t_rel;
           break;
         case RULE_LE | RULE_S1_32 | RULE_S2_16 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_le_uint32_t_uint16_t_no;
+          grule->func = grouper_le_uint32_t_uint16_t_no;
           break;
         case RULE_LE | RULE_S1_32 | RULE_S2_32 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_le_uint32_t_uint32_t_abs;
+          grule->func = grouper_le_uint32_t_uint32_t_abs;
           break;
         case RULE_LE | RULE_S1_32 | RULE_S2_32 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_le_uint32_t_uint32_t_rel;
+          grule->func = grouper_le_uint32_t_uint32_t_rel;
           break;
         case RULE_LE | RULE_S1_32 | RULE_S2_32 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_le_uint32_t_uint32_t_no;
+          grule->func = grouper_le_uint32_t_uint32_t_no;
           break;
         case RULE_LE | RULE_S1_32 | RULE_S2_64 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_le_uint32_t_uint64_t_abs;
+          grule->func = grouper_le_uint32_t_uint64_t_abs;
           break;
         case RULE_LE | RULE_S1_32 | RULE_S2_64 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_le_uint32_t_uint64_t_rel;
+          grule->func = grouper_le_uint32_t_uint64_t_rel;
           break;
         case RULE_LE | RULE_S1_32 | RULE_S2_64 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_le_uint32_t_uint64_t_no;
+          grule->func = grouper_le_uint32_t_uint64_t_no;
           break;
         case RULE_LE | RULE_S1_64 | RULE_S2_8 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_le_uint64_t_uint8_t_abs;
+          grule->func = grouper_le_uint64_t_uint8_t_abs;
           break;
         case RULE_LE | RULE_S1_64 | RULE_S2_8 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_le_uint64_t_uint8_t_rel;
+          grule->func = grouper_le_uint64_t_uint8_t_rel;
           break;
         case RULE_LE | RULE_S1_64 | RULE_S2_8 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_le_uint64_t_uint8_t_no;
+          grule->func = grouper_le_uint64_t_uint8_t_no;
           break;
         case RULE_LE | RULE_S1_64 | RULE_S2_16 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_le_uint64_t_uint16_t_abs;
+          grule->func = grouper_le_uint64_t_uint16_t_abs;
           break;
         case RULE_LE | RULE_S1_64 | RULE_S2_16 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_le_uint64_t_uint16_t_rel;
+          grule->func = grouper_le_uint64_t_uint16_t_rel;
           break;
         case RULE_LE | RULE_S1_64 | RULE_S2_16 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_le_uint64_t_uint16_t_no;
+          grule->func = grouper_le_uint64_t_uint16_t_no;
           break;
         case RULE_LE | RULE_S1_64 | RULE_S2_32 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_le_uint64_t_uint32_t_abs;
+          grule->func = grouper_le_uint64_t_uint32_t_abs;
           break;
         case RULE_LE | RULE_S1_64 | RULE_S2_32 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_le_uint64_t_uint32_t_rel;
+          grule->func = grouper_le_uint64_t_uint32_t_rel;
           break;
         case RULE_LE | RULE_S1_64 | RULE_S2_32 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_le_uint64_t_uint32_t_no;
+          grule->func = grouper_le_uint64_t_uint32_t_no;
           break;
         case RULE_LE | RULE_S1_64 | RULE_S2_64 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_le_uint64_t_uint64_t_abs;
+          grule->func = grouper_le_uint64_t_uint64_t_abs;
           break;
         case RULE_LE | RULE_S1_64 | RULE_S2_64 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_le_uint64_t_uint64_t_rel;
+          grule->func = grouper_le_uint64_t_uint64_t_rel;
           break;
         case RULE_LE | RULE_S1_64 | RULE_S2_64 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_le_uint64_t_uint64_t_no;
+          grule->func = grouper_le_uint64_t_uint64_t_no;
           break;
         case RULE_GE | RULE_S1_8 | RULE_S2_8 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ge_uint8_t_uint8_t_abs;
+          grule->func = grouper_ge_uint8_t_uint8_t_abs;
           break;
         case RULE_GE | RULE_S1_8 | RULE_S2_8 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ge_uint8_t_uint8_t_rel;
+          grule->func = grouper_ge_uint8_t_uint8_t_rel;
           break;
         case RULE_GE | RULE_S1_8 | RULE_S2_8 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ge_uint8_t_uint8_t_no;
+          grule->func = grouper_ge_uint8_t_uint8_t_no;
           break;
         case RULE_GE | RULE_S1_8 | RULE_S2_16 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ge_uint8_t_uint16_t_abs;
+          grule->func = grouper_ge_uint8_t_uint16_t_abs;
           break;
         case RULE_GE | RULE_S1_8 | RULE_S2_16 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ge_uint8_t_uint16_t_rel;
+          grule->func = grouper_ge_uint8_t_uint16_t_rel;
           break;
         case RULE_GE | RULE_S1_8 | RULE_S2_16 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ge_uint8_t_uint16_t_no;
+          grule->func = grouper_ge_uint8_t_uint16_t_no;
           break;
         case RULE_GE | RULE_S1_8 | RULE_S2_32 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ge_uint8_t_uint32_t_abs;
+          grule->func = grouper_ge_uint8_t_uint32_t_abs;
           break;
         case RULE_GE | RULE_S1_8 | RULE_S2_32 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ge_uint8_t_uint32_t_rel;
+          grule->func = grouper_ge_uint8_t_uint32_t_rel;
           break;
         case RULE_GE | RULE_S1_8 | RULE_S2_32 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ge_uint8_t_uint32_t_no;
+          grule->func = grouper_ge_uint8_t_uint32_t_no;
           break;
         case RULE_GE | RULE_S1_8 | RULE_S2_64 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ge_uint8_t_uint64_t_abs;
+          grule->func = grouper_ge_uint8_t_uint64_t_abs;
           break;
         case RULE_GE | RULE_S1_8 | RULE_S2_64 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ge_uint8_t_uint64_t_rel;
+          grule->func = grouper_ge_uint8_t_uint64_t_rel;
           break;
         case RULE_GE | RULE_S1_8 | RULE_S2_64 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ge_uint8_t_uint64_t_no;
+          grule->func = grouper_ge_uint8_t_uint64_t_no;
           break;
         case RULE_GE | RULE_S1_16 | RULE_S2_8 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ge_uint16_t_uint8_t_abs;
+          grule->func = grouper_ge_uint16_t_uint8_t_abs;
           break;
         case RULE_GE | RULE_S1_16 | RULE_S2_8 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ge_uint16_t_uint8_t_rel;
+          grule->func = grouper_ge_uint16_t_uint8_t_rel;
           break;
         case RULE_GE | RULE_S1_16 | RULE_S2_8 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ge_uint16_t_uint8_t_no;
+          grule->func = grouper_ge_uint16_t_uint8_t_no;
           break;
         case RULE_GE | RULE_S1_16 | RULE_S2_16 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ge_uint16_t_uint16_t_abs;
+          grule->func = grouper_ge_uint16_t_uint16_t_abs;
           break;
         case RULE_GE | RULE_S1_16 | RULE_S2_16 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ge_uint16_t_uint16_t_rel;
+          grule->func = grouper_ge_uint16_t_uint16_t_rel;
           break;
         case RULE_GE | RULE_S1_16 | RULE_S2_16 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ge_uint16_t_uint16_t_no;
+          grule->func = grouper_ge_uint16_t_uint16_t_no;
           break;
         case RULE_GE | RULE_S1_16 | RULE_S2_32 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ge_uint16_t_uint32_t_abs;
+          grule->func = grouper_ge_uint16_t_uint32_t_abs;
           break;
         case RULE_GE | RULE_S1_16 | RULE_S2_32 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ge_uint16_t_uint32_t_rel;
+          grule->func = grouper_ge_uint16_t_uint32_t_rel;
           break;
         case RULE_GE | RULE_S1_16 | RULE_S2_32 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ge_uint16_t_uint32_t_no;
+          grule->func = grouper_ge_uint16_t_uint32_t_no;
           break;
         case RULE_GE | RULE_S1_16 | RULE_S2_64 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ge_uint16_t_uint64_t_abs;
+          grule->func = grouper_ge_uint16_t_uint64_t_abs;
           break;
         case RULE_GE | RULE_S1_16 | RULE_S2_64 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ge_uint16_t_uint64_t_rel;
+          grule->func = grouper_ge_uint16_t_uint64_t_rel;
           break;
         case RULE_GE | RULE_S1_16 | RULE_S2_64 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ge_uint16_t_uint64_t_no;
+          grule->func = grouper_ge_uint16_t_uint64_t_no;
           break;
         case RULE_GE | RULE_S1_32 | RULE_S2_8 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ge_uint32_t_uint8_t_abs;
+          grule->func = grouper_ge_uint32_t_uint8_t_abs;
           break;
         case RULE_GE | RULE_S1_32 | RULE_S2_8 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ge_uint32_t_uint8_t_rel;
+          grule->func = grouper_ge_uint32_t_uint8_t_rel;
           break;
         case RULE_GE | RULE_S1_32 | RULE_S2_8 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ge_uint32_t_uint8_t_no;
+          grule->func = grouper_ge_uint32_t_uint8_t_no;
           break;
         case RULE_GE | RULE_S1_32 | RULE_S2_16 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ge_uint32_t_uint16_t_abs;
+          grule->func = grouper_ge_uint32_t_uint16_t_abs;
           break;
         case RULE_GE | RULE_S1_32 | RULE_S2_16 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ge_uint32_t_uint16_t_rel;
+          grule->func = grouper_ge_uint32_t_uint16_t_rel;
           break;
         case RULE_GE | RULE_S1_32 | RULE_S2_16 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ge_uint32_t_uint16_t_no;
+          grule->func = grouper_ge_uint32_t_uint16_t_no;
           break;
         case RULE_GE | RULE_S1_32 | RULE_S2_32 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ge_uint32_t_uint32_t_abs;
+          grule->func = grouper_ge_uint32_t_uint32_t_abs;
           break;
         case RULE_GE | RULE_S1_32 | RULE_S2_32 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ge_uint32_t_uint32_t_rel;
+          grule->func = grouper_ge_uint32_t_uint32_t_rel;
           break;
         case RULE_GE | RULE_S1_32 | RULE_S2_32 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ge_uint32_t_uint32_t_no;
+          grule->func = grouper_ge_uint32_t_uint32_t_no;
           break;
         case RULE_GE | RULE_S1_32 | RULE_S2_64 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ge_uint32_t_uint64_t_abs;
+          grule->func = grouper_ge_uint32_t_uint64_t_abs;
           break;
         case RULE_GE | RULE_S1_32 | RULE_S2_64 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ge_uint32_t_uint64_t_rel;
+          grule->func = grouper_ge_uint32_t_uint64_t_rel;
           break;
         case RULE_GE | RULE_S1_32 | RULE_S2_64 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ge_uint32_t_uint64_t_no;
+          grule->func = grouper_ge_uint32_t_uint64_t_no;
           break;
         case RULE_GE | RULE_S1_64 | RULE_S2_8 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ge_uint64_t_uint8_t_abs;
+          grule->func = grouper_ge_uint64_t_uint8_t_abs;
           break;
         case RULE_GE | RULE_S1_64 | RULE_S2_8 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ge_uint64_t_uint8_t_rel;
+          grule->func = grouper_ge_uint64_t_uint8_t_rel;
           break;
         case RULE_GE | RULE_S1_64 | RULE_S2_8 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ge_uint64_t_uint8_t_no;
+          grule->func = grouper_ge_uint64_t_uint8_t_no;
           break;
         case RULE_GE | RULE_S1_64 | RULE_S2_16 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ge_uint64_t_uint16_t_abs;
+          grule->func = grouper_ge_uint64_t_uint16_t_abs;
           break;
         case RULE_GE | RULE_S1_64 | RULE_S2_16 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ge_uint64_t_uint16_t_rel;
+          grule->func = grouper_ge_uint64_t_uint16_t_rel;
           break;
         case RULE_GE | RULE_S1_64 | RULE_S2_16 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ge_uint64_t_uint16_t_no;
+          grule->func = grouper_ge_uint64_t_uint16_t_no;
           break;
         case RULE_GE | RULE_S1_64 | RULE_S2_32 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ge_uint64_t_uint32_t_abs;
+          grule->func = grouper_ge_uint64_t_uint32_t_abs;
           break;
         case RULE_GE | RULE_S1_64 | RULE_S2_32 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ge_uint64_t_uint32_t_rel;
+          grule->func = grouper_ge_uint64_t_uint32_t_rel;
           break;
         case RULE_GE | RULE_S1_64 | RULE_S2_32 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ge_uint64_t_uint32_t_no;
+          grule->func = grouper_ge_uint64_t_uint32_t_no;
           break;
         case RULE_GE | RULE_S1_64 | RULE_S2_64 | RULE_ABS:
-          binfos[i].group_modules[j].func = grouper_ge_uint64_t_uint64_t_abs;
+          grule->func = grouper_ge_uint64_t_uint64_t_abs;
           break;
         case RULE_GE | RULE_S1_64 | RULE_S2_64 | RULE_REL:
-          binfos[i].group_modules[j].func = grouper_ge_uint64_t_uint64_t_rel;
+          grule->func = grouper_ge_uint64_t_uint64_t_rel;
           break;
         case RULE_GE | RULE_S1_64 | RULE_S2_64 | RULE_NO:
-          binfos[i].group_modules[j].func = grouper_ge_uint64_t_uint64_t_no;
+          grule->func = grouper_ge_uint64_t_uint64_t_no;
           break;
           
       }
@@ -967,163 +968,164 @@ assign_fptr(struct flowquery *fquery,
     
     
     /* for loop for the group-aggregation */
-    for (int j = 0; j < binfos[i].num_aggr; j++) {
-      switch (binfos[i].aggr[j].op) {
+    for (int j = 0; j < branch->num_aggr; j++) {
+      struct grouper_aggr* aggrule = &branch->aggr[j];  
+      switch (aggrule->op) {
         case RULE_STATIC | RULE_S1_8:
-          binfos[i].aggr[j].func = aggr_static_uint8_t;
+          aggrule->func = aggr_static_uint8_t;
           break;
         case RULE_STATIC | RULE_S1_16:
-          binfos[i].aggr[j].func = aggr_static_uint16_t;
+          aggrule->func = aggr_static_uint16_t;
           break;
         case RULE_STATIC | RULE_S1_32:
-          binfos[i].aggr[j].func = aggr_static_uint32_t;
+          aggrule->func = aggr_static_uint32_t;
           break;
         case RULE_STATIC | RULE_S1_64:
-          binfos[i].aggr[j].func = aggr_static_uint64_t;
+          aggrule->func = aggr_static_uint64_t;
           break;
         case RULE_COUNT | RULE_S1_8:
-          binfos[i].aggr[j].func = aggr_count_uint8_t;
+          aggrule->func = aggr_count_uint8_t;
           break;
         case RULE_COUNT | RULE_S1_16:
-          binfos[i].aggr[j].func = aggr_count_uint16_t;
+          aggrule->func = aggr_count_uint16_t;
           break;
         case RULE_COUNT | RULE_S1_32:
-          binfos[i].aggr[j].func = aggr_count_uint32_t;
+          aggrule->func = aggr_count_uint32_t;
           break;
         case RULE_COUNT | RULE_S1_64:
-          binfos[i].aggr[j].func = aggr_count_uint64_t;
+          aggrule->func = aggr_count_uint64_t;
           break;
         case RULE_UNION | RULE_S1_8:
-          binfos[i].aggr[j].func = aggr_union_uint8_t;
+          aggrule->func = aggr_union_uint8_t;
           break;
         case RULE_UNION | RULE_S1_16:
-          binfos[i].aggr[j].func = aggr_union_uint16_t;
+          aggrule->func = aggr_union_uint16_t;
           break;
         case RULE_UNION | RULE_S1_32:
-          binfos[i].aggr[j].func = aggr_union_uint32_t;
+          aggrule->func = aggr_union_uint32_t;
           break;
         case RULE_UNION | RULE_S1_64:
-          binfos[i].aggr[j].func = aggr_union_uint64_t;
+          aggrule->func = aggr_union_uint64_t;
           break;
         case RULE_MIN | RULE_S1_8:
-          binfos[i].aggr[j].func = aggr_min_uint8_t;
+          aggrule->func = aggr_min_uint8_t;
           break;
         case RULE_MIN | RULE_S1_16:
-          binfos[i].aggr[j].func = aggr_min_uint16_t;
+          aggrule->func = aggr_min_uint16_t;
           break;
         case RULE_MIN | RULE_S1_32:
-          binfos[i].aggr[j].func = aggr_min_uint32_t;
+          aggrule->func = aggr_min_uint32_t;
           break;
         case RULE_MIN | RULE_S1_64:
-          binfos[i].aggr[j].func = aggr_min_uint64_t;
+          aggrule->func = aggr_min_uint64_t;
           break;
         case RULE_MAX | RULE_S1_8:
-          binfos[i].aggr[j].func = aggr_max_uint8_t;
+          aggrule->func = aggr_max_uint8_t;
           break;
         case RULE_MAX | RULE_S1_16:
-          binfos[i].aggr[j].func = aggr_max_uint16_t;
+          aggrule->func = aggr_max_uint16_t;
           break;
         case RULE_MAX | RULE_S1_32:
-          binfos[i].aggr[j].func = aggr_max_uint32_t;
+          aggrule->func = aggr_max_uint32_t;
           break;
         case RULE_MAX | RULE_S1_64:
-          binfos[i].aggr[j].func = aggr_max_uint64_t;
+          aggrule->func = aggr_max_uint64_t;
           break;
         case RULE_MEDIAN | RULE_S1_8:
-          binfos[i].aggr[j].func = aggr_median_uint8_t;
+          aggrule->func = aggr_median_uint8_t;
           break;
         case RULE_MEDIAN | RULE_S1_16:
-          binfos[i].aggr[j].func = aggr_median_uint16_t;
+          aggrule->func = aggr_median_uint16_t;
           break;
         case RULE_MEDIAN | RULE_S1_32:
-          binfos[i].aggr[j].func = aggr_median_uint32_t;
+          aggrule->func = aggr_median_uint32_t;
           break;
         case RULE_MEDIAN | RULE_S1_64:
-          binfos[i].aggr[j].func = aggr_median_uint64_t;
+          aggrule->func = aggr_median_uint64_t;
           break;
         case RULE_MEAN | RULE_S1_8:
-          binfos[i].aggr[j].func = aggr_mean_uint8_t;
+          aggrule->func = aggr_mean_uint8_t;
           break;
         case RULE_MEAN | RULE_S1_16:
-          binfos[i].aggr[j].func = aggr_mean_uint16_t;
+          aggrule->func = aggr_mean_uint16_t;
           break;
         case RULE_MEAN | RULE_S1_32:
-          binfos[i].aggr[j].func = aggr_mean_uint32_t;
+          aggrule->func = aggr_mean_uint32_t;
           break;
         case RULE_MEAN | RULE_S1_64:
-          binfos[i].aggr[j].func = aggr_mean_uint64_t;
+          aggrule->func = aggr_mean_uint64_t;
           break;
         case RULE_STDDEV | RULE_S1_8:
-          binfos[i].aggr[j].func = aggr_stddev_uint8_t;
+          aggrule->func = aggr_stddev_uint8_t;
           break;
         case RULE_STDDEV | RULE_S1_16:
-          binfos[i].aggr[j].func = aggr_stddev_uint16_t;
+          aggrule->func = aggr_stddev_uint16_t;
           break;
         case RULE_STDDEV | RULE_S1_32:
-          binfos[i].aggr[j].func = aggr_stddev_uint32_t;
+          aggrule->func = aggr_stddev_uint32_t;
           break;
         case RULE_STDDEV | RULE_S1_64:
-          binfos[i].aggr[j].func = aggr_stddev_uint64_t;
+          aggrule->func = aggr_stddev_uint64_t;
           break;
         case RULE_XOR | RULE_S1_8:
-          binfos[i].aggr[j].func = aggr_xor_uint8_t;
+          aggrule->func = aggr_xor_uint8_t;
           break;
         case RULE_XOR | RULE_S1_16:
-          binfos[i].aggr[j].func = aggr_xor_uint16_t;
+          aggrule->func = aggr_xor_uint16_t;
           break;
         case RULE_XOR | RULE_S1_32:
-          binfos[i].aggr[j].func = aggr_xor_uint32_t;
+          aggrule->func = aggr_xor_uint32_t;
           break;
         case RULE_XOR | RULE_S1_64:
-          binfos[i].aggr[j].func = aggr_xor_uint64_t;
+          aggrule->func = aggr_xor_uint64_t;
           break;
         case RULE_SUM | RULE_S1_8:
-          binfos[i].aggr[j].func = aggr_sum_uint8_t;
+          aggrule->func = aggr_sum_uint8_t;
           break;
         case RULE_SUM | RULE_S1_16:
-          binfos[i].aggr[j].func = aggr_sum_uint16_t;
+          aggrule->func = aggr_sum_uint16_t;
           break;
         case RULE_SUM | RULE_S1_32:
-          binfos[i].aggr[j].func = aggr_sum_uint32_t;
+          aggrule->func = aggr_sum_uint32_t;
           break;
         case RULE_SUM | RULE_S1_64:
-          binfos[i].aggr[j].func = aggr_sum_uint64_t;
+          aggrule->func = aggr_sum_uint64_t;
           break;
         case RULE_PROD | RULE_S1_8:
-          binfos[i].aggr[j].func = aggr_prod_uint8_t;
+          aggrule->func = aggr_prod_uint8_t;
           break;
         case RULE_PROD | RULE_S1_16:
-          binfos[i].aggr[j].func = aggr_prod_uint16_t;
+          aggrule->func = aggr_prod_uint16_t;
           break;
         case RULE_PROD | RULE_S1_32:
-          binfos[i].aggr[j].func = aggr_prod_uint32_t;
+          aggrule->func = aggr_prod_uint32_t;
           break;
         case RULE_PROD | RULE_S1_64:
-          binfos[i].aggr[j].func = aggr_prod_uint64_t;
+          aggrule->func = aggr_prod_uint64_t;
           break;
         case RULE_AND | RULE_S1_8:
-          binfos[i].aggr[j].func = aggr_and_uint8_t;
+          aggrule->func = aggr_and_uint8_t;
           break;
         case RULE_AND | RULE_S1_16:
-          binfos[i].aggr[j].func = aggr_and_uint16_t;
+          aggrule->func = aggr_and_uint16_t;
           break;
         case RULE_AND | RULE_S1_32:
-          binfos[i].aggr[j].func = aggr_and_uint32_t;
+          aggrule->func = aggr_and_uint32_t;
           break;
         case RULE_AND | RULE_S1_64:
-          binfos[i].aggr[j].func = aggr_and_uint64_t;
+          aggrule->func = aggr_and_uint64_t;
           break;
         case RULE_OR | RULE_S1_8:
-          binfos[i].aggr[j].func = aggr_or_uint8_t;
+          aggrule->func = aggr_or_uint8_t;
           break;
         case RULE_OR | RULE_S1_16:
-          binfos[i].aggr[j].func = aggr_or_uint16_t;
+          aggrule->func = aggr_or_uint16_t;
           break;
         case RULE_OR | RULE_S1_32:
-          binfos[i].aggr[j].func = aggr_or_uint32_t;
+          aggrule->func = aggr_or_uint32_t;
           break;
         case RULE_OR | RULE_S1_64:
-          binfos[i].aggr[j].func = aggr_or_uint64_t;
+          aggrule->func = aggr_or_uint64_t;
           break;
           
       }
@@ -1131,79 +1133,80 @@ assign_fptr(struct flowquery *fquery,
     
     
     /* for loop for the group-filter */
-    for (int j = 0; j < binfos[i].num_gfilter_rules; j++) {
-      switch (binfos[i].gfilter_rules[j].op) {
+    for (int j = 0; j < branch->num_gfilter_rules; j++) {
+      struct gfilter_rule* gfrule = &branch->gfilter_rules[j];  
+      switch (gfrule->op) {
         case RULE_EQ | RULE_S1_8:
-          binfos[i].gfilter_rules[j].func = gfilter_eq_uint8_t;
+          gfrule->func = gfilter_eq_uint8_t;
           break;
         case RULE_EQ | RULE_S1_16:
-          binfos[i].gfilter_rules[j].func = gfilter_eq_uint16_t;
+          gfrule->func = gfilter_eq_uint16_t;
           break;
         case RULE_EQ | RULE_S1_32:
-          binfos[i].gfilter_rules[j].func = gfilter_eq_uint32_t;
+          gfrule->func = gfilter_eq_uint32_t;
           break;
         case RULE_EQ | RULE_S1_64:
-          binfos[i].gfilter_rules[j].func = gfilter_eq_uint64_t;
+          gfrule->func = gfilter_eq_uint64_t;
           break;
         case RULE_NE | RULE_S1_8:
-          binfos[i].gfilter_rules[j].func = gfilter_ne_uint8_t;
+          gfrule->func = gfilter_ne_uint8_t;
           break;
         case RULE_NE | RULE_S1_16:
-          binfos[i].gfilter_rules[j].func = gfilter_ne_uint16_t;
+          gfrule->func = gfilter_ne_uint16_t;
           break;
         case RULE_NE | RULE_S1_32:
-          binfos[i].gfilter_rules[j].func = gfilter_ne_uint32_t;
+          gfrule->func = gfilter_ne_uint32_t;
           break;
         case RULE_NE | RULE_S1_64:
-          binfos[i].gfilter_rules[j].func = gfilter_ne_uint64_t;
+          gfrule->func = gfilter_ne_uint64_t;
           break;
         case RULE_GT | RULE_S1_8:
-          binfos[i].gfilter_rules[j].func = gfilter_gt_uint8_t;
+          gfrule->func = gfilter_gt_uint8_t;
           break;
         case RULE_GT | RULE_S1_16:
-          binfos[i].gfilter_rules[j].func = gfilter_gt_uint16_t;
+          gfrule->func = gfilter_gt_uint16_t;
           break;
         case RULE_GT | RULE_S1_32:
-          binfos[i].gfilter_rules[j].func = gfilter_gt_uint32_t;
+          gfrule->func = gfilter_gt_uint32_t;
           break;
         case RULE_GT | RULE_S1_64:
-          binfos[i].gfilter_rules[j].func = gfilter_gt_uint64_t;
+          gfrule->func = gfilter_gt_uint64_t;
           break;
         case RULE_LT | RULE_S1_8:
-          binfos[i].gfilter_rules[j].func = gfilter_lt_uint8_t;
+          gfrule->func = gfilter_lt_uint8_t;
           break;
         case RULE_LT | RULE_S1_16:
-          binfos[i].gfilter_rules[j].func = gfilter_lt_uint16_t;
+          gfrule->func = gfilter_lt_uint16_t;
           break;
         case RULE_LT | RULE_S1_32:
-          binfos[i].gfilter_rules[j].func = gfilter_lt_uint32_t;
+          gfrule->func = gfilter_lt_uint32_t;
           break;
         case RULE_LT | RULE_S1_64:
-          binfos[i].gfilter_rules[j].func = gfilter_lt_uint64_t;
+          gfrule->func = gfilter_lt_uint64_t;
           break;
         case RULE_LE | RULE_S1_8:
-          binfos[i].gfilter_rules[j].func = gfilter_le_uint8_t;
+          gfrule->func = gfilter_le_uint8_t;
           break;
         case RULE_LE | RULE_S1_16:
-          binfos[i].gfilter_rules[j].func = gfilter_le_uint16_t;
+          gfrule->func = gfilter_le_uint16_t;
           break;
         case RULE_LE | RULE_S1_32:
-          binfos[i].gfilter_rules[j].func = gfilter_le_uint32_t;
+          gfrule->func = gfilter_le_uint32_t;
           break;
         case RULE_LE | RULE_S1_64:
-          binfos[i].gfilter_rules[j].func = gfilter_le_uint64_t;
+          gfrule->func = gfilter_le_uint64_t;
           break;
         case RULE_GE | RULE_S1_8:
-          binfos[i].gfilter_rules[j].func = gfilter_ge_uint8_t;
+          gfrule->func = gfilter_ge_uint8_t;
           break;
         case RULE_GE | RULE_S1_16:
-          binfos[i].gfilter_rules[j].func = gfilter_ge_uint16_t;
+          gfrule->func = gfilter_ge_uint16_t;
           break;
         case RULE_GE | RULE_S1_32:
-          binfos[i].gfilter_rules[j].func = gfilter_ge_uint32_t;
+          gfrule->func = gfilter_ge_uint32_t;
           break;
         case RULE_GE | RULE_S1_64:
-          binfos[i].gfilter_rules[j].func = gfilter_ge_uint64_t;
+          gfrule->func = gfilter_ge_uint64_t;
           break;
           
       }
@@ -1213,381 +1216,382 @@ assign_fptr(struct flowquery *fquery,
   
   /* for loop for the merger */
   for (int j = 0; j < fquery->num_merger_rules; j++) {
-    switch (fquery->mruleset[j].op) {
+    struct merger_rule* mrule = &fquery->mruleset[j];  
+    switch (mrule->op) {
       case RULE_EQ | RULE_S1_8 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_eq_uint8_t_uint8_t;
+        mrule->func = merger_eq_uint8_t_uint8_t;
         break;
       case RULE_EQ | RULE_S1_8 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_eq_uint8_t_uint16_t;
+        mrule->func = merger_eq_uint8_t_uint16_t;
         break;
       case RULE_EQ | RULE_S1_8 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_eq_uint8_t_uint32_t;
+        mrule->func = merger_eq_uint8_t_uint32_t;
         break;
       case RULE_EQ | RULE_S1_8 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_eq_uint8_t_uint64_t;
+        mrule->func = merger_eq_uint8_t_uint64_t;
         break;
       case RULE_EQ | RULE_S1_16 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_eq_uint16_t_uint8_t;
+        mrule->func = merger_eq_uint16_t_uint8_t;
         break;
       case RULE_EQ | RULE_S1_16 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_eq_uint16_t_uint16_t;
+        mrule->func = merger_eq_uint16_t_uint16_t;
         break;
       case RULE_EQ | RULE_S1_16 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_eq_uint16_t_uint32_t;
+        mrule->func = merger_eq_uint16_t_uint32_t;
         break;
       case RULE_EQ | RULE_S1_16 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_eq_uint16_t_uint64_t;
+        mrule->func = merger_eq_uint16_t_uint64_t;
         break;
       case RULE_EQ | RULE_S1_32 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_eq_uint32_t_uint8_t;
+        mrule->func = merger_eq_uint32_t_uint8_t;
         break;
       case RULE_EQ | RULE_S1_32 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_eq_uint32_t_uint16_t;
+        mrule->func = merger_eq_uint32_t_uint16_t;
         break;
       case RULE_EQ | RULE_S1_32 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_eq_uint32_t_uint32_t;
+        mrule->func = merger_eq_uint32_t_uint32_t;
         break;
       case RULE_EQ | RULE_S1_32 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_eq_uint32_t_uint64_t;
+        mrule->func = merger_eq_uint32_t_uint64_t;
         break;
       case RULE_EQ | RULE_S1_64 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_eq_uint64_t_uint8_t;
+        mrule->func = merger_eq_uint64_t_uint8_t;
         break;
       case RULE_EQ | RULE_S1_64 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_eq_uint64_t_uint16_t;
+        mrule->func = merger_eq_uint64_t_uint16_t;
         break;
       case RULE_EQ | RULE_S1_64 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_eq_uint64_t_uint32_t;
+        mrule->func = merger_eq_uint64_t_uint32_t;
         break;
       case RULE_EQ | RULE_S1_64 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_eq_uint64_t_uint64_t;
+        mrule->func = merger_eq_uint64_t_uint64_t;
         break;
       case RULE_NE | RULE_S1_8 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_ne_uint8_t_uint8_t;
+        mrule->func = merger_ne_uint8_t_uint8_t;
         break;
       case RULE_NE | RULE_S1_8 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_ne_uint8_t_uint16_t;
+        mrule->func = merger_ne_uint8_t_uint16_t;
         break;
       case RULE_NE | RULE_S1_8 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_ne_uint8_t_uint32_t;
+        mrule->func = merger_ne_uint8_t_uint32_t;
         break;
       case RULE_NE | RULE_S1_8 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_ne_uint8_t_uint64_t;
+        mrule->func = merger_ne_uint8_t_uint64_t;
         break;
       case RULE_NE | RULE_S1_16 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_ne_uint16_t_uint8_t;
+        mrule->func = merger_ne_uint16_t_uint8_t;
         break;
       case RULE_NE | RULE_S1_16 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_ne_uint16_t_uint16_t;
+        mrule->func = merger_ne_uint16_t_uint16_t;
         break;
       case RULE_NE | RULE_S1_16 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_ne_uint16_t_uint32_t;
+        mrule->func = merger_ne_uint16_t_uint32_t;
         break;
       case RULE_NE | RULE_S1_16 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_ne_uint16_t_uint64_t;
+        mrule->func = merger_ne_uint16_t_uint64_t;
         break;
       case RULE_NE | RULE_S1_32 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_ne_uint32_t_uint8_t;
+        mrule->func = merger_ne_uint32_t_uint8_t;
         break;
       case RULE_NE | RULE_S1_32 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_ne_uint32_t_uint16_t;
+        mrule->func = merger_ne_uint32_t_uint16_t;
         break;
       case RULE_NE | RULE_S1_32 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_ne_uint32_t_uint32_t;
+        mrule->func = merger_ne_uint32_t_uint32_t;
         break;
       case RULE_NE | RULE_S1_32 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_ne_uint32_t_uint64_t;
+        mrule->func = merger_ne_uint32_t_uint64_t;
         break;
       case RULE_NE | RULE_S1_64 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_ne_uint64_t_uint8_t;
+        mrule->func = merger_ne_uint64_t_uint8_t;
         break;
       case RULE_NE | RULE_S1_64 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_ne_uint64_t_uint16_t;
+        mrule->func = merger_ne_uint64_t_uint16_t;
         break;
       case RULE_NE | RULE_S1_64 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_ne_uint64_t_uint32_t;
+        mrule->func = merger_ne_uint64_t_uint32_t;
         break;
       case RULE_NE | RULE_S1_64 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_ne_uint64_t_uint64_t;
+        mrule->func = merger_ne_uint64_t_uint64_t;
         break;
       case RULE_GT | RULE_S1_8 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_gt_uint8_t_uint8_t;
+        mrule->func = merger_gt_uint8_t_uint8_t;
         break;
       case RULE_GT | RULE_S1_8 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_gt_uint8_t_uint16_t;
+        mrule->func = merger_gt_uint8_t_uint16_t;
         break;
       case RULE_GT | RULE_S1_8 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_gt_uint8_t_uint32_t;
+        mrule->func = merger_gt_uint8_t_uint32_t;
         break;
       case RULE_GT | RULE_S1_8 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_gt_uint8_t_uint64_t;
+        mrule->func = merger_gt_uint8_t_uint64_t;
         break;
       case RULE_GT | RULE_S1_16 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_gt_uint16_t_uint8_t;
+        mrule->func = merger_gt_uint16_t_uint8_t;
         break;
       case RULE_GT | RULE_S1_16 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_gt_uint16_t_uint16_t;
+        mrule->func = merger_gt_uint16_t_uint16_t;
         break;
       case RULE_GT | RULE_S1_16 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_gt_uint16_t_uint32_t;
+        mrule->func = merger_gt_uint16_t_uint32_t;
         break;
       case RULE_GT | RULE_S1_16 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_gt_uint16_t_uint64_t;
+        mrule->func = merger_gt_uint16_t_uint64_t;
         break;
       case RULE_GT | RULE_S1_32 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_gt_uint32_t_uint8_t;
+        mrule->func = merger_gt_uint32_t_uint8_t;
         break;
       case RULE_GT | RULE_S1_32 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_gt_uint32_t_uint16_t;
+        mrule->func = merger_gt_uint32_t_uint16_t;
         break;
       case RULE_GT | RULE_S1_32 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_gt_uint32_t_uint32_t;
+        mrule->func = merger_gt_uint32_t_uint32_t;
         break;
       case RULE_GT | RULE_S1_32 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_gt_uint32_t_uint64_t;
+        mrule->func = merger_gt_uint32_t_uint64_t;
         break;
       case RULE_GT | RULE_S1_64 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_gt_uint64_t_uint8_t;
+        mrule->func = merger_gt_uint64_t_uint8_t;
         break;
       case RULE_GT | RULE_S1_64 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_gt_uint64_t_uint16_t;
+        mrule->func = merger_gt_uint64_t_uint16_t;
         break;
       case RULE_GT | RULE_S1_64 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_gt_uint64_t_uint32_t;
+        mrule->func = merger_gt_uint64_t_uint32_t;
         break;
       case RULE_GT | RULE_S1_64 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_gt_uint64_t_uint64_t;
+        mrule->func = merger_gt_uint64_t_uint64_t;
         break;
       case RULE_LT | RULE_S1_8 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_lt_uint8_t_uint8_t;
+        mrule->func = merger_lt_uint8_t_uint8_t;
         break;
       case RULE_LT | RULE_S1_8 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_lt_uint8_t_uint16_t;
+        mrule->func = merger_lt_uint8_t_uint16_t;
         break;
       case RULE_LT | RULE_S1_8 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_lt_uint8_t_uint32_t;
+        mrule->func = merger_lt_uint8_t_uint32_t;
         break;
       case RULE_LT | RULE_S1_8 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_lt_uint8_t_uint64_t;
+        mrule->func = merger_lt_uint8_t_uint64_t;
         break;
       case RULE_LT | RULE_S1_16 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_lt_uint16_t_uint8_t;
+        mrule->func = merger_lt_uint16_t_uint8_t;
         break;
       case RULE_LT | RULE_S1_16 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_lt_uint16_t_uint16_t;
+        mrule->func = merger_lt_uint16_t_uint16_t;
         break;
       case RULE_LT | RULE_S1_16 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_lt_uint16_t_uint32_t;
+        mrule->func = merger_lt_uint16_t_uint32_t;
         break;
       case RULE_LT | RULE_S1_16 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_lt_uint16_t_uint64_t;
+        mrule->func = merger_lt_uint16_t_uint64_t;
         break;
       case RULE_LT | RULE_S1_32 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_lt_uint32_t_uint8_t;
+        mrule->func = merger_lt_uint32_t_uint8_t;
         break;
       case RULE_LT | RULE_S1_32 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_lt_uint32_t_uint16_t;
+        mrule->func = merger_lt_uint32_t_uint16_t;
         break;
       case RULE_LT | RULE_S1_32 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_lt_uint32_t_uint32_t;
+        mrule->func = merger_lt_uint32_t_uint32_t;
         break;
       case RULE_LT | RULE_S1_32 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_lt_uint32_t_uint64_t;
+        mrule->func = merger_lt_uint32_t_uint64_t;
         break;
       case RULE_LT | RULE_S1_64 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_lt_uint64_t_uint8_t;
+        mrule->func = merger_lt_uint64_t_uint8_t;
         break;
       case RULE_LT | RULE_S1_64 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_lt_uint64_t_uint16_t;
+        mrule->func = merger_lt_uint64_t_uint16_t;
         break;
       case RULE_LT | RULE_S1_64 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_lt_uint64_t_uint32_t;
+        mrule->func = merger_lt_uint64_t_uint32_t;
         break;
       case RULE_LT | RULE_S1_64 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_lt_uint64_t_uint64_t;
+        mrule->func = merger_lt_uint64_t_uint64_t;
         break;
       case RULE_LE | RULE_S1_8 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_le_uint8_t_uint8_t;
+        mrule->func = merger_le_uint8_t_uint8_t;
         break;
       case RULE_LE | RULE_S1_8 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_le_uint8_t_uint16_t;
+        mrule->func = merger_le_uint8_t_uint16_t;
         break;
       case RULE_LE | RULE_S1_8 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_le_uint8_t_uint32_t;
+        mrule->func = merger_le_uint8_t_uint32_t;
         break;
       case RULE_LE | RULE_S1_8 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_le_uint8_t_uint64_t;
+        mrule->func = merger_le_uint8_t_uint64_t;
         break;
       case RULE_LE | RULE_S1_16 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_le_uint16_t_uint8_t;
+        mrule->func = merger_le_uint16_t_uint8_t;
         break;
       case RULE_LE | RULE_S1_16 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_le_uint16_t_uint16_t;
+        mrule->func = merger_le_uint16_t_uint16_t;
         break;
       case RULE_LE | RULE_S1_16 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_le_uint16_t_uint32_t;
+        mrule->func = merger_le_uint16_t_uint32_t;
         break;
       case RULE_LE | RULE_S1_16 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_le_uint16_t_uint64_t;
+        mrule->func = merger_le_uint16_t_uint64_t;
         break;
       case RULE_LE | RULE_S1_32 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_le_uint32_t_uint8_t;
+        mrule->func = merger_le_uint32_t_uint8_t;
         break;
       case RULE_LE | RULE_S1_32 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_le_uint32_t_uint16_t;
+        mrule->func = merger_le_uint32_t_uint16_t;
         break;
       case RULE_LE | RULE_S1_32 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_le_uint32_t_uint32_t;
+        mrule->func = merger_le_uint32_t_uint32_t;
         break;
       case RULE_LE | RULE_S1_32 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_le_uint32_t_uint64_t;
+        mrule->func = merger_le_uint32_t_uint64_t;
         break;
       case RULE_LE | RULE_S1_64 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_le_uint64_t_uint8_t;
+        mrule->func = merger_le_uint64_t_uint8_t;
         break;
       case RULE_LE | RULE_S1_64 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_le_uint64_t_uint16_t;
+        mrule->func = merger_le_uint64_t_uint16_t;
         break;
       case RULE_LE | RULE_S1_64 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_le_uint64_t_uint32_t;
+        mrule->func = merger_le_uint64_t_uint32_t;
         break;
       case RULE_LE | RULE_S1_64 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_le_uint64_t_uint64_t;
+        mrule->func = merger_le_uint64_t_uint64_t;
         break;
       case RULE_GE | RULE_S1_8 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_ge_uint8_t_uint8_t;
+        mrule->func = merger_ge_uint8_t_uint8_t;
         break;
       case RULE_GE | RULE_S1_8 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_ge_uint8_t_uint16_t;
+        mrule->func = merger_ge_uint8_t_uint16_t;
         break;
       case RULE_GE | RULE_S1_8 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_ge_uint8_t_uint32_t;
+        mrule->func = merger_ge_uint8_t_uint32_t;
         break;
       case RULE_GE | RULE_S1_8 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_ge_uint8_t_uint64_t;
+        mrule->func = merger_ge_uint8_t_uint64_t;
         break;
       case RULE_GE | RULE_S1_16 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_ge_uint16_t_uint8_t;
+        mrule->func = merger_ge_uint16_t_uint8_t;
         break;
       case RULE_GE | RULE_S1_16 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_ge_uint16_t_uint16_t;
+        mrule->func = merger_ge_uint16_t_uint16_t;
         break;
       case RULE_GE | RULE_S1_16 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_ge_uint16_t_uint32_t;
+        mrule->func = merger_ge_uint16_t_uint32_t;
         break;
       case RULE_GE | RULE_S1_16 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_ge_uint16_t_uint64_t;
+        mrule->func = merger_ge_uint16_t_uint64_t;
         break;
       case RULE_GE | RULE_S1_32 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_ge_uint32_t_uint8_t;
+        mrule->func = merger_ge_uint32_t_uint8_t;
         break;
       case RULE_GE | RULE_S1_32 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_ge_uint32_t_uint16_t;
+        mrule->func = merger_ge_uint32_t_uint16_t;
         break;
       case RULE_GE | RULE_S1_32 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_ge_uint32_t_uint32_t;
+        mrule->func = merger_ge_uint32_t_uint32_t;
         break;
       case RULE_GE | RULE_S1_32 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_ge_uint32_t_uint64_t;
+        mrule->func = merger_ge_uint32_t_uint64_t;
         break;
       case RULE_GE | RULE_S1_64 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_ge_uint64_t_uint8_t;
+        mrule->func = merger_ge_uint64_t_uint8_t;
         break;
       case RULE_GE | RULE_S1_64 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_ge_uint64_t_uint16_t;
+        mrule->func = merger_ge_uint64_t_uint16_t;
         break;
       case RULE_GE | RULE_S1_64 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_ge_uint64_t_uint32_t;
+        mrule->func = merger_ge_uint64_t_uint32_t;
         break;
       case RULE_GE | RULE_S1_64 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_ge_uint64_t_uint64_t;
+        mrule->func = merger_ge_uint64_t_uint64_t;
         break;
       case RULE_IN | RULE_S1_8 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_in_uint8_t_uint8_t;
+        mrule->func = merger_in_uint8_t_uint8_t;
         break;
       case RULE_IN | RULE_S1_8 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_in_uint8_t_uint16_t;
+        mrule->func = merger_in_uint8_t_uint16_t;
         break;
       case RULE_IN | RULE_S1_8 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_in_uint8_t_uint32_t;
+        mrule->func = merger_in_uint8_t_uint32_t;
         break;
       case RULE_IN | RULE_S1_8 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_in_uint8_t_uint64_t;
+        mrule->func = merger_in_uint8_t_uint64_t;
         break;
       case RULE_IN | RULE_S1_16 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_in_uint16_t_uint8_t;
+        mrule->func = merger_in_uint16_t_uint8_t;
         break;
       case RULE_IN | RULE_S1_16 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_in_uint16_t_uint16_t;
+        mrule->func = merger_in_uint16_t_uint16_t;
         break;
       case RULE_IN | RULE_S1_16 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_in_uint16_t_uint32_t;
+        mrule->func = merger_in_uint16_t_uint32_t;
         break;
       case RULE_IN | RULE_S1_16 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_in_uint16_t_uint64_t;
+        mrule->func = merger_in_uint16_t_uint64_t;
         break;
       case RULE_IN | RULE_S1_32 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_in_uint32_t_uint8_t;
+        mrule->func = merger_in_uint32_t_uint8_t;
         break;
       case RULE_IN | RULE_S1_32 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_in_uint32_t_uint16_t;
+        mrule->func = merger_in_uint32_t_uint16_t;
         break;
       case RULE_IN | RULE_S1_32 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_in_uint32_t_uint32_t;
+        mrule->func = merger_in_uint32_t_uint32_t;
         break;
       case RULE_IN | RULE_S1_32 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_in_uint32_t_uint64_t;
+        mrule->func = merger_in_uint32_t_uint64_t;
         break;
       case RULE_IN | RULE_S1_64 | RULE_S2_8:
-        fquery->mruleset[j].func = merger_in_uint64_t_uint8_t;
+        mrule->func = merger_in_uint64_t_uint8_t;
         break;
       case RULE_IN | RULE_S1_64 | RULE_S2_16:
-        fquery->mruleset[j].func = merger_in_uint64_t_uint16_t;
+        mrule->func = merger_in_uint64_t_uint16_t;
         break;
       case RULE_IN | RULE_S1_64 | RULE_S2_32:
-        fquery->mruleset[j].func = merger_in_uint64_t_uint32_t;
+        mrule->func = merger_in_uint64_t_uint32_t;
         break;
       case RULE_IN | RULE_S1_64 | RULE_S2_64:
-        fquery->mruleset[j].func = merger_in_uint64_t_uint64_t;
+        mrule->func = merger_in_uint64_t_uint64_t;
         break;
       case RULE_ALLEN_BF:
-        fquery->mruleset[j].func = merger_allen_bf;
+        mrule->func = merger_allen_bf;
         break;
       case RULE_ALLEN_AF:
-        fquery->mruleset[j].func = merger_allen_af;
+        mrule->func = merger_allen_af;
         break;
       case RULE_ALLEN_M:
-        fquery->mruleset[j].func = merger_allen_m;
+        mrule->func = merger_allen_m;
         break;
       case RULE_ALLEN_MI:
-        fquery->mruleset[j].func = merger_allen_mi;
+        mrule->func = merger_allen_mi;
         break;
       case RULE_ALLEN_O:
-        fquery->mruleset[j].func = merger_allen_o;
+        mrule->func = merger_allen_o;
         break;
       case RULE_ALLEN_OI:
-        fquery->mruleset[j].func = merger_allen_oi;
+        mrule->func = merger_allen_oi;
         break;
       case RULE_ALLEN_S:
-        fquery->mruleset[j].func = merger_allen_s;
+        mrule->func = merger_allen_s;
         break;
       case RULE_ALLEN_SI:
-        fquery->mruleset[j].func = merger_allen_si;
+        mrule->func = merger_allen_si;
         break;
       case RULE_ALLEN_D:
-        fquery->mruleset[j].func = merger_allen_d;
+        mrule->func = merger_allen_d;
         break;
       case RULE_ALLEN_DI:
-        fquery->mruleset[j].func = merger_allen_di;
+        mrule->func = merger_allen_di;
         break;
       case RULE_ALLEN_F:
-        fquery->mruleset[j].func = merger_allen_f;
+        mrule->func = merger_allen_f;
         break;
       case RULE_ALLEN_FI:
-        fquery->mruleset[j].func = merger_allen_fi;
+        mrule->func = merger_allen_fi;
         break;
       case RULE_ALLEN_EQ:
-        fquery->mruleset[j].func = merger_allen_eq;
+        mrule->func = merger_allen_eq;
         break;
         
     }
