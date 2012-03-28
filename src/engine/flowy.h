@@ -89,6 +89,24 @@ struct json_filter_rule_offset{
   const char*                     datatype;
 };
 
+
+struct parameters*
+parse_cmdline_args(int argc, char**argv);
+
+struct parameters_data*
+read_param_data(struct parameters* param);
+
+struct json*
+parse_json_query(char* query_mmap);
+
+struct flowquery*
+prepare_flowquery(struct ft_data* trace,
+                  struct json* json_query);
+
+void 
+echo_results(struct ft_data* trace,
+             struct flowquery* fquery);
+
 #define FLOWHEADER "\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n"
 
 #endif

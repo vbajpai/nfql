@@ -44,11 +44,21 @@ ft_open(int fd) {
     return NULL;
   }
   
-  if (ftio_check_xfield(&data->io, FT_XFIELD_DPKTS |
-                        FT_XFIELD_DOCTETS | FT_XFIELD_FIRST | FT_XFIELD_LAST | FT_XFIELD_INPUT |
-                        FT_XFIELD_OUTPUT | FT_XFIELD_SRCADDR | FT_XFIELD_DSTADDR |
-                        FT_XFIELD_SRCPORT | FT_XFIELD_DSTPORT | FT_XFIELD_UNIX_SECS |
-                        FT_XFIELD_UNIX_NSECS | FT_XFIELD_SYSUPTIME | FT_XFIELD_TCP_FLAGS |
+  if (ftio_check_xfield(&data->io, 
+                        FT_XFIELD_DPKTS      |
+                        FT_XFIELD_DOCTETS    | 
+                        FT_XFIELD_FIRST      | 
+                        FT_XFIELD_LAST       | 
+                        FT_XFIELD_INPUT      |
+                        FT_XFIELD_OUTPUT     | 
+                        FT_XFIELD_SRCADDR    | 
+                        FT_XFIELD_DSTADDR    |
+                        FT_XFIELD_SRCPORT    | 
+                        FT_XFIELD_DSTPORT    | 
+                        FT_XFIELD_UNIX_SECS  |
+                        FT_XFIELD_UNIX_NSECS | 
+                        FT_XFIELD_SYSUPTIME  | 
+                        FT_XFIELD_TCP_FLAGS  |
                         FT_XFIELD_PROT)) {
     fterr_warnx("Flow record missing required field for format.");
     exit(EXIT_FAILURE);

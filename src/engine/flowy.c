@@ -78,8 +78,8 @@ read_param_data(struct parameters* param) {
   
   /* param_data->query_mmap is free'd after calling parse_json_query(...)
    * param_data->query_mmap_stat is free'd after freeing param_data->query_mmap
-   * TODO: param_data->trace: when free'd?
-   * TODO: param_data: when free'd?
+   * param_data->trace is free'd after calling echo_results(...)
+   * param_data is free'd after calling echo_results(...)
    */ 
   struct parameters_data* param_data = calloc(1, 
                                               sizeof(struct parameters_data));
@@ -415,6 +415,190 @@ prepare_flowquery(struct ft_data* trace,
   return fquery;
 }
 
+
+void 
+echo_results(struct ft_data* trace,
+             struct flowquery* fquery) {
+  
+  
+  /* -----------------------------------------------------------------------*/  
+  /*                                debugging                               */
+  /* -----------------------------------------------------------------------*/  
+  
+  if(verbose_v){
+    
+    /* process each branch */
+    for (int i = 0; i < fquery->num_branches; i++) {
+      struct branch_info* branch = &fquery->branchset[i];
+      
+      printf("\nNo. of Filtered Records: %zd\n", branch->num_filtered_records);      
+      if (branch->num_filtered_records != 0)
+        puts(FLOWHEADER);      
+      for (int j = 0; j < branch->num_filtered_records; j++) {
+        flow_print_record(branch->data, branch->filtered_records[j]);
+        
+        /* not free'd since they point to original records */
+        branch->filtered_records[j] = NULL;
+      }      
+      free(branch->filtered_records);
+      
+      if (verbose_vv){
+        if(if_group_modules_exist){
+          
+          printf("\nNo. of Sorted Records: %zd\n", branch->num_filtered_records);      
+          if (branch->num_filtered_records != 0)          
+            puts(FLOWHEADER);      
+          for (int j = 0; j < branch->num_filtered_records; j++) {
+            flow_print_record(branch->data, branch->sorted_records[j]);
+            
+            /* not free'd since they point to original records */
+            branch->sorted_records[j] = NULL;
+          }      
+          free(branch->sorted_records);
+          
+          
+          printf("\nNo. of Unique Records: %zd\n", branch->num_unique_records);      
+          if (branch->num_unique_records != 0)          
+            puts(FLOWHEADER);      
+          for (int j = 0; j < branch->num_unique_records; j++) {
+            flow_print_record(branch->data, branch->unique_records[j]);
+            
+            /* not free'd since they point to original records */
+            branch->unique_records[j] = NULL;
+          }      
+          free(branch->unique_records);                
+        }      
+        
+        printf("\nNo. of Groups: %zu (Verbose Output)\n", branch->num_groups);
+        if (branch->num_groups != 0)        
+          puts(FLOWHEADER); 
+        for (int j = 0; j < branch->num_groups; j++) {
+          
+          printf("\n");
+          struct group* group = branch->groupset[j];
+          
+          /* print group members */ 
+          for (int k = 0; k < group->num_members; k++) {
+            flow_print_record(branch->data, group->members[k]);
+            group->members[k] = NULL;
+          }     
+          free(group->members);
+        }
+      }
+      
+      
+#ifdef GROUPERAGGREGATIONS
+      printf("\nNo. of Groups: %zu (Aggregations)\n", branch->num_groups);
+      if (branch->num_groups != 0)      
+        puts(FLOWHEADER); 
+      for (int j = 0; j < branch->num_groups; j++) {        
+        struct group* group = branch->groupset[j];
+        flow_print_record(branch->data, group->group_aggr_record);  
+        
+        for (int x = 0; x < branch->num_aggr; x++)
+          free(group->aggr[x].values);
+        free(group->aggr); 
+      }
+#endif
+      
+      
+#ifdef GROUPFILTER
+      printf("\nNo. of Filtered Groups: %zu (Aggregations)\n", 
+             branch->num_filtered_groups);      
+      if (branch->num_filtered_groups != 0)      
+        puts(FLOWHEADER); 
+      
+      for (int j = 0; j < branch->num_filtered_groups; j++) {
+        
+        struct group* filtered_group = branch->filtered_groupset[j];
+        flow_print_record(branch->data, filtered_group->group_aggr_record);
+      }
+#endif
+      
+      
+      /* free memory */
+      for (int j = 0; j < branch->num_groups; j++) {        
+        struct group* group = branch->groupset[j];
+        free(group->group_aggr_record);
+        free(group);
+      }
+      free(branch->groupset);
+    }
+    
+    /* merger */
+    
+#ifdef MERGER    
+    if (verbose_vv) {
+      
+      struct permut_iter *iter = iter_init(fquery->branchset, 
+                                           fquery->num_branches);
+      printf("\nNo. of (to be) Matched Groups: %zu \n", 
+             fquery->total_num_group_tuples);
+      if (fquery->total_num_group_tuples != 0)      
+        puts(FLOWHEADER);      
+      while(iter_next(iter)) {
+        for (int j = 0; j < fquery->num_branches; j++) {          
+          flow_print_record(trace, 
+                            fquery->branchset[j].
+                            filtered_groupset[iter->filtered_group_tuple[j] - 1]
+                            ->group_aggr_record);
+        }
+        printf("\n");
+      }
+      iter_destroy(iter);
+    }
+    
+    printf("\nNo. of Merged Groups: %zu (Tuples)\n", 
+           fquery->num_group_tuples);      
+    if (fquery->num_group_tuples != 0)          
+      puts(FLOWHEADER);
+    
+    for (int j = 0; j < fquery->num_group_tuples; j++) {
+      struct group** group_tuple = fquery->group_tuples[j];
+      for (int i = 0; i < fquery->num_branches; i++) {
+        struct group* group = group_tuple[i];
+        flow_print_record(trace, group->group_aggr_record);
+      }
+      printf("\n");
+    }    
+#endif
+    
+  }
+  
+  /* -----------------------------------------------------------------------*/      
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  /* -----------------------------------------------------------------------*/  
+  /*                                results                                 */
+  /* -----------------------------------------------------------------------*/  
+
+  printf("\nNo. of Streams: %zu \n", fquery->num_group_tuples);
+  printf("----------------- \n");
+  
+  for (int j = 0; j < fquery->num_group_tuples; j++) {
+    
+    struct stream* stream = fquery->streamset[j];
+    printf("\nNo. of Records in Stream (%d): %zu \n",j+1, stream->num_records);
+    if (stream->num_records != 0)
+      puts(FLOWHEADER);
+    for (int i = 0; i < stream->num_records; i++) {
+      char* record = stream->recordset[i];
+      flow_print_record(trace, record);
+    }
+    printf("\n");
+  }
+  
+  /* -----------------------------------------------------------------------*/
+  
+}
+
 int 
 main(int argc, char **argv) {
   
@@ -622,183 +806,20 @@ main(int argc, char **argv) {
   
   
   /* -----------------------------------------------------------------------*/  
-  /*                                debugging                               */
-  /* -----------------------------------------------------------------------*/  
-
-  if(verbose_v){
-    
-    /* process each branch */
-    for (int i = 0; i < fquery->num_branches; i++) {
-      struct branch_info* branch = &fquery->branchset[i];
-      
-      printf("\nNo. of Filtered Records: %zd\n", branch->num_filtered_records);      
-      if (branch->num_filtered_records != 0)
-        puts(FLOWHEADER);      
-      for (int j = 0; j < branch->num_filtered_records; j++) {
-        flow_print_record(branch->data, branch->filtered_records[j]);
-        
-        /* not free'd since they point to original records */
-        branch->filtered_records[j] = NULL;
-      }      
-      free(branch->filtered_records);
-      
-      if (verbose_vv){
-        if(if_group_modules_exist){
-          
-          printf("\nNo. of Sorted Records: %zd\n", branch->num_filtered_records);      
-          if (branch->num_filtered_records != 0)          
-            puts(FLOWHEADER);      
-          for (int j = 0; j < branch->num_filtered_records; j++) {
-            flow_print_record(branch->data, branch->sorted_records[j]);
-            
-            /* not free'd since they point to original records */
-            branch->sorted_records[j] = NULL;
-          }      
-          free(branch->sorted_records);
-          
-          
-          printf("\nNo. of Unique Records: %zd\n", branch->num_unique_records);      
-          if (branch->num_unique_records != 0)          
-            puts(FLOWHEADER);      
-          for (int j = 0; j < branch->num_unique_records; j++) {
-            flow_print_record(branch->data, branch->unique_records[j]);
-            
-            /* not free'd since they point to original records */
-            branch->unique_records[j] = NULL;
-          }      
-          free(branch->unique_records);                
-        }      
-        
-        printf("\nNo. of Groups: %zu (Verbose Output)\n", branch->num_groups);
-        if (branch->num_groups != 0)        
-          puts(FLOWHEADER); 
-        for (int j = 0; j < branch->num_groups; j++) {
-          
-          printf("\n");
-          struct group* group = branch->groupset[j];
-          
-          /* print group members */ 
-          for (int k = 0; k < group->num_members; k++) {
-            flow_print_record(branch->data, group->members[k]);
-            group->members[k] = NULL;
-          }     
-          free(group->members);
-        }
-      }
-      
-      
-#ifdef GROUPERAGGREGATIONS
-      printf("\nNo. of Groups: %zu (Aggregations)\n", branch->num_groups);
-      if (branch->num_groups != 0)      
-        puts(FLOWHEADER); 
-      for (int j = 0; j < branch->num_groups; j++) {        
-        struct group* group = branch->groupset[j];
-        flow_print_record(branch->data, group->group_aggr_record);  
-        
-        for (int x = 0; x < branch->num_aggr; x++)
-          free(group->aggr[x].values);
-        free(group->aggr); 
-      }
-#endif
-      
-      
-#ifdef GROUPFILTER
-      printf("\nNo. of Filtered Groups: %zu (Aggregations)\n", 
-             branch->num_filtered_groups);      
-      if (branch->num_filtered_groups != 0)      
-        puts(FLOWHEADER); 
-      
-      for (int j = 0; j < branch->num_filtered_groups; j++) {
-        
-        struct group* filtered_group = branch->filtered_groupset[j];
-        flow_print_record(branch->data, filtered_group->group_aggr_record);
-      }
-#endif
-      
-      
-      /* free memory */
-      for (int j = 0; j < branch->num_groups; j++) {        
-        struct group* group = branch->groupset[j];
-        free(group->group_aggr_record);
-        free(group);
-      }
-      free(branch->groupset);
-    }
-    
-    /* merger */
-
-#ifdef MERGER    
-    if (verbose_vv) {
-      
-      struct permut_iter *iter = iter_init(fquery->branchset, 
-                                           fquery->num_branches);
-      printf("\nNo. of (to be) Matched Groups: %zu \n", 
-             fquery->total_num_group_tuples);
-      if (fquery->total_num_group_tuples != 0)      
-        puts(FLOWHEADER);      
-      while(iter_next(iter)) {
-        for (int j = 0; j < fquery->num_branches; j++) {          
-          flow_print_record(param_data->trace, 
-                            fquery->branchset[j].
-                            filtered_groupset[iter->filtered_group_tuple[j] - 1]
-                            ->group_aggr_record);
-        }
-        printf("\n");
-      }
-      iter_destroy(iter);
-    }
-    
-    printf("\nNo. of Merged Groups: %zu (Tuples)\n", 
-           fquery->num_group_tuples);      
-    if (fquery->num_group_tuples != 0)          
-      puts(FLOWHEADER);
-    
-    for (int j = 0; j < fquery->num_group_tuples; j++) {
-      struct group** group_tuple = fquery->group_tuples[j];
-      for (int i = 0; i < fquery->num_branches; i++) {
-        struct group* group = group_tuple[i];
-        flow_print_record(param_data->trace, group->group_aggr_record);
-      }
-      printf("\n");
-    }    
-#endif
-
-  }
-  
-  /* -----------------------------------------------------------------------*/      
-  
-  
-  
-  
-  
-
-  
-  
-  
-  
-  /* -----------------------------------------------------------------------*/  
   /*                                output                                  */
-  /* -----------------------------------------------------------------------*/    
+  /* -----------------------------------------------------------------------*/
   
-  printf("\nNo. of Streams: %zu \n", fquery->num_group_tuples);
-  printf("----------------- \n");  
-  for (int j = 0; j < fquery->num_group_tuples; j++) {
-    struct stream* stream = fquery->streamset[j];
-    printf("\nNo. of Records in Stream (%d): %zu \n",j+1, 
-                                                      stream->num_records);
-    if (stream->num_records != 0)          
-    puts(FLOWHEADER);
-    for (int i = 0; i < stream->num_records; i++) {
-      char* record = stream->recordset[i];
-      flow_print_record(param_data->trace, record);
-    }
-    printf("\n");
-  }
+  echo_results(param_data->trace, fquery);
+  
+  /* assuming none of the trace records were free'd by the stages */
+  ft_close(param_data->trace);
+  free(param_data);
+  
   /* -----------------------------------------------------------------------*/
   
   
 
-/* free branch_info */
+
   
   
   exit(EXIT_SUCCESS);
