@@ -631,7 +631,8 @@ main(int argc, char **argv) {
       struct branch_info* branch = &fquery->branchset[i];
       
       printf("\nNo. of Filtered Records: %zd\n", branch->num_filtered_records);      
-      puts(FLOWHEADER);      
+      if (branch->num_filtered_records != 0)
+        puts(FLOWHEADER);      
       for (int j = 0; j < branch->num_filtered_records; j++) {
         flow_print_record(branch->data, branch->filtered_records[j]);
         
@@ -644,7 +645,8 @@ main(int argc, char **argv) {
         if(if_group_modules_exist){
           
           printf("\nNo. of Sorted Records: %zd\n", branch->num_filtered_records);      
-          puts(FLOWHEADER);      
+          if (branch->num_filtered_records != 0)          
+            puts(FLOWHEADER);      
           for (int j = 0; j < branch->num_filtered_records; j++) {
             flow_print_record(branch->data, branch->sorted_records[j]);
             
@@ -655,7 +657,8 @@ main(int argc, char **argv) {
           
           
           printf("\nNo. of Unique Records: %zd\n", branch->num_unique_records);      
-          puts(FLOWHEADER);      
+          if (branch->num_unique_records != 0)          
+            puts(FLOWHEADER);      
           for (int j = 0; j < branch->num_unique_records; j++) {
             flow_print_record(branch->data, branch->unique_records[j]);
             
@@ -666,7 +669,8 @@ main(int argc, char **argv) {
         }      
         
         printf("\nNo. of Groups: %zu (Verbose Output)\n", branch->num_groups);
-        puts(FLOWHEADER); 
+        if (branch->num_groups != 0)        
+          puts(FLOWHEADER); 
         for (int j = 0; j < branch->num_groups; j++) {
           
           printf("\n");
@@ -684,7 +688,8 @@ main(int argc, char **argv) {
       
 #ifdef GROUPERAGGREGATIONS
       printf("\nNo. of Groups: %zu (Aggregations)\n", branch->num_groups);
-      puts(FLOWHEADER); 
+      if (branch->num_groups != 0)      
+        puts(FLOWHEADER); 
       for (int j = 0; j < branch->num_groups; j++) {        
         struct group* group = branch->groupset[j];
         flow_print_record(branch->data, group->group_aggr_record);  
@@ -699,7 +704,8 @@ main(int argc, char **argv) {
 #ifdef GROUPFILTER
       printf("\nNo. of Filtered Groups: %zu (Aggregations)\n", 
              branch->num_filtered_groups);      
-      puts(FLOWHEADER); 
+      if (branch->num_filtered_groups != 0)      
+        puts(FLOWHEADER); 
       
       for (int j = 0; j < branch->num_filtered_groups; j++) {
         
@@ -727,7 +733,8 @@ main(int argc, char **argv) {
                                            fquery->num_branches);
       printf("\nNo. of (to be) Matched Groups: %zu \n", 
              fquery->total_num_group_tuples);
-      puts(FLOWHEADER);      
+      if (fquery->total_num_group_tuples != 0)      
+        puts(FLOWHEADER);      
       while(iter_next(iter)) {
         for (int j = 0; j < fquery->num_branches; j++) {          
           flow_print_record(param_data->trace, 
@@ -742,7 +749,8 @@ main(int argc, char **argv) {
     
     printf("\nNo. of Merged Groups: %zu (Tuples)\n", 
            fquery->num_group_tuples);      
-    puts(FLOWHEADER);
+    if (fquery->num_group_tuples != 0)          
+      puts(FLOWHEADER);
     
     for (int j = 0; j < fquery->num_group_tuples; j++) {
       struct group** group_tuple = fquery->group_tuples[j];
@@ -777,6 +785,7 @@ main(int argc, char **argv) {
     struct stream* stream = fquery->streamset[j];
     printf("\nNo. of Records in Stream (%d): %zu \n",j+1, 
                                                       stream->num_records);
+    if (stream->num_records != 0)          
     puts(FLOWHEADER);
     for (int i = 0; i < stream->num_records; i++) {
       char* record = stream->recordset[i];

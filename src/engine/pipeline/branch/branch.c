@@ -45,7 +45,10 @@ branch_start(void *arg) {
                             binfo->filter_rules, 
                             binfo->num_filter_rules, 
                             &num_filtered_records);
-  
+
+  if (filtered_records == NULL)
+    pthread_exit(NULL);
+    
   if(verbose_v){
     
     binfo->filtered_records = (char**)

@@ -30,11 +30,11 @@ char **
 filter(struct ft_data *data, struct filter_rule *filter_rules, 
        int num_filter_rules, size_t *num_filtered_records) {
   
-  char**                      filtered_records;
-  
-  filtered_records = (char **)malloc((*num_filtered_records) * sizeof(char *));
+  char** filtered_records = (char **)
+                            calloc(*num_filtered_records,
+                                   sizeof(char *));
   if (filtered_records == NULL)
-    errExit("malloc");
+    errExit("calloc");
   
   /* process each record */
   for (int i = 0; i < data->num_records; i++) {
@@ -65,7 +65,11 @@ filter(struct ft_data *data, struct filter_rule *filter_rules,
     }
   }
   
+  if (*num_filtered_records == 0) {
+    if (filtered_records != NULL) {
+      free(filtered_records);
+      filtered_records = NULL;
+    }
+  }  
   return filtered_records;
 }
-
-
