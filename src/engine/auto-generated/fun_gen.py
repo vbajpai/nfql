@@ -651,14 +651,14 @@ source.write("""
   
   /* for loop for the merger */
   for (int j = 0; j < fquery->num_merger_rules; j++) {
-  switch (fquery->mrules[j].op) {
+  switch (fquery->mruleset[j].op) {
   """)
 
 for op in 'RULE_EQ', 'RULE_NE', 'RULE_GT', 'RULE_LT', 'RULE_LE', 'RULE_GE', 'RULE_IN':
   for atype1 in 'RULE_S1_8', 'RULE_S1_16', 'RULE_S1_32', 'RULE_S1_64':
     for atype2 in 'RULE_S2_8', 'RULE_S2_16', 'RULE_S2_32', 'RULE_S2_64':
       source.write("case %s | %s | %s:\n"%(op, atype1, atype2))
-      source.write("fquery->mrules[j].func = merger_%s_%s_%s;\n"
+      source.write("fquery->mruleset[j].func = merger_%s_%s_%s;\n"
                    %(enum_map[op], enum_map[atype1], enum_map[atype2]))
       source.write("break;\n")
 
@@ -676,7 +676,7 @@ for op in 'RULE_ALLEN_BF',  \
           'RULE_ALLEN_FI',  \
           'RULE_ALLEN_EQ':  
   source.write("case %s:\n"%(op))
-  source.write("fquery->mrules[j].func = merger_%s;\n"
+  source.write("fquery->mruleset[j].func = merger_%s;\n"
                %(enum_map[op]))
   source.write("break;\n")
 

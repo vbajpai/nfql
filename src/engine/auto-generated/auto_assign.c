@@ -1213,381 +1213,381 @@ assign_fptr(struct flowquery *fquery,
   
   /* for loop for the merger */
   for (int j = 0; j < fquery->num_merger_rules; j++) {
-    switch (fquery->mrules[j].op) {
+    switch (fquery->mruleset[j].op) {
       case RULE_EQ | RULE_S1_8 | RULE_S2_8:
-        fquery->mrules[j].func = merger_eq_uint8_t_uint8_t;
+        fquery->mruleset[j].func = merger_eq_uint8_t_uint8_t;
         break;
       case RULE_EQ | RULE_S1_8 | RULE_S2_16:
-        fquery->mrules[j].func = merger_eq_uint8_t_uint16_t;
+        fquery->mruleset[j].func = merger_eq_uint8_t_uint16_t;
         break;
       case RULE_EQ | RULE_S1_8 | RULE_S2_32:
-        fquery->mrules[j].func = merger_eq_uint8_t_uint32_t;
+        fquery->mruleset[j].func = merger_eq_uint8_t_uint32_t;
         break;
       case RULE_EQ | RULE_S1_8 | RULE_S2_64:
-        fquery->mrules[j].func = merger_eq_uint8_t_uint64_t;
+        fquery->mruleset[j].func = merger_eq_uint8_t_uint64_t;
         break;
       case RULE_EQ | RULE_S1_16 | RULE_S2_8:
-        fquery->mrules[j].func = merger_eq_uint16_t_uint8_t;
+        fquery->mruleset[j].func = merger_eq_uint16_t_uint8_t;
         break;
       case RULE_EQ | RULE_S1_16 | RULE_S2_16:
-        fquery->mrules[j].func = merger_eq_uint16_t_uint16_t;
+        fquery->mruleset[j].func = merger_eq_uint16_t_uint16_t;
         break;
       case RULE_EQ | RULE_S1_16 | RULE_S2_32:
-        fquery->mrules[j].func = merger_eq_uint16_t_uint32_t;
+        fquery->mruleset[j].func = merger_eq_uint16_t_uint32_t;
         break;
       case RULE_EQ | RULE_S1_16 | RULE_S2_64:
-        fquery->mrules[j].func = merger_eq_uint16_t_uint64_t;
+        fquery->mruleset[j].func = merger_eq_uint16_t_uint64_t;
         break;
       case RULE_EQ | RULE_S1_32 | RULE_S2_8:
-        fquery->mrules[j].func = merger_eq_uint32_t_uint8_t;
+        fquery->mruleset[j].func = merger_eq_uint32_t_uint8_t;
         break;
       case RULE_EQ | RULE_S1_32 | RULE_S2_16:
-        fquery->mrules[j].func = merger_eq_uint32_t_uint16_t;
+        fquery->mruleset[j].func = merger_eq_uint32_t_uint16_t;
         break;
       case RULE_EQ | RULE_S1_32 | RULE_S2_32:
-        fquery->mrules[j].func = merger_eq_uint32_t_uint32_t;
+        fquery->mruleset[j].func = merger_eq_uint32_t_uint32_t;
         break;
       case RULE_EQ | RULE_S1_32 | RULE_S2_64:
-        fquery->mrules[j].func = merger_eq_uint32_t_uint64_t;
+        fquery->mruleset[j].func = merger_eq_uint32_t_uint64_t;
         break;
       case RULE_EQ | RULE_S1_64 | RULE_S2_8:
-        fquery->mrules[j].func = merger_eq_uint64_t_uint8_t;
+        fquery->mruleset[j].func = merger_eq_uint64_t_uint8_t;
         break;
       case RULE_EQ | RULE_S1_64 | RULE_S2_16:
-        fquery->mrules[j].func = merger_eq_uint64_t_uint16_t;
+        fquery->mruleset[j].func = merger_eq_uint64_t_uint16_t;
         break;
       case RULE_EQ | RULE_S1_64 | RULE_S2_32:
-        fquery->mrules[j].func = merger_eq_uint64_t_uint32_t;
+        fquery->mruleset[j].func = merger_eq_uint64_t_uint32_t;
         break;
       case RULE_EQ | RULE_S1_64 | RULE_S2_64:
-        fquery->mrules[j].func = merger_eq_uint64_t_uint64_t;
+        fquery->mruleset[j].func = merger_eq_uint64_t_uint64_t;
         break;
       case RULE_NE | RULE_S1_8 | RULE_S2_8:
-        fquery->mrules[j].func = merger_ne_uint8_t_uint8_t;
+        fquery->mruleset[j].func = merger_ne_uint8_t_uint8_t;
         break;
       case RULE_NE | RULE_S1_8 | RULE_S2_16:
-        fquery->mrules[j].func = merger_ne_uint8_t_uint16_t;
+        fquery->mruleset[j].func = merger_ne_uint8_t_uint16_t;
         break;
       case RULE_NE | RULE_S1_8 | RULE_S2_32:
-        fquery->mrules[j].func = merger_ne_uint8_t_uint32_t;
+        fquery->mruleset[j].func = merger_ne_uint8_t_uint32_t;
         break;
       case RULE_NE | RULE_S1_8 | RULE_S2_64:
-        fquery->mrules[j].func = merger_ne_uint8_t_uint64_t;
+        fquery->mruleset[j].func = merger_ne_uint8_t_uint64_t;
         break;
       case RULE_NE | RULE_S1_16 | RULE_S2_8:
-        fquery->mrules[j].func = merger_ne_uint16_t_uint8_t;
+        fquery->mruleset[j].func = merger_ne_uint16_t_uint8_t;
         break;
       case RULE_NE | RULE_S1_16 | RULE_S2_16:
-        fquery->mrules[j].func = merger_ne_uint16_t_uint16_t;
+        fquery->mruleset[j].func = merger_ne_uint16_t_uint16_t;
         break;
       case RULE_NE | RULE_S1_16 | RULE_S2_32:
-        fquery->mrules[j].func = merger_ne_uint16_t_uint32_t;
+        fquery->mruleset[j].func = merger_ne_uint16_t_uint32_t;
         break;
       case RULE_NE | RULE_S1_16 | RULE_S2_64:
-        fquery->mrules[j].func = merger_ne_uint16_t_uint64_t;
+        fquery->mruleset[j].func = merger_ne_uint16_t_uint64_t;
         break;
       case RULE_NE | RULE_S1_32 | RULE_S2_8:
-        fquery->mrules[j].func = merger_ne_uint32_t_uint8_t;
+        fquery->mruleset[j].func = merger_ne_uint32_t_uint8_t;
         break;
       case RULE_NE | RULE_S1_32 | RULE_S2_16:
-        fquery->mrules[j].func = merger_ne_uint32_t_uint16_t;
+        fquery->mruleset[j].func = merger_ne_uint32_t_uint16_t;
         break;
       case RULE_NE | RULE_S1_32 | RULE_S2_32:
-        fquery->mrules[j].func = merger_ne_uint32_t_uint32_t;
+        fquery->mruleset[j].func = merger_ne_uint32_t_uint32_t;
         break;
       case RULE_NE | RULE_S1_32 | RULE_S2_64:
-        fquery->mrules[j].func = merger_ne_uint32_t_uint64_t;
+        fquery->mruleset[j].func = merger_ne_uint32_t_uint64_t;
         break;
       case RULE_NE | RULE_S1_64 | RULE_S2_8:
-        fquery->mrules[j].func = merger_ne_uint64_t_uint8_t;
+        fquery->mruleset[j].func = merger_ne_uint64_t_uint8_t;
         break;
       case RULE_NE | RULE_S1_64 | RULE_S2_16:
-        fquery->mrules[j].func = merger_ne_uint64_t_uint16_t;
+        fquery->mruleset[j].func = merger_ne_uint64_t_uint16_t;
         break;
       case RULE_NE | RULE_S1_64 | RULE_S2_32:
-        fquery->mrules[j].func = merger_ne_uint64_t_uint32_t;
+        fquery->mruleset[j].func = merger_ne_uint64_t_uint32_t;
         break;
       case RULE_NE | RULE_S1_64 | RULE_S2_64:
-        fquery->mrules[j].func = merger_ne_uint64_t_uint64_t;
+        fquery->mruleset[j].func = merger_ne_uint64_t_uint64_t;
         break;
       case RULE_GT | RULE_S1_8 | RULE_S2_8:
-        fquery->mrules[j].func = merger_gt_uint8_t_uint8_t;
+        fquery->mruleset[j].func = merger_gt_uint8_t_uint8_t;
         break;
       case RULE_GT | RULE_S1_8 | RULE_S2_16:
-        fquery->mrules[j].func = merger_gt_uint8_t_uint16_t;
+        fquery->mruleset[j].func = merger_gt_uint8_t_uint16_t;
         break;
       case RULE_GT | RULE_S1_8 | RULE_S2_32:
-        fquery->mrules[j].func = merger_gt_uint8_t_uint32_t;
+        fquery->mruleset[j].func = merger_gt_uint8_t_uint32_t;
         break;
       case RULE_GT | RULE_S1_8 | RULE_S2_64:
-        fquery->mrules[j].func = merger_gt_uint8_t_uint64_t;
+        fquery->mruleset[j].func = merger_gt_uint8_t_uint64_t;
         break;
       case RULE_GT | RULE_S1_16 | RULE_S2_8:
-        fquery->mrules[j].func = merger_gt_uint16_t_uint8_t;
+        fquery->mruleset[j].func = merger_gt_uint16_t_uint8_t;
         break;
       case RULE_GT | RULE_S1_16 | RULE_S2_16:
-        fquery->mrules[j].func = merger_gt_uint16_t_uint16_t;
+        fquery->mruleset[j].func = merger_gt_uint16_t_uint16_t;
         break;
       case RULE_GT | RULE_S1_16 | RULE_S2_32:
-        fquery->mrules[j].func = merger_gt_uint16_t_uint32_t;
+        fquery->mruleset[j].func = merger_gt_uint16_t_uint32_t;
         break;
       case RULE_GT | RULE_S1_16 | RULE_S2_64:
-        fquery->mrules[j].func = merger_gt_uint16_t_uint64_t;
+        fquery->mruleset[j].func = merger_gt_uint16_t_uint64_t;
         break;
       case RULE_GT | RULE_S1_32 | RULE_S2_8:
-        fquery->mrules[j].func = merger_gt_uint32_t_uint8_t;
+        fquery->mruleset[j].func = merger_gt_uint32_t_uint8_t;
         break;
       case RULE_GT | RULE_S1_32 | RULE_S2_16:
-        fquery->mrules[j].func = merger_gt_uint32_t_uint16_t;
+        fquery->mruleset[j].func = merger_gt_uint32_t_uint16_t;
         break;
       case RULE_GT | RULE_S1_32 | RULE_S2_32:
-        fquery->mrules[j].func = merger_gt_uint32_t_uint32_t;
+        fquery->mruleset[j].func = merger_gt_uint32_t_uint32_t;
         break;
       case RULE_GT | RULE_S1_32 | RULE_S2_64:
-        fquery->mrules[j].func = merger_gt_uint32_t_uint64_t;
+        fquery->mruleset[j].func = merger_gt_uint32_t_uint64_t;
         break;
       case RULE_GT | RULE_S1_64 | RULE_S2_8:
-        fquery->mrules[j].func = merger_gt_uint64_t_uint8_t;
+        fquery->mruleset[j].func = merger_gt_uint64_t_uint8_t;
         break;
       case RULE_GT | RULE_S1_64 | RULE_S2_16:
-        fquery->mrules[j].func = merger_gt_uint64_t_uint16_t;
+        fquery->mruleset[j].func = merger_gt_uint64_t_uint16_t;
         break;
       case RULE_GT | RULE_S1_64 | RULE_S2_32:
-        fquery->mrules[j].func = merger_gt_uint64_t_uint32_t;
+        fquery->mruleset[j].func = merger_gt_uint64_t_uint32_t;
         break;
       case RULE_GT | RULE_S1_64 | RULE_S2_64:
-        fquery->mrules[j].func = merger_gt_uint64_t_uint64_t;
+        fquery->mruleset[j].func = merger_gt_uint64_t_uint64_t;
         break;
       case RULE_LT | RULE_S1_8 | RULE_S2_8:
-        fquery->mrules[j].func = merger_lt_uint8_t_uint8_t;
+        fquery->mruleset[j].func = merger_lt_uint8_t_uint8_t;
         break;
       case RULE_LT | RULE_S1_8 | RULE_S2_16:
-        fquery->mrules[j].func = merger_lt_uint8_t_uint16_t;
+        fquery->mruleset[j].func = merger_lt_uint8_t_uint16_t;
         break;
       case RULE_LT | RULE_S1_8 | RULE_S2_32:
-        fquery->mrules[j].func = merger_lt_uint8_t_uint32_t;
+        fquery->mruleset[j].func = merger_lt_uint8_t_uint32_t;
         break;
       case RULE_LT | RULE_S1_8 | RULE_S2_64:
-        fquery->mrules[j].func = merger_lt_uint8_t_uint64_t;
+        fquery->mruleset[j].func = merger_lt_uint8_t_uint64_t;
         break;
       case RULE_LT | RULE_S1_16 | RULE_S2_8:
-        fquery->mrules[j].func = merger_lt_uint16_t_uint8_t;
+        fquery->mruleset[j].func = merger_lt_uint16_t_uint8_t;
         break;
       case RULE_LT | RULE_S1_16 | RULE_S2_16:
-        fquery->mrules[j].func = merger_lt_uint16_t_uint16_t;
+        fquery->mruleset[j].func = merger_lt_uint16_t_uint16_t;
         break;
       case RULE_LT | RULE_S1_16 | RULE_S2_32:
-        fquery->mrules[j].func = merger_lt_uint16_t_uint32_t;
+        fquery->mruleset[j].func = merger_lt_uint16_t_uint32_t;
         break;
       case RULE_LT | RULE_S1_16 | RULE_S2_64:
-        fquery->mrules[j].func = merger_lt_uint16_t_uint64_t;
+        fquery->mruleset[j].func = merger_lt_uint16_t_uint64_t;
         break;
       case RULE_LT | RULE_S1_32 | RULE_S2_8:
-        fquery->mrules[j].func = merger_lt_uint32_t_uint8_t;
+        fquery->mruleset[j].func = merger_lt_uint32_t_uint8_t;
         break;
       case RULE_LT | RULE_S1_32 | RULE_S2_16:
-        fquery->mrules[j].func = merger_lt_uint32_t_uint16_t;
+        fquery->mruleset[j].func = merger_lt_uint32_t_uint16_t;
         break;
       case RULE_LT | RULE_S1_32 | RULE_S2_32:
-        fquery->mrules[j].func = merger_lt_uint32_t_uint32_t;
+        fquery->mruleset[j].func = merger_lt_uint32_t_uint32_t;
         break;
       case RULE_LT | RULE_S1_32 | RULE_S2_64:
-        fquery->mrules[j].func = merger_lt_uint32_t_uint64_t;
+        fquery->mruleset[j].func = merger_lt_uint32_t_uint64_t;
         break;
       case RULE_LT | RULE_S1_64 | RULE_S2_8:
-        fquery->mrules[j].func = merger_lt_uint64_t_uint8_t;
+        fquery->mruleset[j].func = merger_lt_uint64_t_uint8_t;
         break;
       case RULE_LT | RULE_S1_64 | RULE_S2_16:
-        fquery->mrules[j].func = merger_lt_uint64_t_uint16_t;
+        fquery->mruleset[j].func = merger_lt_uint64_t_uint16_t;
         break;
       case RULE_LT | RULE_S1_64 | RULE_S2_32:
-        fquery->mrules[j].func = merger_lt_uint64_t_uint32_t;
+        fquery->mruleset[j].func = merger_lt_uint64_t_uint32_t;
         break;
       case RULE_LT | RULE_S1_64 | RULE_S2_64:
-        fquery->mrules[j].func = merger_lt_uint64_t_uint64_t;
+        fquery->mruleset[j].func = merger_lt_uint64_t_uint64_t;
         break;
       case RULE_LE | RULE_S1_8 | RULE_S2_8:
-        fquery->mrules[j].func = merger_le_uint8_t_uint8_t;
+        fquery->mruleset[j].func = merger_le_uint8_t_uint8_t;
         break;
       case RULE_LE | RULE_S1_8 | RULE_S2_16:
-        fquery->mrules[j].func = merger_le_uint8_t_uint16_t;
+        fquery->mruleset[j].func = merger_le_uint8_t_uint16_t;
         break;
       case RULE_LE | RULE_S1_8 | RULE_S2_32:
-        fquery->mrules[j].func = merger_le_uint8_t_uint32_t;
+        fquery->mruleset[j].func = merger_le_uint8_t_uint32_t;
         break;
       case RULE_LE | RULE_S1_8 | RULE_S2_64:
-        fquery->mrules[j].func = merger_le_uint8_t_uint64_t;
+        fquery->mruleset[j].func = merger_le_uint8_t_uint64_t;
         break;
       case RULE_LE | RULE_S1_16 | RULE_S2_8:
-        fquery->mrules[j].func = merger_le_uint16_t_uint8_t;
+        fquery->mruleset[j].func = merger_le_uint16_t_uint8_t;
         break;
       case RULE_LE | RULE_S1_16 | RULE_S2_16:
-        fquery->mrules[j].func = merger_le_uint16_t_uint16_t;
+        fquery->mruleset[j].func = merger_le_uint16_t_uint16_t;
         break;
       case RULE_LE | RULE_S1_16 | RULE_S2_32:
-        fquery->mrules[j].func = merger_le_uint16_t_uint32_t;
+        fquery->mruleset[j].func = merger_le_uint16_t_uint32_t;
         break;
       case RULE_LE | RULE_S1_16 | RULE_S2_64:
-        fquery->mrules[j].func = merger_le_uint16_t_uint64_t;
+        fquery->mruleset[j].func = merger_le_uint16_t_uint64_t;
         break;
       case RULE_LE | RULE_S1_32 | RULE_S2_8:
-        fquery->mrules[j].func = merger_le_uint32_t_uint8_t;
+        fquery->mruleset[j].func = merger_le_uint32_t_uint8_t;
         break;
       case RULE_LE | RULE_S1_32 | RULE_S2_16:
-        fquery->mrules[j].func = merger_le_uint32_t_uint16_t;
+        fquery->mruleset[j].func = merger_le_uint32_t_uint16_t;
         break;
       case RULE_LE | RULE_S1_32 | RULE_S2_32:
-        fquery->mrules[j].func = merger_le_uint32_t_uint32_t;
+        fquery->mruleset[j].func = merger_le_uint32_t_uint32_t;
         break;
       case RULE_LE | RULE_S1_32 | RULE_S2_64:
-        fquery->mrules[j].func = merger_le_uint32_t_uint64_t;
+        fquery->mruleset[j].func = merger_le_uint32_t_uint64_t;
         break;
       case RULE_LE | RULE_S1_64 | RULE_S2_8:
-        fquery->mrules[j].func = merger_le_uint64_t_uint8_t;
+        fquery->mruleset[j].func = merger_le_uint64_t_uint8_t;
         break;
       case RULE_LE | RULE_S1_64 | RULE_S2_16:
-        fquery->mrules[j].func = merger_le_uint64_t_uint16_t;
+        fquery->mruleset[j].func = merger_le_uint64_t_uint16_t;
         break;
       case RULE_LE | RULE_S1_64 | RULE_S2_32:
-        fquery->mrules[j].func = merger_le_uint64_t_uint32_t;
+        fquery->mruleset[j].func = merger_le_uint64_t_uint32_t;
         break;
       case RULE_LE | RULE_S1_64 | RULE_S2_64:
-        fquery->mrules[j].func = merger_le_uint64_t_uint64_t;
+        fquery->mruleset[j].func = merger_le_uint64_t_uint64_t;
         break;
       case RULE_GE | RULE_S1_8 | RULE_S2_8:
-        fquery->mrules[j].func = merger_ge_uint8_t_uint8_t;
+        fquery->mruleset[j].func = merger_ge_uint8_t_uint8_t;
         break;
       case RULE_GE | RULE_S1_8 | RULE_S2_16:
-        fquery->mrules[j].func = merger_ge_uint8_t_uint16_t;
+        fquery->mruleset[j].func = merger_ge_uint8_t_uint16_t;
         break;
       case RULE_GE | RULE_S1_8 | RULE_S2_32:
-        fquery->mrules[j].func = merger_ge_uint8_t_uint32_t;
+        fquery->mruleset[j].func = merger_ge_uint8_t_uint32_t;
         break;
       case RULE_GE | RULE_S1_8 | RULE_S2_64:
-        fquery->mrules[j].func = merger_ge_uint8_t_uint64_t;
+        fquery->mruleset[j].func = merger_ge_uint8_t_uint64_t;
         break;
       case RULE_GE | RULE_S1_16 | RULE_S2_8:
-        fquery->mrules[j].func = merger_ge_uint16_t_uint8_t;
+        fquery->mruleset[j].func = merger_ge_uint16_t_uint8_t;
         break;
       case RULE_GE | RULE_S1_16 | RULE_S2_16:
-        fquery->mrules[j].func = merger_ge_uint16_t_uint16_t;
+        fquery->mruleset[j].func = merger_ge_uint16_t_uint16_t;
         break;
       case RULE_GE | RULE_S1_16 | RULE_S2_32:
-        fquery->mrules[j].func = merger_ge_uint16_t_uint32_t;
+        fquery->mruleset[j].func = merger_ge_uint16_t_uint32_t;
         break;
       case RULE_GE | RULE_S1_16 | RULE_S2_64:
-        fquery->mrules[j].func = merger_ge_uint16_t_uint64_t;
+        fquery->mruleset[j].func = merger_ge_uint16_t_uint64_t;
         break;
       case RULE_GE | RULE_S1_32 | RULE_S2_8:
-        fquery->mrules[j].func = merger_ge_uint32_t_uint8_t;
+        fquery->mruleset[j].func = merger_ge_uint32_t_uint8_t;
         break;
       case RULE_GE | RULE_S1_32 | RULE_S2_16:
-        fquery->mrules[j].func = merger_ge_uint32_t_uint16_t;
+        fquery->mruleset[j].func = merger_ge_uint32_t_uint16_t;
         break;
       case RULE_GE | RULE_S1_32 | RULE_S2_32:
-        fquery->mrules[j].func = merger_ge_uint32_t_uint32_t;
+        fquery->mruleset[j].func = merger_ge_uint32_t_uint32_t;
         break;
       case RULE_GE | RULE_S1_32 | RULE_S2_64:
-        fquery->mrules[j].func = merger_ge_uint32_t_uint64_t;
+        fquery->mruleset[j].func = merger_ge_uint32_t_uint64_t;
         break;
       case RULE_GE | RULE_S1_64 | RULE_S2_8:
-        fquery->mrules[j].func = merger_ge_uint64_t_uint8_t;
+        fquery->mruleset[j].func = merger_ge_uint64_t_uint8_t;
         break;
       case RULE_GE | RULE_S1_64 | RULE_S2_16:
-        fquery->mrules[j].func = merger_ge_uint64_t_uint16_t;
+        fquery->mruleset[j].func = merger_ge_uint64_t_uint16_t;
         break;
       case RULE_GE | RULE_S1_64 | RULE_S2_32:
-        fquery->mrules[j].func = merger_ge_uint64_t_uint32_t;
+        fquery->mruleset[j].func = merger_ge_uint64_t_uint32_t;
         break;
       case RULE_GE | RULE_S1_64 | RULE_S2_64:
-        fquery->mrules[j].func = merger_ge_uint64_t_uint64_t;
+        fquery->mruleset[j].func = merger_ge_uint64_t_uint64_t;
         break;
       case RULE_IN | RULE_S1_8 | RULE_S2_8:
-        fquery->mrules[j].func = merger_in_uint8_t_uint8_t;
+        fquery->mruleset[j].func = merger_in_uint8_t_uint8_t;
         break;
       case RULE_IN | RULE_S1_8 | RULE_S2_16:
-        fquery->mrules[j].func = merger_in_uint8_t_uint16_t;
+        fquery->mruleset[j].func = merger_in_uint8_t_uint16_t;
         break;
       case RULE_IN | RULE_S1_8 | RULE_S2_32:
-        fquery->mrules[j].func = merger_in_uint8_t_uint32_t;
+        fquery->mruleset[j].func = merger_in_uint8_t_uint32_t;
         break;
       case RULE_IN | RULE_S1_8 | RULE_S2_64:
-        fquery->mrules[j].func = merger_in_uint8_t_uint64_t;
+        fquery->mruleset[j].func = merger_in_uint8_t_uint64_t;
         break;
       case RULE_IN | RULE_S1_16 | RULE_S2_8:
-        fquery->mrules[j].func = merger_in_uint16_t_uint8_t;
+        fquery->mruleset[j].func = merger_in_uint16_t_uint8_t;
         break;
       case RULE_IN | RULE_S1_16 | RULE_S2_16:
-        fquery->mrules[j].func = merger_in_uint16_t_uint16_t;
+        fquery->mruleset[j].func = merger_in_uint16_t_uint16_t;
         break;
       case RULE_IN | RULE_S1_16 | RULE_S2_32:
-        fquery->mrules[j].func = merger_in_uint16_t_uint32_t;
+        fquery->mruleset[j].func = merger_in_uint16_t_uint32_t;
         break;
       case RULE_IN | RULE_S1_16 | RULE_S2_64:
-        fquery->mrules[j].func = merger_in_uint16_t_uint64_t;
+        fquery->mruleset[j].func = merger_in_uint16_t_uint64_t;
         break;
       case RULE_IN | RULE_S1_32 | RULE_S2_8:
-        fquery->mrules[j].func = merger_in_uint32_t_uint8_t;
+        fquery->mruleset[j].func = merger_in_uint32_t_uint8_t;
         break;
       case RULE_IN | RULE_S1_32 | RULE_S2_16:
-        fquery->mrules[j].func = merger_in_uint32_t_uint16_t;
+        fquery->mruleset[j].func = merger_in_uint32_t_uint16_t;
         break;
       case RULE_IN | RULE_S1_32 | RULE_S2_32:
-        fquery->mrules[j].func = merger_in_uint32_t_uint32_t;
+        fquery->mruleset[j].func = merger_in_uint32_t_uint32_t;
         break;
       case RULE_IN | RULE_S1_32 | RULE_S2_64:
-        fquery->mrules[j].func = merger_in_uint32_t_uint64_t;
+        fquery->mruleset[j].func = merger_in_uint32_t_uint64_t;
         break;
       case RULE_IN | RULE_S1_64 | RULE_S2_8:
-        fquery->mrules[j].func = merger_in_uint64_t_uint8_t;
+        fquery->mruleset[j].func = merger_in_uint64_t_uint8_t;
         break;
       case RULE_IN | RULE_S1_64 | RULE_S2_16:
-        fquery->mrules[j].func = merger_in_uint64_t_uint16_t;
+        fquery->mruleset[j].func = merger_in_uint64_t_uint16_t;
         break;
       case RULE_IN | RULE_S1_64 | RULE_S2_32:
-        fquery->mrules[j].func = merger_in_uint64_t_uint32_t;
+        fquery->mruleset[j].func = merger_in_uint64_t_uint32_t;
         break;
       case RULE_IN | RULE_S1_64 | RULE_S2_64:
-        fquery->mrules[j].func = merger_in_uint64_t_uint64_t;
+        fquery->mruleset[j].func = merger_in_uint64_t_uint64_t;
         break;
       case RULE_ALLEN_BF:
-        fquery->mrules[j].func = merger_allen_bf;
+        fquery->mruleset[j].func = merger_allen_bf;
         break;
       case RULE_ALLEN_AF:
-        fquery->mrules[j].func = merger_allen_af;
+        fquery->mruleset[j].func = merger_allen_af;
         break;
       case RULE_ALLEN_M:
-        fquery->mrules[j].func = merger_allen_m;
+        fquery->mruleset[j].func = merger_allen_m;
         break;
       case RULE_ALLEN_MI:
-        fquery->mrules[j].func = merger_allen_mi;
+        fquery->mruleset[j].func = merger_allen_mi;
         break;
       case RULE_ALLEN_O:
-        fquery->mrules[j].func = merger_allen_o;
+        fquery->mruleset[j].func = merger_allen_o;
         break;
       case RULE_ALLEN_OI:
-        fquery->mrules[j].func = merger_allen_oi;
+        fquery->mruleset[j].func = merger_allen_oi;
         break;
       case RULE_ALLEN_S:
-        fquery->mrules[j].func = merger_allen_s;
+        fquery->mruleset[j].func = merger_allen_s;
         break;
       case RULE_ALLEN_SI:
-        fquery->mrules[j].func = merger_allen_si;
+        fquery->mruleset[j].func = merger_allen_si;
         break;
       case RULE_ALLEN_D:
-        fquery->mrules[j].func = merger_allen_d;
+        fquery->mruleset[j].func = merger_allen_d;
         break;
       case RULE_ALLEN_DI:
-        fquery->mrules[j].func = merger_allen_di;
+        fquery->mruleset[j].func = merger_allen_di;
         break;
       case RULE_ALLEN_F:
-        fquery->mrules[j].func = merger_allen_f;
+        fquery->mruleset[j].func = merger_allen_f;
         break;
       case RULE_ALLEN_FI:
-        fquery->mrules[j].func = merger_allen_fi;
+        fquery->mruleset[j].func = merger_allen_fi;
         break;
       case RULE_ALLEN_EQ:
-        fquery->mrules[j].func = merger_allen_eq;
+        fquery->mruleset[j].func = merger_allen_eq;
         break;
         
     }

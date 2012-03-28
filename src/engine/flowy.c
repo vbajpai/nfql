@@ -105,9 +105,7 @@ read_param_data(struct parameters* param) {
   if (fstat(fsock, param_data->query_mmap_stat) == -1)
     errExit("fstat");  
 
-  /* param_data->query_mmap_stat is free'd after freeing 
-   * param_data->query_mmap  
-   */
+  /* param_data->query_mmap is free'd after calling parse_json_query(...) */
   param_data->query_mmap = mmap(NULL, 
                                 param_data->query_mmap_stat->st_size, 
                                 PROT_READ, 
@@ -129,25 +127,25 @@ parse_json_query(char* query_mmap) {
   struct json_object*                 filter_offset;
   
   
-  /* TODO: when free'd? */
+  /* free'd after returning from prepare_flowquery(...) */
   struct json* json = calloc(1, sizeof(struct json));
   if (json == NULL)
     errExit("calloc");
   json->num_frules = 1;
   
-  /* TODO: when free'd? */
+  /* free'd after returning from prepare_flowquery(...) */
   json->fruleset = calloc(json->num_frules, 
                           sizeof(struct json_filter_rule*));
   if (json->fruleset == NULL)
     errExit("calloc");
 
-  /* TODO: when free'd? */
   for (int i = 0; i < json->num_frules; i++) {
+    /* free'd after returning from prepare_flowquery(...) */
     json->fruleset[i] = calloc(1, sizeof(struct json_filter_rule));
     if (json->fruleset[i] == NULL)
       errExit("calloc");
     
-    /* TODO: when free'd? */
+    /* free'd after returning from prepare_flowquery(...) */
     json->fruleset[i]->off = 
     calloc(1, sizeof(struct json_filter_rule_offset));
     if (json->fruleset[i]->off == NULL)
@@ -175,8 +173,232 @@ parse_json_query(char* query_mmap) {
   return json;
 }
 
+struct flowquery*
+prepare_flowquery(struct ft_data* trace,
+                  struct json* json_query) {
+  
+  
+  /* -----------------------------------------------------------------------*/  
+  /*                          allocating fquery                             */
+  /* -----------------------------------------------------------------------*/
+  
+  /* TODO: when free'd? */
+  struct flowquery* fquery = (struct flowquery *)
+                              calloc(1, sizeof(struct flowquery));
+  if (fquery == NULL) 
+    errExit("calloc");
+  
+  /* TODO: hardcoded */
+  fquery->num_branches = NUM_BRANCHES;
+  
+  /* TODO: when free'd? */
+  fquery->branchset =  (struct branch_info *)
+                       calloc(fquery->num_branches, 
+                       sizeof(struct branch_info));
+  if (fquery->branchset == NULL)
+    errExit("calloc");
+  
+  /* ----------------------------------------------------------------------- */
+  
+  
+  
+  
+  
+  
+  
+  /* -----------------------------------------------------------------------*/  
+  /*                       assigning branch rules                           */
+  /* -----------------------------------------------------------------------*/  
+
+  for (int i = 0; i < fquery->num_branches; i++) {
+    
+    struct branch_info* branch = &fquery->branchset[i];
+    
+    /* TODO: hardcoded */
+    switch (i) {
+      case 0:
+        branch->num_filter_rules = NUM_FILTER_RULES_BRANCH1;
+        branch->num_group_modules = NUM_GROUPER_RULES_BRANCH1;         
+        branch->num_aggr = NUM_GROUPER_AGGREGATION_RULES_BRANCH1;
+        branch->num_gfilter_rules = NUM_GROUP_FILTER_RULES_BRANCH1;
+        break;
+      case 1:  
+        branch->num_filter_rules = NUM_FILTER_RULES_BRANCH2;
+        branch->num_group_modules = NUM_GROUPER_RULES_BRANCH2;
+        branch->num_aggr = NUM_GROUPER_AGGREGATION_RULES_BRANCH2;
+        branch->num_gfilter_rules = NUM_GROUP_FILTER_RULES_BRANCH2;
+        break;
+    }
+    
+    branch->branch_id = i;
+    branch->data = trace;
+    
+    /* TODO: when free'd? */
+    struct filter_rule* fruleset = calloc(branch->num_filter_rules, 
+                                       sizeof(struct filter_rule));
+    if (fruleset == NULL)
+      errExit("calloc");
+    for (int j = 0; j < branch->num_filter_rules; j++) {
+      
+      struct filter_rule* frule = &fruleset[j];
+      
+      /* TODO: hardcoded */
+      switch (i) {
+        case 0:
+          frule->field_offset      =         trace->offsets.dstport;
+          break;
+        case 1:          
+          frule->field_offset      =         trace->offsets.srcport;
+          break;
+      }
+      frule->value                 =         json_query->fruleset[0]->off->value;
+      frule->delta                 =         json_query->fruleset[0]->delta;
+      frule->op                    =         RULE_EQ | RULE_S1_16;
+      frule->func                  =         NULL;      
+    }
+    branch->filter_rules = fruleset;
+    
+    /* TODO: when free'd? */
+    struct grouper_rule* gruleset = calloc(branch->num_group_modules, 
+                                           sizeof(struct grouper_rule));
+    if (gruleset == NULL)
+      errExit("calloc");
+    for (int j = 0; j < branch->num_group_modules; j++) {
+      
+      struct grouper_rule* grule = &gruleset[j];
+
+      /* TODO: hardcoded */
+      switch (j) {
+        case 0:
+          grule->field_offset1     =        trace->offsets.srcaddr;      
+          grule->field_offset2     =        trace->offsets.srcaddr;          
+          break;
+        case 1:
+          grule->field_offset1     =        trace->offsets.dstaddr;      
+          grule->field_offset2     =        trace->offsets.dstaddr;         
+          break;
+      }
+      
+      grule->delta                 =         0;
+      grule->op                    =         RULE_EQ | RULE_S1_32 | 
+                                             RULE_S2_32 | RULE_NO;
+      grule->func                  =         NULL;
+    }
+    branch->group_modules = gruleset;
+    
+    /* TODO: when free'd? */
+    struct grouper_aggr* aggruleset = calloc(branch->num_aggr, 
+                                             sizeof(struct grouper_aggr));
+    if (aggruleset == NULL)
+      errExit("calloc");
+    for (int j = 0; j < branch->num_aggr; j++) {
+      struct grouper_aggr* aggrule = &aggruleset[j];
+      
+      /* TODO: hardcoded */      
+      switch (j) {
+        case 0:
+          aggrule->field_offset    =         trace->offsets.srcaddr;
+          break;
+        case 1:
+          aggrule->field_offset    =         trace->offsets.dstaddr;
+          break;
+        case 2:
+          aggrule->field_offset    =         trace->offsets.dPkts;
+          break;
+        case 3:
+          aggrule->field_offset    =         trace->offsets.dOctets;
+          break;
+      }
+      switch (j) {
+        case 0:
+        case 1:
+          aggrule->op              =         RULE_STATIC | RULE_S1_32;
+          break;
+        case 2:
+        case 3:
+          aggrule->op              =         RULE_SUM | RULE_S1_32;
+          break;
+      }      
+      aggrule->func                =         NULL;
+    }
+    branch->aggr = aggruleset;
+   
+    /* TODO: when free'd? */    
+    struct gfilter_rule* gfruleset = calloc(branch->num_gfilter_rules, 
+                                            sizeof(struct gfilter_rule));
+    if (gfruleset == NULL)
+      errExit("calloc");    
+    for (int j = 0; j < branch->num_gfilter_rules; j++) {
+      struct gfilter_rule* gfrule =         &gfruleset[j];      
+      gfrule->field                =         trace->offsets.dPkts;
+      gfrule->value                =         200;
+      gfrule->delta                =         0;
+      gfrule->op                   =         RULE_GT | RULE_S1_32;
+      gfrule->func                 =         NULL;
+    }
+    branch->gfilter_rules = gfruleset;
+    
+  }
+
+  /* ----------------------------------------------------------------------- */
+  
+  
+  
+  
+  
+  
+  
+  /* -----------------------------------------------------------------------*/  
+  /*                       assigning merger rules                           */
+  /* -----------------------------------------------------------------------*/  
+
+  /* TODO: hardcoded */
+  fquery->num_merger_rules = NUM_MERGER_RULES;
+
+  /* TODO: when free'd? */
+  struct merger_rule* mruleset = (struct merger_rule*)
+                                  calloc(fquery->num_merger_rules, 
+                                  sizeof(struct merger_rule));
+  if (mruleset == NULL)
+    errExit("calloc");
+  
+  for (int j = 0; j < fquery->num_merger_rules; j++) {
+
+    struct merger_rule* mrule    =         &mruleset[j];
+    mrule->branch1               =         &fquery->branchset[0];
+    mrule->branch2               =         &fquery->branchset[1];    
+
+    /* TODO: hardcoded */
+    switch (j) {
+      case 0:
+        mrule->field1            =         trace->offsets.srcaddr;
+        mrule->field2            =         trace->offsets.dstaddr;        
+        break;
+      case 1:
+        mrule->field1            =         trace->offsets.dstaddr;
+        mrule->field2            =         trace->offsets.srcaddr;        
+        break;
+    }
+    mrule->delta                 =         0;
+    mrule->op                    =         RULE_EQ | RULE_S1_32 | RULE_S2_32;
+    mrule->func                  =         NULL;
+  }
+  fquery->mruleset = mruleset;  
+  
+  /* ----------------------------------------------------------------------- */
+  
+  
+  
+  
+  
+  
+  
+  return fquery;
+}
+
 int 
 main(int argc, char **argv) {
+  
   
   
   /* -----------------------------------------------------------------------*/  
@@ -231,186 +453,30 @@ main(int argc, char **argv) {
  /* ----------------------------------------------------------------------- */  
   
   
-   
   
   
- 
+  
   
   
   /* -----------------------------------------------------------------------*/  
-  /*                      allocating fquery and binfos                      */
+  /*                           prepare flowquery                            */
   /* -----------------------------------------------------------------------*/
   
-  /* TODO: when free'd? */
-  struct flowquery* fquery = (struct flowquery *)
-                             calloc(1, sizeof(struct flowquery));
-  if (fquery == NULL) 
-    errExit("calloc");
-  fquery->num_branches = NUM_BRANCHES;
-  
-  /* TODO: when free'd? */
-  fquery->branches = (struct branch_info *)
-                      calloc(fquery->num_branches, 
-                      sizeof(struct branch_info));
-  if (fquery->branches == NULL)
-    errExit("calloc");
-  
- /* ----------------------------------------------------------------------- */
-
-
-  
-
-  
-  
-  
+  struct flowquery* fquery = prepare_flowquery(param_data->trace, 
+                                               json_query); 
+  if (fquery == NULL)
+    errExit("prepare_flowquery(...) returned NULL");
+  else {
     
-  /* -----------------------------------------------------------------------*/  
-  /*                           pipeline rules                               */
-  /* -----------------------------------------------------------------------*/  
- 
-  fquery->branches[0].num_filter_rules = NUM_FILTER_RULES_BRANCH1;
-  fquery->branches[1].num_filter_rules = NUM_FILTER_RULES_BRANCH2;
-  
-  fquery->branches[0].num_group_modules = NUM_GROUPER_RULES_BRANCH1;
-  fquery->branches[1].num_group_modules = NUM_GROUPER_RULES_BRANCH2;  
-  
-  fquery->branches[0].num_aggr = NUM_GROUPER_AGGREGATION_RULES_BRANCH1;
-  fquery->branches[1].num_aggr = NUM_GROUPER_AGGREGATION_RULES_BRANCH2;  
-  
-  fquery->branches[0].num_gfilter_rules = NUM_GROUP_FILTER_RULES_BRANCH1;
-  fquery->branches[1].num_gfilter_rules = NUM_GROUP_FILTER_RULES_BRANCH2;
-  
-  fquery->num_merger_rules = NUM_MERGER_RULES;
-
-  
-  /* rules for each branch */
-  for (int i = 0; i < fquery->num_branches; i++) {
-    
-    fquery->branches[i].branch_id = i;
-    fquery->branches[i].data = param_data->trace;
-    
-    
-    struct filter_rule* frule = calloc(fquery->branches[i].num_filter_rules, 
-                                       sizeof(struct filter_rule));    
-    for (int j = 0; j < fquery->branches[i].num_filter_rules; j++) {
-      /* assumes that there are 2 branches */
-      switch (i) {
-        case 0:
-          frule[j].field_offset     =         param_data->trace->offsets.dstport;
-          break;
-        case 1:          
-          frule[j].field_offset     =         param_data->trace->offsets.srcport;
-          break;
-      }
-      frule[j].value                =         json_query->fruleset[0]->off->value;
-      frule[j].delta                =         json_query->fruleset[0]->delta;
-      frule[j].op                   =         RULE_EQ | RULE_S1_16;
-      frule[j].func                 =         NULL;      
-    }    
-    fquery->branches[i].filter_rules = frule;
-    
-    
-    
-    struct grouper_rule* grule = calloc(fquery->branches[i].num_group_modules, 
-                                        sizeof(struct grouper_rule));
-    for (int j = 0; j < fquery->branches[i].num_group_modules; j++) {
-      switch (j) {
-        case 0:
-          grule[j].field_offset1     =        param_data->trace->offsets.srcaddr;      
-          grule[j].field_offset2     =        param_data->trace->offsets.srcaddr;          
-          break;
-        case 1:
-          grule[j].field_offset1     =        param_data->trace->offsets.dstaddr;      
-          grule[j].field_offset2     =        param_data->trace->offsets.dstaddr;         
-          break;
-      }
-      
-      grule[j].delta                 =         0;
-      grule[j].op                    =         RULE_EQ | RULE_S1_32 | 
-                                               RULE_S2_32 | RULE_NO;
-      grule[j].func                  =         NULL;
+    /* deallocate the json query buffers */
+    for (int i = 0; i < json_query->num_frules; i++) {
+      struct json_filter_rule* frule = json_query->fruleset[i];
+      free(frule->off);
+      free(frule);
     }
-    fquery->branches[i].group_modules = grule;    
-    
-
-
-    struct grouper_aggr* aggrule = calloc(fquery->branches[i].num_aggr, 
-                                          sizeof(struct grouper_aggr));
-    for (int j = 0; j < fquery->branches[i].num_aggr; j++) {
-      aggrule[j].module           =         0;      
-      switch (j) {
-        case 0:
-          aggrule[j].field_offset =         param_data->trace->offsets.srcaddr;
-          break;
-        case 1:
-          aggrule[j].field_offset =         param_data->trace->offsets.dstaddr;
-          break;
-        case 2:
-          aggrule[j].field_offset =         param_data->trace->offsets.dPkts;
-          break;
-        case 3:
-          aggrule[j].field_offset =         param_data->trace->offsets.dOctets;
-          break;
-      }
-      switch (j) {
-        case 0:
-        case 1:
-          aggrule[j].op           =         RULE_STATIC | RULE_S1_32;
-          break;
-        case 2:
-        case 3:
-          aggrule[j].op           =         RULE_SUM | RULE_S1_32;
-          break;
-      }      
-      aggrule[j].func             =         NULL;
-    }
-    fquery->branches[i].aggr = aggrule;    
-
-
-    
-    struct gfilter_rule* gfrule = calloc(fquery->branches[i].num_gfilter_rules, 
-                                         sizeof(struct gfilter_rule));
-    for (int j = 0; j < fquery->branches[i].num_gfilter_rules; j++) {
-      gfrule[j].field             =         param_data->trace->offsets.dPkts;
-      gfrule[j].value             =         200;
-      gfrule[j].delta             =         0;
-      gfrule[j].op                =         RULE_GT | RULE_S1_32;
-      gfrule[j].func              =         NULL;
-    }
-    fquery->branches[i].gfilter_rules = gfrule;
-    
-  }
-  
-  
-  struct merger_rule* mrule = calloc(fquery->num_merger_rules, 
-                                     sizeof(struct merger_rule));
-  for (int j = 0; j < fquery->num_merger_rules; j++) {    
-    mrule[j].branch1               =         &fquery->branches[0];
-    mrule[j].branch2               =         &fquery->branches[1];    
-    switch (j) {        
-      case 0:
-        mrule[j].field1            =         param_data->trace->offsets.srcaddr;
-        mrule[j].field2            =         param_data->trace->offsets.dstaddr;        
-        break;
-      case 1:
-        mrule[j].field1            =         param_data->trace->offsets.dstaddr;
-        mrule[j].field2            =         param_data->trace->offsets.srcaddr;        
-        break;
-    }
-    mrule[j].delta                 =         0;
-    mrule[j].op                    =         RULE_EQ | RULE_S1_32 | RULE_S2_32;
-    mrule[j].func                  =         NULL;
-  }
-  fquery->mrules = mrule;
-  
-  /* deallocate the json query buffers */
-  for (int i = 0; i < json_query->num_frules; i++) {
-    struct json_filter_rule* frule = json_query->fruleset[i];
-    free(frule->off);
-    free(frule);
-  }
-  free(json_query->fruleset);
-  free(json_query);
+    free(json_query->fruleset);
+    free(json_query);
+  }  
   
  /* -----------------------------------------------------------------------*/
 
@@ -428,7 +494,7 @@ main(int argc, char **argv) {
   /* -----------------------------------------------------------------------*/    
   
   assign_fptr(fquery, 
-              fquery->branches, 
+              fquery->branchset, 
               fquery->num_branches);
   
   /* -----------------------------------------------------------------------*/
@@ -469,7 +535,7 @@ main(int argc, char **argv) {
     ret = pthread_create(&thread_ids[i], 
                          &thread_attrs[i], 
                          &branch_start, 
-                         (void *)(&fquery->branches[i]));    
+                         (void *)(&fquery->branchset[i]));    
     if (ret != 0)
       errExit("pthread_create");
     
@@ -509,9 +575,9 @@ main(int argc, char **argv) {
   /*                                 merger                                 */
   /* -----------------------------------------------------------------------*/
   
-  fquery->group_tuples = merger(fquery->branches,
+  fquery->group_tuples = merger(fquery->branchset,
                                 fquery->num_branches, 
-                                mrule, 
+                                fquery->mruleset, 
                                 fquery->num_merger_rules,
                                 &fquery->total_num_group_tuples,
                                 &fquery->num_group_tuples);
@@ -562,7 +628,7 @@ main(int argc, char **argv) {
     
     /* process each branch */
     for (int i = 0; i < fquery->num_branches; i++) {
-      struct branch_info* branch = &fquery->branches[i];
+      struct branch_info* branch = &fquery->branchset[i];
       
       printf("\nNo. of Filtered Records: %zd\n", branch->num_filtered_records);      
       puts(FLOWHEADER);      
@@ -657,7 +723,7 @@ main(int argc, char **argv) {
 #ifdef MERGER    
     if (verbose_vv) {
       
-      struct permut_iter *iter = iter_init(fquery->branches, 
+      struct permut_iter *iter = iter_init(fquery->branchset, 
                                            fquery->num_branches);
       printf("\nNo. of (to be) Matched Groups: %zu \n", 
              fquery->total_num_group_tuples);
@@ -665,7 +731,7 @@ main(int argc, char **argv) {
       while(iter_next(iter)) {
         for (int j = 0; j < fquery->num_branches; j++) {          
           flow_print_record(param_data->trace, 
-                            fquery->branches[j].
+                            fquery->branchset[j].
                             filtered_groupset[iter->filtered_group_tuple[j] - 1]
                             ->group_aggr_record);
         }

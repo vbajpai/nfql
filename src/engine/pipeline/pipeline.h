@@ -31,37 +31,36 @@
 
 struct flowquery {
   size_t                          num_branches;
-  struct branch_info*             branches;  
-  struct merger_rule*             mrules;
-  size_t                          num_merger_rules;
-  struct group***                 group_tuples;
+  size_t                          num_merger_rules;  
   size_t                          num_group_tuples;
-  size_t                          total_num_group_tuples;  
+  size_t                          total_num_group_tuples;
+  
+  struct branch_info*             branchset;  
+  struct merger_rule*             mruleset;
+  struct group***                 group_tuples;
   struct stream**                 streamset;
 };
 
-struct stream{
-  char ** recordset;
-  size_t num_records;
-};
-
-/*
- * branch info
- */
-
 struct branch_info {
   
-  /* have to be filled manually */
-  int branch_id;
-  struct ft_data *data;
-  struct filter_rule *filter_rules;
-  size_t num_filter_rules;
-  struct grouper_rule *group_modules;
-  size_t num_group_modules;
-  struct grouper_aggr *aggr;
-  size_t num_aggr;
-  struct gfilter_rule *gfilter_rules;
-  size_t num_gfilter_rules;
+  /* -----------------------------------------------------------------------*/  
+  /*                              inputs                                    */
+  /* -----------------------------------------------------------------------*/  
+  int                             branch_id;
+  struct ft_data*                 data;
+
+  size_t                          num_filter_rules;
+  size_t                          num_group_modules;
+  size_t                          num_aggr;
+  size_t                          num_gfilter_rules;
+  
+  struct filter_rule*             filter_rules;  
+  struct grouper_rule*            group_modules;
+  struct grouper_aggr*            aggr;  
+  struct gfilter_rule*            gfilter_rules;  
+  /* -----------------------------------------------------------------------*/  
+
+  
   
   /* used with --debug flag */
   char** filtered_records;
@@ -79,21 +78,87 @@ struct branch_info {
   size_t num_filtered_groups;
 };
 
-/*
- * filter rules
- */
-
 struct filter_rule {
-  size_t field_offset;
-  uint64_t value;
-  uint64_t delta;
-  uint64_t op;
+  size_t                          field_offset;
+  uint64_t                        value;
+  uint64_t                        delta;
+  uint64_t                        op;
   bool (*func)(
-               char *record,
-               size_t field_offset,
-               uint64_t value,
-               uint64_t delta);
+               char*              record,
+               size_t             field_offset,
+               uint64_t           value,
+               uint64_t           delta
+              );
 };
+
+
+struct grouper_rule {
+  size_t                          field_offset1;
+  size_t                          field_offset2;
+  uint64_t                        delta;
+  uint64_t                        op;
+  bool (*func)(
+               struct group*      group,
+               size_t             field_offset1,
+               char*              record2,
+               size_t             field_offset2,
+               uint64_t           delta
+              );
+};
+
+
+struct grouper_aggr {
+  size_t                          field_offset;
+  uint64_t                        op;
+  struct aggr (*func)(
+                      char**      group_records,
+                      char*       group_aggregation,
+                      size_t      num_records,
+                      size_t      field_offset,
+                      bool        if_aggr_common
+                     );
+};
+
+
+struct gfilter_rule {
+  size_t                          field;
+  uint64_t                        value;
+  uint64_t                        delta;
+  uint64_t                        op;
+  bool (*func)(
+               struct group*      group,
+               size_t             field,
+               uint64_t           value,
+               uint64_t           delta
+              );
+};
+
+
+/*
+ * merger rules
+ * a single rule will always compare two branches
+ * A.dstip = B.dstip = C.dstip should be broken down to
+ * A.dstip = B.dstip
+ * B.dstip = C.dstip
+ */
+struct merger_rule {
+  struct branch_info*             branch1;
+  size_t                          field1;
+  struct branch_info*             branch2;
+  size_t                          field2;
+  uint64_t                        op;
+  uint64_t                        delta;
+  bool (*func)(
+               struct group*      group1,
+               size_t             field1,
+               struct group*      group2,
+               size_t             field2,
+               uint64_t           delta
+              );
+};
+
+
+
 
 /*
  * group - store module members and aggregation results
@@ -118,72 +183,13 @@ struct aggr {
   uint64_t *values;
 };
 
-/*
- * grouper rules
- *
- * each module is a double pointer
- */
 
-struct grouper_rule {
-  size_t field_offset1;
-  size_t field_offset2;
-  uint64_t delta;
-  uint64_t op;
-  bool (*func)(
-               struct group *group,
-               size_t field_offset1,
-               char *record2,
-               size_t field_offset2,
-               uint64_t delta);
-};
 
-struct grouper_aggr {
-  int module; // NEW: indicate module, -1 for all
-  size_t field_offset;
-  uint64_t op;
-  struct aggr (*func)(
-                      char **group_records,
-                      char *group_aggregation,
-                      size_t num_records,
-                      size_t field_offset,
-                      bool if_aggr_common);
-};
 
-/*
- * group filter rules
- */
 
-struct gfilter_rule {
-  size_t field;
-  uint64_t value;
-  uint64_t delta;
-  uint64_t op;
-  bool (*func)(struct group *group,
-               size_t field,
-               uint64_t value,
-               uint64_t delta);
-};
-
-/*
- * merger rules
- * a single rule will always compare two branches
- * A.dstip = B.dstip = C.dstip should be broken down to
- * A.dstip = B.dstip
- * B.dstip = C.dstip
- */
-
-struct merger_rule {
-  struct branch_info *branch1;
-  size_t field1;
-  struct branch_info *branch2;
-  size_t field2;
-  uint64_t op;
-  uint64_t delta;
-  bool (*func)(struct group *group1,
-               size_t field1,
-               struct group *group2,
-               size_t field2,
-               uint64_t delta);
+struct stream{
+  char ** recordset;
+  size_t num_records;
 };
 
 
