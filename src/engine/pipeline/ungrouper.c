@@ -28,41 +28,45 @@
 #include "ungrouper.h"
 
 struct stream**
-ungrouper(struct flowquery* fquery,
-          struct group*** group_tuples,
-          size_t num_group_tuples){
+ungrouper(struct flowquery* fquery){
   
-  struct stream** streamset = calloc(num_group_tuples,
-                                     sizeof(struct stream*));
-  if (streamset == NULL)
-    errExit("calloc");
-  
-  for (int i = 0; i < num_group_tuples; i++) {
+  struct stream** streamset = NULL;
+  if (fquery->num_group_tuples != 0) {
     
-    struct stream* stream = calloc(1, sizeof(struct stream));
-    if (stream == NULL)
+    /* TODO: when free'd? */    
+    streamset = calloc(fquery->num_group_tuples,
+                                       sizeof(struct stream*));
+    if (streamset == NULL)
       errExit("calloc");
     
-    struct group** group_tuple = group_tuples[i];
-    
-    for (int j = 0; j < fquery->num_branches; j++) {
+    for (int i = 0; i < fquery->num_group_tuples; i++) {
       
-      struct group* group = group_tuple[j];
-      stream->recordset = realloc(stream->recordset, 
-                                 (stream->num_records + 
-                                  group->num_members) * sizeof(char*));
-      if (streamset == NULL)
-        errExit("realloc");      
+      /* TODO: when free'd? */
+      struct stream* stream = calloc(1, sizeof(struct stream));
+      if (stream == NULL)
+        errExit("calloc");
       
-      for (int k = stream->num_records, l = 0; 
-           k < (stream->num_records + group->num_members); 
-           k++, l++)
-        stream->recordset[k] = group->members[l];
-      stream->num_records += group->num_members;
+      struct group** group_tuple = fquery->group_tuples[i];
+      
+      for (int j = 0; j < fquery->num_branches; j++) {
+        
+        struct group* group = group_tuple[j];
+        /* TODO: when free'd? */
+        stream->recordset = realloc(stream->recordset, 
+                                    (stream->num_records + 
+                                     group->num_members) * sizeof(char*));
+        if (stream->recordset == NULL)
+          errExit("realloc");      
+        
+        for (int k = stream->num_records, l = 0; 
+             k < (stream->num_records + group->num_members); 
+             k++, l++)
+          stream->recordset[k] = group->members[l];
+        stream->num_records += group->num_members;
+      }
+      
+      streamset[i] = stream;
     }
-    
-    streamset[i] = stream;
-  }    
-
+  }
   return streamset;
 }

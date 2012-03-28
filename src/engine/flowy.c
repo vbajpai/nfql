@@ -417,10 +417,11 @@ prepare_flowquery(struct ft_data* trace,
 
 
 void 
-echo_results(struct ft_data* trace,
-             struct flowquery* fquery) {
+echo_results(size_t num_streams,
+             struct stream** streamset,
+             struct ft_data* trace) {
   
-  
+#ifdef DEBUGGGGGG  
   /* -----------------------------------------------------------------------*/  
   /*                                debugging                               */
   /* -----------------------------------------------------------------------*/  
@@ -566,7 +567,7 @@ echo_results(struct ft_data* trace,
   }
   
   /* -----------------------------------------------------------------------*/      
-  
+#endif  
   
   
   
@@ -579,12 +580,12 @@ echo_results(struct ft_data* trace,
   /*                                results                                 */
   /* -----------------------------------------------------------------------*/  
 
-  printf("\nNo. of Streams: %zu \n", fquery->num_group_tuples);
+  printf("\nNo. of Streams: %zu \n", num_streams);
   printf("----------------- \n");
   
-  for (int j = 0; j < fquery->num_group_tuples; j++) {
+  for (int j = 0; j < num_streams; j++) {
     
-    struct stream* stream = fquery->streamset[j];
+    struct stream* stream = streamset[j];
     printf("\nNo. of Records in Stream (%d): %zu \n",j+1, stream->num_records);
     if (stream->num_records != 0)
       puts(FLOWHEADER);
@@ -785,41 +786,34 @@ main(int argc, char **argv) {
   /* -----------------------------------------------------------------------*/  
   /*                                ungrouper                               */
   /* -----------------------------------------------------------------------*/  
-  // TODO: free group_collections at some point
-  /* -----------------------------------------------------------------------*/
   
-  fquery->streamset = ungrouper(fquery,
-                                fquery->group_tuples,
-                                fquery->num_group_tuples);
+  if (fquery->num_group_tuples != 0){
+    fquery->streamset = ungrouper(fquery);
+    if (fquery->streamset == NULL)
+      errExit("ungrouper(...) returned NULL");
+    else {
+      echo_results(fquery->num_group_tuples,
+                   fquery->streamset,
+                   param_data->trace);
+      
+      ft_close(param_data->trace);
+      free(param_data); param_data = NULL;
+      
+      for (int j = 0; j < fquery->num_group_tuples; j++) {        
+        struct stream* stream = fquery->streamset[j];
+        for (int i = 0; i < stream->num_records; i++)
+          /* already free'd using ft_close(...) */
+          stream->recordset[i] = NULL;
+        free(stream->recordset); stream->recordset = NULL;
+        free(stream); stream = NULL;
+      }
+      free(fquery->streamset); fquery->streamset = NULL;
+    }
+  }
   
   /* -----------------------------------------------------------------------*/
   
 #endif  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  /* -----------------------------------------------------------------------*/  
-  /*                                output                                  */
-  /* -----------------------------------------------------------------------*/
-  
-  echo_results(param_data->trace, fquery);
-  
-  /* assuming none of the trace records were free'd by the stages */
-  ft_close(param_data->trace);
-  free(param_data);
-  
-  /* -----------------------------------------------------------------------*/
-  
-  
-
-
   
   
   exit(EXIT_SUCCESS);

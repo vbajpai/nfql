@@ -65,6 +65,9 @@ filter(struct ft_data *data, struct filter_rule *filter_rules,
     }
   }
   
+  /* if nothing got filtered, 
+   * free the memory allocated and return NULL
+   */
   if (*num_filtered_records == 0) {
     if (filtered_records != NULL) {
       free(filtered_records);

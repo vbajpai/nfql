@@ -104,8 +104,9 @@ prepare_flowquery(struct ft_data* trace,
                   struct json* json_query);
 
 void 
-echo_results(struct ft_data* trace,
-             struct flowquery* fquery);
+echo_results(size_t num_streams,
+             struct stream** streamset,
+             struct ft_data* trace);
 
 #define FLOWHEADER "\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n"
 

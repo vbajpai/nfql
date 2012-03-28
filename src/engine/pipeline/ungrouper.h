@@ -32,8 +32,6 @@
 #include "error_handlers.h"
 
 struct stream**
-ungrouper(struct flowquery* fquery,
-          struct group*** group_tuples,
-          size_t num_group_tuples);
+ungrouper(struct flowquery* fquery);
 
 #endif
