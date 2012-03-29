@@ -78,8 +78,10 @@ read_param_data(struct parameters* param) {
   
   /* param_data->query_mmap is free'd after calling parse_json_query(...)
    * param_data->query_mmap_stat is free'd after freeing param_data->query_mmap
-   * param_data->trace is free'd after calling echo_results(...)
-   * param_data is free'd after calling echo_results(...)
+   * param_data->trace is free'd in 2 stages:
+   *    non-filtered records are free'd just after returning from the branch
+   *    filtered records are free'd before exiting from main(...)
+   * param_data is free'd before exiting from main(...)
    */ 
   struct parameters_data* param_data = calloc(1, 
                                               sizeof(struct parameters_data));
@@ -241,8 +243,11 @@ prepare_flowquery(struct ft_data* trace,
     if (fruleset == NULL)
       errExit("calloc");
     for (int j = 0; j < branch->num_filter_rules; j++) {
-      
+
+      /* free'd after returning from filter(...) in branch.c */
       struct filter_rule* frule = calloc(1, sizeof(struct filter_rule));
+      if (frule == NULL)
+        errExit("calloc");      
       
       /* TODO: hardcoded */
       switch (i) {
@@ -604,7 +609,7 @@ main(int argc, char **argv) {
           break;
       }
       if (!if_filtered_record){
-        free(record);         
+        free(record); record = NULL;
         param_data->trace->records[i] = NULL;      
       }
       
@@ -670,13 +675,12 @@ main(int argc, char **argv) {
                    fquery->streamset,
                    param_data->trace);
       
-      ft_close(param_data->trace); param_data->trace = NULL;
-      free(param_data); param_data = NULL;      
       for (int j = 0; j < fquery->num_group_tuples; j++) {
         struct stream* stream = fquery->streamset[j];
-        for (int i = 0; i < stream->num_records; i++)
-          /* already free'd using ft_close(...) */
-          stream->recordset[i] = NULL;
+        for (int i = 0; i < stream->num_records; i++){
+          char* record = stream->recordset[i];
+          free(record); record = NULL; stream->recordset[i] = NULL;        
+        }
         free(stream->recordset); stream->recordset = NULL;
         free(stream); stream = NULL;
       }
@@ -687,6 +691,42 @@ main(int argc, char **argv) {
   /* -----------------------------------------------------------------------*/
   
 #endif  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  /* -----------------------------------------------------------------------*/  
+  /*                              free memory                               */
+  /* -----------------------------------------------------------------------*/  
+  
+  /* free filter_result */
+  for (int i = 0; i < fquery->num_branches; i++) {
+    struct branch_info* branch = &fquery->branchset[i];
+    for (int j = 0; j < branch->filter_result->num_filtered_records; j++) {
+      char* record = branch->filter_result->filtered_recordset[j];
+      free(record); record = NULL; 
+      branch->filter_result->filtered_recordset[j] = NULL;
+    }
+    
+    free(branch->filter_result->filtered_recordset);
+    branch->filter_result->filtered_recordset = NULL;
+    
+    free(branch->filter_result); 
+    branch->filter_result = NULL;
+  }
+  
+  
+  /* free param_data */
+  ft_close(param_data->trace); param_data->trace = NULL;
+  free(param_data); param_data = NULL;
+  
+  /* -----------------------------------------------------------------------*/  
   
   
   exit(EXIT_SUCCESS);

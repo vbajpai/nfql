@@ -347,20 +347,30 @@ ft_records_get_marked_tos(struct ft_data* data, int number) {
 
 void 
 ft_close(struct ft_data* data) {
-  int i;
   
-  ftio_close(&data->io);
+  ftio_close(&data->io);  
+  for (int i=0; i<data->num_records; i++)
+    data->records[i] = NULL;
+  free(data->records);  
   
-  for (i=0; i<data->num_records; i++) {
-    free(data->records[i]);
-  }
-  free(data->records);
-  
-  if(data->fd) {
+  if(data->fd)
     close(data->fd);
-  }
   free(data);
 }
+
+void 
+ft_close_free(struct ft_data* data) {
+
+  ftio_close(&data->io);  
+  for (int i=0; i<data->num_records; i++)
+    free(data->records[i]);
+  free(data->records);
+  
+  if(data->fd)
+    close(data->fd);
+  free(data);
+}
+
 
 void
 flow_print_record(struct ft_data *data, char *record){

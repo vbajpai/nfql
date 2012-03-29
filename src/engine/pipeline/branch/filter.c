@@ -29,12 +29,12 @@
 struct filter_result*
 filter(struct branch_info* branch) {
   
-  /* TODO: when free'd? */
+  /* free'd before exiting from main(...) */
   struct filter_result* fresult = calloc(1, sizeof(struct filter_result));
   if (fresult == NULL)
     errExit("calloc");
   
-  /* TODO: when free'd? */
+  /* free'd before exiting from main(...) */
   fresult->filtered_recordset = (char **)
                                  calloc(fresult->num_filtered_records,
                                         sizeof(char *));

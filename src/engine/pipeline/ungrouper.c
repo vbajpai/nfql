@@ -33,7 +33,7 @@ ungrouper(struct flowquery* fquery){
   struct stream** streamset = NULL;
   if (fquery->num_group_tuples != 0) {
     
-    /* TODO: when free'd? */    
+    /* free'd after returning from ungrouper(...) */
     streamset = calloc(fquery->num_group_tuples,
                                        sizeof(struct stream*));
     if (streamset == NULL)
@@ -41,7 +41,7 @@ ungrouper(struct flowquery* fquery){
     
     for (int i = 0; i < fquery->num_group_tuples; i++) {
       
-      /* TODO: when free'd? */
+      /* free'd after returning from ungrouper(...) */
       struct stream* stream = calloc(1, sizeof(struct stream));
       if (stream == NULL)
         errExit("calloc");
@@ -51,7 +51,7 @@ ungrouper(struct flowquery* fquery){
       for (int j = 0; j < fquery->num_branches; j++) {
         
         struct group* group = group_tuple[j];
-        /* TODO: when free'd? */
+        /* free'd after returning from ungrouper(...) */
         stream->recordset = realloc(stream->recordset, 
                                     (stream->num_records + 
                                      group->num_members) * sizeof(char*));
