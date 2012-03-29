@@ -46,6 +46,7 @@
 #include "auto_assign.h"
 #include "error_handlers.h"
 #include "ftreader.h"
+#include "echo.h"
 
 
 
@@ -103,11 +104,7 @@ struct flowquery*
 prepare_flowquery(struct ft_data* trace,
                   struct json* json_query);
 
-void 
-echo_results(size_t num_streams,
-             struct stream** streamset,
-             struct ft_data* trace);
-
-#define FLOWHEADER "\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n"
+pthread_t*
+run_branch_async(struct flowquery* fquery);
 
 #endif

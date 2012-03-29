@@ -24,33 +24,21 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef flowy_engine_base_h
-#define flowy_engine_base_h
+#ifndef flowy_engine_echo_h
+#define flowy_engine_echo_h
 
-#include <sys/types.h> /* Type definitions used by many programs */
-#include <stdio.h> /* Standard I/O functions */
-#include <stdlib.h> /* EXIT_SUCCESS and EXIT_FAILURE constants */
-#include <errno.h> /* Declares errno and defines error constants */
-#include <string.h> /* Commonly used string-handling functions */
-#include <stdint.h>
-#include <stdbool.h>
+#include "pipeline.h"
+#include "base.h"
+#include "ftreader.h"
 
-#define FILTER
+void 
+echo_results(size_t num_streams,
+             struct stream** streamset,
+             struct ft_data* trace);
 
-extern bool debug;
-extern bool if_group_modules_exist;
-
-/* verbose levels */
-extern bool verbose_v;
-extern bool verbose_vv;
-extern bool verbose_vvv;
-
-enum verbosity_levels {
-  HIGH      =     3,
-  MEDIUM    =     2,
-  LOW       =     1
-};
-
-#define FLOWHEADER "\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n"
+void
+echo_branch(size_t num_branches,
+            struct branch_info* branchset,
+            struct ft_data* trace);
 
 #endif

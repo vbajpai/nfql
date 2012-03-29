@@ -416,189 +416,51 @@ prepare_flowquery(struct ft_data* trace,
   return fquery;
 }
 
-
-void 
-echo_results(size_t num_streams,
-             struct stream** streamset,
-             struct ft_data* trace) {
+pthread_t*
+run_branch_async(struct flowquery* fquery){
   
-#ifdef DEBUGGGGGG  
-  /* -----------------------------------------------------------------------*/  
-  /*                                debugging                               */
-  /* -----------------------------------------------------------------------*/  
+  /* allocate space for a dedicated thread for each branch */
+  /* free'd after returning from this function */
+  pthread_t* threadset = (pthread_t *)calloc(fquery->num_branches, 
+                                             sizeof(pthread_t));
+  if (threadset == NULL)
+    errExit("calloc");
   
-  if(verbose_v){
+  /* free'd before returning from this function */
+  pthread_attr_t* thread_attrset = (pthread_attr_t *)
+                                    calloc(fquery->num_branches, 
+                                           sizeof(pthread_attr_t));
+  if (thread_attrset == NULL)
+    errExit("calloc");
+  
+  for (int i = 0, ret = 0; i < fquery->num_branches; i++) {
     
-    /* process each branch */
-    for (int i = 0; i < fquery->num_branches; i++) {
-      struct branch_info* branch = &fquery->branchset[i];
-      
-      printf("\nNo. of Filtered Records: %zd\n", branch->num_filtered_records);      
-      if (branch->num_filtered_records != 0)
-        puts(FLOWHEADER);      
-      for (int j = 0; j < branch->num_filtered_records; j++) {
-        flow_print_record(branch->data, branch->filtered_records[j]);
-        
-        /* not free'd since they point to original records */
-        branch->filtered_records[j] = NULL;
-      }      
-      free(branch->filtered_records);
-      
-      if (verbose_vv){
-        if(if_group_modules_exist){
-          
-          printf("\nNo. of Sorted Records: %zd\n", branch->num_filtered_records);      
-          if (branch->num_filtered_records != 0)          
-            puts(FLOWHEADER);      
-          for (int j = 0; j < branch->num_filtered_records; j++) {
-            flow_print_record(branch->data, branch->sorted_records[j]);
-            
-            /* not free'd since they point to original records */
-            branch->sorted_records[j] = NULL;
-          }      
-          free(branch->sorted_records);
-          
-          
-          printf("\nNo. of Unique Records: %zd\n", branch->num_unique_records);      
-          if (branch->num_unique_records != 0)          
-            puts(FLOWHEADER);      
-          for (int j = 0; j < branch->num_unique_records; j++) {
-            flow_print_record(branch->data, branch->unique_records[j]);
-            
-            /* not free'd since they point to original records */
-            branch->unique_records[j] = NULL;
-          }      
-          free(branch->unique_records);                
-        }      
-        
-        printf("\nNo. of Groups: %zu (Verbose Output)\n", branch->num_groups);
-        if (branch->num_groups != 0)        
-          puts(FLOWHEADER); 
-        for (int j = 0; j < branch->num_groups; j++) {
-          
-          printf("\n");
-          struct group* group = branch->groupset[j];
-          
-          /* print group members */ 
-          for (int k = 0; k < group->num_members; k++) {
-            flow_print_record(branch->data, group->members[k]);
-            group->members[k] = NULL;
-          }     
-          free(group->members);
-        }
-      }
-      
-      
-#ifdef GROUPERAGGREGATIONS
-      printf("\nNo. of Groups: %zu (Aggregations)\n", branch->num_groups);
-      if (branch->num_groups != 0)      
-        puts(FLOWHEADER); 
-      for (int j = 0; j < branch->num_groups; j++) {        
-        struct group* group = branch->groupset[j];
-        flow_print_record(branch->data, group->group_aggr_record);  
-        
-        for (int x = 0; x < branch->num_aggr; x++)
-          free(group->aggr[x].values);
-        free(group->aggr); 
-      }
-#endif
-      
-      
-#ifdef GROUPFILTER
-      printf("\nNo. of Filtered Groups: %zu (Aggregations)\n", 
-             branch->num_filtered_groups);      
-      if (branch->num_filtered_groups != 0)      
-        puts(FLOWHEADER); 
-      
-      for (int j = 0; j < branch->num_filtered_groups; j++) {
-        
-        struct group* filtered_group = branch->filtered_groupset[j];
-        flow_print_record(branch->data, filtered_group->group_aggr_record);
-      }
-#endif
-      
-      
-      /* free memory */
-      for (int j = 0; j < branch->num_groups; j++) {        
-        struct group* group = branch->groupset[j];
-        free(group->group_aggr_record);
-        free(group);
-      }
-      free(branch->groupset);
-    }
+    pthread_t* thread = &threadset[i];
+    pthread_attr_t* thread_attr = &thread_attrset[i];
+    struct branch_info* branch = &fquery->branchset[i];
     
-    /* merger */
+    /* initialize each thread attributes */
+    ret = pthread_attr_init(thread_attr);
+    if (ret != 0)
+      errExit("pthread_attr_init");
     
-#ifdef MERGER    
-    if (verbose_vv) {
-      
-      struct permut_iter *iter = iter_init(fquery->branchset, 
-                                           fquery->num_branches);
-      printf("\nNo. of (to be) Matched Groups: %zu \n", 
-             fquery->total_num_group_tuples);
-      if (fquery->total_num_group_tuples != 0)      
-        puts(FLOWHEADER);      
-      while(iter_next(iter)) {
-        for (int j = 0; j < fquery->num_branches; j++) {          
-          flow_print_record(trace, 
-                            fquery->branchset[j].
-                            filtered_groupset[iter->filtered_group_tuple[j] - 1]
-                            ->group_aggr_record);
-        }
-        printf("\n");
-      }
-      iter_destroy(iter);
-    }
+    /* start each thread for a dedicated branch */      
+    ret = pthread_create(thread, 
+                         thread_attr, 
+                         &branch_start, 
+                         (void *)(branch));    
+    if (ret != 0)
+      errExit("pthread_create");
     
-    printf("\nNo. of Merged Groups: %zu (Tuples)\n", 
-           fquery->num_group_tuples);      
-    if (fquery->num_group_tuples != 0)          
-      puts(FLOWHEADER);
     
-    for (int j = 0; j < fquery->num_group_tuples; j++) {
-      struct group** group_tuple = fquery->group_tuples[j];
-      for (int i = 0; i < fquery->num_branches; i++) {
-        struct group* group = group_tuple[i];
-        flow_print_record(trace, group->group_aggr_record);
-      }
-      printf("\n");
-    }    
-#endif
-    
+    /* destroy the thread attributes once the thread is created */  
+    ret = pthread_attr_destroy(thread_attr);
+    if (ret != 0) 
+      errExit("pthread_attr_destroy");
   }
   
-  /* -----------------------------------------------------------------------*/      
-#endif  
-  
-  
-  
-  
-  
-  
-  
-  
-  /* -----------------------------------------------------------------------*/  
-  /*                                results                                 */
-  /* -----------------------------------------------------------------------*/  
-
-  printf("\nNo. of Streams: %zu \n", num_streams);
-  printf("----------------- \n");
-  
-  for (int j = 0; j < num_streams; j++) {
-    
-    struct stream* stream = streamset[j];
-    printf("\nNo. of Records in Stream (%d): %zu \n",j+1, stream->num_records);
-    if (stream->num_records != 0)
-      puts(FLOWHEADER);
-    for (int i = 0; i < stream->num_records; i++) {
-      char* record = stream->recordset[i];
-      flow_print_record(trace, record);
-    }
-    printf("\n");
-  }
-  
-  /* -----------------------------------------------------------------------*/
-  
+  free(thread_attrset);
+  return threadset;
 }
 
 int 
@@ -698,55 +560,33 @@ main(int argc, char **argv) {
   
   
   /* -----------------------------------------------------------------------*/  
+  /*                                branch                                  */  
   /*               splitter → filter → grouper → group-filter               */
   /* -----------------------------------------------------------------------*/   
   
-
-  /* allocate space for a dedicated thread for each branch */
-  pthread_t* thread_ids = (pthread_t *)calloc(fquery->num_branches, 
-                                              sizeof(pthread_t));
-  if (thread_ids == NULL)
-    errExit("calloc");
-  
-  pthread_attr_t* thread_attrs = (pthread_attr_t *)
-                                  calloc(fquery->num_branches, 
-                                         sizeof(pthread_attr_t));
-  if (thread_attrs == NULL)
-    errExit("calloc");
-  
-  for (int i = 0, ret = 0; i < fquery->num_branches; i++) {
-
-    /* initialize each thread attributes */
-    ret = pthread_attr_init(&thread_attrs[i]);
-    if (ret != 0)
-      errExit("pthread_attr_init");
+  pthread_t* threadset = run_branch_async(fquery);
+  if (threadset == NULL)
+    errExit("run_branch_async(...) returned NULL");
+  else {
     
-    /* start each thread for a dedicated branch */      
-    ret = pthread_create(&thread_ids[i], 
-                         &thread_attrs[i], 
-                         &branch_start, 
-                         (void *)(&fquery->branchset[i]));    
-    if (ret != 0)
-      errExit("pthread_create");
+    /* - wait for each thread to complete its branch
+     * - save and print the number of filtered groups on completion
+     * - save the filtered groups on completion
+     */
+    for (int i = 0, ret = 0; i < fquery->num_branches; i++) {
+      pthread_t* thread = &threadset[i];
+      ret = pthread_join(*thread, NULL);
+      if (ret != 0)
+        errExit("pthread_join");
+    }    
+    free(threadset);    
     
-    
-    /* destroy the thread attributes once the thread is created */  
-    ret = pthread_attr_destroy(&thread_attrs[i]);
-    if (ret != 0) 
-      errExit("pthread_attr_destroy");
-  }
-  
-  /* - wait for each thread to complete its branch
-   * - save and print the number of filtered groups on completion
-   * - save the filtered groups on completion */
-  for (int i = 0, ret = 0; i < fquery->num_branches; i++) {
-    ret = pthread_join(thread_ids[i], NULL);
-    if (ret != 0)
-      errExit("pthread_join");
-  }
-  
-  free(thread_ids);
-  free(thread_attrs);
+    if (verbose_v) {
+      echo_branch(fquery->num_branches,
+                  fquery->branchset,
+                  param_data->trace);
+    }
+  }    
   
   /* -----------------------------------------------------------------------*/    
   
@@ -801,8 +641,7 @@ main(int argc, char **argv) {
                    param_data->trace);
       
       ft_close(param_data->trace); param_data->trace = NULL;
-      free(param_data); param_data = NULL;
-      
+      free(param_data); param_data = NULL;      
       for (int j = 0; j < fquery->num_group_tuples; j++) {
         struct stream* stream = fquery->streamset[j];
         for (int i = 0; i < stream->num_records; i++)

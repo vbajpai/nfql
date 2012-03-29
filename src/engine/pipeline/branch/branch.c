@@ -30,12 +30,15 @@ void *
 branch_start(void *arg) {
   
   struct branch_info*         binfo = (struct branch_info *)arg;  
+
+  
+#ifdef FILTER  
   
   /* filter stage variables */
   char**                      filtered_records;
   size_t                      num_filtered_records = 0;
   
-  
+
   
   /* -----------------------------------------------------------------------*/  
   /*                                filter                                  */
@@ -60,11 +63,11 @@ branch_start(void *arg) {
   
   /* -----------------------------------------------------------------------*/
   
+#endif  
   
   
   
-  
-  
+#ifdef GROUPER  
   
   /* -----------------------------------------------------------------------*/  
   /*                               grouper                                  */
@@ -83,7 +86,7 @@ branch_start(void *arg) {
   
   /* -----------------------------------------------------------------------*/
   
-  
+#endif  
   
   
   
