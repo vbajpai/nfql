@@ -54,7 +54,7 @@ struct branch_info {
   size_t                          num_aggr;
   size_t                          num_gfilter_rules;
   
-  struct filter_rule*             filter_rules;  
+  struct filter_rule**            filter_ruleset;  
   struct grouper_rule*            group_modules;
   struct grouper_aggr*            aggr;  
   struct gfilter_rule*            gfilter_rules;  

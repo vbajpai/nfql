@@ -49,7 +49,7 @@ filter(struct branch_info* branch) {
     /* process each filter rule, for each record */
     for (j = 0; j < branch->num_filter_rules; j++) {
       
-      struct filter_rule* frule = &branch->filter_rules[j];
+      struct filter_rule* frule = branch->filter_ruleset[j];
       
       /* run the comparator function of the filter rule on the record */
       if (!frule->func(record, 

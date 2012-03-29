@@ -43,10 +43,10 @@ branch_start(void *arg) {
     pthread_exit(NULL);
   else {
     for (int i = 0; i < branch->num_filter_rules; i++) {
-      struct filter_rule* frule = &branch->filter_rules[i];
-      free(frule); frule = NULL;      
+      struct filter_rule* frule = branch->filter_ruleset[i];
+      free(frule); frule = NULL; branch->filter_ruleset[i] = NULL;      
     }
-    free(branch->filter_rules); branch->filter_rules = NULL;
+    free(branch->filter_ruleset); branch->filter_ruleset = NULL;
   }
   
   /* -----------------------------------------------------------------------*/

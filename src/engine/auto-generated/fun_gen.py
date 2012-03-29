@@ -542,7 +542,7 @@ source.write("""
 
         /* for loop for the filter */
         for (int j = 0; j < branch->num_filter_rules; j++) {
-          struct filter_rule* frule = &branch->filter_rules[j];          
+          struct filter_rule* frule = branch->filter_ruleset[j];          
           switch (frule->op) {
 
 """)  

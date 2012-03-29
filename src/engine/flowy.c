@@ -235,13 +235,14 @@ prepare_flowquery(struct ft_data* trace,
     branch->data = trace;
     
     /* free'd after returning from filter(...) in branch.c */
-    struct filter_rule* fruleset = calloc(branch->num_filter_rules, 
-                                       sizeof(struct filter_rule));
+    struct filter_rule** fruleset = (struct filter_rule**) 
+                                     calloc(branch->num_filter_rules, 
+                                            sizeof(struct filter_rule*));
     if (fruleset == NULL)
       errExit("calloc");
     for (int j = 0; j < branch->num_filter_rules; j++) {
       
-      struct filter_rule* frule = &fruleset[j];
+      struct filter_rule* frule = calloc(1, sizeof(struct filter_rule));
       
       /* TODO: hardcoded */
       switch (i) {
@@ -256,8 +257,10 @@ prepare_flowquery(struct ft_data* trace,
       frule->delta                 =         json_query->fruleset[0]->delta;
       frule->op                    =         RULE_EQ | RULE_S1_16;
       frule->func                  =         NULL;      
+      
+      fruleset[j] = frule;
     }
-    branch->filter_rules = fruleset;
+    branch->filter_ruleset = fruleset; fruleset = NULL;
     
     /* TODO: when free'd? */
     struct grouper_rule* gruleset = calloc(branch->num_group_modules, 
