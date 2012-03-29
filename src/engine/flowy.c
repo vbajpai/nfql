@@ -122,11 +122,6 @@ read_param_data(struct parameters* param) {
 struct json*
 parse_json_query(char* query_mmap) {
   
-  /* the json_objects are free'd before returning from this function */
-  struct json_object*                 query;
-  struct json_object*                 filter_offset;
-  
-  
   /* free'd after returning from prepare_flowquery(...) */
   struct json* json = calloc(1, sizeof(struct json));
   if (json == NULL)
@@ -151,23 +146,29 @@ parse_json_query(char* query_mmap) {
     if (json->fruleset[i]->off == NULL)
       errExit("calloc");
     
-    query = json_tokener_parse(query_mmap);
-    json->fruleset[i]->delta = 
-    json_object_get_int(json_object_object_get(query, "delta"));  
-    json->fruleset[i]->op = 
-    json_object_get_string(json_object_object_get(query, "op"));  
-    filter_offset = 
-    json_object_object_get(query, "offset");
-    json->fruleset[i]->off->name = 
-    json_object_get_string(json_object_object_get(filter_offset, "name"));  
-    json->fruleset[i]->off->value = 
-    json_object_get_int(json_object_object_get(filter_offset, "value"));
-    json->fruleset[i]->off->datatype = 
-    json_object_get_string(json_object_object_get(filter_offset, "datatype"));
+    /* free'd before returning from this function */
+    struct json_object* query = json_tokener_parse(query_mmap);
+    struct json_object* delta = json_object_object_get(query, "delta");
+    struct json_object* op = json_object_object_get(query, "op");
+    struct json_object* foffset = json_object_object_get(query, "offset");    
+    struct json_object* fo_name = json_object_object_get(foffset, "name");
+    struct json_object* fo_val = json_object_object_get(foffset, "value");
+    struct json_object* fo_type = json_object_object_get(foffset, "datatype");
+    
+    json->fruleset[i]->delta = json_object_get_int(delta);  
+    json->fruleset[i]->op = json_object_get_string(op);
+    json->fruleset[i]->off->name = json_object_get_string(fo_name);  
+    json->fruleset[i]->off->value = json_object_get_int(fo_val);
+    json->fruleset[i]->off->datatype = json_object_get_string(fo_type);
     
     /* free the json objects */
-    json_object_object_del(filter_offset, "offset"); 
-    json_object_object_del(query, "");    
+    json_object_put(fo_name); fo_name = NULL;
+    json_object_put(fo_val); fo_val = NULL;
+    json_object_put(fo_type); fo_type = NULL;    
+    json_object_put(foffset); foffset = NULL; 
+    json_object_put(delta); delta = NULL;
+    json_object_put(op); op = NULL;        
+    json_object_put(query); query = NULL;    
   } 
   
   return json;
@@ -628,8 +629,10 @@ main(int argc, char **argv) {
   struct parameters_data* param_data = read_param_data(param);
   if (param_data == NULL)
     errExit("read_param_data(...) returned NULL");
-  else
-    free(param);
+  else{
+    free(param); param = NULL;
+  }
+    
   
   /* ----------------------------------------------------------------------- */  
   
@@ -651,7 +654,8 @@ main(int argc, char **argv) {
     if (munmap(param_data->query_mmap,
                param_data->query_mmap_stat->st_size) == -1)
       errExit("munmap");
-    free(param_data->query_mmap_stat);
+    param_data->query_mmap = NULL;
+    free(param_data->query_mmap_stat); param_data->query_mmap_stat = NULL;
   }
   
  /* ----------------------------------------------------------------------- */  
@@ -675,11 +679,11 @@ main(int argc, char **argv) {
     /* deallocate the json query buffers */
     for (int i = 0; i < json_query->num_frules; i++) {
       struct json_filter_rule* frule = json_query->fruleset[i];
-      free(frule->off);
-      free(frule);
+      free(frule->off); frule->off = NULL;
+      free(frule); frule = NULL;
     }
-    free(json_query->fruleset);
-    free(json_query);
+    free(json_query->fruleset); json_query->fruleset = NULL;
+    free(json_query); json_query = NULL;
   }  
   
  /* -----------------------------------------------------------------------*/
@@ -796,10 +800,10 @@ main(int argc, char **argv) {
                    fquery->streamset,
                    param_data->trace);
       
-      ft_close(param_data->trace);
+      ft_close(param_data->trace); param_data->trace = NULL;
       free(param_data); param_data = NULL;
       
-      for (int j = 0; j < fquery->num_group_tuples; j++) {        
+      for (int j = 0; j < fquery->num_group_tuples; j++) {
         struct stream* stream = fquery->streamset[j];
         for (int i = 0; i < stream->num_records; i++)
           /* already free'd using ft_close(...) */
