@@ -29,36 +29,24 @@
 void *
 branch_start(void *arg) {
   
-  struct branch_info*         binfo = (struct branch_info *)arg;  
+  struct branch_info* branch = (struct branch_info *)arg;  
 
   
 #ifdef FILTER  
-  
-  /* filter stage variables */
-  char**                      filtered_records;
-  size_t                      num_filtered_records = 0;
-  
-
   
   /* -----------------------------------------------------------------------*/  
   /*                                filter                                  */
   /* -----------------------------------------------------------------------*/  
   
-  filtered_records = filter(binfo->data, 
-                            binfo->filter_rules, 
-                            binfo->num_filter_rules, 
-                            &num_filtered_records);
-
-  if (filtered_records == NULL)
+  branch->filter_result = filter(branch);
+  if (branch->filter_result == NULL)
     pthread_exit(NULL);
-    
-  if(verbose_v){
-    
-    binfo->filtered_records = (char**)
-    malloc(num_filtered_records * sizeof(char*));
-    for (int i = 0; i < num_filtered_records; i++)
-      binfo->filtered_records[i] = filtered_records[i];
-    binfo->num_filtered_records = num_filtered_records;
+  else {
+    for (int i = 0; i < branch->num_filter_rules; i++) {
+      struct filter_rule* frule = &branch->filter_rules[i];
+      free(frule); frule = NULL;      
+    }
+    free(branch->filter_rules); branch->filter_rules = NULL;
   }
   
   /* -----------------------------------------------------------------------*/
@@ -94,22 +82,21 @@ branch_start(void *arg) {
   
   
   
+#ifdef GROUPERAGGREGATIONS
   
   /* -----------------------------------------------------------------------*/  
   /*                         grouper aggregations                           */
   /* -----------------------------------------------------------------------*/
   
-#ifdef GROUPERAGGREGATIONS  
-  
+ 
   for (int i = 0; i < binfo->num_groups; i++)
     binfo->groupset[i]->group_aggr_record = 
     grouper_aggregations(binfo->groupset[i], binfo);
   
-#endif
   
   /* -----------------------------------------------------------------------*/
   
-  
+#endif  
   
   
   

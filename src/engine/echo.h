@@ -41,4 +41,7 @@ echo_branch(size_t num_branches,
             struct branch_info* branchset,
             struct ft_data* trace);
 
+void
+echo_filter(struct branch_info* branch);
+
 #endif

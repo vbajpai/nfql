@@ -26,53 +26,58 @@
 
 #include "filter.h"
 
-char ** 
-filter(struct ft_data *data, struct filter_rule *filter_rules, 
-       int num_filter_rules, size_t *num_filtered_records) {
+struct filter_result*
+filter(struct branch_info* branch) {
   
-  char** filtered_records = (char **)
-                            calloc(*num_filtered_records,
-                                   sizeof(char *));
-  if (filtered_records == NULL)
+  /* TODO: when free'd? */
+  struct filter_result* fresult = calloc(1, sizeof(struct filter_result));
+  if (fresult == NULL)
+    errExit("calloc");
+  
+  /* TODO: when free'd? */
+  fresult->filtered_recordset = (char **)
+                                 calloc(fresult->num_filtered_records,
+                                        sizeof(char *));
+  if (fresult->filtered_recordset == NULL)
     errExit("calloc");
   
   /* process each record */
-  for (int i = 0; i < data->num_records; i++) {
+  for (int i = 0, j = 0; i < branch->data->num_records; i++) {
+    
+    char* record = branch->data->records[i];
+    
     /* process each filter rule, for each record */
-    int j = 0;
-    for (j = 0; j < num_filter_rules; j++) {
+    for (j = 0; j < branch->num_filter_rules; j++) {
+      
+      struct filter_rule* frule = &branch->filter_rules[j];
+      
       /* run the comparator function of the filter rule on the record */
-      if (!filter_rules[j].func(data->records[i], 
-                                filter_rules[j].field_offset, 
-                                filter_rules[j].value, 
-                                filter_rules[j].delta))
+      if (!frule->func(record, 
+                       frule->field_offset, 
+                       frule->value, 
+                       frule->delta
+                      ))
         break;
     }
     
-    /* if any rule is not satisfied, move on to another record */
-    if (j < num_filter_rules)
+    /* if any rule is not satisfied */
+    if (j < branch->num_filter_rules)
       continue;
     /* else, increment the filter counter, and save this record */
-    else {      
-      (*num_filtered_records)++;
-      filtered_records = (char **)
-      realloc(filtered_records,
-              (*num_filtered_records)*sizeof(char *));
-      if (filtered_records == NULL)
-        errExit("malloc");
-      
-      filtered_records[*num_filtered_records-1] = data->records[i];
+    else {
+      fresult->num_filtered_records += 1;
+      fresult->filtered_recordset = (char **) 
+                       realloc(fresult->filtered_recordset,
+                              (fresult->num_filtered_records)*sizeof(char *));
+      if (fresult->filtered_recordset == NULL)
+        errExit("realloc");      
+      fresult->filtered_recordset[fresult->num_filtered_records - 1] = record;
     }
   }
   
-  /* if nothing got filtered, 
-   * free the memory allocated and return NULL
-   */
-  if (*num_filtered_records == 0) {
-    if (filtered_records != NULL) {
-      free(filtered_records);
-      filtered_records = NULL;
-    }
+  if (fresult->num_filtered_records == 0) {
+    free(fresult->filtered_recordset); fresult->filtered_recordset = NULL;
+    free(fresult); fresult = NULL;
   }  
-  return filtered_records;
+  return fresult;
 }

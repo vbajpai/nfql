@@ -84,6 +84,21 @@ echo_debug(){
 
 #endif    
 
+
+void
+echo_filter(struct branch_info* branch){
+  
+  printf("\nNo. of Filtered Records: %zd\n", 
+         branch->filter_result->num_filtered_records);      
+  if (branch->filter_result->num_filtered_records != 0)
+    puts(FLOWHEADER);      
+  for (int j = 0; j < branch->filter_result->num_filtered_records; j++) {
+    
+    char* record = branch->filter_result->filtered_recordset[j];
+    flow_print_record(branch->data, record);
+  }
+}
+
 void
 echo_branch(size_t num_branches,
             struct branch_info* branchset,
@@ -94,17 +109,8 @@ echo_branch(size_t num_branches,
   for (int i = 0; i < num_branches; i++) {    
     struct branch_info* branch = &branchset[i];
 
-#ifdef FILTER    
-    printf("\nNo. of Filtered Records: %zd\n", branch->num_filtered_records);      
-    if (branch->num_filtered_records != 0)
-      puts(FLOWHEADER);      
-    for (int j = 0; j < branch->num_filtered_records; j++) {
-      flow_print_record(branch->data, branch->filtered_records[j]);
-      
-      /* not free'd since they point to original records */
-      branch->filtered_records[j] = NULL;
-    }      
-    free(branch->filtered_records);
+#ifdef FILTER
+    echo_filter(branch);
 #endif
     
 

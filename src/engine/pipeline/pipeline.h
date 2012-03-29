@@ -62,20 +62,28 @@ struct branch_info {
 
   
   
-  /* used with --debug flag */
-  char** filtered_records;
-  char** sorted_records;
-  size_t num_filtered_records;  
-
-  char** unique_records;
-  size_t num_unique_records;
+  /* -----------------------------------------------------------------------*/  
+  /*                            processing                                  */
+  /* -----------------------------------------------------------------------*/  
   
+  struct filter_result*           filter_result;
+
+  char** sorted_records;
+  char** unique_records;
+  size_t num_unique_records;  
   struct group** groupset;
   size_t num_groups;
   
   /* will be filled by individual branches */
   struct group **filtered_groupset;
   size_t num_filtered_groups;
+  /* -----------------------------------------------------------------------*/  
+  
+};
+
+struct filter_result{
+  size_t                          num_filtered_records;
+  char**                          filtered_recordset;  
 };
 
 struct filter_rule {

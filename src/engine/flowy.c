@@ -234,7 +234,7 @@ prepare_flowquery(struct ft_data* trace,
     branch->branch_id = i;
     branch->data = trace;
     
-    /* TODO: when free'd? */
+    /* free'd after returning from filter(...) in branch.c */
     struct filter_rule* fruleset = calloc(branch->num_filter_rules, 
                                        sizeof(struct filter_rule));
     if (fruleset == NULL)
@@ -579,13 +579,40 @@ main(int argc, char **argv) {
       if (ret != 0)
         errExit("pthread_join");
     }    
-    free(threadset);    
+    free(threadset);
     
+    /* free all the records that were not filtered from the original trace */
+    for (int i = 0; i < param_data->trace->num_records; i++) {
+      
+      bool if_filtered_record = false;
+      char* record = param_data->trace->records[i];
+      for (int j = 0; j < fquery->num_branches; j++) {
+
+        struct branch_info* branch = &fquery->branchset[j];        
+        for (int k = 0; k < branch->filter_result->num_filtered_records; k++) {
+          
+          char* filtered_record = branch->filter_result->filtered_recordset[k];
+          if (record == filtered_record){
+            if_filtered_record = true;
+            break;
+          }            
+        }
+        if (if_filtered_record)
+          break;
+      }
+      if (!if_filtered_record){
+        free(record);         
+        param_data->trace->records[i] = NULL;      
+      }
+      
+    }
+    
+    /* print the filtered records if verbose mode is set */
     if (verbose_v) {
       echo_branch(fquery->num_branches,
                   fquery->branchset,
                   param_data->trace);
-    }
+    }    
   }    
   
   /* -----------------------------------------------------------------------*/    
