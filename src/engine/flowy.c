@@ -221,13 +221,13 @@ prepare_flowquery(struct ft_data* trace,
     switch (i) {
       case 0:
         branch->num_filter_rules = NUM_FILTER_RULES_BRANCH1;
-        branch->num_group_modules = NUM_GROUPER_RULES_BRANCH1;         
+        branch->num_grouper_rules = NUM_GROUPER_RULES_BRANCH1;         
         branch->num_aggr = NUM_GROUPER_AGGREGATION_RULES_BRANCH1;
         branch->num_gfilter_rules = NUM_GROUP_FILTER_RULES_BRANCH1;
         break;
       case 1:  
         branch->num_filter_rules = NUM_FILTER_RULES_BRANCH2;
-        branch->num_group_modules = NUM_GROUPER_RULES_BRANCH2;
+        branch->num_grouper_rules = NUM_GROUPER_RULES_BRANCH2;
         branch->num_aggr = NUM_GROUPER_AGGREGATION_RULES_BRANCH2;
         branch->num_gfilter_rules = NUM_GROUP_FILTER_RULES_BRANCH2;
         break;
@@ -267,15 +267,19 @@ prepare_flowquery(struct ft_data* trace,
     }
     branch->filter_ruleset = fruleset; fruleset = NULL;
     
-    /* TODO: when free'd? */
-    struct grouper_rule* gruleset = calloc(branch->num_group_modules, 
-                                           sizeof(struct grouper_rule));
+    /* free'd after returning from grouper(...) in branch.c */
+    struct grouper_rule** gruleset = (struct grouper_rule**)
+                                      calloc(branch->num_grouper_rules, 
+                                             sizeof(struct grouper_rule*));
     if (gruleset == NULL)
       errExit("calloc");
-    for (int j = 0; j < branch->num_group_modules; j++) {
+    for (int j = 0; j < branch->num_grouper_rules; j++) {
       
-      struct grouper_rule* grule = &gruleset[j];
-
+      /* free'd after returning from grouper(...) in branch.c */
+      struct grouper_rule* grule = calloc(1, sizeof(struct grouper_rule));
+      if (grule == NULL)
+        errExit("calloc");
+      
       /* TODO: hardcoded */
       switch (j) {
         case 0:
@@ -286,14 +290,15 @@ prepare_flowquery(struct ft_data* trace,
           grule->field_offset1     =        trace->offsets.dstaddr;      
           grule->field_offset2     =        trace->offsets.dstaddr;         
           break;
-      }
-      
+      }      
       grule->delta                 =         0;
       grule->op                    =         RULE_EQ | RULE_S1_32 | 
                                              RULE_S2_32 | RULE_NO;
       grule->func                  =         NULL;
+      
+      gruleset[j] = grule;
     }
-    branch->group_modules = gruleset;
+    branch->grouper_ruleset = gruleset; gruleset = NULL;
     
     /* TODO: when free'd? */
     struct grouper_aggr* aggruleset = calloc(branch->num_aggr, 

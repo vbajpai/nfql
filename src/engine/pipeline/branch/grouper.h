@@ -71,14 +71,8 @@ build_record_trees(struct branch_info *binfo,
                    size_t num_filtered_records,
                    struct grouper_rule *group_modules);
 
-struct group **
-grouper(size_t num_filtered_records,
-        struct branch_info *data,
-        struct grouper_rule *group_modules, 
-        int num_group_modules,
-        struct grouper_aggr *aggr, 
-        size_t num_group_aggr, 
-        size_t *num_groups);
+struct grouper_result* 
+grouper(struct branch_info* branch);
 
 int 
 comp_uint8_t(void *thunk, const void *e1, const void *e2);

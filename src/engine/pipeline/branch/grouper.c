@@ -29,6 +29,7 @@
 
 #include "grouper.h"
 
+#ifdef ELSE
 char* 
 grouper_aggregations(struct group* group, 
                      struct branch_info *binfo) {
@@ -214,62 +215,64 @@ build_record_trees(struct branch_info *binfo,
   
   return uniq_records_trees;
 }
+#endif
 
-struct group **
-grouper(size_t num_filtered_records, 
-        struct branch_info *binfo,
-        struct grouper_rule *group_modules, 
-        int num_group_modules,
-        struct grouper_aggr *aggr, 
-        size_t num_group_aggr, 
-        size_t *num_groups) {
+struct grouper_result*
+grouper(struct branch_info* branch) {
   
-  char**                              filtered_recordset = NULL;
-  struct group**                      groupset = NULL;
-  struct group*                       group = NULL;
-  struct uniq_records_tree*           uniq_records_trees;
+  /* TODO: when free'd? */
+  struct grouper_result* gresult = calloc(1, sizeof(struct grouper_result));
+  if (gresult == NULL)
+    errExit("calloc");
   
-  filtered_recordset = calloc(num_filtered_records, sizeof(char*));
-  if (filtered_recordset == NULL)
-    errExit("calloc");  
-  for (int i = 0; i < num_filtered_records; i++)
-    filtered_recordset[i] = binfo->filter_result->filtered_recordset[i];  
-  
-  
-  groupset = (struct group **)malloc(sizeof(struct group *));
+  /* TODO: when free'd? */
+  struct group** groupset = (struct group **)calloc(1, sizeof(struct group *));
+  if (groupset == NULL)
+    errExit("calloc");
+  else
+    gresult->groupset = groupset;
+
   
   /* club all filtered records into one group, if no group modules are defined */
-  if (num_group_modules == 0) {  
+  if (branch->num_grouper_rules == 0) {  
     
     /* groupset with space for 1 group */
-    (*num_groups) = 1;
-    groupset = (struct group **)malloc(sizeof(struct group*)**num_groups);
-    if (groupset == NULL)
-      errExit("malloc");      
-    group = (struct group *)malloc(sizeof(struct group));      
+    gresult->num_groups = 1;
+    
+    /* TODO: when free'd? */
+    struct group* group = (struct group *)calloc(1, sizeof(struct group));      
     if (group == NULL)
-      errExit("malloc");
+      errExit("calloc");    
     
-    groupset[*num_groups - 1] = group;
-    group->num_members = num_filtered_records;
-    group->members = (char **)malloc(group->num_members * sizeof(char *));
+    groupset[gresult->num_groups - 1] = group;
+    group->num_members = branch->filter_result->num_filtered_records;
+    
+    /* TODO: when free'd? */
+    group->members = (char **)calloc(group->num_members, sizeof(char *));
     if (group->members == NULL)
-      errExit("malloc");    
+      errExit("calloc");    
     
-    for (int i = 0; i < num_filtered_records; i++) {
-      group->members[i] = filtered_recordset[i];
-      filtered_recordset[i] = NULL;
-    }    
+    for (int i = 0; i < branch->filter_result->num_filtered_records; i++)
+      group->members[i] = branch->filter_result->filtered_recordset[i];
     
     /* save the start and finish times of the extreme members */
     group->start = *(u_int32_t*)(group->members[0] +
-                                 (binfo->data->offsets).First);
+                                (branch->data->offsets).First);
     group->end = *(u_int32_t*)(group->members[group->num_members-1] +
-                               (binfo->data->offsets).Last); 
-    free(filtered_recordset);
-  } 
+                              (branch->data->offsets).Last); 
+  }
+#ifdef ELSE
   else {
-    uniq_records_trees = build_record_trees(binfo,
+    
+    /* TODO: when free'd? */
+    char** filtered_recordset = calloc(num_filtered_records, sizeof(char*));
+    if (filtered_recordset == NULL)
+      errExit("calloc");  
+    for (int i = 0; i < num_filtered_records; i++)
+      filtered_recordset[i] = binfo->filter_result->filtered_recordset[i];
+    
+    
+    struct uniq_records_tree* uniq_records_trees = build_record_trees(binfo,
                                             filtered_recordset,
                                             num_filtered_records, 
                                             group_modules);
@@ -383,8 +386,8 @@ grouper(size_t num_filtered_records,
     free(uniq_records_trees[0].tree_item.uniq_records32);    
     free(uniq_records_trees);
   }
-
-  return groupset;
+#endif
+  return gresult;
 }
 
 

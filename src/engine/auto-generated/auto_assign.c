@@ -95,8 +95,8 @@ assign_fptr(struct flowquery *fquery) {
     
     
     /* for loop for the grouper */
-    for (int j = 0; j < branch->num_group_modules; j++) {
-      struct grouper_rule* grule = &branch->group_modules[j];  
+    for (int j = 0; j < branch->num_grouper_rules; j++) {
+      struct grouper_rule* grule = branch->grouper_ruleset[j];  
       switch (grule->op) {
         case RULE_EQ | RULE_S1_8 | RULE_S2_8 | RULE_ABS:
           grule->func = grouper_eq_uint8_t_uint8_t_abs;

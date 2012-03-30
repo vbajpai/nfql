@@ -129,13 +129,13 @@ echo_grouper(struct branch_info* branch) {
     free(branch->unique_records);                
   }      
   
-  printf("\nNo. of Groups: %zu (Verbose Output)\n", branch->num_groups);
-  if (branch->num_groups != 0)        
+  printf("\nNo. of Groups: %zu (Verbose Output)\n", branch->grouper_result->num_groups);
+  if (branch->grouper_result->num_groups != 0)        
     puts(FLOWHEADER); 
-  for (int j = 0; j < branch->num_groups; j++) {
+  for (int j = 0; j < branch->grouper_result->num_groups; j++) {
     
     printf("\n");
-    struct group* group = branch->groupset[j];
+    struct group* group = branch->grouper_result->groupset[j];
     
     /* print group members */ 
     for (int k = 0; k < group->num_members; k++) {

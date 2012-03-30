@@ -40,7 +40,7 @@ branch_start(void *arg) {
   
   branch->filter_result = filter(branch);
   if (branch->filter_result == NULL)
-    pthread_exit(NULL);
+    errExit("filter(...) returned NULL");
   else {
     for (int i = 0; i < branch->num_filter_rules; i++) {
       struct filter_rule* frule = branch->filter_ruleset[i];
@@ -62,14 +62,23 @@ branch_start(void *arg) {
   /* -----------------------------------------------------------------------*/  
   
   
-  branch->groupset = grouper(branch->filter_result->num_filtered_records, 
-                            branch,
-                            branch->group_modules, 
-                            branch->num_group_modules, 
-                            branch->aggr, 
-                            branch->num_aggr, 
-                            &branch->num_groups);
+//  branch->grouper_result = grouper(branch->filter_result->num_filtered_records, 
+//                                   branch,
+//                                   branch->group_modules, 
+//                                   branch->num_group_modules, 
+//                                   branch->aggr, 
+//                                   branch->num_aggr);
   
+  branch->grouper_result = grouper(branch);
+  if (branch->grouper_result == NULL)
+    errExit("grouper(...) returned NULL");
+  else {
+    for (int i = 0; branch->num_grouper_rules; i++) {
+      struct grouper_rule* grule = branch->grouper_ruleset[i];
+      free(grule); grule = NULL; branch->grouper_ruleset[i] = NULL;
+    }
+    free(branch->grouper_ruleset); branch->grouper_ruleset = NULL;
+  }
   
   /* -----------------------------------------------------------------------*/
   

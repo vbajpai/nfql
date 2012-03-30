@@ -29,6 +29,7 @@
 
 #include "base.h"
 
+
 struct flowquery {
   size_t                          num_branches;
   size_t                          num_merger_rules;  
@@ -41,50 +42,6 @@ struct flowquery {
   struct stream**                 streamset;
 };
 
-struct branch_info {
-  
-  /* -----------------------------------------------------------------------*/  
-  /*                              inputs                                    */
-  /* -----------------------------------------------------------------------*/  
-  int                             branch_id;
-  struct ft_data*                 data;
-
-  size_t                          num_filter_rules;
-  size_t                          num_group_modules;
-  size_t                          num_aggr;
-  size_t                          num_gfilter_rules;
-  
-  struct filter_rule**            filter_ruleset;  
-  struct grouper_rule*            group_modules;
-  struct grouper_aggr*            aggr;  
-  struct gfilter_rule*            gfilter_rules;  
-  /* -----------------------------------------------------------------------*/  
-
-  
-  
-  /* -----------------------------------------------------------------------*/  
-  /*                            processing                                  */
-  /* -----------------------------------------------------------------------*/  
-  
-  struct filter_result*           filter_result;
-
-  char** sorted_records;
-  char** unique_records;
-  size_t num_unique_records;  
-  struct group** groupset;
-  size_t num_groups;
-  
-  /* will be filled by individual branches */
-  struct group **filtered_groupset;
-  size_t num_filtered_groups;
-  /* -----------------------------------------------------------------------*/  
-  
-};
-
-struct filter_result{
-  size_t                          num_filtered_records;
-  char**                          filtered_recordset;  
-};
 
 struct filter_rule {
   size_t                          field_offset;
@@ -96,7 +53,7 @@ struct filter_rule {
                size_t             field_offset,
                uint64_t           value,
                uint64_t           delta
-              );
+               );
 };
 
 
@@ -111,7 +68,7 @@ struct grouper_rule {
                char*              record2,
                size_t             field_offset2,
                uint64_t           delta
-              );
+               );
 };
 
 
@@ -124,7 +81,7 @@ struct grouper_aggr {
                       size_t      num_records,
                       size_t      field_offset,
                       bool        if_aggr_common
-                     );
+                      );
 };
 
 
@@ -138,7 +95,7 @@ struct gfilter_rule {
                size_t             field,
                uint64_t           value,
                uint64_t           delta
-              );
+               );
 };
 
 
@@ -162,10 +119,63 @@ struct merger_rule {
                struct group*      group2,
                size_t             field2,
                uint64_t           delta
-              );
+               );
 };
 
 
+
+
+struct branch_info {
+  
+  /* -----------------------------------------------------------------------*/  
+  /*                              inputs                                    */
+  /* -----------------------------------------------------------------------*/  
+  int                             branch_id;
+  struct ft_data*                 data;
+
+  size_t                          num_filter_rules;
+  size_t                          num_grouper_rules;
+  size_t                          num_aggr;
+  size_t                          num_gfilter_rules;
+  
+  struct filter_rule**            filter_ruleset;  
+  struct grouper_rule**           grouper_ruleset;
+  struct grouper_aggr*            aggr;  
+  struct gfilter_rule*            gfilter_rules;  
+  /* -----------------------------------------------------------------------*/  
+
+  
+  
+  /* -----------------------------------------------------------------------*/  
+  /*                            processing                                  */
+  /* -----------------------------------------------------------------------*/  
+  
+  struct filter_result*           filter_result;
+  struct grouper_result*          grouper_result;
+  
+  char** sorted_records;
+  char** unique_records;
+  size_t num_unique_records;  
+
+
+  
+  /* will be filled by individual branches */
+  struct group **filtered_groupset;
+  size_t num_filtered_groups;
+  /* -----------------------------------------------------------------------*/  
+  
+};
+
+struct filter_result{
+  size_t                          num_filtered_records;
+  char**                          filtered_recordset;  
+};
+
+
+struct grouper_result{
+  size_t                          num_groups;  
+  struct group**                  groupset;
+};
 
 
 /*
@@ -174,7 +184,6 @@ struct merger_rule {
  * start, end - times have to be stored as first and last members of the group
  *              do not necessarily supply these values
  */
-
 struct group {
   char**   members;
   size_t   num_members;
