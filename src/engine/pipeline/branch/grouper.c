@@ -54,9 +54,8 @@ grouper_aggregations(struct group* group,
    * to investigate how it might affect other filter operations */  
   bool ifgrouper = false;
   for (int i = 0; i < binfo->num_filter_rules; i++) {
-    
-    size_t field_offset = binfo->filter_rules[i].field_offset;
-    aggr_function = get_aggr_fptr(ifgrouper, binfo->filter_rules[i].op); 
+    size_t field_offset = binfo->filter_ruleset[i]->field_offset;
+    aggr_function = get_aggr_fptr(ifgrouper, binfo->filter_ruleset[i]->op); 
     if(aggr_function == NULL)
       errExit("get_aggr_fptr(...) returned NULL");
     
@@ -106,7 +105,7 @@ grouper_aggregations(struct group* group,
     /* if aggr rule is same as any filter rule, just ignore it */
     for (int j = 0; j < binfo->num_filter_rules; j++) {
       
-      size_t filter_offset = binfo->filter_rules[j].field_offset;      
+      size_t filter_offset = binfo->filter_ruleset[j]->field_offset;      
       if (aggr_offset == filter_offset){
         if_ignore_aggr_rule = true;
         break;
@@ -168,7 +167,7 @@ build_record_trees(struct branch_info *binfo,
     
     for (int i = 0; i < num_filtered_records; i++)
       binfo->sorted_records[i] = *sorted_records[i];
-    binfo->num_filtered_records = num_filtered_records;
+    binfo->filter_result->num_filtered_records = num_filtered_records;
     
     if_group_modules_exist = true;
   }
@@ -217,8 +216,7 @@ build_record_trees(struct branch_info *binfo,
 }
 
 struct group **
-grouper(char **filtered_records, 
-        size_t num_filtered_records,
+grouper(size_t num_filtered_records, 
         struct branch_info *binfo,
         struct grouper_rule *group_modules, 
         int num_group_modules,
@@ -226,9 +224,17 @@ grouper(char **filtered_records,
         size_t num_group_aggr, 
         size_t *num_groups) {
   
+  char**                              filtered_recordset = NULL;
   struct group**                      groupset = NULL;
   struct group*                       group = NULL;
   struct uniq_records_tree*           uniq_records_trees;
+  
+  filtered_recordset = calloc(num_filtered_records, sizeof(char*));
+  if (filtered_recordset == NULL)
+    errExit("calloc");  
+  for (int i = 0; i < num_filtered_records; i++)
+    filtered_recordset[i] = binfo->filter_result->filtered_recordset[i];  
+  
   
   groupset = (struct group **)malloc(sizeof(struct group *));
   
@@ -251,8 +257,8 @@ grouper(char **filtered_records,
       errExit("malloc");    
     
     for (int i = 0; i < num_filtered_records; i++) {
-      group->members[i] = filtered_records[i];
-      filtered_records[i] = NULL;
+      group->members[i] = filtered_recordset[i];
+      filtered_recordset[i] = NULL;
     }    
     
     /* save the start and finish times of the extreme members */
@@ -260,12 +266,11 @@ grouper(char **filtered_records,
                                  (binfo->data->offsets).First);
     group->end = *(u_int32_t*)(group->members[group->num_members-1] +
                                (binfo->data->offsets).Last); 
-    
-    free(filtered_records);
+    free(filtered_recordset);
   } 
   else {
     uniq_records_trees = build_record_trees(binfo,
-                                            filtered_records,
+                                            filtered_recordset,
                                             num_filtered_records, 
                                             group_modules);
 
@@ -282,7 +287,7 @@ grouper(char **filtered_records,
     }
     
     for (int i = 0; i < num_filtered_records; i++) {
-      if (filtered_records[i] == NULL)
+      if (filtered_recordset[i] == NULL)
         continue;
       
       (*num_groups) += 1;
@@ -300,13 +305,13 @@ grouper(char **filtered_records,
       group->members = (char **)malloc(sizeof(char *));
       if (group->members == NULL)
         errExit("malloc");      
-      group->members[0] = filtered_records[i];      
+      group->members[0] = filtered_recordset[i];      
 
       // search for left hand side of comparison in records ordered by right
       // hand side of comparison
       char ***record_iter = 
               ((struct tree_item_uint32_t *)
-              bsearch_r(filtered_records[i],
+              bsearch_r(filtered_recordset[i],
                         (void *)uniq_records_trees[0].tree_item.uniq_records32,
                         uniq_records_trees[0].num_uniq_records,
                         sizeof(struct tree_item_uint32_t),
@@ -316,12 +321,13 @@ grouper(char **filtered_records,
       
       // iterate until terminating NULL in sorted_records
       for (;*record_iter != NULL; record_iter++) {
+        
         // already processed record from filtered_records
         if (**record_iter == NULL)
           continue;
         
         // do not group with itself
-        if (**record_iter == filtered_records[i])
+        if (**record_iter == filtered_recordset[i])
           continue;
         
         // check all module filter rules for those two records
@@ -355,7 +361,7 @@ grouper(char **filtered_records,
       }
       
       // unlink the filtered records from the flow data
-      filtered_records[i] = NULL;
+      filtered_recordset[i] = NULL;
     }
     
     /* save the start and finish times of the extreme members */
@@ -364,7 +370,7 @@ grouper(char **filtered_records,
     group->end = *(u_int32_t*)(group->members[group->num_members-1] +
                             (binfo->data->offsets).Last);    
     
-    free(filtered_records);    
+    free(filtered_recordset);    
     
     // unlink the sorted records from the flow data
     for (int i = 0; i < num_filtered_records; i++)

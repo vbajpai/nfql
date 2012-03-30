@@ -44,4 +44,7 @@ echo_branch(size_t num_branches,
 void
 echo_filter(struct branch_info* branch);
 
+void
+echo_grouper(struct branch_info* branch);
+
 #endif

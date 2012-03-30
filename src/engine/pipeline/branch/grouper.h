@@ -72,8 +72,7 @@ build_record_trees(struct branch_info *binfo,
                    struct grouper_rule *group_modules);
 
 struct group **
-grouper(char **filtered_records, 
-        size_t num_filtered_records,
+grouper(size_t num_filtered_records,
         struct branch_info *data,
         struct grouper_rule *group_modules, 
         int num_group_modules,

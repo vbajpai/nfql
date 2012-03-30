@@ -62,14 +62,13 @@ branch_start(void *arg) {
   /* -----------------------------------------------------------------------*/  
   
   
-  binfo->groupset = grouper(filtered_records, 
-                            num_filtered_records, 
-                            binfo,
-                            binfo->group_modules, 
-                            binfo->num_group_modules, 
-                            binfo->aggr, 
-                            binfo->num_aggr, 
-                            &binfo->num_groups);
+  branch->groupset = grouper(branch->filter_result->num_filtered_records, 
+                            branch,
+                            branch->group_modules, 
+                            branch->num_group_modules, 
+                            branch->aggr, 
+                            branch->num_aggr, 
+                            &branch->num_groups);
   
   
   /* -----------------------------------------------------------------------*/
