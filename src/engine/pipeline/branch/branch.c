@@ -69,14 +69,6 @@ branch_start(void *arg) {
   /*                               grouper                                  */
   /* -----------------------------------------------------------------------*/  
   
-  
-//  branch->grouper_result = grouper(branch->filter_result->num_filtered_records, 
-//                                   branch,
-//                                   branch->group_modules, 
-//                                   branch->num_group_modules, 
-//                                   branch->aggr, 
-//                                   branch->num_aggr);
-  
   branch->grouper_result = grouper(branch);
   if (branch->grouper_result == NULL)
     errExit("grouper(...) returned NULL");

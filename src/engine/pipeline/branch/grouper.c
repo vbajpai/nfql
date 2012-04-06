@@ -149,7 +149,7 @@ grouper_aggregations(struct branch_info *branch) {
       }    
       
       /* if aggr rule is same as any grouper rule, just ignore it */
-      for (int k = 0; k < branch->num_grouper_rules; j++) {
+      for (int k = 0; k < branch->num_grouper_rules; k++) {
 
         size_t goffset_1 = branch->grouper_ruleset[k]->field_offset1;
         size_t goffset_2 = branch->grouper_ruleset[k]->field_offset2;      
@@ -175,60 +175,57 @@ grouper_aggregations(struct branch_info *branch) {
   }
 }
 
-#ifdef ELSE
-struct uniq_records_tree *
-build_record_trees(struct branch_info *binfo,
-                   char **filtered_records, 
-                   size_t num_filtered_records, 
-                   struct grouper_rule *group_modules) {
 
-  struct uniq_records_tree*           uniq_records_trees;
-  struct tree_item_uint32_t*          uniq_records;
-  size_t                              num_uniq_records;
-  char***                             sorted_records;
-  int                                 i;
-  
-  sorted_records = (char ***)malloc((num_filtered_records+1)*sizeof(char **));
+struct uniq_records_tree *
+build_record_trees(struct branch_info* branch,
+                   char** filtered_recordset, 
+                   size_t num_filtered_records, 
+                   struct grouper_rule** grouper_ruleset) {
+
+  char*** sorted_records = (char ***)
+                            calloc(num_filtered_records+1, sizeof(char **));
   if (sorted_records == NULL)
-    errExit("malloc");  
-  for (i = 0; i < num_filtered_records; i++)
-    sorted_records[i] = &filtered_records[i];
+    errExit("calloc");
+  
+  for (int i = 0; i < num_filtered_records; i++)
+    sorted_records[i] = &filtered_recordset[i];
   
   // order by right hand side of comparison
   // TODO: different comp func sizes
   qsort_r(sorted_records, 
           num_filtered_records, 
           sizeof(char **), 
-          (void *)&group_modules[0].field_offset2,
+          (void *)&grouper_ruleset[0]->field_offset2,
           comp_uint32_t);
   
   if(verbose_vv){  
-    binfo->sorted_records = (char**)
-                             malloc(num_filtered_records * sizeof(char*));
-    if (binfo->sorted_records == NULL)
-      errExit("malloc");
+    branch->grouper_result->sorted_records = 
+                (char**) calloc(num_filtered_records, sizeof(char*));
+    if (branch->grouper_result->sorted_records == NULL)
+      errExit("calloc");
     
     for (int i = 0; i < num_filtered_records; i++)
-      binfo->sorted_records[i] = *sorted_records[i];
-    binfo->filter_result->num_filtered_records = num_filtered_records;
+      branch->grouper_result->sorted_records[i] = *sorted_records[i];
   }
   
-  uniq_records = (struct tree_item_uint32_t *)
-                 malloc(num_filtered_records*sizeof(struct tree_item_uint32_t));
+  struct tree_item_uint32_t* uniq_records = 
+                 (struct tree_item_uint32_t *)
+                 calloc(num_filtered_records, 
+                        sizeof(struct tree_item_uint32_t));
   if (uniq_records == NULL)
-    errExit("malloc");  
+    errExit("calloc");  
   
-  uniq_records[0].value = *(uint32_t *)
-                          (*sorted_records[0] + group_modules[0].field_offset2);
+  uniq_records[0].value = 
+          *(uint32_t *)(*sorted_records[0] + grouper_ruleset[0]->field_offset2);
   uniq_records[0].ptr = &sorted_records[0];
-  num_uniq_records = 1;
-  for (i = 0; i < num_filtered_records; i++) {
+  size_t num_uniq_records = 1;
+
+  for (int i = 0; i < num_filtered_records; i++) {
     if (*(uint32_t *)(*sorted_records[i] + 
-      group_modules[0].field_offset2) != 
+      grouper_ruleset[0]->field_offset2) != 
       uniq_records[num_uniq_records-1].value) {
-      uniq_records[num_uniq_records].value = *(uint32_t *)
-                                              (*sorted_records[i] + 
-                                               group_modules[0].field_offset2);
+      uniq_records[num_uniq_records].value = 
+      *(uint32_t *)(*sorted_records[i] + grouper_ruleset[0]->field_offset2);
       uniq_records[num_uniq_records].ptr = &sorted_records[i];
       num_uniq_records++;
     }
@@ -243,8 +240,9 @@ build_record_trees(struct branch_info *binfo,
   // mark the end of sorted records
   sorted_records[num_filtered_records] = NULL;
   
+  struct uniq_records_tree*
   uniq_records_trees = (struct uniq_records_tree *)
-                        malloc(1 * sizeof(struct uniq_records_tree));
+                        malloc(sizeof(struct uniq_records_tree));
   if (uniq_records_trees == NULL)
     errExit("malloc");
   
@@ -255,7 +253,7 @@ build_record_trees(struct branch_info *binfo,
   
   return uniq_records_trees;
 }
-#endif
+
 
 struct grouper_result*
 grouper(struct branch_info* branch) {
@@ -301,54 +299,59 @@ grouper(struct branch_info* branch) {
     for (int i = 0; i < branch->filter_result->num_filtered_records; i++)
       group->members[i] = branch->filter_result->filtered_recordset[i];    
   }
-#ifdef ELSE
   else {
     
     /* TODO: when free'd? */
-    char** filtered_recordset = calloc(num_filtered_records, sizeof(char*));
+    char** filtered_recordset = 
+    calloc(branch->filter_result->num_filtered_records, sizeof(char*));    
     if (filtered_recordset == NULL)
       errExit("calloc");  
-    for (int i = 0; i < num_filtered_records; i++)
-      filtered_recordset[i] = binfo->filter_result->filtered_recordset[i];
+    
+    for (int i = 0; i < branch->filter_result->num_filtered_records; i++)
+      filtered_recordset[i] = branch->filter_result->filtered_recordset[i];
     
     
-    struct uniq_records_tree* uniq_records_trees = build_record_trees(binfo,
-                                            filtered_recordset,
-                                            num_filtered_records, 
-                                            group_modules);
+    struct uniq_records_tree* uniq_records_trees = 
+      build_record_trees(branch,
+                         filtered_recordset,
+                         branch->filter_result->num_filtered_records, 
+                         branch->grouper_ruleset);
 
     if(verbose_vv){  
-      binfo->num_unique_records = uniq_records_trees->num_uniq_records;
-      binfo->unique_records = (char**)
-      malloc(binfo->num_unique_records * sizeof(char*));      
-      if (binfo->unique_records == NULL)
-        errExit("malloc");
+      gresult->num_unique_records = uniq_records_trees->num_uniq_records;
+      gresult->unique_records = (char**) calloc(gresult->num_unique_records, 
+                                                sizeof(char*));      
+      if (gresult->unique_records == NULL)
+        errExit("calloc");
       
-      for (int i = 0; i < binfo->num_unique_records; i++)
-        binfo->unique_records[i] = 
+      for (int i = 0; i < gresult->num_unique_records; i++)
+        gresult->unique_records[i] = 
         **uniq_records_trees->tree_item.uniq_records32[i].ptr;
     }
     
-    for (int i = 0; i < num_filtered_records; i++) {
+    for (int i = 0; i < branch->filter_result->num_filtered_records; i++) {
       if (filtered_recordset[i] == NULL)
         continue;
       
-      (*num_groups) += 1;
+      gresult->num_groups += 1;
       
       groupset = (struct group **)
-                  realloc(groupset, sizeof(struct group*) * (*num_groups));
+                 realloc(groupset, (gresult->num_groups)*sizeof(struct group*));
       if (groupset == NULL)
-        errExit("realloc");      
-      group = (struct group *)malloc(sizeof(struct group));
+        errExit("realloc");
+      else
+        gresult->groupset = groupset;
+      
+      struct group* group = (struct group *)calloc(1, sizeof(struct group));
       if (group == NULL)
-        errExit("malloc");
-
-      groupset[*num_groups-1] = group;
+        errExit("calloc");
+      
+      groupset[gresult->num_groups-1] = group;
       group->num_members = 1;
-      group->members = (char **)malloc(sizeof(char *));
+      group->members = (char **)calloc(1, sizeof(char *));
       if (group->members == NULL)
-        errExit("malloc");      
-      group->members[0] = filtered_recordset[i];      
+        errExit("calloc");      
+      group->members[0] = filtered_recordset[i];
 
       // search for left hand side of comparison in records ordered by right
       // hand side of comparison
@@ -358,7 +361,7 @@ grouper(struct branch_info* branch) {
                         (void *)uniq_records_trees[0].tree_item.uniq_records32,
                         uniq_records_trees[0].num_uniq_records,
                         sizeof(struct tree_item_uint32_t),
-                        (void *)&group_modules[0].field_offset1,
+                        (void *)&branch->grouper_ruleset[0]->field_offset1,
                         comp_uint32_t_p
                        ))->ptr;
       
@@ -375,12 +378,13 @@ grouper(struct branch_info* branch) {
         
         // check all module filter rules for those two records
         int k;
-        for (k = 0; k < num_group_modules; k++) {
-          if (!group_modules[k].func(group, 
-                                     group_modules[k].field_offset1,
+        for (k = 0; k < branch->num_grouper_rules; k++) {
+          if (!branch->grouper_ruleset[k]->
+                                 func(group, 
+                                     branch->grouper_ruleset[k]->field_offset1,
                                      **record_iter, 
-                                     group_modules[k].field_offset2, 
-                                     group_modules[k].delta))
+                                     branch->grouper_ruleset[k]->field_offset2, 
+                                     branch->grouper_ruleset[k]->delta))
             break;
         }
         
@@ -389,7 +393,7 @@ grouper(struct branch_info* branch) {
           break;
         
         // one of the other rules didnt match
-        if (k < num_group_modules)
+        if (k < branch->num_grouper_rules)
           continue;
         
         group->num_members += 1;
@@ -407,16 +411,10 @@ grouper(struct branch_info* branch) {
       filtered_recordset[i] = NULL;
     }
     
-    /* save the start and finish times of the extreme members */
-    group->start = *(u_int32_t*)(group->members[0] +
-                              (binfo->data->offsets).First);
-    group->end = *(u_int32_t*)(group->members[group->num_members-1] +
-                            (binfo->data->offsets).Last);    
-    
     free(filtered_recordset);    
     
     // unlink the sorted records from the flow data
-    for (int i = 0; i < num_filtered_records; i++)
+    for (int i = 0; i < branch->filter_result->num_filtered_records; i++)
       uniq_records_trees[0].sorted_records[i] = NULL;    
     free(uniq_records_trees[0].sorted_records);
     
@@ -426,7 +424,7 @@ grouper(struct branch_info* branch) {
     free(uniq_records_trees[0].tree_item.uniq_records32);    
     free(uniq_records_trees);
   }
-#endif
+
 
 #ifdef GROUPERAGGREGATIONS
   grouper_aggregations(branch);

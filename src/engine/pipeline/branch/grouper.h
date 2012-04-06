@@ -65,10 +65,10 @@ void
 grouper_aggregations(struct branch_info *branch);
 
 struct uniq_records_tree *
-build_record_trees(struct branch_info *binfo,
-                   char **filtered_records, 
-                   size_t num_filtered_records,
-                   struct grouper_rule *group_modules);
+build_record_trees(struct branch_info* branch,
+                   char** filtered_recordset, 
+                   size_t num_filtered_records, 
+                   struct grouper_rule** grouper_ruleset);
 
 struct grouper_result* 
 grouper(struct branch_info* branch);

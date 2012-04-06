@@ -650,12 +650,9 @@ main(int argc, char **argv) {
   /* -----------------------------------------------------------------------*/  
   
   /* free grouper_result */
-  if (verbose_v) {
-    
+  if (verbose_v) {    
     for (int i = 0; i < fquery->num_branches; i++) {
-
-      struct branch_info* branch = &fquery->branchset[i];
-      
+      struct branch_info* branch = &fquery->branchset[i];      
       if (verbose_vv) {
         
         /* free group members */
@@ -668,8 +665,6 @@ main(int argc, char **argv) {
           free(group->members); group->members = NULL;
         }
       }
-
-
       for (int j = 0; j < branch->grouper_result->num_groups; j++) {
         
         struct group* group = branch->grouper_result->groupset[j];        
