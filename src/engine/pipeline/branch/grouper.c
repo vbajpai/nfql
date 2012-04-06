@@ -292,7 +292,7 @@ grouper(struct branch_info* branch) {
     groupset[gresult->num_groups - 1] = group;
     group->num_members = branch->filter_result->num_filtered_records;
     
-    /* TODO: when verbose_vv is NOT set, when free'd? */
+    /* when verbose_vv is NOT set, free'd after returning from grouper(...) */
     /* when verbose_vv is set, free'd just before calling merger(...) */    
     group->members = (char **)calloc(group->num_members, sizeof(char *));
     if (group->members == NULL)

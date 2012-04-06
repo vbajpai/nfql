@@ -675,8 +675,8 @@ main(int argc, char **argv) {
         struct group* group = branch->grouper_result->groupset[j];        
 
 #ifdef GROUPERAGGREGATIONS
-        /* free group aggregations */
         
+        /* free group aggregations */        
         /* - aggr->values
            - aggr
            - aggrset
