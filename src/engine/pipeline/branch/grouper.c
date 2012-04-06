@@ -43,14 +43,18 @@ grouper_aggregations(struct branch_info *branch) {
     
     struct group* group = branch->grouper_result->groupset[i];
     
-    /* TODO: when free'd? */
+    /* TODO: when verbose_v is NOT set, when free'd?
+     * when verbose_v is set, free'd just before calling merger(...) 
+     */
     struct aggr** aggrset = (struct aggr**)calloc(branch->num_aggr_rules,
                                                   sizeof(struct aggr*));
     if (aggrset == NULL)
       errExit("calloc");
     group->aggrset = aggrset;
     
-    /* TODO: when free'd? */
+    /* TODO: when verbose_v is NOT set, when free'd?
+     * when verbose_v is set, free'd just before calling merger(...) 
+     */
     char* aggr_record = (char *)calloc(1, branch->data->rec_size);
     if (aggr_record == NULL)
       errExit("calloc");
@@ -156,6 +160,12 @@ grouper_aggregations(struct branch_info *branch) {
         }
       }
       
+      /* TODO: when verbose_v is NOT set, when free'd?
+       * when verbose_v is set, free'd just before calling merger(...) 
+         - aggr->values
+         - aggr
+         - aggrset
+       */
       aggrset[j] = branch->aggr_ruleset[j]->func(group->members,
                                                  aggr_record,
                                                  group->num_members, 
@@ -201,8 +211,6 @@ build_record_trees(struct branch_info *binfo,
     for (int i = 0; i < num_filtered_records; i++)
       binfo->sorted_records[i] = *sorted_records[i];
     binfo->filter_result->num_filtered_records = num_filtered_records;
-    
-    if_group_modules_exist = true;
   }
   
   uniq_records = (struct tree_item_uint32_t *)
@@ -252,14 +260,16 @@ build_record_trees(struct branch_info *binfo,
 struct grouper_result*
 grouper(struct branch_info* branch) {
   
-  /* TODO: when free'd? */
+  /* TODO: when verbose_v is NOT set, when free'd? */
+  /* when verbose_v is set, free'd just before calling merger(...) */
   struct grouper_result* gresult = calloc(1, sizeof(struct grouper_result));
   if (gresult == NULL)
     errExit("calloc");
   else
     branch->grouper_result = gresult;
   
-  /* TODO: when free'd? */
+  /* TODO: when verbose_v is NOT set, when free'd? */
+  /* when verbose_v is set, free'd just before calling merger(...) */
   struct group** groupset = (struct group **)calloc(1, sizeof(struct group *));
   if (groupset == NULL)
     errExit("calloc");
@@ -273,7 +283,8 @@ grouper(struct branch_info* branch) {
     /* groupset with space for 1 group */
     gresult->num_groups = 1;
     
-    /* TODO: when free'd? */
+    /* TODO: when verbose_v is NOT set, when free'd? */
+    /* when verbose_v is set, free'd just before calling merger(...) */
     struct group* group = (struct group *)calloc(1, sizeof(struct group));      
     if (group == NULL)
       errExit("calloc");    
@@ -281,7 +292,8 @@ grouper(struct branch_info* branch) {
     groupset[gresult->num_groups - 1] = group;
     group->num_members = branch->filter_result->num_filtered_records;
     
-    /* TODO: when free'd? */
+    /* TODO: when verbose_vv is NOT set, when free'd? */
+    /* when verbose_vv is set, free'd just before calling merger(...) */    
     group->members = (char **)calloc(group->num_members, sizeof(char *));
     if (group->members == NULL)
       errExit("calloc");    

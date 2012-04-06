@@ -153,12 +153,7 @@ struct branch_info {
   struct filter_result*           filter_result;
   struct grouper_result*          grouper_result;
   
-  char** sorted_records;
-  char** unique_records;
-  size_t num_unique_records;  
 
-
-  
   /* will be filled by individual branches */
   struct group **filtered_groupset;
   size_t num_filtered_groups;
@@ -175,6 +170,10 @@ struct filter_result {
 struct grouper_result {
   size_t                          num_groups;  
   struct group**                  groupset;
+  
+  char** sorted_records;
+  char** unique_records;
+  size_t num_unique_records;
 };
 
 struct group {

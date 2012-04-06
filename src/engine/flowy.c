@@ -645,6 +645,72 @@ main(int argc, char **argv) {
   
   
   
+  /* -----------------------------------------------------------------------*/  
+  /*                              free memory                               */
+  /* -----------------------------------------------------------------------*/  
+  
+  /* free grouper_result */
+  if (verbose_v) {
+    
+    for (int i = 0; i < fquery->num_branches; i++) {
+
+      struct branch_info* branch = &fquery->branchset[i];
+      
+      if (verbose_vv) {
+        
+        /* free group members */
+        for (int j = 0; j < branch->grouper_result->num_groups; j++) {
+          
+          struct group* group = branch->grouper_result->groupset[j];
+          for (int k = 0; k < group->num_members; k++)
+            group->members[k] = NULL;
+          
+          free(group->members); group->members = NULL;
+        }
+      }
+
+
+      for (int j = 0; j < branch->grouper_result->num_groups; j++) {
+        
+        struct group* group = branch->grouper_result->groupset[j];        
+
+#ifdef GROUPERAGGREGATIONS
+        /* free group aggregations */
+        
+        /* - aggr->values
+           - aggr
+           - aggrset
+         
+           TODO: these can be free'd earlier as well.
+         */
+        for (int x = 0; x < branch->num_aggr_rules; x++){
+          struct aggr* aggr = group->aggrset[x];
+          free(aggr->values); aggr->values = NULL;
+          free(aggr); aggr = NULL; group->aggrset[x] = NULL;
+        }  
+        free(group->aggrset); group->aggrset = NULL;
+        free(group->aggr_record); group->aggr_record = NULL;
+#endif
+
+        free(group); group = NULL; branch->grouper_result->groupset[j] = NULL;
+      }
+      free(branch->grouper_result->groupset); 
+      branch->grouper_result->groupset = NULL;
+      
+      free(branch->grouper_result); branch->grouper_result = NULL;
+    }
+  }
+  
+  /* -----------------------------------------------------------------------*/
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
 #ifdef MERGER
   

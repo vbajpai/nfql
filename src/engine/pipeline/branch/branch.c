@@ -81,7 +81,7 @@ branch_start(void *arg) {
   if (branch->grouper_result == NULL)
     errExit("grouper(...) returned NULL");
   else {
-
+    
     /* free filter rules */
     for (int i = 0; i < branch->num_filter_rules; i++) {
       struct filter_rule* frule = branch->filter_ruleset[i];
@@ -102,6 +102,7 @@ branch_start(void *arg) {
       free(arule); arule = NULL; branch->aggr_ruleset[i] = NULL;
     }
     free(branch->aggr_ruleset); branch->aggr_ruleset = NULL;
+    
   }
   
   /* -----------------------------------------------------------------------*/

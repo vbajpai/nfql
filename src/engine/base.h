@@ -40,7 +40,6 @@
 #define GROUPERAGGREGATIONS
 
 extern bool debug;
-extern bool if_group_modules_exist;
 
 /* verbose levels */
 extern bool verbose_v;

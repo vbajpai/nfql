@@ -102,7 +102,8 @@ echo_filter(struct branch_info* branch){
 void
 echo_grouper(struct branch_info* branch) {
 
-  if(if_group_modules_exist){
+#ifdef ELSE  
+  if(branch->num_grouper_rules > 0){
     
     printf("\nNo. of Sorted Records: %zd\n", 
            branch->filter_result->num_filtered_records);      
@@ -128,21 +129,22 @@ echo_grouper(struct branch_info* branch) {
     }      
     free(branch->unique_records);                
   }      
+#endif  
   
-  printf("\nNo. of Groups: %zu (Verbose Output)\n", branch->grouper_result->num_groups);
-  if (branch->grouper_result->num_groups != 0)        
+  printf("\nNo. of Groups: %zu (Verbose Output)\n", 
+         branch->grouper_result->num_groups);
+  
+  if (branch->grouper_result->num_groups > 0)
     puts(FLOWHEADER); 
+  
   for (int j = 0; j < branch->grouper_result->num_groups; j++) {
     
     printf("\n");
     struct group* group = branch->grouper_result->groupset[j];
     
     /* print group members */ 
-    for (int k = 0; k < group->num_members; k++) {
+    for (int k = 0; k < group->num_members; k++)
       flow_print_record(branch->data, group->members[k]);
-      group->members[k] = NULL;
-    }     
-    free(group->members);
   }
 
 }
@@ -157,11 +159,7 @@ echo_group_aggr(struct branch_info* branch){
     puts(FLOWHEADER); 
   for (int j = 0; j < branch->grouper_result->num_groups; j++) {        
     struct group* group = branch->grouper_result->groupset[j];
-    flow_print_record(branch->data, group->aggr_record);  
-    
-    for (int x = 0; x < branch->num_aggr_rules; x++)
-      free(group->aggrset[x]->values);
-    free(group->aggrset); 
+    flow_print_record(branch->data, group->aggr_record);    
   }
 }
 
@@ -204,17 +202,6 @@ echo_branch(size_t num_branches,
       flow_print_record(branch->data, filtered_group->group_aggr_record);
     }
 #endif
-    
-
-#ifdef GROUPERAGGREGATIONS
-    /* free memory */
-    for (int j = 0; j < branch->grouper_result->num_groups; j++) {        
-      struct group* group = branch->grouper_result->groupset[j];
-      free(group->aggr_record);
-      free(group);
-    }
-    free(branch->grouper_result->groupset);
-#endif      
   }
 }
 
