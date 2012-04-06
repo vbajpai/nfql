@@ -695,8 +695,7 @@ main(int argc, char **argv) {
         free(group); group = NULL; branch->grouper_result->groupset[j] = NULL;
       }
       free(branch->grouper_result->groupset); 
-      branch->grouper_result->groupset = NULL;
-      
+      branch->grouper_result->groupset = NULL;      
       free(branch->grouper_result); branch->grouper_result = NULL;
     }
   }
