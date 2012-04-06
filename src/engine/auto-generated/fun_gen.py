@@ -197,7 +197,7 @@ def grouper_body(op, atype1, atype2, dtype):
     result += "}\n\n"
     return result;
 
-groupaggr_proto = """struct aggr 
+groupaggr_proto = """struct aggr* 
                      aggr_%s_%s(char **records,
                                 char *group_aggregation,
                                 size_t num_records, 
@@ -206,131 +206,143 @@ groupaggr_proto = """struct aggr
 
 def groupaggr_body(op, atype):
     result = " {\n\n"
-    result += "    struct aggr aggr;\n"
+    result += "   struct aggr *aggr = calloc(1, sizeof(struct aggr));\n"
+    result += "  if (aggr == NULL)\n"
+    result += '    errExit("calloc");\n'
     result += "    if (num_records == 0) {\n"
-    result += "        aggr.num_values = 0;\n"
-    result += "        aggr.values = NULL;\n"
-    result += "        return aggr;\n"
-    result += "    }\n"
+    result += "        aggr->num_values = 0;\n"
+    result += "        aggr->values = NULL;\n"
+    result += "    }else {\n"
+
     if op == 'static':
         result += "    if (if_aggr_common) {\n"
-        result += "      aggr.num_values = 1;\n"
-        result += "      aggr.values = (uint64_t *)malloc(sizeof(uint64_t));\n"
-        result += "      if (aggr.values == NULL)\n"
+        result += "      aggr->num_values = 1;\n"
+        result += "      aggr->values = (uint64_t *)malloc(sizeof(uint64_t));\n"
+        result += "      if (aggr->values == NULL)\n"
         result += "        errExit(\"malloc\");\n"
-        result += "      aggr.values[0] = *(%s *)(records[0] + field_offset);\n"%atype
-        result += "    }\n"
+        result += "      aggr->values[0] = *(%s *)(records[0] + field_offset);\n"%atype
+        result += "      *(uint32_t*)(group_aggregation + field_offset) = aggr->values[0];\n"
+        result += "    } else {\n"
+        result += "    free(aggr);\n"      
+        result += """ aggr = aggr_union_uint32_t(records, 
+                                                 group_aggregation, 
+                                                 num_records, 
+                                                 field_offset, 
+                                                 if_aggr_common);  
+                      /* this is a SET */
+                      *(uint32_t*)(group_aggregation + field_offset) = 0;
+                  """
+        result += "}\n"  
     elif op == 'count':
-        result += "    aggr.num_values = 1;\n"
-        result += "    aggr.values = (uint64_t *)malloc(sizeof(uint64_t)*aggr.num_values);\n"
-        result += "    if (aggr.values == NULL)\n"
+        result += "    aggr->num_values = 1;\n"
+        result += "    aggr->values = (uint64_t *)malloc(sizeof(uint64_t)*aggr->num_values);\n"
+        result += "    if (aggr->values == NULL)\n"
         result += "        errExit(\"malloc\");\n"
-        result += "    aggr.values[0] = num_records;\n"
+        result += "    aggr->values[0] = num_records;\n"
+        result += "      *(uint32_t*)(group_aggregation + field_offset) = aggr->values[0];\n"
     elif op in ['prod', 'sum', 'and', 'or', 'xor']:
-        result += "    int i;\n"
-        result += "    aggr.num_values = 1;\n"
-        result += "    aggr.values = (uint64_t *)malloc(sizeof(uint64_t)*aggr.num_values);\n"
-        result += "    if (aggr.values == NULL)\n"
+        result += "    aggr->num_values = 1;\n"
+        result += "    aggr->values = (uint64_t *)malloc(sizeof(uint64_t)*aggr->num_values);\n"
+        result += "    if (aggr->values == NULL)\n"
         result += "        errExit(\"malloc\");\n"
-        result += "    for (i = 0; i < num_records; i++) {\n"
-        result += "        aggr.values[0] %s= *(%s *)(records[i] + field_offset);\n"%(operation_map[op], atype)
-        result += "    }\n"
+        result += "    for (int i = 0; i < num_records; i++)\n"
+        result += "        aggr->values[0] %s= *(%s *)(records[i] + field_offset);\n"%(operation_map[op], atype)
+        result += "    *(uint32_t*)(group_aggregation + field_offset) = aggr->values[0];\n"
     elif op == 'mean':
-        result += "    int i;\n"
-        result += "    aggr.num_values = 1;\n"
-        result += "    aggr.values = (uint64_t *)malloc(sizeof(uint64_t)*aggr.num_values);\n"
-        result += "    if (aggr.values == NULL)\n"
+        result += "    aggr->num_values = 1;\n"
+        result += "    aggr->values = (uint64_t *)malloc(sizeof(uint64_t)*aggr->num_values);\n"
+        result += "    if (aggr->values == NULL)\n"
         result += "        errExit(\"malloc\");\n"
-        result += "    for (i = 0; i < num_records; i++) {\n"
-        result += "        aggr.values[0] += *(%s *)(records[i] + field_offset);\n"%atype
-        result += "    }\n"
-        result += "    aggr.values[0] /= num_records;\n"
+        result += "    for (int i = 0; i < num_records; i++)\n"
+        result += "        aggr->values[0] += *(%s *)(records[i] + field_offset);\n"%atype
+        result += "    aggr->values[0] /= num_records;\n"
+        result += "      *(uint32_t*)(group_aggregation + field_offset) = aggr->values[0];\n"
     elif op == 'stddev':
-        result += "    int i;\n"
         result += "    uint64_t stddev;\n"
-        result += "    aggr.num_values = 1;\n"
-        result += "    aggr.values = (uint64_t *)malloc(sizeof(uint64_t)*aggr.num_values);\n"
-        result += "    if (aggr.values == NULL)\n"
+        result += "    aggr->num_values = 1;\n"
+        result += "    aggr->values = (uint64_t *)malloc(sizeof(uint64_t)*aggr->num_values);\n"
+        result += "    if (aggr->values == NULL)\n"
         result += "        errExit(\"malloc\");\n"
-        result += "    for (i = 0; i < num_records; i++) {\n"
-        result += "        aggr.values[0] += *(%s *)(records[i] + field_offset);\n"%atype
+        result += "    for (int i = 0; i < num_records; i++) {\n"
+        result += "        aggr->values[0] += *(%s *)(records[i] + field_offset);\n"%atype
         result += "    }\n"
-        result += "    aggr.values[0] /= num_records;\n"
-        result += "    for (i = 0; i < num_records; i++) {\n"
-        result += "        stddev += (*(%s *)(records[i] + field_offset)-aggr.values[0])*(*(%s *)(records[i] + field_offset)-aggr.values[0]);\n"%(atype, atype)
+        result += "    aggr->values[0] /= num_records;\n"
+        result += "    for (int i = 0; i < num_records; i++) {\n"
+        result += "        stddev += (*(%s *)(records[i] + field_offset)-aggr->values[0])*(*(%s *)(records[i] + field_offset)-aggr->values[0]);\n"%(atype, atype)
         result += "    }\n"
         result += "    stddev /= num_records;\n"
         result += "    stddev = sqrt(stddev);\n"
+        result += "    aggr->values[0] = stddev;\n"      
+        result += "      *(uint32_t*)(group_aggregation + field_offset) = aggr->values[0];\n"
     elif op == 'union':
-        result += "    int i;\n"
         result += "    uint64_t *temp;\n"
         result += "    uint64_t last;\n"
         result += "    temp = (uint64_t *)malloc(sizeof(uint64_t)*num_records);\n"
         result += "    if (temp == NULL)\n"
         result += "        errExit(\"malloc\");\n"
-        result += "    for (i=0; i < num_records; i++) {\n"
+        result += "    for (int i=0; i < num_records; i++) {\n"
         result += "        temp[i] = *(%s *)(records[i] + field_offset);\n"%atype
         result += "    }\n"
         result += "    qsort(temp, num_records, sizeof(uint64_t), compar);\n"
-        result += "    aggr.values = (uint64_t *)malloc(sizeof(uint64_t)*num_records);\n"
-        result += "    if (aggr.values == NULL)\n"
+        result += "    aggr->values = (uint64_t *)malloc(sizeof(uint64_t)*num_records);\n"
+        result += "    if (aggr->values == NULL)\n"
         result += "        errExit(\"malloc\");\n"
-        result += "    aggr.values[0] = temp[0];\n"
+        result += "    aggr->values[0] = temp[0];\n"
         result += "    last = temp[0];\n"
-        result += "    aggr.num_values = 1;\n"
-        result += "    for (i=1; i < num_records; i++) {\n"
+        result += "    aggr->num_values = 1;\n"
+        result += "    for (int i=1; i < num_records; i++) {\n"
         result += "        if (temp[i] != last) {\n"
-        result += "            aggr.values[aggr.num_values++] = temp[i];\n"
+        result += "            aggr->values[aggr->num_values++] = temp[i];\n"
         result += "            last = temp[i];\n"
         result += "        }\n"
         result += "    }\n"
-        result += "    aggr.values = (uint64_t *)realloc(aggr.values, sizeof(uint64_t)*aggr.num_values);\n"
-        result += "    if (aggr.values == NULL)\n"
+        result += "    aggr->values = (uint64_t *)realloc(aggr->values, sizeof(uint64_t)*aggr->num_values);\n"
+        result += "    if (aggr->values == NULL)\n"
         result += "        errExit(\"malloc\");\n"
         result += "    free(temp);\n"
     elif op == 'median':
-        result += "    int i;\n"
         result += "    uint64_t *temp;\n"
         result += "    temp = (uint64_t *)malloc(sizeof(uint64_t)*num_records);\n"
         result += "    if (temp == NULL)\n"
         result += "        errExit(\"malloc\");\n"
-        result += "    for (i=0; i < num_records; i++) {\n"
+        result += "    for (int i=0; i < num_records; i++) {\n"
         result += "        temp[i] = *(%s *)(records[i] + field_offset);\n"%atype
         result += "    }\n"
         result += "    qsort(temp, num_records, sizeof(uint64_t), compar);\n"
-        result += "    aggr.num_values = 1;\n"
-        result += "    aggr.values = (uint64_t *)malloc(sizeof(uint64_t)*aggr.num_values);\n"
-        result += "    if (aggr.values == NULL)\n"
+        result += "    aggr->num_values = 1;\n"
+        result += "    aggr->values = (uint64_t *)malloc(sizeof(uint64_t)*aggr->num_values);\n"
+        result += "    if (aggr->values == NULL)\n"
         result += "        errExit(\"malloc\");\n"
-        result += "    aggr.values[0] = temp[num_records/2];"
+        result += "    aggr->values[0] = temp[num_records/2];"
         result += "    free(temp);\n"
+        result += "      *(uint32_t*)(group_aggregation + field_offset) = aggr->values[0];\n"
     elif op == 'min':
-        result += "    int i;\n"
-        result += "    aggr.num_values = 1;\n"
-        result += "    aggr.values = (uint64_t *)malloc(sizeof(uint64_t)*aggr.num_values);\n"
-        result += "    if (aggr.values == NULL)\n"
+        result += "    aggr->num_values = 1;\n"
+        result += "    aggr->values = (uint64_t *)malloc(sizeof(uint64_t)*aggr->num_values);\n"
+        result += "    if (aggr->values == NULL)\n"
         result += "        errExit(\"malloc\");\n"
-        result += "    aggr.values[0] = *(%s *)(records[0] + field_offset);\n"%atype
-        result += "    for (i = 1; i < num_records; i++) {\n"
-        result += "        if (*(%s *)(records[0] + field_offset) < aggr.values[0]) {\n"%atype
-        result += "            aggr.values[0] = *(%s *)(records[0] + field_offset);\n"%atype
+        result += "    aggr->values[0] = *(%s *)(records[0] + field_offset);\n"%atype
+        result += "    for (int i = 1; i < num_records; i++) {\n"
+        result += "        if (*(%s *)(records[0] + field_offset) < aggr->values[0]) {\n"%atype
+        result += "            aggr->values[0] = *(%s *)(records[0] + field_offset);\n"%atype
         result += "        }\n"
         result += "    }\n"
+        result += "      *(uint32_t*)(group_aggregation + field_offset) = aggr->values[0];\n"
     elif op == 'max':
-        result += "    int i;\n"
-        result += "    aggr.num_values = 1;\n"
-        result += "    aggr.values = (uint64_t *)malloc(sizeof(uint64_t)*aggr.num_values);\n"
-        result += "    if (aggr.values == NULL)\n"
+        result += "    aggr->num_values = 1;\n"
+        result += "    aggr->values = (uint64_t *)malloc(sizeof(uint64_t)*aggr->num_values);\n"
+        result += "    if (aggr->values == NULL)\n"
         result += "        errExit(\"malloc\");\n"
-        result += "    aggr.values[0] = *(%s *)(records[0] + field_offset);\n"%atype
-        result += "    for (i = 1; i < num_records; i++) {\n"
-        result += "        if (*(%s *)(records[0] + field_offset) > aggr.values[0]) {\n"%atype
-        result += "            aggr.values[0] = *(%s *)(records[0] + field_offset);\n"%atype
+        result += "    aggr->values[0] = *(%s *)(records[0] + field_offset);\n"%atype
+        result += "    for (int i = 1; i < num_records; i++) {\n"
+        result += "        if (*(%s *)(records[0] + field_offset) > aggr->values[0]) {\n"%atype
+        result += "            aggr->values[0] = *(%s *)(records[0] + field_offset);\n"%atype
         result += "        }\n"
         result += "    }\n"
+        result += "      *(uint32_t*)(group_aggregation + field_offset) = aggr->values[0];\n"
     else:
         raise ValueError(op)
-    result += "    *(%s*)(group_aggregation + field_offset) = aggr.values[0];"%atype
+    result += "}\n"
     result += "    return aggr;\n"
     result += "}\n\n"
     return result
@@ -344,7 +356,7 @@ gfilter_proto = """bool
 
 def gfilter_body(op, atype):
     result = " {\n\n"
-    result += "%s* aggr_value = (%s*)(group->group_aggr_record + field_offset);\n"%(atype,atype)
+    result += "%s* aggr_value = (%s*)(group->aggr_record + field_offset);\n"%(atype,atype)
   
     if op == "eq":
         result += "    return (*aggr_value >= value - delta) && (*aggr_value <= value + delta);\n"
@@ -369,36 +381,36 @@ merger1_proto = """bool
 def merger1_body(op, atype1, atype2):
     result = " {\n\n"
     if op in ['eq', 'ne', 'lt', 'gt', 'le', 'ge', 'in']:
-        result += "    if (*(%s*)(group1->group_aggr_record + field1_offset) == 0 ||\n"%atype1
-        result += "        *(%s*)(group2->group_aggr_record + field2_offset) == 0)\n"%atype2
+        result += "    if (*(%s*)(group1->aggr_record + field1_offset) == 0 ||\n"%atype1
+        result += "        *(%s*)(group2->aggr_record + field2_offset) == 0)\n"%atype2
         result += "      return false;\n\n"
     if op == "eq":
-      result += """    return (*(%s*)(group1->group_aggr_record + field1_offset) >= 
-                               *(%s*)(group2->group_aggr_record + field2_offset) - delta)
+      result += """    return (*(%s*)(group1->aggr_record + field1_offset) >= 
+                               *(%s*)(group2->aggr_record + field2_offset) - delta)
                                && 
-                               (*(%s*)(group1->group_aggr_record + field1_offset) <= 
-                               *(%s*)(group2->group_aggr_record + field2_offset) + delta);  
+                               (*(%s*)(group1->aggr_record + field1_offset) <= 
+                               *(%s*)(group2->aggr_record + field2_offset) + delta);  
           
                   """%(atype1, atype2, atype1, atype2)
     elif op == "ne":
-      result += """    return (*(%s*)(group1->group_aggr_record + field1_offset) < 
-                               *(%s*)(group2->group_aggr_record + field2_offset) - delta) 
+      result += """    return (*(%s*)(group1->aggr_record + field1_offset) < 
+                               *(%s*)(group2->aggr_record + field2_offset) - delta) 
                               || 
-                              (*(%s*)(group1->group_aggr_record + field1_offset) > 
-                              *(%s*)(group2->group_aggr_record + field2_offset) + delta);          
+                              (*(%s*)(group1->aggr_record + field1_offset) > 
+                              *(%s*)(group2->aggr_record + field2_offset) + delta);          
                   """%(atype1, atype2, atype1, atype2)
     elif op in ['lt', 'le']:
-        result += """  return (*(%s*)(group1->group_aggr_record + field1_offset) %s 
-                              *(%s*)(group2->group_aggr_record + field2_offset) + delta);\n
+        result += """  return (*(%s*)(group1->aggr_record + field1_offset) %s 
+                              *(%s*)(group2->aggr_record + field2_offset) + delta);\n
                   """%(atype1, operation_map[op], atype2)
     elif op in ['gt', 'ge']:
-        result += """  return (*(%s*)(group1->group_aggr_record + field1_offset) %s 
-                              *(%s*)(group2->group_aggr_record + field2_offset) - delta);\n          
+        result += """  return (*(%s*)(group1->aggr_record + field1_offset) %s 
+                              *(%s*)(group2->aggr_record + field2_offset) - delta);\n          
                   """%(atype1, operation_map[op], atype2)
     #TODO: need to cross-check
     elif op == 'in':
-        result += "    for (int i=0; i<group2->aggr[field2_offset].num_values; i++) {\n"
-        result += "        if (group1->aggr[field1_offset].values[0] >= group2->aggr[field2_offset].values[i] - delta && group1->aggr[field1_offset].values[0] <= group2->aggr[field2_offset].values[i] + delta) {\n"
+        result += "    for (int i=0; i<group2->aggrset[field2_offset]->num_values; i++) {\n"
+        result += "        if (group1->aggrset[field1_offset]->values[0] >= group2->aggrset[field2_offset]->values[i] - delta && group1->aggrset[field1_offset]->values[0] <= group2->aggrset[field2_offset]->values[i] + delta) {\n"
         result += "            return true;\n"
         result += "        }\n"
         result += "    }\n"
@@ -411,40 +423,43 @@ def merger1_body(op, atype1, atype2):
 #merger: part II: operation on allen intervals
 
 merger2_proto = """bool 
-                   merger_%s(struct group *group1, 
-                             size_t field1_offset, 
-                             struct group *group2, 
-                             size_t field2_offset, 
-                             uint64_t delta)"""
+  merger_%s(struct group *group1, 
+  size_t field1_offset, 
+  struct group *group2, 
+  size_t field2_offset, 
+  uint64_t delta)"""
+
 
 def merger2_body(op):
   result = " {\n\n"
+  result += "uint32_t* t1 = (u_int32_t*)(group1->aggr_record + field1_offset);\n"
+  result += "uint32_t* t2 = (u_int32_t*)(group2->aggr_record + field2_offset);\n"
   if op == 'allen_bf':
-    result += "    return group1->end < group2->start;\n"
+    result += "    return *t1 < *t2;\n"
   elif op == 'allen_af':
-    result += "    return group1->start > group2->end;\n"
+    result += "    return *t1 > *t2;\n"
   elif op == 'allen_m':
-    result += "    return group1->end == group2->start;\n"
+    result += "    return *t1 == *t2;\n"
   elif op == 'allen_mi':
-    result += "    return group1->start == group2->end;\n"
+    result += "    return *t1 == *t2;\n"
   elif op == 'allen_o':
-    result += "    return group1->start < group2->start && group1->end > group2->start;\n"
+    result += "    return *t1 < *t2 && *t1 > *t2;\n"
   elif op == 'allen_oi':
-    result += "    return group1->end > group2->end && group1->start < group2->end;\n"
+    result += "    return *t1 > *t2 && *t1 < *t2;\n"
   elif op == 'allen_s':
-    result += "    return group1->start == group2->start && group1->end < group2->end;\n"
+    result += "    return *t1 == *t2 && *t1 < *t2;\n"
   elif op == 'allen_si':
-    result += "    return group1->start == group2->start && group1->end > group2->end;\n"
+    result += "    return *t1 == *t2 && *t1 > *t2;\n"
   elif op == 'allen_d':
-    result += "    return group1->start > group2->start && group1->end < group2->end;\n"
+    result += "    return *t1 > *t2 && *t1 < *t2;\n"
   elif op == 'allen_di':
-    result += "    return group1->start < group2->start && group1->end > group2->end;\n"
+    result += "    return *t1 < *t2 && *t1 > *t2;\n"
   elif op == 'allen_f':
-    result += "    return group1->end == group2->end && group1->start > group2->start;\n"
+    result += "    return *t1 == *t2 && *t1 > *t2;\n"
   elif op == 'allen_fi':
-    result += "    return group1->end == group2->end && group1->start < group2->start;\n"
+    result += "    return *t1 == *t2 && *t1 < *t2;\n"
   elif op == 'allen_eq':
-    result += "    return group1->start == group2->start && group1->end == group2->end;\n"
+    result += "    return *t1 == *t2 && *t1 == *t2;\n"
   else:
     raise ValueError(op)
   result += "}\n\n"
@@ -516,7 +531,7 @@ header.write("#include \"auto_comps.h\"\n\n")
 header.write("""void
                 assign_fptr(struct flowquery *fquery);\n\n""")
 
-header.write("""struct aggr 
+header.write("""struct aggr* 
                 (*get_aggr_fptr(bool ifgrouper,
                                 uint64_t op))(char **records,
                                               char *group_aggregation,
@@ -588,8 +603,8 @@ source.write("""
 source.write("""
   
   /* for loop for the group-aggregation */
-  for (int j = 0; j < branch->num_aggr; j++) {
-  struct grouper_aggr* aggrule = &branch->aggr[j];  
+  for (int j = 0; j < branch->num_aggr_rules; j++) {
+  struct aggr_rule* aggrule = branch->aggr_ruleset[j];  
   switch (aggrule->op) {
   """)
 
@@ -693,13 +708,13 @@ source.write("""
 # get_aggr_fptr(...)
 
 source.write("""
-                struct aggr (*get_aggr_fptr(bool ifgrouper,
+                struct aggr* (*get_aggr_fptr(bool ifgrouper,
                                             uint64_t op))(char **records,
                                                           char *group_aggregation,
                                                           size_t num_records,
                                                           size_t field_offset,
                                                           bool if_aggr_common) {\n
-                  struct aggr (*aggr_function)(char **records,
+                  struct aggr* (*aggr_function)(char **records,
                                                char *group_aggregation,
                                                size_t num_records,
                                                size_t field_offset,

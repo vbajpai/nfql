@@ -72,15 +72,15 @@ struct grouper_rule {
 };
 
 
-struct grouper_aggr {
+struct aggr_rule {
   size_t                          field_offset;
   uint64_t                        op;
-  struct aggr (*func)(
-                      char**      group_records,
-                      char*       group_aggregation,
-                      size_t      num_records,
-                      size_t      field_offset,
-                      bool        if_aggr_common
+  struct aggr* (*func)(
+                       char**      group_records,
+                       char*       group_aggregation,
+                       size_t      num_records,
+                       size_t      field_offset,
+                       bool        if_aggr_common
                       );
 };
 
@@ -119,7 +119,7 @@ struct merger_rule {
                struct group*      group2,
                size_t             field2,
                uint64_t           delta
-               );
+              );
 };
 
 
@@ -135,12 +135,12 @@ struct branch_info {
 
   size_t                          num_filter_rules;
   size_t                          num_grouper_rules;
-  size_t                          num_aggr;
+  size_t                          num_aggr_rules;
   size_t                          num_gfilter_rules;
   
   struct filter_rule**            filter_ruleset;  
   struct grouper_rule**           grouper_ruleset;
-  struct grouper_aggr*            aggr;  
+  struct aggr_rule**              aggr_ruleset;  
   struct gfilter_rule*            gfilter_rules;  
   /* -----------------------------------------------------------------------*/  
 
@@ -166,42 +166,28 @@ struct branch_info {
   
 };
 
-struct filter_result{
+struct filter_result {
   size_t                          num_filtered_records;
   char**                          filtered_recordset;  
 };
 
 
-struct grouper_result{
+struct grouper_result {
   size_t                          num_groups;  
   struct group**                  groupset;
 };
 
-
-/*
- * group - store module members and aggregation results
- * aggr  - store single aggr results or unions
- * start, end - times have to be stored as first and last members of the group
- *              do not necessarily supply these values
- */
 struct group {
-  char**   members;
-  size_t   num_members;
-  uint32_t start;
-  uint32_t end;
-  char* group_aggr_record;
-  struct aggr* aggr;
+  size_t                          num_members;
+  char**                          members;
+  char*                           aggr_record;
+  struct aggr**                   aggrset;
 };
-
-
 
 struct aggr {
-  size_t    num_values;
-  uint64_t *values;
+  size_t                          num_values;
+  uint64_t*                       values;
 };
-
-
-
 
 
 struct stream{

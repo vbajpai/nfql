@@ -222,13 +222,13 @@ prepare_flowquery(struct ft_data* trace,
       case 0:
         branch->num_filter_rules = NUM_FILTER_RULES_BRANCH1;
         branch->num_grouper_rules = NUM_GROUPER_RULES_BRANCH1;         
-        branch->num_aggr = NUM_GROUPER_AGGREGATION_RULES_BRANCH1;
+        branch->num_aggr_rules = NUM_GROUPER_AGGREGATION_RULES_BRANCH1;
         branch->num_gfilter_rules = NUM_GROUP_FILTER_RULES_BRANCH1;
         break;
       case 1:  
         branch->num_filter_rules = NUM_FILTER_RULES_BRANCH2;
         branch->num_grouper_rules = NUM_GROUPER_RULES_BRANCH2;
-        branch->num_aggr = NUM_GROUPER_AGGREGATION_RULES_BRANCH2;
+        branch->num_aggr_rules = NUM_GROUPER_AGGREGATION_RULES_BRANCH2;
         branch->num_gfilter_rules = NUM_GROUP_FILTER_RULES_BRANCH2;
         break;
     }
@@ -236,7 +236,8 @@ prepare_flowquery(struct ft_data* trace,
     branch->branch_id = i;
     branch->data = trace;
     
-    /* free'd after returning from filter(...) in branch.c */
+    /* filter rules are used in grouper aggregations */    
+    /* therefore, free'd after returning from grouper(...) in branch.c */    
     struct filter_rule** fruleset = (struct filter_rule**) 
                                      calloc(branch->num_filter_rules, 
                                             sizeof(struct filter_rule*));
@@ -244,7 +245,7 @@ prepare_flowquery(struct ft_data* trace,
       errExit("calloc");
     for (int j = 0; j < branch->num_filter_rules; j++) {
 
-      /* free'd after returning from filter(...) in branch.c */
+      /* free'd after returning from grouper(...) in branch.c */
       struct filter_rule* frule = calloc(1, sizeof(struct filter_rule));
       if (frule == NULL)
         errExit("calloc");      
@@ -300,42 +301,48 @@ prepare_flowquery(struct ft_data* trace,
     }
     branch->grouper_ruleset = gruleset; gruleset = NULL;
     
-    /* TODO: when free'd? */
-    struct grouper_aggr* aggruleset = calloc(branch->num_aggr, 
-                                             sizeof(struct grouper_aggr));
-    if (aggruleset == NULL)
+    /* free'd after returning from grouper(...) */
+    struct aggr_rule** aruleset = (struct aggr_rule**)
+                                   calloc(branch->num_aggr_rules, 
+                                          sizeof(struct aggr_rule*));
+    if (aruleset == NULL)
       errExit("calloc");
-    for (int j = 0; j < branch->num_aggr; j++) {
-      struct grouper_aggr* aggrule = &aggruleset[j];
+    for (int j = 0; j < branch->num_aggr_rules; j++) {
+      
+      /* free'd after returning from grouper(...) */
+      struct aggr_rule* arule = calloc(1, sizeof(struct aggr_rule));
+      if (arule == NULL)
+        errExit("calloc");
+      aruleset[j] = arule;
       
       /* TODO: hardcoded */      
       switch (j) {
         case 0:
-          aggrule->field_offset    =         trace->offsets.srcaddr;
+          arule->field_offset    =         trace->offsets.srcaddr;
           break;
         case 1:
-          aggrule->field_offset    =         trace->offsets.dstaddr;
+          arule->field_offset    =         trace->offsets.dstaddr;
           break;
         case 2:
-          aggrule->field_offset    =         trace->offsets.dPkts;
+          arule->field_offset    =         trace->offsets.dPkts;
           break;
         case 3:
-          aggrule->field_offset    =         trace->offsets.dOctets;
+          arule->field_offset    =         trace->offsets.dOctets;
           break;
       }
       switch (j) {
         case 0:
         case 1:
-          aggrule->op              =         RULE_STATIC | RULE_S1_32;
+          arule->op              =         RULE_STATIC | RULE_S1_32;
           break;
         case 2:
         case 3:
-          aggrule->op              =         RULE_SUM | RULE_S1_32;
+          arule->op              =         RULE_SUM | RULE_S1_32;
           break;
       }      
-      aggrule->func                =         NULL;
+      arule->func                =         NULL;
     }
-    branch->aggr = aggruleset;
+    branch->aggr_ruleset = aruleset; aruleset = NULL;
    
     /* TODO: when free'd? */    
     struct gfilter_rule* gfruleset = calloc(branch->num_gfilter_rules, 

@@ -148,6 +148,24 @@ echo_grouper(struct branch_info* branch) {
 }
 
 void
+echo_group_aggr(struct branch_info* branch){
+  
+  printf("\nNo. of Groups: %zu (Aggregations)\n", 
+         branch->grouper_result->num_groups);
+  
+  if (branch->grouper_result->num_groups != 0)      
+    puts(FLOWHEADER); 
+  for (int j = 0; j < branch->grouper_result->num_groups; j++) {        
+    struct group* group = branch->grouper_result->groupset[j];
+    flow_print_record(branch->data, group->aggr_record);  
+    
+    for (int x = 0; x < branch->num_aggr_rules; x++)
+      free(group->aggrset[x]->values);
+    free(group->aggrset); 
+  }
+}
+
+void
 echo_branch(size_t num_branches,
             struct branch_info* branchset,
             struct ft_data* trace){
@@ -170,17 +188,7 @@ echo_branch(size_t num_branches,
     
     
 #ifdef GROUPERAGGREGATIONS
-    printf("\nNo. of Groups: %zu (Aggregations)\n", branch->num_groups);
-    if (branch->num_groups != 0)      
-      puts(FLOWHEADER); 
-    for (int j = 0; j < branch->num_groups; j++) {        
-      struct group* group = branch->groupset[j];
-      flow_print_record(branch->data, group->group_aggr_record);  
-      
-      for (int x = 0; x < branch->num_aggr; x++)
-        free(group->aggr[x].values);
-      free(group->aggr); 
-    }
+    echo_group_aggr(branch);
 #endif
     
     
@@ -200,17 +208,14 @@ echo_branch(size_t num_branches,
 
 #ifdef GROUPERAGGREGATIONS
     /* free memory */
-    for (int j = 0; j < branch->num_groups; j++) {        
-      struct group* group = branch->groupset[j];
-      free(group->group_aggr_record);
+    for (int j = 0; j < branch->grouper_result->num_groups; j++) {        
+      struct group* group = branch->grouper_result->groupset[j];
+      free(group->aggr_record);
       free(group);
     }
-    free(branch->groupset);
-#endif  
-    
+    free(branch->grouper_result->groupset);
+#endif      
   }
-
-
 }
 
 void 

@@ -47,4 +47,7 @@ echo_filter(struct branch_info* branch);
 void
 echo_grouper(struct branch_info* branch);
 
+void
+echo_group_aggr(struct branch_info* branch);
+
 #endif

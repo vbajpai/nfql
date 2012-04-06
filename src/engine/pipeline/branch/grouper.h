@@ -61,9 +61,8 @@ struct uniq_records_tree {
 };
 
 
-char* 
-grouper_aggregations(struct group* group, 
-                     struct branch_info *binfo);
+void
+grouper_aggregations(struct branch_info *branch);
 
 struct uniq_records_tree *
 build_record_trees(struct branch_info *binfo,

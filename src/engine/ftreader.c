@@ -131,14 +131,26 @@ ft_write(struct ft_data *data, int outfd) {
   ftio_set_lost(&ftio_out, ftio_get_lost(&data->io));
   
   ret = ftio_set_comment(&ftio_out, ftset.comments);
+  if (ret == -1)
+    errExit("ftio_set_comment(...) returned -1");
+
   ret = ftio_set_ver(&ftio_out, &data->version);
+  if (ret == -1)
+    errExit("ftio_set_ver(...) returned -1");
+  
   ret = ftio_write_header(&ftio_out);
+  if (ret == -1)
+    errExit("ftio_set_ver(...) returned -1");
   
   for (i = 0; i < data->num_records; i++) {
     ret = ftio_write(&ftio_out, data->records[i]);
+    if (ret == -1)
+      errExit("ftio_write(...) returned -1");
   }
   
   ret = ftio_close(&ftio_out);
+  if (ret == -1)
+    errExit("ftio_close(...) returned -1");
   close(outfd);
 }
 

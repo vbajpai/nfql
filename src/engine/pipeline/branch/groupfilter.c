@@ -63,7 +63,8 @@ groupfilter(struct group **groupset,
       /* free only when NO verbosity is set, otherwise free later. */
       if(!verbose_v){
         free(group->members);
-        free(group->aggr);
+        /* TODO: aggrset[i]? */
+        free(group->aggrset);
         free(group);
         group = NULL;
       }      

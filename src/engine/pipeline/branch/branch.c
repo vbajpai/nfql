@@ -30,7 +30,15 @@ void *
 branch_start(void *arg) {
   
   struct branch_info* branch = (struct branch_info *)arg;  
-
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
 #ifdef FILTER  
   
@@ -41,17 +49,17 @@ branch_start(void *arg) {
   branch->filter_result = filter(branch);
   if (branch->filter_result == NULL)
     errExit("filter(...) returned NULL");
-  else {
-    for (int i = 0; i < branch->num_filter_rules; i++) {
-      struct filter_rule* frule = branch->filter_ruleset[i];
-      free(frule); frule = NULL; branch->filter_ruleset[i] = NULL;      
-    }
-    free(branch->filter_ruleset); branch->filter_ruleset = NULL;
-  }
   
   /* -----------------------------------------------------------------------*/
   
 #endif  
+  
+  
+  
+  
+  
+  
+  
   
   
   
@@ -73,11 +81,27 @@ branch_start(void *arg) {
   if (branch->grouper_result == NULL)
     errExit("grouper(...) returned NULL");
   else {
-    for (int i = 0; branch->num_grouper_rules; i++) {
+
+    /* free filter rules */
+    for (int i = 0; i < branch->num_filter_rules; i++) {
+      struct filter_rule* frule = branch->filter_ruleset[i];
+      free(frule); frule = NULL; branch->filter_ruleset[i] = NULL;      
+    }
+    free(branch->filter_ruleset); branch->filter_ruleset = NULL;
+
+    /* free grouper rules */
+    for (int i = 0; i < branch->num_grouper_rules; i++) {
       struct grouper_rule* grule = branch->grouper_ruleset[i];
       free(grule); grule = NULL; branch->grouper_ruleset[i] = NULL;
     }
     free(branch->grouper_ruleset); branch->grouper_ruleset = NULL;
+    
+    /* free grouper aggregation rules */
+    for (int i = 0; i < branch->num_aggr_rules; i++) {
+      struct aggr_rule* arule = branch->aggr_ruleset[i];
+      free(arule); arule = NULL; branch->aggr_ruleset[i] = NULL;
+    }
+    free(branch->aggr_ruleset); branch->aggr_ruleset = NULL;
   }
   
   /* -----------------------------------------------------------------------*/
@@ -88,23 +112,6 @@ branch_start(void *arg) {
   
   
   
-  
-  
-#ifdef GROUPERAGGREGATIONS
-  
-  /* -----------------------------------------------------------------------*/  
-  /*                         grouper aggregations                           */
-  /* -----------------------------------------------------------------------*/
-  
- 
-  for (int i = 0; i < binfo->num_groups; i++)
-    binfo->groupset[i]->group_aggr_record = 
-    grouper_aggregations(binfo->groupset[i], binfo);
-  
-  
-  /* -----------------------------------------------------------------------*/
-  
-#endif  
   
   
   
@@ -125,6 +132,15 @@ branch_start(void *arg) {
   /* -----------------------------------------------------------------------*/
   
 #endif  
+  
+  
+  
+  
+  
+  
+  
+  
+  
   
   pthread_exit(NULL);
 }

@@ -968,8 +968,8 @@ assign_fptr(struct flowquery *fquery) {
     
     
     /* for loop for the group-aggregation */
-    for (int j = 0; j < branch->num_aggr; j++) {
-      struct grouper_aggr* aggrule = &branch->aggr[j];  
+    for (int j = 0; j < branch->num_aggr_rules; j++) {
+      struct aggr_rule* aggrule = branch->aggr_ruleset[j];  
       switch (aggrule->op) {
         case RULE_STATIC | RULE_S1_8:
           aggrule->func = aggr_static_uint8_t;
@@ -1598,18 +1598,18 @@ assign_fptr(struct flowquery *fquery) {
   }
 }
 
-struct aggr (*get_aggr_fptr(bool ifgrouper,
-                            uint64_t op))(char **records,
-                                          char *group_aggregation,
-                                          size_t num_records,
-                                          size_t field_offset,
-                                          bool if_aggr_common) {
+struct aggr* (*get_aggr_fptr(bool ifgrouper,
+                             uint64_t op))(char **records,
+                                           char *group_aggregation,
+                                           size_t num_records,
+                                           size_t field_offset,
+                                           bool if_aggr_common) {
   
-  struct aggr (*aggr_function)(char **records,
-                               char *group_aggregation,
-                               size_t num_records,
-                               size_t field_offset,
-                               bool if_aggr_common) = NULL;
+  struct aggr* (*aggr_function)(char **records,
+                                char *group_aggregation,
+                                size_t num_records,
+                                size_t field_offset,
+                                bool if_aggr_common) = NULL;
   
   if(!ifgrouper) {
     /* cases for the filter-stage */

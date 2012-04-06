@@ -12,7 +12,7 @@
 void
 assign_fptr(struct flowquery *fquery);
 
-struct aggr 
+struct aggr* 
 (*get_aggr_fptr(bool ifgrouper,
                 uint64_t op))(char **records,
                               char *group_aggregation,
