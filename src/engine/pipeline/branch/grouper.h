@@ -37,8 +37,8 @@ struct grouper_aggr;
 
 #define tree_item(size) \
 struct tree_item_##size { \
-size value; \
-char ***ptr; \
+  size                            value; \
+  char***                         ptr; \
 };
 
 tree_item(uint8_t);
@@ -48,27 +48,28 @@ tree_item(uint64_t);
 
 typedef enum { UINT8_T, UINT16_T, UINT32_T, UINT64_T } int_sizes;
 
-struct uniq_records_tree {
-  int_sizes type;
+struct grouper_intermediate_result {    
+  
+  int_sizes                       type;
+  size_t                          num_uniq_records;
+  
   union {
-    struct tree_item_uint8_t *uniq_records8;
-    struct tree_item_uint16_t *uniq_records16;
-    struct tree_item_uint32_t *uniq_records32;
-    struct tree_item_uint64_t *uniq_records64;
-  }tree_item;
-  size_t num_uniq_records;
-  char ***sorted_records;
+    struct tree_item_uint8_t*     recordset_8;
+    struct tree_item_uint16_t*    recordset_16;
+    struct tree_item_uint32_t*    recordset_32;
+    struct tree_item_uint64_t*    recordset_64;
+  }uniq_recordset;
+  
+  char***                         sorted_recordset_reference;
 };
 
 
 void
 grouper_aggregations(struct branch_info *branch);
 
-struct uniq_records_tree *
-build_record_trees(struct branch_info* branch,
-                   char** filtered_recordset, 
-                   size_t num_filtered_records, 
-                   struct grouper_rule** grouper_ruleset);
+struct grouper_intermediate_result *
+get_grouper_intermediates(struct branch_info* branch,
+                          char** filtered_recordset_copy);
 
 struct grouper_result* 
 grouper(struct branch_info* branch);

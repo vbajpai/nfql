@@ -161,19 +161,19 @@ struct branch_info {
   
 };
 
-struct filter_result {
+struct filter_result {  
   size_t                          num_filtered_records;
   char**                          filtered_recordset;  
 };
 
 
 struct grouper_result {
+  size_t                          num_unique_records;  
+  char**                          sorted_recordset;
+  char**                          unique_recordset;
+  
   size_t                          num_groups;  
   struct group**                  groupset;
-  
-  char** sorted_records;
-  char** unique_records;
-  size_t num_unique_records;
 };
 
 struct group {
