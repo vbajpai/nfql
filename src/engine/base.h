@@ -38,6 +38,7 @@
 #define FILTER
 #define GROUPER
 #define GROUPERAGGREGATIONS
+#define GROUPFILTER
 
 extern bool debug;
 

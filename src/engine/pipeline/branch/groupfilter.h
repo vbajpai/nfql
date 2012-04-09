@@ -30,11 +30,10 @@
 #include "pipeline.h"
 #include "error_handlers.h"
 
-struct group **
-groupfilter(struct group **groups, 
+struct groupfilter_result*
+groupfilter(struct group** groups, 
              size_t num_groups, 
-             struct gfilter_rule *rules, 
-             size_t num_gfilter_rules,
-             size_t *num_filtered_groups);
+             struct gfilter_rule** ruleset, 
+             size_t num_gfilter_rules);
 
 #endif

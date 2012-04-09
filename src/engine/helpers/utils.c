@@ -106,7 +106,7 @@ iter_init(struct branch_info* binfo_set, int num_branches) {
   /* the first group tuple is (g1_b1, g1_b2, ...) */
   for (int i = 0; i < num_branches; i++) {
     iter->filtered_group_tuple[i] = 1;
-    iter->num_filtered_groups[i] = binfo_set[i].num_filtered_groups;
+    iter->num_filtered_groups[i] = binfo_set[i].gfilter_result->num_filtered_groups;
   }
   
   /* the first call to iter_next will switch it to 1 */

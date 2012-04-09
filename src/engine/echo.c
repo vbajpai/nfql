@@ -182,14 +182,13 @@ echo_branch(size_t num_branches,
     
 #ifdef GROUPFILTER
     printf("\nNo. of Filtered Groups: %zu (Aggregations)\n", 
-           branch->num_filtered_groups);      
-    if (branch->num_filtered_groups != 0)      
+           branch->gfilter_result->num_filtered_groups);      
+    if (branch->gfilter_result->num_filtered_groups != 0)      
       puts(FLOWHEADER); 
     
-    for (int j = 0; j < branch->num_filtered_groups; j++) {
-      
-      struct group* filtered_group = branch->filtered_groupset[j];
-      flow_print_record(branch->data, filtered_group->group_aggr_record);
+    for (int j = 0; j < branch->gfilter_result->num_filtered_groups; j++) {      
+      struct group* fgroup = branch->gfilter_result->filtered_groupset[j];
+      flow_print_record(branch->data, fgroup->aggr_record);
     }
 #endif
   }

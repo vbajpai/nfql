@@ -1134,7 +1134,7 @@ assign_fptr(struct flowquery *fquery) {
     
     /* for loop for the group-filter */
     for (int j = 0; j < branch->num_gfilter_rules; j++) {
-      struct gfilter_rule* gfrule = &branch->gfilter_rules[j];  
+      struct gfilter_rule* gfrule = branch->gfilter_ruleset[j];  
       switch (gfrule->op) {
         case RULE_EQ | RULE_S1_8:
           gfrule->func = gfilter_eq_uint8_t;

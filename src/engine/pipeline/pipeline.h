@@ -141,7 +141,7 @@ struct branch_info {
   struct filter_rule**            filter_ruleset;  
   struct grouper_rule**           grouper_ruleset;
   struct aggr_rule**              aggr_ruleset;  
-  struct gfilter_rule*            gfilter_rules;  
+  struct gfilter_rule**           gfilter_ruleset;  
   /* -----------------------------------------------------------------------*/  
 
   
@@ -152,11 +152,8 @@ struct branch_info {
   
   struct filter_result*           filter_result;
   struct grouper_result*          grouper_result;
-  
+  struct groupfilter_result*      gfilter_result;
 
-  /* will be filled by individual branches */
-  struct group **filtered_groupset;
-  size_t num_filtered_groups;
   /* -----------------------------------------------------------------------*/  
   
 };
@@ -166,7 +163,6 @@ struct filter_result {
   char**                          filtered_recordset;  
 };
 
-
 struct grouper_result {
   size_t                          num_unique_records;  
   char**                          sorted_recordset;
@@ -174,6 +170,11 @@ struct grouper_result {
   
   size_t                          num_groups;  
   struct group**                  groupset;
+};
+
+struct groupfilter_result {
+  size_t                          num_filtered_groups;  
+  struct group**                  filtered_groupset;
 };
 
 struct group {

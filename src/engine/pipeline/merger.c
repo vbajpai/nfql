@@ -29,6 +29,7 @@
 
 #include "merger.h"
 
+#ifdef MERGER
 struct group ***
 merger(struct branch_info* binfo_set, 
        size_t num_branches, 
@@ -95,3 +96,4 @@ merger(struct branch_info* binfo_set,
   iter_destroy(iter);
   return group_tuples;
 }
+#endif

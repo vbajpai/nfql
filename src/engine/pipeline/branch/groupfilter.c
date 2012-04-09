@@ -26,23 +26,20 @@
 
 #include "groupfilter.h"
 
-struct group **
+struct groupfilter_result*
 groupfilter(struct group **groupset, 
-             size_t num_groups, 
-             struct gfilter_rule *rules, 
-             size_t num_gfilter_rules,
-             size_t *num_filtered_groups) {
+            size_t num_groups, 
+            struct gfilter_rule** ruleset, 
+            size_t num_gfilter_rules) {
   
-  struct group **filtered_groupset;  
-  filtered_groupset = (struct group **)
-                       calloc(*num_filtered_groups, 
-                              sizeof(struct group *));
-  if (filtered_groupset == NULL)
+  /* TODO: when free'd? */
+  struct groupfilter_result* 
+  gfilter_result = calloc(1, sizeof(struct groupfilter_result));
+  if (gfilter_result == NULL)
     errExit("calloc");
   
-  int i, j;
   /* iterate over each group */
-  for (i = 0, j = 0; i < num_groups; i++) {
+  for (int i = 0, j = 0; i < num_groups; i++) {
     
     struct group* group = groupset[i];
     
@@ -50,10 +47,10 @@ groupfilter(struct group **groupset,
     for (j = 0; j < num_gfilter_rules; j++) {
       
       /* break out if any one of the rules does NOT match */
-      if (!rules[j].func(group, 
-                         rules[j].field, 
-                         rules[j].value, 
-                         rules[j].delta))
+      if (!ruleset[j]->func(group, 
+                            ruleset[j]->field, 
+                            ruleset[j]->value, 
+                            ruleset[j]->delta))
         break;
     }
     
@@ -61,26 +58,23 @@ groupfilter(struct group **groupset,
     if (j < num_gfilter_rules) {
       
       /* free only when NO verbosity is set, otherwise free later. */
-      if(!verbose_v){
-        free(group->members);
-        /* TODO: aggrset[i]? */
-        free(group->aggrset);
-        free(group);
-        group = NULL;
+      if(!verbose_v) {
       }      
     }
     
     /* otherwise add the group to the filtered groupset */
-    else {
+    else {      
+      gfilter_result->num_filtered_groups += 1;      
+      gfilter_result->filtered_groupset = (struct group**)
       
-      (*num_filtered_groups)++;
-      filtered_groupset = 
-      (struct group **)realloc(filtered_groupset, 
-                              (*num_filtered_groups)*sizeof(struct group *));
-      if (filtered_groupset == NULL)
-        errExit("realloc");      
-      filtered_groupset[*num_filtered_groups-1] = groupset[i];
+      /* TODO: when free'd?*/
+      realloc(gfilter_result->filtered_groupset, 
+             (gfilter_result->num_filtered_groups) * sizeof(struct group*));
+      if (gfilter_result->filtered_groupset == NULL)
+        errExit("realloc");
+      gfilter_result->filtered_groupset
+      [gfilter_result->num_filtered_groups-1] = groupset[i];
     }
   }
-  return filtered_groupset;
+  return gfilter_result;
 }

@@ -264,7 +264,7 @@ prepare_flowquery(struct ft_data* trace,
       frule->op                    =         RULE_EQ | RULE_S1_16;
       frule->func                  =         NULL;      
       
-      fruleset[j] = frule;
+      fruleset[j] = frule; frule = NULL;
     }
     branch->filter_ruleset = fruleset; fruleset = NULL;
     
@@ -297,7 +297,7 @@ prepare_flowquery(struct ft_data* trace,
                                              RULE_S2_32 | RULE_NO;
       grule->func                  =         NULL;
       
-      gruleset[j] = grule;
+      gruleset[j] = grule; grule = NULL;
     }
     branch->grouper_ruleset = gruleset; gruleset = NULL;
     
@@ -313,7 +313,6 @@ prepare_flowquery(struct ft_data* trace,
       struct aggr_rule* arule = calloc(1, sizeof(struct aggr_rule));
       if (arule == NULL)
         errExit("calloc");
-      aruleset[j] = arule;
       
       /* TODO: hardcoded */      
       switch (j) {
@@ -341,24 +340,33 @@ prepare_flowquery(struct ft_data* trace,
           break;
       }      
       arule->func                =         NULL;
+      
+      aruleset[j] = arule; arule = NULL;
     }
     branch->aggr_ruleset = aruleset; aruleset = NULL;
    
-    /* TODO: when free'd? */    
-    struct gfilter_rule* gfruleset = calloc(branch->num_gfilter_rules, 
-                                            sizeof(struct gfilter_rule));
+    /* free'd after returning from groupfilter(...) */
+    struct gfilter_rule** gfruleset = (struct gfilter_rule**)
+                                      calloc(branch->num_gfilter_rules, 
+                                            sizeof(struct gfilter_rule*));
     if (gfruleset == NULL)
       errExit("calloc");    
     for (int j = 0; j < branch->num_gfilter_rules; j++) {
-      struct gfilter_rule* gfrule =         &gfruleset[j];      
+      
+      /* free'd after returning from groupfilter(...) */
+      struct gfilter_rule* gfrule = calloc(1, sizeof(struct gfilter_rule));
+      if (gfrule == NULL)
+        errExit("calloc");
+
       gfrule->field                =         trace->offsets.dPkts;
       gfrule->value                =         200;
       gfrule->delta                =         0;
       gfrule->op                   =         RULE_GT | RULE_S1_32;
       gfrule->func                 =         NULL;
+      
+      gfruleset[j] = gfrule; gfrule = NULL;
     }
-    branch->gfilter_rules = gfruleset;
-    
+    branch->gfilter_ruleset = gfruleset; gfruleset = NULL;    
   }
 
   /* ----------------------------------------------------------------------- */

@@ -108,26 +108,15 @@ branch_start(void *arg) {
 
         /* no verbose mode */        
         if (!verbose_v) {
-#ifdef GROUPERAGGREGATIONS          
           for (int x = 0; x < branch->num_aggr_rules; x++){
             struct aggr* aggr = group->aggrset[x];
             free(aggr->values); aggr->values = NULL;
             free(aggr); aggr = NULL; group->aggrset[x] = NULL;
           }  
           free(group->aggrset); group->aggrset = NULL;
-          free(group->aggr_record); group->aggr_record = NULL;
-#endif            
-          free(group); 
-          group = NULL; branch->grouper_result->groupset[j] = NULL;
         }
       }
       
-      /* no verbose mode */
-      if(!verbose_v){
-        free(branch->grouper_result->groupset); 
-        branch->grouper_result->groupset = NULL;        
-        free(branch->grouper_result); branch->grouper_result = NULL;          
-      }
     }      
   }  
   
@@ -150,11 +139,38 @@ branch_start(void *arg) {
   /*                            grouper-filter                              */
   /* -----------------------------------------------------------------------*/  
   
-  binfo->filtered_groupset = groupfilter(binfo->groupset, 
-                                          binfo->num_groups, 
-                                          binfo->gfilter_rules, 
-                                          binfo->num_gfilter_rules, 
-                                          &binfo->num_filtered_groups);
+  branch->gfilter_result = groupfilter(branch->grouper_result->groupset, 
+                                       branch->grouper_result->num_groups, 
+                                       branch->gfilter_ruleset, 
+                                       branch->num_gfilter_rules);
+  
+  if (branch->gfilter_result->filtered_groupset == NULL)
+    errExit("groupfilter(...) returned NULL");
+  else {
+    
+    /* free group filter rules */
+    for (int i = 0; i < branch->num_gfilter_rules; i++) {
+      struct gfilter_rule* gfrule = branch->gfilter_ruleset[i];
+      free(gfrule); gfrule = NULL; branch->gfilter_ruleset[i] = NULL;
+    }    
+    free(branch->gfilter_ruleset); branch->gfilter_ruleset = NULL;
+    
+    /* free grouper results */
+    /* no verbose mode */
+    if(!verbose_v){
+      
+      for (int j = 0; j < branch->grouper_result->num_groups; j++) {
+        struct group* group = branch->grouper_result->groupset[j];
+        free(group->aggr_record); group->aggr_record = NULL;
+        free(group); 
+        group = NULL; branch->grouper_result->groupset[j] = NULL;      
+      }    
+      free(branch->grouper_result->groupset); 
+      branch->grouper_result->groupset = NULL;        
+      free(branch->grouper_result); branch->grouper_result = NULL;          
+    }
+
+  }
   
   /* -----------------------------------------------------------------------*/
   
