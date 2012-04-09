@@ -182,22 +182,25 @@ get_grouper_intermediates(struct branch_info* branch,
   
 
   size_t num_filtered_records = branch->filter_result->num_filtered_records;    
-  /* last record in sorted_records is NULL */
-  /* TODO when free'd ?*/  
-  char*** sorted_recordset_reference = (char ***)
+  
+  /* last record in sorted_records is NULL
+   * unlinked sorted_recordset_ref[i], and free'd sorted_recordset_ref
+   * just before exiting calling grouper_aggregations(...) 
+   */  
+  char*** sorted_recordset_ref = (char ***)
                                        calloc(num_filtered_records+1, 
                                               sizeof(char **));
-  if (sorted_recordset_reference == NULL)
+  if (sorted_recordset_ref == NULL)
     errExit("calloc");
   
   for (int i = 0; i < num_filtered_records; i++)
-    sorted_recordset_reference[i] = &filtered_recordset_copy[i];
+    sorted_recordset_ref[i] = &filtered_recordset_copy[i];
   
   /* sort the record references according to first grouper rule 
    * and save them in sorted_recordset_reference in place  
    * TODO: different comp func sizes
    */
-  qsort_r(sorted_recordset_reference, 
+  qsort_r(sorted_recordset_ref, 
           num_filtered_records, 
           sizeof(char **), 
           (void *)&branch->grouper_ruleset[0]->field_offset2,
@@ -213,7 +216,7 @@ get_grouper_intermediates(struct branch_info* branch,
     
     for (int i = 0; i < num_filtered_records; i++)
       branch->grouper_result->sorted_recordset[i] = 
-      *sorted_recordset_reference[i];
+      *sorted_recordset_ref[i];
   }
   
   /* TODO when free'd ?*/
@@ -224,27 +227,29 @@ get_grouper_intermediates(struct branch_info* branch,
   if (uniq_recordset == NULL)
     errExit("calloc");  
   
-  /* TODO: uint32_t assumed */
+  /* TODO: uint32_t assumed 
+   * unlinked uniq_recordset[0].ptr and free'd uniq_recordset
+   * just before calling grouper_aggregations(...)
+   */
   uniq_recordset[0].value = 
-          *(uint32_t *)(*sorted_recordset_reference[0] + 
+          *(uint32_t *)(*sorted_recordset_ref[0] + 
                         branch->grouper_ruleset[0]->field_offset2);
-  uniq_recordset[0].ptr = &sorted_recordset_reference[0];
+  uniq_recordset[0].ptr = &sorted_recordset_ref[0];
   size_t num_uniq_records = 1;
 
   for (int i = 0; i < num_filtered_records; i++) {
-    if (*(uint32_t *)(*sorted_recordset_reference[i] + 
+    if (*(uint32_t *)(*sorted_recordset_ref[i] + 
       branch->grouper_ruleset[0]->field_offset2) != 
       uniq_recordset[num_uniq_records-1].value) {
       
       uniq_recordset[num_uniq_records].value = 
-      *(uint32_t *)(*sorted_recordset_reference[i] + 
+      *(uint32_t *)(*sorted_recordset_ref[i] + 
                     branch->grouper_ruleset[0]->field_offset2);
-      uniq_recordset[num_uniq_records].ptr = &sorted_recordset_reference[i];
+      uniq_recordset[num_uniq_records].ptr = &sorted_recordset_ref[i];
       num_uniq_records++;
     }
   }
 
-  /* TODO when free'd ?*/
   /* TODO: UINT32_T assumed */
   uniq_recordset = (struct tree_item_uint32_t *)
                     realloc(uniq_recordset, 
@@ -253,10 +258,10 @@ get_grouper_intermediates(struct branch_info* branch,
     errExit("realloc");
   
   // mark the end of sorted records
-  sorted_recordset_reference[num_filtered_records] = NULL;
+  sorted_recordset_ref[num_filtered_records] = NULL;
   
 
-  /* TODO when free'd ?*/
+  /* free'd just before calling grouper_aggregations(...) */
   struct grouper_intermediate_result*
   intermediate_result = (struct grouper_intermediate_result *)
                         calloc(1 , sizeof(struct grouper_intermediate_result));
@@ -267,8 +272,9 @@ get_grouper_intermediates(struct branch_info* branch,
   intermediate_result->type = UINT32_T;
   intermediate_result->num_uniq_records = num_uniq_records;
   intermediate_result->uniq_recordset.recordset_32 = uniq_recordset;
-  intermediate_result->sorted_recordset_reference = 
-  sorted_recordset_reference;
+  uniq_recordset = NULL;
+  intermediate_result->sorted_recordset_reference = sorted_recordset_ref;
+  sorted_recordset_ref = NULL;
   
   return intermediate_result;
 }
@@ -294,8 +300,10 @@ grouper(struct branch_info* branch) {
     gresult->groupset = groupset;
 
   
-  /* club all filtered records into one group, if no group modules are defined */
-  if (branch->num_grouper_rules == 0) {  
+  /* club all filtered records into one group, 
+   * if no group modules are defined 
+   */
+  if (branch->num_grouper_rules == 0) {
     
     /* groupset with space for 1 group */
     gresult->num_groups = 1;
@@ -320,7 +328,9 @@ grouper(struct branch_info* branch) {
   }
   else {
     
-    /* TODO: when free'd? */
+    /* unlinked each item from original traces, ie filtered_recordset_copy[i] 
+     * free'd filtered_recordset_copy just before exiting from this function 
+     */
     char** filtered_recordset_copy = 
     calloc(branch->filter_result->num_filtered_records, sizeof(char*));    
     if (filtered_recordset_copy == NULL)
@@ -356,7 +366,8 @@ grouper(struct branch_info* branch) {
       
       gresult->num_groups += 1;
       
-      /* TODO: when free'd? */
+      /* TODO: when verbose_v is NOT set, when free'd? */
+      /* when verbose_v is set, free'd just before calling merger(...) */
       groupset = (struct group **)
                  realloc(groupset, (gresult->num_groups)*sizeof(struct group*));
       if (groupset == NULL)
@@ -364,7 +375,8 @@ grouper(struct branch_info* branch) {
       else
         gresult->groupset = groupset;
       
-      /* TODO: when free'd? */
+      /* TODO: when verbose_v is NOT set, when free'd? */
+      /* when verbose_v is set, free'd just before calling merger(...) */
       struct group* group = (struct group *)calloc(1, sizeof(struct group));
       if (group == NULL)
         errExit("calloc");
@@ -372,7 +384,8 @@ grouper(struct branch_info* branch) {
       groupset[gresult->num_groups-1] = group;
       group->num_members = 1;
       
-      /* TODO: when free'd? */
+      /* when verbose_vv is NOT set, free'd after returning from grouper(...) */
+      /* when verbose_vv is set, free'd just before calling merger(...) */
       group->members = (char **)calloc(1, sizeof(char *));
       if (group->members == NULL)
         errExit("calloc");      
@@ -445,18 +458,20 @@ grouper(struct branch_info* branch) {
       filtered_recordset_copy[i] = NULL;
     }
     
-    free(filtered_recordset_copy);    
+    free(filtered_recordset_copy); filtered_recordset_copy = NULL;    
     
     // unlink the sorted records from the flow data
     for (int i = 0; i < branch->filter_result->num_filtered_records; i++)
-      intermediate_result[0].sorted_recordset_reference[i] = NULL;    
-    free(intermediate_result[0].sorted_recordset_reference);
+      intermediate_result->sorted_recordset_reference[i] = NULL;    
+    free(intermediate_result->sorted_recordset_reference); 
+    intermediate_result->sorted_recordset_reference = NULL;
     
     // unlink the uniq records from the flow data
     for (int i = 0; i < intermediate_result->num_uniq_records; i++)
-      intermediate_result[0].uniq_recordset.recordset_32->ptr = NULL;      
-    free(intermediate_result[0].uniq_recordset.recordset_32);    
-    free(intermediate_result);
+      intermediate_result->uniq_recordset.recordset_32[i].ptr = NULL;
+    free(intermediate_result->uniq_recordset.recordset_32);    
+    intermediate_result->uniq_recordset.recordset_32 = NULL;
+    free(intermediate_result); intermediate_result = NULL;    
   }
 
 

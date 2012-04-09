@@ -95,8 +95,7 @@ branch_start(void *arg) {
     }
     free(branch->aggr_ruleset); branch->aggr_ruleset = NULL;    
 
-    /* free grouper_result */
-      
+    /* free grouper_result */      
     if (!verbose_vv) {
       
       /* free group members */
