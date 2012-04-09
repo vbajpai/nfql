@@ -95,15 +95,18 @@ branch_start(void *arg) {
     }
     free(branch->aggr_ruleset); branch->aggr_ruleset = NULL;    
 
-    /* free grouper_result */      
+    /* free grouper_result */          
+    /* either no verbose or verbose==1 */
     if (!verbose_vv) {
       
       /* free group members */
-      for (int j = 0; j < branch->grouper_result->num_groups; j++) {            
+      for (int j = 0; j < branch->grouper_result->num_groups; j++) {
         struct group* group = branch->grouper_result->groupset[j];
         for (int k = 0; k < group->num_members; k++)
           group->members[k] = NULL;            
         free(group->members); group->members = NULL;        
+
+        /* no verbose mode */        
         if (!verbose_v) {
 #ifdef GROUPERAGGREGATIONS          
           for (int x = 0; x < branch->num_aggr_rules; x++){
@@ -119,6 +122,7 @@ branch_start(void *arg) {
         }
       }
       
+      /* no verbose mode */
       if(!verbose_v){
         free(branch->grouper_result->groupset); 
         branch->grouper_result->groupset = NULL;        
