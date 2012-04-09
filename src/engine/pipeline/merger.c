@@ -38,7 +38,7 @@ merger(struct branch_info* binfo_set,
        struct merger_rule** mruleset, 
        size_t num_merger_rules) {
   
-  /* TODO: when free'd? */
+  /* free'd just before calling ungrouper(...) */
   struct merger_result* mresult = calloc(1, sizeof(struct merger_result));
   if (mresult == NULL)
     errExit("calloc");
@@ -50,7 +50,7 @@ merger(struct branch_info* binfo_set,
   unsigned int index = 0;
   while(iter_next(iter)) {
     bool if_all_rules_matched = true;
-    index++;
+    index += 1;
 
     /* match the groups against each merger rule */
     for (int i = 0; i < num_merger_rules; i++) {
@@ -76,7 +76,7 @@ merger(struct branch_info* binfo_set,
     /* add the groups to the group tuple, if all rules matched */
     if(if_all_rules_matched){
       
-      /* TODO: when free'd? */
+      /* free'd just before calling ungrouper(...) */
       struct group **matched_tuple = (struct group **)
                                      calloc(num_branches, 
                                             sizeof(struct group *));
@@ -85,11 +85,12 @@ merger(struct branch_info* binfo_set,
 
       /* save the groups in the matched tuple */
       for (int j = 0; j < num_branches; j++){
-        size_t groupID = iter->filtered_group_tuple[j];
+        size_t group_id = iter->filtered_group_tuple[j];
         matched_tuple[j] = 
-        binfo_set[j].gfilter_result->filtered_groupset[groupID-1];
+        binfo_set[j].gfilter_result->filtered_groupset[group_id-1];
       }
-      
+
+      /* free'd just before calling ungrouper(...) */
       mresult->num_group_tuples += 1;
       mresult->group_tuples = (struct group ***)
       realloc(mresult->group_tuples, 

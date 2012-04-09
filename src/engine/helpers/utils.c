@@ -90,23 +90,31 @@ bsearch_r(const void *key,
  * parsed at RUNTIME
  */
 struct permut_iter *
-iter_init(struct branch_info* binfo_set, int num_branches) { 
+iter_init(struct branch_info* branchset, 
+          int num_branches) {
+  
+  /* free'd using iter_destroy(...) called before returning from merger(...) */
   struct permut_iter *iter = (struct permut_iter *)
-                              malloc(sizeof(struct permut_iter));
+                              calloc(1, sizeof(struct permut_iter));
   if (iter == NULL)
-    errExit("malloc");  
-  iter->num_branches = num_branches;  
-  iter->filtered_group_tuple = (size_t *)malloc(sizeof(size_t)*num_branches);  
+    errExit("calloc");    
+  iter->num_branches = num_branches;
+  
+  /* free'd using iter_destroy(...) called before returning from merger(...) */
+  iter->filtered_group_tuple = (size_t *)calloc(num_branches, sizeof(size_t));  
   if (iter->filtered_group_tuple == NULL)
-    errExit("malloc");  
-  iter->num_filtered_groups = (size_t *)malloc(sizeof(size_t)*num_branches);  
+    errExit("calloc");
+
+  /* free'd using iter_destroy(...) called before returning from merger(...) */
+  iter->num_filtered_groups = (size_t *)calloc(num_branches, sizeof(size_t));  
   if (iter->num_filtered_groups == NULL)
-    errExit("malloc");
+    errExit("calloc");
   
   /* the first group tuple is (g1_b1, g1_b2, ...) */
   for (int i = 0; i < num_branches; i++) {
     iter->filtered_group_tuple[i] = 1;
-    iter->num_filtered_groups[i] = binfo_set[i].gfilter_result->num_filtered_groups;
+    iter->num_filtered_groups[i] = 
+    branchset[i].gfilter_result->num_filtered_groups;
   }
   
   /* the first call to iter_next will switch it to 1 */
@@ -119,6 +127,7 @@ iter_init(struct branch_info* binfo_set, int num_branches) {
  * and return true. if the last permutation is reached, return false.
  */
 bool iter_next(struct permut_iter *iter) {
+  
   /* start from right to left in the group tuple */
   for (int i = iter->num_branches-1; i >= 0; --i) {
     
@@ -140,10 +149,10 @@ bool iter_next(struct permut_iter *iter) {
   return false;
 }
 
-void iter_destroy(struct permut_iter *iter) {
-  free(iter->filtered_group_tuple);
-  free(iter->num_filtered_groups);
-  free(iter);
+void iter_destroy(struct permut_iter *iter) {  
+  free(iter->filtered_group_tuple); iter->filtered_group_tuple = NULL;
+  free(iter->num_filtered_groups); iter->num_filtered_groups = NULL;
+  free(iter); iter = NULL;
 }
 
 /* -----------------------------------------------------------------------*/

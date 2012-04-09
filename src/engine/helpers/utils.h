@@ -70,9 +70,9 @@ bsearch_r(const void *key,
 /* -----------------------------------------------------------------------*/
 
 struct permut_iter {
-  size_t num_branches;
-  size_t *num_filtered_groups;
-  size_t *filtered_group_tuple;
+  size_t                          num_branches;
+  size_t*                         num_filtered_groups;
+  size_t*                         filtered_group_tuple;
 };
 
 struct permut_iter *

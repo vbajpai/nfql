@@ -384,7 +384,7 @@ prepare_flowquery(struct ft_data* trace,
   /* TODO: hardcoded */
   fquery->num_merger_rules = NUM_MERGER_RULES;
 
-  /* TODO: when free'd? */
+  /* free'd after returning from merger(...) */
   struct merger_rule** mruleset = (struct merger_rule**)
                                    calloc(fquery->num_merger_rules, 
                                           sizeof(struct merger_rule*));
@@ -393,7 +393,7 @@ prepare_flowquery(struct ft_data* trace,
   
   for (int j = 0; j < fquery->num_merger_rules; j++) {
 
-    /* TODO: when free'd? */
+    /* free'd after returning from merger(...) */
     struct merger_rule* mrule = calloc(1, sizeof(struct merger_rule));
     if (mrule == NULL)
       errExit("calloc");
@@ -721,11 +721,18 @@ main(int argc, char **argv) {
     errExit("merger(...) returned NULL");
   else {
     
+    /* free merger rules */
+    for (int i = 0; i < fquery->num_merger_rules; i++) {
+      struct merger_rule* mrule = fquery->mruleset[i];
+      free(mrule); mrule = NULL; fquery->mruleset[i] = NULL;      
+    }
+    free(fquery->mruleset); fquery->mruleset = NULL;
+    
     /* echo merger results, if verbose mode is SET */
     if (verbose_v)
       echo_merger(fquery, param_data->trace);
     
-    /* free memory */
+    /* free grouper and groupfilter leftovers */
     for (int i = 0; i < fquery->num_branches; i++) {
       struct branch_info* branch = &fquery->branchset[i];    
       
@@ -769,6 +776,20 @@ main(int argc, char **argv) {
       free(branch->gfilter_result);
       branch->gfilter_result = NULL;
     }
+    
+    /* free merger results */
+    for (int i = 0; i < fquery->merger_result->num_group_tuples; i++) {
+      struct group** matched_tuple = fquery->merger_result->group_tuples[i];
+      for (int j = 0; j < fquery->num_branches; j++) {
+        /* unlink the groups */
+        matched_tuple[j] = NULL;
+      }
+      free(matched_tuple); 
+      matched_tuple = NULL; fquery->merger_result->group_tuples[i] = NULL;      
+    }
+    free(fquery->merger_result->group_tuples); 
+    fquery->merger_result->group_tuples = NULL;
+    free(fquery->merger_result); fquery->merger_result = NULL;
   }
   
   /* -----------------------------------------------------------------------*/    
