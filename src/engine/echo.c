@@ -35,8 +35,8 @@ echo_merger(struct flowquery* fquery,
     struct permut_iter *iter = iter_init(fquery->branchset, 
                                          fquery->num_branches);
     printf("\nNo. of (to be) Matched Groups: %zu \n", 
-           fquery->total_num_group_tuples);
-    if (fquery->total_num_group_tuples != 0)      
+           fquery->merger_result->total_num_group_tuples);
+    if (fquery->merger_result->total_num_group_tuples != 0)      
       puts(FLOWHEADER);      
     while(iter_next(iter)) {
       for (int j = 0; j < fquery->num_branches; j++) {          
@@ -50,11 +50,11 @@ echo_merger(struct flowquery* fquery,
     iter_destroy(iter);
   }    
   printf("\nNo. of Merged Groups: %zu (Tuples)\n", 
-         fquery->num_group_tuples);      
-  if (fquery->num_group_tuples != 0)          
+         fquery->merger_result->num_group_tuples);      
+  if (fquery->merger_result->num_group_tuples != 0)          
     puts(FLOWHEADER);    
-  for (int j = 0; j < fquery->num_group_tuples; j++) {
-    struct group** group_tuple = fquery->group_tuples[j];
+  for (int j = 0; j < fquery->merger_result->num_group_tuples; j++) {
+    struct group** group_tuple = fquery->merger_result->group_tuples[j];
     for (int i = 0; i < fquery->num_branches; i++) {
       struct group* group = group_tuple[i];
       flow_print_record(trace, group->aggr_record);

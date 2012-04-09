@@ -711,14 +711,13 @@ main(int argc, char **argv) {
   /*                                 merger                                 */
   /* -----------------------------------------------------------------------*/
   
-  fquery->group_tuples = merger(fquery->branchset,
-                                fquery->num_branches, 
-                                fquery->mruleset, 
-                                fquery->num_merger_rules,
-                                &fquery->total_num_group_tuples,
-                                &fquery->num_group_tuples);
+  fquery->merger_result = merger(fquery->branchset,
+                                 fquery->num_branches,
+                                 
+                                 fquery->mruleset, 
+                                 fquery->num_merger_rules);
   
-  if (fquery->group_tuples == NULL)
+  if (fquery->merger_result == NULL)
     errExit("merger(...) returned NULL");
   else {
     

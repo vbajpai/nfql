@@ -27,6 +27,7 @@
 
 #include "ungrouper.h"
 
+#ifdef UNGROUPER
 struct stream**
 ungrouper(struct flowquery* fquery){
   
@@ -70,3 +71,4 @@ ungrouper(struct flowquery* fquery){
   }
   return streamset;
 }
+#endif

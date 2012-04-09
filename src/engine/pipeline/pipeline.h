@@ -29,55 +29,16 @@
 
 #include "base.h"
 
-struct flowquery {  
-  size_t                          num_branches;
-  
-  size_t                          num_merger_rules;  
-  size_t                          num_group_tuples;  
-  size_t                          total_num_group_tuples;
-  
-  struct branch_info*             branchset;
-  
-  struct merger_rule**            mruleset;
-  struct group***                 group_tuples;
-  
-  struct stream**                 streamset;
-};
-
-/*
- * merger rules
- * a single rule will always compare two branches
- * A.dstip = B.dstip = C.dstip should be broken down to
- * A.dstip = B.dstip
- * B.dstip = C.dstip
- */
-struct merger_rule {
-  struct branch_info*             branch1;
-  size_t                          field1;
-  struct branch_info*             branch2;
-  size_t                          field2;
-  uint64_t                        op;
-  uint64_t                        delta;
-  bool (*func)(
-               struct group*      group1,
-               size_t             field1,
-               struct group*      group2,
-               size_t             field2,
-               uint64_t           delta
-               );
-};
-
-struct stream{
-  char ** recordset;
-  size_t num_records;
-};
-
-
-
 /* -----------------------------------------------------------------------*/  
 /*                              branch                                    */
 /* -----------------------------------------------------------------------*/  
 
+struct group {
+  size_t                          num_members;
+  char**                          members;
+  char*                           aggr_record;
+  struct aggr**                   aggrset;
+};
 
 struct filter_rule {
   size_t                          field_offset;
@@ -183,19 +144,58 @@ struct groupfilter_result {
   struct group**                  filtered_groupset;
 };
 
-struct group {
-  size_t                          num_members;
-  char**                          members;
-  char*                           aggr_record;
-  struct aggr**                   aggrset;
-};
-
 struct aggr {
   size_t                          num_values;
   uint64_t*                       values;
 };
 
 /* -----------------------------------------------------------------------*/  
+
+
+struct flowquery {  
+  size_t                          num_branches;  
+  size_t                          num_merger_rules;  
+  
+  struct branch_info*             branchset;  
+  struct merger_rule**            mruleset;
+  struct merger_result*           merger_result;  
+  struct stream**                 streamset;
+};
+
+/*
+ * merger rules
+ * a single rule will always compare two branches
+ * A.dstip = B.dstip = C.dstip should be broken down to
+ * A.dstip = B.dstip
+ * B.dstip = C.dstip
+ */
+struct merger_rule {
+  struct branch_info*             branch1;
+  size_t                          field1;
+  struct branch_info*             branch2;
+  size_t                          field2;
+  uint64_t                        op;
+  uint64_t                        delta;
+  bool (*func)(
+               struct group*      group1,
+               size_t             field1,
+               struct group*      group2,
+               size_t             field2,
+               uint64_t           delta
+               );
+};
+
+struct merger_result {
+  size_t                          num_group_tuples;  
+  size_t                          total_num_group_tuples;
+  struct group***                 group_tuples;
+};
+
+struct stream{
+  char ** recordset;
+  size_t num_records;
+};
+
 
 
 
@@ -219,7 +219,6 @@ struct aggr {
  * size1: 8/16/32/64 bits for first argument
  * size2: 8/16/32/64 bits for second argument
  */
-
 enum {
   
   /* size2 */
@@ -278,7 +277,6 @@ enum {
   RULE_ALLEN_FI = 17179869184,
   RULE_ALLEN_EQ = 34359738368  
 };
-
 enum field_length {
   LEN_UNIX_SECS       = 32,
   LEN_UNIX_NSECS      = 32,
@@ -322,6 +320,5 @@ enum field_length {
   LEN_SRC_TAG         = 32,
   LEN_DST_TAG         = 32,
 };
-
 
 #endif

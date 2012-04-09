@@ -35,12 +35,11 @@
 
 struct merger_rule;
 
-struct group ***
+struct merger_result*
 merger(struct branch_info* binfo_set,
-       size_t num_threads, 
+       size_t num_threads,
+       
        struct merger_rule** mruleset, 
-       size_t num_merger_rule,
-       size_t* total_num_group_tuples,
-       size_t* num_group_tuples);
+       size_t num_merger_rule);
 
 #endif

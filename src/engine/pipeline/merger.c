@@ -31,18 +31,20 @@
 
 #ifdef MERGER
 
-struct group ***
+struct merger_result*
 merger(struct branch_info* binfo_set, 
-       size_t num_branches, 
+       size_t num_branches,
+       
        struct merger_rule** mruleset, 
-       size_t num_merger_rules,
-       size_t *total_num_group_tuples,
-       size_t *num_group_tuples) {
+       size_t num_merger_rules) {
+  
+  /* TODO: when free'd? */
+  struct merger_result* mresult = calloc(1, sizeof(struct merger_result));
+  if (mresult == NULL)
+    errExit("calloc");
   
   /* initialize the iterator */
   struct permut_iter *iter = iter_init(binfo_set, num_branches);
-  struct group*** group_tuples = NULL;
-  *num_group_tuples = 0;
   
   /* iterate over all permutations */
   unsigned int index = 0;
@@ -57,11 +59,15 @@ merger(struct branch_info* binfo_set,
       size_t group1_id = iter->filtered_group_tuple[rule->branch1->branch_id];
       size_t group2_id = iter->filtered_group_tuple[rule->branch2->branch_id];                                                    
 
-      if (!rule->func(rule->branch1->gfilter_result->filtered_groupset[group1_id-1],
-                     rule->field1,
-                     rule->branch2->gfilter_result->filtered_groupset[group2_id-1],
-                     rule->field2,
-                     0)){        
+      if (!rule->
+          func(
+               rule->branch1->gfilter_result->filtered_groupset[group1_id-1],
+               rule->field1,
+               rule->branch2->gfilter_result->filtered_groupset[group2_id-1],
+               rule->field2,
+               0
+              )
+         ) {        
         if_all_rules_matched = false;
         break;
       }      
@@ -69,7 +75,8 @@ merger(struct branch_info* binfo_set,
     
     /* add the groups to the group tuple, if all rules matched */
     if(if_all_rules_matched){
-
+      
+      /* TODO: when free'd? */
       struct group **matched_tuple = (struct group **)
                                      calloc(num_branches, 
                                             sizeof(struct group *));
@@ -79,23 +86,24 @@ merger(struct branch_info* binfo_set,
       /* save the groups in the matched tuple */
       for (int j = 0; j < num_branches; j++){
         size_t groupID = iter->filtered_group_tuple[j];
-        matched_tuple[j] = binfo_set[j].gfilter_result->filtered_groupset[groupID-1];
+        matched_tuple[j] = 
+        binfo_set[j].gfilter_result->filtered_groupset[groupID-1];
       }
       
-      *num_group_tuples += 1;
-      group_tuples = (struct group ***)
-                     realloc(group_tuples,
-                             (*num_group_tuples)*sizeof(struct group**));
-      if (group_tuples == NULL)
+      mresult->num_group_tuples += 1;
+      mresult->group_tuples = (struct group ***)
+      realloc(mresult->group_tuples, 
+              mresult->num_group_tuples *sizeof(struct group**));
+      if (mresult->group_tuples == NULL)
         errExit("realloc");      
 
-      group_tuples[*num_group_tuples-1] = matched_tuple;
+      mresult->group_tuples[mresult->num_group_tuples-1] = matched_tuple;
     }  
   };
   
-  *total_num_group_tuples = index;
+  mresult->total_num_group_tuples = index;
   iter_destroy(iter);
-  return group_tuples;
+  return mresult;
 }
 
 #endif
