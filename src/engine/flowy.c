@@ -657,10 +657,11 @@ main(int argc, char **argv) {
   /*                              free memory                               */
   /* -----------------------------------------------------------------------*/  
   
-  /* free grouper_result */
   if (verbose_v) {    
     for (int i = 0; i < fquery->num_branches; i++) {
-      struct branch_info* branch = &fquery->branchset[i];      
+      struct branch_info* branch = &fquery->branchset[i];
+      
+      /* free grouper_result */
       if (verbose_vv) {
         
         /* free sorted records */
@@ -684,8 +685,7 @@ main(int argc, char **argv) {
         }        
 
       }
-      for (int j = 0; j < branch->grouper_result->num_groups; j++) {
-        
+      for (int j = 0; j < branch->grouper_result->num_groups; j++) {        
         struct group* group = branch->grouper_result->groupset[j];        
 
 #ifdef GROUPERAGGREGATIONS
@@ -711,6 +711,19 @@ main(int argc, char **argv) {
       free(branch->grouper_result->groupset); 
       branch->grouper_result->groupset = NULL;      
       free(branch->grouper_result); branch->grouper_result = NULL;
+      
+      /* free groupfilter result */
+      if (verbose_v) {
+        for (int j = 0; j < branch->gfilter_result->num_filtered_groups; j++) {          
+          /* all the groups were already free'd by grouper just above */
+          /* unlink the pointers */
+          branch->gfilter_result->filtered_groupset[j] = NULL;
+        }  
+        free(branch->gfilter_result->filtered_groupset);
+        branch->gfilter_result->filtered_groupset = NULL;          
+        free(branch->gfilter_result);
+        branch->gfilter_result = NULL;                  
+      }
     }
   }
   

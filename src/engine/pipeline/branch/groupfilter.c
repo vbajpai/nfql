@@ -32,7 +32,8 @@ groupfilter(struct group **groupset,
             struct gfilter_rule** ruleset, 
             size_t num_gfilter_rules) {
   
-  /* TODO: when free'd? */
+  /* TODO: when verbose_v is NOT set, when free'd? */
+  /* when verbose_v is set, free'd just before calling merger(...) */
   struct groupfilter_result* 
   gfilter_result = calloc(1, sizeof(struct groupfilter_result));
   if (gfilter_result == NULL)
@@ -54,20 +55,17 @@ groupfilter(struct group **groupset,
         break;
     }
     
-    /* free the group, if it did not pass the filter rules  */
-    if (j < num_gfilter_rules) {
-      
-      /* free only when NO verbosity is set, otherwise free later. */
-      if(!verbose_v) {
-      }      
-    }
+    /* continue, if it did not pass the filter rules  */
+    if (j < num_gfilter_rules) 
+      continue;
     
     /* otherwise add the group to the filtered groupset */
     else {      
-      gfilter_result->num_filtered_groups += 1;      
+      gfilter_result->num_filtered_groups += 1;
+
+      /* TODO: when verbose_v is NOT set, when free'd? */
+      /* when verbose_v is set, free'd just before calling merger(...) */
       gfilter_result->filtered_groupset = (struct group**)
-      
-      /* TODO: when free'd?*/
       realloc(gfilter_result->filtered_groupset, 
              (gfilter_result->num_filtered_groups) * sizeof(struct group*));
       if (gfilter_result->filtered_groupset == NULL)

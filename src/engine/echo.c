@@ -154,6 +154,20 @@ echo_group_aggr(struct branch_info* branch){
 }
 
 void
+echo_gfilter(struct branch_info* branch) {
+
+  printf("\nNo. of Filtered Groups: %zu (Aggregations)\n", 
+         branch->gfilter_result->num_filtered_groups);      
+  if (branch->gfilter_result->num_filtered_groups != 0)      
+    puts(FLOWHEADER); 
+  
+  for (int j = 0; j < branch->gfilter_result->num_filtered_groups; j++) {      
+    struct group* fgroup = branch->gfilter_result->filtered_groupset[j];
+    flow_print_record(branch->data, fgroup->aggr_record);
+  }
+}
+
+void
 echo_branch(size_t num_branches,
             struct branch_info* branchset,
             struct ft_data* trace){
@@ -181,15 +195,7 @@ echo_branch(size_t num_branches,
     
     
 #ifdef GROUPFILTER
-    printf("\nNo. of Filtered Groups: %zu (Aggregations)\n", 
-           branch->gfilter_result->num_filtered_groups);      
-    if (branch->gfilter_result->num_filtered_groups != 0)      
-      puts(FLOWHEADER); 
-    
-    for (int j = 0; j < branch->gfilter_result->num_filtered_groups; j++) {      
-      struct group* fgroup = branch->gfilter_result->filtered_groupset[j];
-      flow_print_record(branch->data, fgroup->aggr_record);
-    }
+    echo_gfilter(branch);
 #endif
   }
 }
