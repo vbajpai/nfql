@@ -1216,7 +1216,7 @@ assign_fptr(struct flowquery *fquery) {
   
   /* for loop for the merger */
   for (int j = 0; j < fquery->num_merger_rules; j++) {
-    struct merger_rule* mrule = &fquery->mruleset[j];  
+    struct merger_rule* mrule = fquery->mruleset[j];  
     switch (mrule->op) {
       case RULE_EQ | RULE_S1_8 | RULE_S2_8:
         mrule->func = merger_eq_uint8_t_uint8_t;

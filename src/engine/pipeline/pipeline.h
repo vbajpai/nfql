@@ -29,75 +29,20 @@
 
 #include "base.h"
 
-
-struct flowquery {
+struct flowquery {  
   size_t                          num_branches;
+  
   size_t                          num_merger_rules;  
-  size_t                          num_group_tuples;
+  size_t                          num_group_tuples;  
   size_t                          total_num_group_tuples;
   
-  struct branch_info*             branchset;  
-  struct merger_rule*             mruleset;
+  struct branch_info*             branchset;
+  
+  struct merger_rule**            mruleset;
   struct group***                 group_tuples;
+  
   struct stream**                 streamset;
 };
-
-
-struct filter_rule {
-  size_t                          field_offset;
-  uint64_t                        value;
-  uint64_t                        delta;
-  uint64_t                        op;
-  bool (*func)(
-               char*              record,
-               size_t             field_offset,
-               uint64_t           value,
-               uint64_t           delta
-               );
-};
-
-
-struct grouper_rule {
-  size_t                          field_offset1;
-  size_t                          field_offset2;
-  uint64_t                        delta;
-  uint64_t                        op;
-  bool (*func)(
-               struct group*      group,
-               size_t             field_offset1,
-               char*              record2,
-               size_t             field_offset2,
-               uint64_t           delta
-               );
-};
-
-
-struct aggr_rule {
-  size_t                          field_offset;
-  uint64_t                        op;
-  struct aggr* (*func)(
-                       char**      group_records,
-                       char*       group_aggregation,
-                       size_t      num_records,
-                       size_t      field_offset,
-                       bool        if_aggr_common
-                      );
-};
-
-
-struct gfilter_rule {
-  size_t                          field;
-  uint64_t                        value;
-  uint64_t                        delta;
-  uint64_t                        op;
-  bool (*func)(
-               struct group*      group,
-               size_t             field,
-               uint64_t           value,
-               uint64_t           delta
-               );
-};
-
 
 /*
  * merger rules
@@ -119,11 +64,72 @@ struct merger_rule {
                struct group*      group2,
                size_t             field2,
                uint64_t           delta
-              );
+               );
+};
+
+struct stream{
+  char ** recordset;
+  size_t num_records;
 };
 
 
 
+/* -----------------------------------------------------------------------*/  
+/*                              branch                                    */
+/* -----------------------------------------------------------------------*/  
+
+
+struct filter_rule {
+  size_t                          field_offset;
+  uint64_t                        value;
+  uint64_t                        delta;
+  uint64_t                        op;
+  bool (*func)(
+               char*              record,
+               size_t             field_offset,
+               uint64_t           value,
+               uint64_t           delta
+               );
+};
+
+struct grouper_rule {
+  size_t                          field_offset1;
+  size_t                          field_offset2;
+  uint64_t                        delta;
+  uint64_t                        op;
+  bool (*func)(
+               struct group*      group,
+               size_t             field_offset1,
+               char*              record2,
+               size_t             field_offset2,
+               uint64_t           delta
+               );
+};
+
+struct aggr_rule {
+  size_t                          field_offset;
+  uint64_t                        op;
+  struct aggr* (*func)(
+                       char**      group_records,
+                       char*       group_aggregation,
+                       size_t      num_records,
+                       size_t      field_offset,
+                       bool        if_aggr_common
+                       );
+};
+
+struct gfilter_rule {
+  size_t                          field;
+  uint64_t                        value;
+  uint64_t                        delta;
+  uint64_t                        op;
+  bool (*func)(
+               struct group*      group,
+               size_t             field,
+               uint64_t           value,
+               uint64_t           delta
+               );
+};
 
 struct branch_info {
   
@@ -147,7 +153,7 @@ struct branch_info {
   
   
   /* -----------------------------------------------------------------------*/  
-  /*                            processing                                  */
+  /*                               output                                   */
   /* -----------------------------------------------------------------------*/  
   
   struct filter_result*           filter_result;
@@ -189,11 +195,9 @@ struct aggr {
   uint64_t*                       values;
 };
 
+/* -----------------------------------------------------------------------*/  
 
-struct stream{
-  char ** recordset;
-  size_t num_records;
-};
+
 
 
 /*

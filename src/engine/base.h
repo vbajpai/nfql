@@ -39,6 +39,7 @@
 #define GROUPER
 #define GROUPERAGGREGATIONS
 #define GROUPFILTER
+#define MERGER
 
 extern bool debug;
 

@@ -667,7 +667,7 @@ source.write("""
   
   /* for loop for the merger */
   for (int j = 0; j < fquery->num_merger_rules; j++) {
-  struct merger_rule* mrule = &fquery->mruleset[j];  
+  struct merger_rule* mrule = fquery->mruleset[j];  
   switch (mrule->op) {
   """)
 

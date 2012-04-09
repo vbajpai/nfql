@@ -30,10 +30,11 @@
 #include "merger.h"
 
 #ifdef MERGER
+
 struct group ***
 merger(struct branch_info* binfo_set, 
        size_t num_branches, 
-       struct merger_rule* m_rules, 
+       struct merger_rule** mruleset, 
        size_t num_merger_rules,
        size_t *total_num_group_tuples,
        size_t *num_group_tuples) {
@@ -52,14 +53,14 @@ merger(struct branch_info* binfo_set,
     /* match the groups against each merger rule */
     for (int i = 0; i < num_merger_rules; i++) {
       
-      struct merger_rule rule = m_rules[i];
-      size_t group1_id = iter->filtered_group_tuple[rule.branch1->branch_id];
-      size_t group2_id = iter->filtered_group_tuple[rule.branch2->branch_id];                                                    
+      struct merger_rule* rule = mruleset[i];
+      size_t group1_id = iter->filtered_group_tuple[rule->branch1->branch_id];
+      size_t group2_id = iter->filtered_group_tuple[rule->branch2->branch_id];                                                    
 
-      if (!rule.func(rule.branch1->filtered_groupset[group1_id-1],
-                     rule.field1,
-                     rule.branch2->filtered_groupset[group2_id-1],
-                     rule.field2,
+      if (!rule->func(rule->branch1->gfilter_result->filtered_groupset[group1_id-1],
+                     rule->field1,
+                     rule->branch2->gfilter_result->filtered_groupset[group2_id-1],
+                     rule->field2,
                      0)){        
         if_all_rules_matched = false;
         break;
@@ -78,7 +79,7 @@ merger(struct branch_info* binfo_set,
       /* save the groups in the matched tuple */
       for (int j = 0; j < num_branches; j++){
         size_t groupID = iter->filtered_group_tuple[j];
-        matched_tuple[j] = binfo_set[j].filtered_groupset[groupID-1];
+        matched_tuple[j] = binfo_set[j].gfilter_result->filtered_groupset[groupID-1];
       }
       
       *num_group_tuples += 1;
@@ -96,4 +97,5 @@ merger(struct branch_info* binfo_set,
   iter_destroy(iter);
   return group_tuples;
 }
+
 #endif

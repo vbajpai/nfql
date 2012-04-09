@@ -26,64 +26,80 @@
 
 #include "echo.h"
 
-#ifdef DEBUGGGGGG  
 void
-echo_debug(){  
+echo_merger(struct flowquery* fquery, 
+            struct ft_data* trace){  
 
-  /* -----------------------------------------------------------------------*/  
-  /*                                debugging                               */
-  /* -----------------------------------------------------------------------*/  
-  
-  if(verbose_v){
+  if (verbose_vv) {
     
-   
-    /* merger */
-    
-#ifdef MERGER    
-    if (verbose_vv) {
-      
-      struct permut_iter *iter = iter_init(fquery->branchset, 
-                                           fquery->num_branches);
-      printf("\nNo. of (to be) Matched Groups: %zu \n", 
-             fquery->total_num_group_tuples);
-      if (fquery->total_num_group_tuples != 0)      
-        puts(FLOWHEADER);      
-      while(iter_next(iter)) {
-        for (int j = 0; j < fquery->num_branches; j++) {          
-          flow_print_record(trace, 
-                            fquery->branchset[j].
-                            filtered_groupset[iter->filtered_group_tuple[j] - 1]
-                            ->group_aggr_record);
-        }
-        printf("\n");
-      }
-      iter_destroy(iter);
-    }
-    
-    printf("\nNo. of Merged Groups: %zu (Tuples)\n", 
-           fquery->num_group_tuples);      
-    if (fquery->num_group_tuples != 0)          
-      puts(FLOWHEADER);
-    
-    for (int j = 0; j < fquery->num_group_tuples; j++) {
-      struct group** group_tuple = fquery->group_tuples[j];
-      for (int i = 0; i < fquery->num_branches; i++) {
-        struct group* group = group_tuple[i];
-        flow_print_record(trace, group->group_aggr_record);
+    struct permut_iter *iter = iter_init(fquery->branchset, 
+                                         fquery->num_branches);
+    printf("\nNo. of (to be) Matched Groups: %zu \n", 
+           fquery->total_num_group_tuples);
+    if (fquery->total_num_group_tuples != 0)      
+      puts(FLOWHEADER);      
+    while(iter_next(iter)) {
+      for (int j = 0; j < fquery->num_branches; j++) {          
+        flow_print_record(trace, 
+                          fquery->branchset[j].gfilter_result->
+                          filtered_groupset[iter->filtered_group_tuple[j]
+                                            - 1]->aggr_record);
       }
       printf("\n");
-    }    
-#endif
-    
-  }
-  
-  /* -----------------------------------------------------------------------*/      
-
-
+    }
+    iter_destroy(iter);
+  }    
+  printf("\nNo. of Merged Groups: %zu (Tuples)\n", 
+         fquery->num_group_tuples);      
+  if (fquery->num_group_tuples != 0)          
+    puts(FLOWHEADER);    
+  for (int j = 0; j < fquery->num_group_tuples; j++) {
+    struct group** group_tuple = fquery->group_tuples[j];
+    for (int i = 0; i < fquery->num_branches; i++) {
+      struct group* group = group_tuple[i];
+      flow_print_record(trace, group->aggr_record);
+    }
+    printf("\n");
+  }  
 }
 
-#endif    
 
+/* -----------------------------------------------------------------------*/  
+/*                              branch                                    */
+/* -----------------------------------------------------------------------*/ 
+
+void
+echo_branch(size_t num_branches,
+            struct branch_info* branchset,
+            struct ft_data* trace){
+  
+  
+  /* process each branch */
+  for (int i = 0; i < num_branches; i++) {    
+    struct branch_info* branch = &branchset[i];
+
+#ifdef FILTER
+    echo_filter(branch);
+#endif
+    
+
+#ifdef GROUPER    
+    if (verbose_vv){
+      echo_grouper(branch);
+    }
+#endif    
+    
+    
+#ifdef GROUPERAGGREGATIONS
+    echo_group_aggr(branch);
+#endif
+    
+    
+#ifdef GROUPFILTER
+    echo_gfilter(branch);
+#endif
+  }
+}
 
 void
 echo_filter(struct branch_info* branch){
@@ -101,7 +117,7 @@ echo_filter(struct branch_info* branch){
 
 void
 echo_grouper(struct branch_info* branch) {
-
+  
   if(branch->num_grouper_rules > 0){
     
     printf("\nNo. of Sorted Records: %zd\n", 
@@ -136,7 +152,7 @@ echo_grouper(struct branch_info* branch) {
     for (int k = 0; k < group->num_members; k++)
       flow_print_record(branch->data, group->members[k]);
   }
-
+  
 }
 
 void
@@ -155,7 +171,7 @@ echo_group_aggr(struct branch_info* branch){
 
 void
 echo_gfilter(struct branch_info* branch) {
-
+  
   printf("\nNo. of Filtered Groups: %zu (Aggregations)\n", 
          branch->gfilter_result->num_filtered_groups);      
   if (branch->gfilter_result->num_filtered_groups != 0)      
@@ -167,38 +183,7 @@ echo_gfilter(struct branch_info* branch) {
   }
 }
 
-void
-echo_branch(size_t num_branches,
-            struct branch_info* branchset,
-            struct ft_data* trace){
-  
-  
-  /* process each branch */
-  for (int i = 0; i < num_branches; i++) {    
-    struct branch_info* branch = &branchset[i];
-
-#ifdef FILTER
-    echo_filter(branch);
-#endif
-    
-
-#ifdef GROUPER    
-    if (verbose_vv){
-      echo_grouper(branch);
-    }
-#endif    
-    
-    
-#ifdef GROUPERAGGREGATIONS
-    echo_group_aggr(branch);
-#endif
-    
-    
-#ifdef GROUPFILTER
-    echo_gfilter(branch);
-#endif
-  }
-}
+/* -----------------------------------------------------------------------*/  
 
 void 
 echo_results(size_t num_streams,

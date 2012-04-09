@@ -31,10 +31,9 @@
 #include "base.h"
 #include "ftreader.h"
 
-void 
-echo_results(size_t num_streams,
-             struct stream** streamset,
-             struct ft_data* trace);
+/* -----------------------------------------------------------------------*/  
+/*                              branch                                    */
+/* -----------------------------------------------------------------------*/  
 
 void
 echo_branch(size_t num_branches,
@@ -52,5 +51,18 @@ echo_group_aggr(struct branch_info* branch);
 
 void
 echo_gfilter(struct branch_info* branch);
+
+/* -----------------------------------------------------------------------*/      
+
+
+void
+echo_merger(struct flowquery* fquery, 
+            struct ft_data* trace);
+
+void 
+echo_results(size_t num_streams,
+             struct stream** streamset,
+             struct ft_data* trace);
+
 
 #endif

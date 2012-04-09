@@ -385,15 +385,19 @@ prepare_flowquery(struct ft_data* trace,
   fquery->num_merger_rules = NUM_MERGER_RULES;
 
   /* TODO: when free'd? */
-  struct merger_rule* mruleset = (struct merger_rule*)
-                                  calloc(fquery->num_merger_rules, 
-                                  sizeof(struct merger_rule));
+  struct merger_rule** mruleset = (struct merger_rule**)
+                                   calloc(fquery->num_merger_rules, 
+                                          sizeof(struct merger_rule*));
   if (mruleset == NULL)
     errExit("calloc");
   
   for (int j = 0; j < fquery->num_merger_rules; j++) {
 
-    struct merger_rule* mrule    =         &mruleset[j];
+    /* TODO: when free'd? */
+    struct merger_rule* mrule = calloc(1, sizeof(struct merger_rule));
+    if (mrule == NULL)
+      errExit("calloc");
+    
     mrule->branch1               =         &fquery->branchset[0];
     mrule->branch2               =         &fquery->branchset[1];    
 
@@ -411,8 +415,10 @@ prepare_flowquery(struct ft_data* trace,
     mrule->delta                 =         0;
     mrule->op                    =         RULE_EQ | RULE_S1_32 | RULE_S2_32;
     mrule->func                  =         NULL;
+    
+    mruleset[j] = mrule; mrule = NULL;
   }
-  fquery->mruleset = mruleset;  
+  fquery->mruleset = mruleset; mruleset = NULL;
   
   /* ----------------------------------------------------------------------- */
   
@@ -685,45 +691,6 @@ main(int argc, char **argv) {
         }        
 
       }
-      for (int j = 0; j < branch->grouper_result->num_groups; j++) {        
-        struct group* group = branch->grouper_result->groupset[j];        
-
-#ifdef GROUPERAGGREGATIONS
-        
-        /* free group aggregations */        
-        /* - aggr->values
-           - aggr
-           - aggrset
-         
-           TODO: these can be free'd earlier as well.
-         */
-        for (int x = 0; x < branch->num_aggr_rules; x++){
-          struct aggr* aggr = group->aggrset[x];
-          free(aggr->values); aggr->values = NULL;
-          free(aggr); aggr = NULL; group->aggrset[x] = NULL;
-        }  
-        free(group->aggrset); group->aggrset = NULL;
-        free(group->aggr_record); group->aggr_record = NULL;
-#endif
-
-        free(group); group = NULL; branch->grouper_result->groupset[j] = NULL;
-      }
-      free(branch->grouper_result->groupset); 
-      branch->grouper_result->groupset = NULL;      
-      free(branch->grouper_result); branch->grouper_result = NULL;
-      
-      /* free groupfilter result */
-      if (verbose_v) {
-        for (int j = 0; j < branch->gfilter_result->num_filtered_groups; j++) {          
-          /* all the groups were already free'd by grouper just above */
-          /* unlink the pointers */
-          branch->gfilter_result->filtered_groupset[j] = NULL;
-        }  
-        free(branch->gfilter_result->filtered_groupset);
-        branch->gfilter_result->filtered_groupset = NULL;          
-        free(branch->gfilter_result);
-        branch->gfilter_result = NULL;                  
-      }
     }
   }
   
@@ -750,6 +717,60 @@ main(int argc, char **argv) {
                                 fquery->num_merger_rules,
                                 &fquery->total_num_group_tuples,
                                 &fquery->num_group_tuples);
+  
+  if (fquery->group_tuples == NULL)
+    errExit("merger(...) returned NULL");
+  else {
+    
+    /* echo merger results, if verbose mode is SET */
+    if (verbose_v)
+      echo_merger(fquery, param_data->trace);
+    
+    /* free memory */
+    for (int i = 0; i < fquery->num_branches; i++) {
+      struct branch_info* branch = &fquery->branchset[i];    
+      
+      /* free grouper aggregations */      
+      for (int j = 0; j < branch->grouper_result->num_groups; j++) {        
+        struct group* group = branch->grouper_result->groupset[j];        
+        
+#ifdef GROUPERAGGREGATIONS
+        
+        /* free group aggregations */        
+        /* - aggr->values
+         - aggr
+         - aggrset
+         
+         TODO: these can be free'd earlier as well.
+         */
+        for (int x = 0; x < branch->num_aggr_rules; x++){
+          struct aggr* aggr = group->aggrset[x];
+          free(aggr->values); aggr->values = NULL;
+          free(aggr); aggr = NULL; group->aggrset[x] = NULL;
+        }  
+        free(group->aggrset); group->aggrset = NULL;
+        free(group->aggr_record); group->aggr_record = NULL;
+#endif
+        
+        free(group); group = NULL; branch->grouper_result->groupset[j] = NULL;
+      }
+      free(branch->grouper_result->groupset); 
+      branch->grouper_result->groupset = NULL;      
+      free(branch->grouper_result); branch->grouper_result = NULL;      
+
+      
+      /* free groupfilter result */      
+      for (int j = 0; j < branch->gfilter_result->num_filtered_groups; j++) {          
+        /* all the groups were already free'd by grouper just above */
+        /* unlink the pointers */
+        branch->gfilter_result->filtered_groupset[j] = NULL;
+      }  
+      free(branch->gfilter_result->filtered_groupset);
+      branch->gfilter_result->filtered_groupset = NULL;          
+      free(branch->gfilter_result);
+      branch->gfilter_result = NULL;
+    }
+  }
   
   /* -----------------------------------------------------------------------*/    
   
