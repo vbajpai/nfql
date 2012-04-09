@@ -102,34 +102,23 @@ echo_filter(struct branch_info* branch){
 void
 echo_grouper(struct branch_info* branch) {
 
-
   if(branch->num_grouper_rules > 0){
     
     printf("\nNo. of Sorted Records: %zd\n", 
            branch->filter_result->num_filtered_records);      
     if (branch->filter_result->num_filtered_records != 0)          
       puts(FLOWHEADER);      
-    for (int j = 0; j < branch->filter_result->num_filtered_records; j++) {
+    for (int j = 0; j < branch->filter_result->num_filtered_records; j++)
       flow_print_record(branch->data, 
                         branch->grouper_result->sorted_recordset[j]);
-      
-      /* not free'd since they point to original records */
-      branch->grouper_result->sorted_recordset[j] = NULL;
-    }      
-    free(branch->grouper_result->sorted_recordset);
     
-    
-    printf("\nNo. of Unique Records: %zd\n", branch->grouper_result->num_unique_records);      
+    printf("\nNo. of Unique Records: %zd\n", 
+           branch->grouper_result->num_unique_records);      
     if (branch->grouper_result->num_unique_records != 0)          
       puts(FLOWHEADER);      
-    for (int j = 0; j < branch->grouper_result->num_unique_records; j++) {
+    for (int j = 0; j < branch->grouper_result->num_unique_records; j++)
       flow_print_record(branch->data, 
                         branch->grouper_result->unique_recordset[j]);
-      
-      /* not free'd since they point to original records */
-      branch->grouper_result->unique_recordset[j] = NULL;
-    }      
-    free(branch->grouper_result->unique_recordset);
   }      
   
   printf("\nNo. of Groups: %zu (Verbose Output)\n", 

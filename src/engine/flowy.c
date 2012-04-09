@@ -655,15 +655,26 @@ main(int argc, char **argv) {
       struct branch_info* branch = &fquery->branchset[i];      
       if (verbose_vv) {
         
+        /* free sorted records */
+        for (int j = 0; j < branch->filter_result->num_filtered_records; j++)
+          branch->grouper_result->sorted_recordset[j] = NULL;
+        free(branch->grouper_result->sorted_recordset);
+        branch->grouper_result->sorted_recordset = NULL;
+              
+        /* free unique records */
+        for (int j = 0; j < branch->grouper_result->num_unique_records; j++)
+          branch->grouper_result->unique_recordset[j] = NULL;
+        free(branch->grouper_result->unique_recordset);
+        branch->grouper_result->unique_recordset = NULL;        
+        
         /* free group members */
-        for (int j = 0; j < branch->grouper_result->num_groups; j++) {
-          
+        for (int j = 0; j < branch->grouper_result->num_groups; j++) {          
           struct group* group = branch->grouper_result->groupset[j];
           for (int k = 0; k < group->num_members; k++)
-            group->members[k] = NULL;
-          
+            group->members[k] = NULL;          
           free(group->members); group->members = NULL;
-        }
+        }        
+
       }
       for (int j = 0; j < branch->grouper_result->num_groups; j++) {
         

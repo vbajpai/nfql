@@ -208,7 +208,7 @@ get_grouper_intermediates(struct branch_info* branch,
   
   if(verbose_vv){
     
-    /* TODO when free'd ?*/
+    /* free'd just before calling merger(...) ?*/
     branch->grouper_result->sorted_recordset = 
                 (char**) calloc(num_filtered_records, sizeof(char*));
     if (branch->grouper_result->sorted_recordset == NULL)
@@ -219,7 +219,7 @@ get_grouper_intermediates(struct branch_info* branch,
       *sorted_recordset_ref[i];
   }
   
-  /* TODO when free'd ?*/
+  /* free'd just before returning from grouper(...) */
   struct tree_item_uint32_t* uniq_recordset = 
                  (struct tree_item_uint32_t *)
                  calloc(num_filtered_records, 
@@ -345,7 +345,7 @@ grouper(struct branch_info* branch) {
 
     if(verbose_vv){  
       
-      /* TODO: when free'd? */      
+      /* free'd just before calling merger(...) */      
       gresult->num_unique_records = intermediate_result->num_uniq_records;
       gresult->unique_recordset = (char**) 
                                   calloc(gresult->num_unique_records, 
