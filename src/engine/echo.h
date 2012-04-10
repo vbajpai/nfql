@@ -37,20 +37,20 @@
 
 void
 echo_branch(size_t num_branches,
-            struct branch_info* branchset,
+            struct branch** branchset,
             struct ft_data* trace);
 
 void
-echo_filter(struct branch_info* branch);
+echo_filter(struct branch* branch);
 
 void
-echo_grouper(struct branch_info* branch);
+echo_grouper(struct branch* branch);
 
 void
-echo_group_aggr(struct branch_info* branch);
+echo_group_aggr(struct branch* branch);
 
 void
-echo_gfilter(struct branch_info* branch);
+echo_gfilter(struct branch* branch);
 
 /* -----------------------------------------------------------------------*/      
 

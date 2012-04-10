@@ -27,7 +27,7 @@
 #include "filter.h"
 
 struct filter_result*
-filter(struct branch_info* branch) {
+filter(struct branch* branch) {
   
   /* free'd before exiting from main(...) */
   struct filter_result* fresult = calloc(1, sizeof(struct filter_result));

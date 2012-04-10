@@ -32,7 +32,7 @@
 #include "ftreader.h"
 
 struct filter_result*
-filter(struct branch_info* branch);
+filter(struct branch* branch);
 
 
 #endif

@@ -31,7 +31,7 @@
 
 
 void
-grouper_aggregations(struct branch_info *branch) {
+grouper_aggregations(struct branch *branch) {
  
   struct aggr* (*aggr_function)(char **records,
                                 char *group_aggregation,
@@ -177,7 +177,7 @@ grouper_aggregations(struct branch_info *branch) {
 
 
 struct grouper_intermediate_result *
-get_grouper_intermediates(struct branch_info* branch,
+get_grouper_intermediates(struct branch* branch,
                           char** filtered_recordset_copy) {
   
 
@@ -281,7 +281,7 @@ get_grouper_intermediates(struct branch_info* branch,
 
 
 struct grouper_result*
-grouper(struct branch_info* branch) {
+grouper(struct branch* branch) {
   
   /* TODO: when verbose_v is NOT set, when free'd? */
   /* when verbose_v is set, free'd just before calling merger(...) */

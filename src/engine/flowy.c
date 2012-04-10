@@ -195,9 +195,9 @@ prepare_flowquery(struct ft_data* trace,
   fquery->num_branches = NUM_BRANCHES;
   
   /* TODO: when free'd? */
-  fquery->branchset =  (struct branch_info *)
+  fquery->branchset =  (struct branch**)
                        calloc(fquery->num_branches, 
-                       sizeof(struct branch_info));
+                       sizeof(struct branch*));
   if (fquery->branchset == NULL)
     errExit("calloc");
   
@@ -215,7 +215,12 @@ prepare_flowquery(struct ft_data* trace,
 
   for (int i = 0; i < fquery->num_branches; i++) {
     
-    struct branch_info* branch = &fquery->branchset[i];
+    /* TODO: when free'd? */
+    struct branch* branch = (struct branch*)
+                             calloc(1, sizeof(struct branch));
+    if (branch == NULL)
+      errExit("calloc");    
+    fquery->branchset[i] = branch;
     
     /* TODO: hardcoded */
     switch (i) {
@@ -398,8 +403,8 @@ prepare_flowquery(struct ft_data* trace,
     if (mrule == NULL)
       errExit("calloc");
     
-    mrule->branch1               =         &fquery->branchset[0];
-    mrule->branch2               =         &fquery->branchset[1];    
+    mrule->branch1               =         fquery->branchset[0];
+    mrule->branch2               =         fquery->branchset[1];    
 
     /* TODO: hardcoded */
     switch (j) {
@@ -471,7 +476,7 @@ run_branch_async(struct flowquery* fquery){
     
     pthread_t* thread = &threadset[i];
     pthread_attr_t* thread_attr = &thread_attrset[i];
-    struct branch_info* branch = &fquery->branchset[i];
+    struct branch* branch = fquery->branchset[i];
     
     /* initialize each thread attributes */
     ret = pthread_attr_init(thread_attr);
@@ -646,7 +651,7 @@ main(int argc, char **argv) {
   
   if (verbose_v) {    
     for (int i = 0; i < fquery->num_branches; i++) {
-      struct branch_info* branch = &fquery->branchset[i];
+      struct branch* branch = fquery->branchset[i];
       
       /* free grouper_result */
       if (verbose_vv) {
@@ -706,7 +711,7 @@ main(int argc, char **argv) {
     
     /* free grouper and groupfilter parts */
     for (int i = 0; i < fquery->num_branches; i++) {
-      struct branch_info* branch = &fquery->branchset[i];    
+      struct branch* branch = fquery->branchset[i];    
       
       /* free grouper aggregations */      
       for (int j = 0; j < branch->grouper_result->num_groups; j++) {        
@@ -771,7 +776,7 @@ main(int argc, char **argv) {
       
       /* free grouper leftovers */
       for (int i = 0; i < fquery->num_branches; i++) {        
-        struct branch_info* branch = &fquery->branchset[i];
+        struct branch* branch = fquery->branchset[i];
         for (int j = 0; j < branch->grouper_result->num_groups; j++) {
           struct group* group = branch->grouper_result->groupset[j];        
           for (int k = 0; k < group->num_members; k++)
@@ -836,7 +841,7 @@ main(int argc, char **argv) {
   
   /* free filter_result */
   for (int i = 0; i < fquery->num_branches; i++) {
-    struct branch_info* branch = &fquery->branchset[i];
+    struct branch* branch = fquery->branchset[i];
     for (int j = 0; j < branch->filter_result->num_filtered_records; j++) {
       char* record = branch->filter_result->filtered_recordset[j];
       free(record); record = NULL; 
@@ -851,6 +856,10 @@ main(int argc, char **argv) {
   }
   
   /* free flowquery */
+  for (int i = 0; i < fquery->num_branches; i++) {
+    struct branch* branch = fquery->branchset[i];
+    free(branch); branch = NULL; fquery->branchset[i] = NULL;
+  }
   free(fquery->branchset); fquery->branchset = NULL;
   free(fquery); fquery = NULL;
   

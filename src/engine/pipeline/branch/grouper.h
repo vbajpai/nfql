@@ -65,14 +65,14 @@ struct grouper_intermediate_result {
 
 
 void
-grouper_aggregations(struct branch_info *branch);
+grouper_aggregations(struct branch *branch);
 
 struct grouper_intermediate_result *
-get_grouper_intermediates(struct branch_info* branch,
+get_grouper_intermediates(struct branch* branch,
                           char** filtered_recordset_copy);
 
 struct grouper_result* 
-grouper(struct branch_info* branch);
+grouper(struct branch* branch);
 
 int 
 comp_uint8_t(void *thunk, const void *e1, const void *e2);

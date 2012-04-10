@@ -9,7 +9,7 @@
 void 
 assign_fptr(struct flowquery *fquery) {
   for (int i = 0; i < fquery->num_branches; i++) {
-    struct branch_info* branch = &fquery->branchset[i];
+    struct branch* branch = fquery->branchset[i];
     
     
     /* for loop for the filter */

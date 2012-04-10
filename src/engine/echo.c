@@ -32,7 +32,7 @@ echo_merger(struct flowquery* fquery,
 
   if (verbose_vv) {
     
-    struct permut_iter *iter = iter_init(fquery->branchset, 
+    struct permut_iter* iter = iter_init(fquery->branchset, 
                                          fquery->num_branches);
     printf("\nNo. of (to be) Matched Groups: %zu \n", 
            fquery->merger_result->total_num_group_tuples);
@@ -41,7 +41,7 @@ echo_merger(struct flowquery* fquery,
     while(iter_next(iter)) {
       for (int j = 0; j < fquery->num_branches; j++) {          
         flow_print_record(trace, 
-                          fquery->branchset[j].gfilter_result->
+                          fquery->branchset[j]->gfilter_result->
                           filtered_groupset[iter->filtered_group_tuple[j]
                                             - 1]->aggr_record);
       }
@@ -70,13 +70,13 @@ echo_merger(struct flowquery* fquery,
 
 void
 echo_branch(size_t num_branches,
-            struct branch_info* branchset,
+            struct branch** branchset,
             struct ft_data* trace){
   
   
   /* process each branch */
   for (int i = 0; i < num_branches; i++) {    
-    struct branch_info* branch = &branchset[i];
+    struct branch* branch = branchset[i];
 
 #ifdef FILTER
     echo_filter(branch);
@@ -102,7 +102,7 @@ echo_branch(size_t num_branches,
 }
 
 void
-echo_filter(struct branch_info* branch){
+echo_filter(struct branch* branch){
   
   printf("\nNo. of Filtered Records: %zd\n", 
          branch->filter_result->num_filtered_records);      
@@ -116,7 +116,7 @@ echo_filter(struct branch_info* branch){
 }
 
 void
-echo_grouper(struct branch_info* branch) {
+echo_grouper(struct branch* branch) {
   
   if(branch->num_grouper_rules > 0){
     
@@ -156,7 +156,7 @@ echo_grouper(struct branch_info* branch) {
 }
 
 void
-echo_group_aggr(struct branch_info* branch){
+echo_group_aggr(struct branch* branch){
   
   printf("\nNo. of Groups: %zu (Aggregations)\n", 
          branch->grouper_result->num_groups);
@@ -170,7 +170,7 @@ echo_group_aggr(struct branch_info* branch){
 }
 
 void
-echo_gfilter(struct branch_info* branch) {
+echo_gfilter(struct branch* branch) {
   
   printf("\nNo. of Filtered Groups: %zu (Aggregations)\n", 
          branch->gfilter_result->num_filtered_groups);      

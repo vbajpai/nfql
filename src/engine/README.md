@@ -113,10 +113,10 @@ Where each of A-F are `struct filter_rule` (filter), `struct grouper_rule`
 Specifying a query
 ==================
 
-To specify a query, all members of `struct branch_info` have to be filled
+To specify a query, all members of `struct branch` have to be filled
 except for the `filtered_groups` and `num_filtered_groups` members because
 those store the result of the run of the branch. One has to specify as many
-`struct branch_info` as there are branches.
+`struct branch` as there are branches.
 
 `int branch\_id` - stores an integer identification of the branch (only for
 debugging purposes)

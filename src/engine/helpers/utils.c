@@ -89,8 +89,8 @@ bsearch_r(const void *key,
  * depends on the number of branches which is evaluation when the query is 
  * parsed at RUNTIME
  */
-struct permut_iter *
-iter_init(struct branch_info* branchset, 
+struct permut_iter*
+iter_init(struct branch** branchset, 
           int num_branches) {
   
   /* free'd using iter_destroy(...) called before returning from merger(...) */
@@ -114,7 +114,7 @@ iter_init(struct branch_info* branchset,
   for (int i = 0; i < num_branches; i++) {
     iter->filtered_group_tuple[i] = 1;
     iter->num_filtered_groups[i] = 
-    branchset[i].gfilter_result->num_filtered_groups;
+    branchset[i]->gfilter_result->num_filtered_groups;
   }
   
   /* the first call to iter_next will switch it to 1 */

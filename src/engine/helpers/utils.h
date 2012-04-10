@@ -75,8 +75,8 @@ struct permut_iter {
   size_t*                         filtered_group_tuple;
 };
 
-struct permut_iter *
-iter_init(struct branch_info* binfo_set, int num_branches);
+struct permut_iter*
+iter_init(struct branch** branchset, int num_branches);
 
 bool 
 iter_next(struct permut_iter *iter);

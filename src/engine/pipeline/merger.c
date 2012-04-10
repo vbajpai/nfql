@@ -32,7 +32,7 @@
 #ifdef MERGER
 
 struct merger_result*
-merger(struct branch_info* binfo_set, 
+merger(struct branch** branchset, 
        size_t num_branches,
        
        struct merger_rule** mruleset, 
@@ -44,7 +44,7 @@ merger(struct branch_info* binfo_set,
     errExit("calloc");
   
   /* initialize the iterator */
-  struct permut_iter *iter = iter_init(binfo_set, num_branches);
+  struct permut_iter* iter = iter_init(branchset, num_branches);
   
   /* iterate over all permutations */
   unsigned int index = 0;
@@ -87,7 +87,7 @@ merger(struct branch_info* binfo_set,
       for (int j = 0; j < num_branches; j++){
         size_t group_id = iter->filtered_group_tuple[j];
         matched_tuple[j] = 
-        binfo_set[j].gfilter_result->filtered_groupset[group_id-1];
+        branchset[j]->gfilter_result->filtered_groupset[group_id-1];
       }
 
       /* free'd just before calling ungrouper(...) */

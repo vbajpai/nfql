@@ -92,7 +92,7 @@ struct gfilter_rule {
                );
 };
 
-struct branch_info {
+struct branch {
   
   /* -----------------------------------------------------------------------*/  
   /*                              inputs                                    */
@@ -156,7 +156,7 @@ struct flowquery {
   size_t                          num_branches;  
   size_t                          num_merger_rules;  
   
-  struct branch_info*             branchset;  
+  struct branch**                 branchset;  
   struct merger_rule**            mruleset;
   struct merger_result*           merger_result; 
   struct ungrouper_result*        ungrouper_result;
@@ -170,9 +170,9 @@ struct flowquery {
  * B.dstip = C.dstip
  */
 struct merger_rule {
-  struct branch_info*             branch1;
+  struct branch*             branch1;
   size_t                          field1;
-  struct branch_info*             branch2;
+  struct branch*             branch2;
   size_t                          field2;
   uint64_t                        op;
   uint64_t                        delta;
@@ -196,7 +196,7 @@ struct ungrouper_result {
   struct stream**                 streamset;
 };
 
-struct stream{
+struct stream {
   size_t                          num_records;
   char**                          recordset;
 };

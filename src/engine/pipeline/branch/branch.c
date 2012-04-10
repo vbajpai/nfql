@@ -29,7 +29,7 @@
 void *
 branch_start(void *arg) {
   
-  struct branch_info* branch = (struct branch_info *)arg;  
+  struct branch* branch = (struct branch *)arg;  
   
   
   
