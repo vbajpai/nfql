@@ -35,15 +35,21 @@
 #include <ftlib.h>
 
 struct ft_data {
-  int fd;
-  struct ftio io;
-  struct fts3rec_offsets offsets;
-  struct ftver version;
-  u_int64_t xfield;
-  int rec_size;
-  char **records;
-  int num_records;
+  int                             fd;
+  struct ftio                     io;
+  struct fts3rec_offsets          offsets;
+  struct ftver                    version;
+  u_int64_t                       xfield;
+  int                             rec_size;
+  struct record**                 recordset;
+  int                             num_records;
 };
+
+struct record {
+  char*                           record;
+  bool                            if_filtered;
+};
+
 
 struct ft_data *
 ft_open(int fd);

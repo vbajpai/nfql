@@ -44,7 +44,7 @@ filter(struct branch_info* branch) {
   /* process each record */
   for (int i = 0, j = 0; i < branch->data->num_records; i++) {
     
-    char* record = branch->data->records[i];
+    char* record = branch->data->recordset[i]->record;
     
     /* process each filter rule, for each record */
     for (j = 0; j < branch->num_filter_rules; j++) {
@@ -65,6 +65,8 @@ filter(struct branch_info* branch) {
       continue;
     /* else, increment the filter counter, and save this record */
     else {
+      
+      branch->data->recordset[i]->if_filtered = true;
       fresult->num_filtered_records += 1;
       fresult->filtered_recordset = (char **) 
                        realloc(fresult->filtered_recordset,

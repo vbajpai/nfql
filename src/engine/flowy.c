@@ -616,29 +616,10 @@ main(int argc, char **argv) {
     free(threadset);
     
     /* free all the records that were not filtered from the original trace */
-    for (int i = 0; i < param_data->trace->num_records; i++) {
-      
-      bool if_filtered_record = false;
-      char* record = param_data->trace->records[i];
-      for (int j = 0; j < fquery->num_branches; j++) {
-
-        struct branch_info* branch = &fquery->branchset[j];        
-        for (int k = 0; k < branch->filter_result->num_filtered_records; k++) {
-          
-          char* filtered_record = branch->filter_result->filtered_recordset[k];
-          if (record == filtered_record){
-            if_filtered_record = true;
-            break;
-          }            
-        }
-        if (if_filtered_record)
-          break;
-      }
-      if (!if_filtered_record){
-        free(record); record = NULL;
-        param_data->trace->records[i] = NULL;      
-      }
-      
+    for (int i = 0; i < param_data->trace->num_records; i++) {      
+      struct record* recordinfo = param_data->trace->recordset[i];
+      if (recordinfo->if_filtered == false)
+        free(recordinfo->record); recordinfo->record = NULL;
     }
     
     /* print the filtered records if verbose mode is set */

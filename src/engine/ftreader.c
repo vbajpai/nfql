@@ -90,9 +90,15 @@ ft_open(int fd) {
   
   while ((record = ftio_read(&data->io)) != NULL) {
     data->num_records++;
-    data->records = (char **)realloc(data->records, sizeof(char *)*data->num_records);
-    data->records[data->num_records-1] = (char *)malloc(data->rec_size);
-    memcpy(data->records[data->num_records-1], record, data->rec_size);
+    data->recordset = (struct record **)
+                      realloc(data->recordset, 
+                              data->num_records * sizeof(struct record*));    
+    data->recordset[data->num_records-1] = malloc(sizeof(struct record));
+    data->recordset[data->num_records-1]->record = (char*)
+                                                   malloc(data->rec_size);
+    memcpy(data->recordset[data->num_records-1]->record, 
+           record, 
+           data->rec_size);
     
   if(verbose_vvv)
     flow_print_record(data, record);
@@ -143,7 +149,7 @@ ft_write(struct ft_data *data, int outfd) {
     errExit("ftio_set_ver(...) returned -1");
   
   for (i = 0; i < data->num_records; i++) {
-    ret = ftio_write(&ftio_out, data->records[i]);
+    ret = ftio_write(&ftio_out, data->recordset[i]->record);
     if (ret == -1)
       errExit("ftio_write(...) returned -1");
   }
@@ -194,193 +200,197 @@ ft_records_get_all(struct ft_data* data, int number,
 
 u_int32_t *
 ft_records_get_unix_secs(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->records[number] + data->offsets.unix_secs);
+  return (u_int32_t *)(data->recordset[number]->record + data->offsets.unix_secs);
 }
 
 u_int32_t *
 ft_records_get_unix_nsecs(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->records[number] + data->offsets.unix_nsecs);
+  return (u_int32_t *)(data->recordset[number]->record + data->offsets.unix_nsecs);
 }
 
 u_int32_t *
 ft_records_get_sysUpTime(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->records[number] + data->offsets.sysUpTime);
+  return (u_int32_t *)(data->recordset[number]->record + data->offsets.sysUpTime);
 }
 
 u_int32_t *
 ft_records_get_exaddr(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->records[number] + data->offsets.exaddr);
+  return (u_int32_t *)(data->recordset[number]->record + data->offsets.exaddr);
 }
 
 u_int32_t *
 ft_records_get_srcaddr(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->records[number] + data->offsets.srcaddr);
+  return (u_int32_t *)(data->recordset[number]->record + data->offsets.srcaddr);
 }
 
 u_int32_t *
 ft_records_get_dstaddr(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->records[number] + data->offsets.dstaddr);
+  return (u_int32_t *)(data->recordset[number]->record + data->offsets.dstaddr);
 }
 
 u_int32_t *
 ft_records_get_nexthop(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->records[number] + data->offsets.nexthop);
+  return (u_int32_t *)(data->recordset[number]->record + data->offsets.nexthop);
 }
 
 u_int16_t *
 ft_records_get_input(struct ft_data* data, int number) {
-  return (u_int16_t *)(data->records[number] + data->offsets.input);
+  return (u_int16_t *)(data->recordset[number]->record + data->offsets.input);
 }
 
 u_int16_t *
 ft_records_get_output(struct ft_data* data, int number) {
-  return (u_int16_t *)(data->records[number] + data->offsets.output);
+  return (u_int16_t *)(data->recordset[number]->record + data->offsets.output);
 }
 
 u_int32_t *
 ft_records_get_dFlows(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->records[number] + data->offsets.dFlows);
+  return (u_int32_t *)(data->recordset[number]->record + data->offsets.dFlows);
 }
 
 u_int32_t *
 ft_records_get_dPkts(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->records[number] + data->offsets.dPkts);
+  return (u_int32_t *)(data->recordset[number]->record +  data->offsets.dPkts);
 }
 
 u_int32_t *
 ft_records_get_dOctets(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->records[number] + data->offsets.dOctets);
+  return (u_int32_t *)(data->recordset[number]->record +  data->offsets.dOctets);
 }
 
 u_int32_t *
 ft_records_get_First(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->records[number] + data->offsets.First);
+  return (u_int32_t *)(data->recordset[number]->record +  data->offsets.First);
 }
 
 u_int32_t *
 ft_records_get_Last(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->records[number] + data->offsets.Last);
+  return (u_int32_t *)(data->recordset[number]->record +  data->offsets.Last);
 }
 
 u_int16_t *
 ft_records_get_srcport(struct ft_data* data, int number) {
-  return (u_int16_t *)(data->records[number] + data->offsets.srcport);
+  return (u_int16_t *)(data->recordset[number]->record +  data->offsets.srcport);
 }
 
 u_int16_t *
 ft_records_get_dstport(struct ft_data* data, int number) {
-  return (u_int16_t *)(data->records[number] + data->offsets.dstport);
+  return (u_int16_t *)(data->recordset[number]->record +  data->offsets.dstport);
 }
 
 u_int8_t *
 ft_records_get_prot(struct ft_data* data, int number) {
-  return (u_int8_t  *)(data->records[number] + data->offsets.prot);
+  return (u_int8_t  *)(data->recordset[number]->record +  data->offsets.prot);
 }
 
 u_int8_t *
 ft_records_get_tos(struct ft_data* data, int number) {
-  return (u_int8_t  *)(data->records[number] + data->offsets.tos);
+  return (u_int8_t  *)(data->recordset[number]->record +  data->offsets.tos);
 }
 
 u_int8_t *
 ft_records_get_tcp_flags(struct ft_data* data, int number) {
-  return (u_int8_t  *)(data->records[number] + data->offsets.tcp_flags);
+  return (u_int8_t  *)(data->recordset[number]->record +  data->offsets.tcp_flags);
 }
 
 u_int8_t *
 ft_records_get_engine_type(struct ft_data* data, int number) {
-  return (u_int8_t  *)(data->records[number] + data->offsets.engine_type);
+  return (u_int8_t  *)(data->recordset[number]->record +  data->offsets.engine_type);
 }
 
 u_int8_t *
 ft_records_get_engine_id(struct ft_data* data, int number) {
-  return (u_int8_t  *)(data->records[number] + data->offsets.engine_id);
+  return (u_int8_t  *)(data->recordset[number]->record +  data->offsets.engine_id);
 }
 
 u_int8_t *
 ft_records_get_src_mask(struct ft_data* data, int number) {
-  return (u_int8_t  *)(data->records[number] + data->offsets.src_mask);
+  return (u_int8_t  *)(data->recordset[number]->record +  data->offsets.src_mask);
 }
 
 u_int8_t *
 ft_records_get_dst_mask(struct ft_data* data, int number) {
-  return (u_int8_t  *)(data->records[number] + data->offsets.dst_mask);
+  return (u_int8_t  *)(data->recordset[number]->record +  data->offsets.dst_mask);
 }
 
 u_int16_t *
 ft_records_get_src_as(struct ft_data* data, int number) {
-  return (u_int16_t *)(data->records[number] + data->offsets.src_as);
+  return (u_int16_t *)(data->recordset[number]->record +  data->offsets.src_as);
 }
 
 u_int16_t *
 ft_records_get_dst_as(struct ft_data* data, int number) {
-  return (u_int16_t *)(data->records[number] + data->offsets.dst_as);
+  return (u_int16_t *)(data->recordset[number]->record +  data->offsets.dst_as);
 }
 
 u_int8_t  *
 ft_records_get_in_encaps(struct ft_data* data, int number) {
-  return (u_int8_t  *)(data->records[number] + data->offsets.in_encaps);
+  return (u_int8_t  *)(data->recordset[number]->record +  data->offsets.in_encaps);
 }
 
 u_int8_t  *
 ft_records_get_out_encaps(struct ft_data* data, int number) {
-  return (u_int8_t  *)(data->records[number] + data->offsets.out_encaps);
+  return (u_int8_t  *)(data->recordset[number]->record +  data->offsets.out_encaps);
 }
 
 u_int32_t *
 ft_records_get_peer_nexthop(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->records[number] + data->offsets.peer_nexthop);
+  return (u_int32_t *)(data->recordset[number]->record +  data->offsets.peer_nexthop);
 }
 
 u_int32_t *
 ft_records_get_router_sc(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->records[number] + data->offsets.router_sc);
+  return (u_int32_t *)(data->recordset[number]->record +  data->offsets.router_sc);
 }
 
 u_int32_t *
 ft_records_get_src_tag(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->records[number] + data->offsets.src_tag);
+  return (u_int32_t *)(data->recordset[number]->record +  data->offsets.src_tag);
 }
 
 u_int32_t *
 ft_records_get_dst_tag(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->records[number] + data->offsets.dst_tag);
+  return (u_int32_t *)(data->recordset[number]->record +  data->offsets.dst_tag);
 }
 
 u_int32_t *
 ft_records_get_extra_pkts(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->records[number] + data->offsets.extra_pkts);
+  return (u_int32_t *)(data->recordset[number]->record +  data->offsets.extra_pkts);
 }
 
 u_int8_t  *
 ft_records_get_marked_tos(struct ft_data* data, int number) {
-  return (u_int8_t  *)(data->records[number] + data->offsets.marked_tos);
+  return (u_int8_t  *)(data->recordset[number]->record +  data->offsets.marked_tos);
 }
 
 void 
 ft_close(struct ft_data* data) {
   
   ftio_close(&data->io);  
-  for (int i=0; i<data->num_records; i++)
-    data->records[i] = NULL;
-  free(data->records);  
+  for (int i=0; i<data->num_records; i++){
+    data->recordset[i]->record = NULL;
+    free(data->recordset[i]); data->recordset[i] = NULL;
+  }  
+  free(data->recordset); data->recordset = NULL;  
   
   if(data->fd)
     close(data->fd);
-  free(data);
+  free(data); data = NULL;
 }
 
 void 
 ft_close_free(struct ft_data* data) {
 
   ftio_close(&data->io);  
-  for (int i=0; i<data->num_records; i++)
-    free(data->records[i]);
-  free(data->records);
-  
+  for (int i=0; i<data->num_records; i++) {
+    free(data->recordset[i]->record); data->recordset[i]->record = NULL;
+    free(data->recordset[i]); data->recordset[i] = NULL;
+  }    
+  free(data->recordset); data->recordset = NULL;  
+   
   if(data->fd)
     close(data->fd);
-  free(data);
+  free(data); data = NULL;
 }
 
 
