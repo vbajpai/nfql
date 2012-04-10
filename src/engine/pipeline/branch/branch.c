@@ -94,19 +94,6 @@ branch_start(void *arg) {
       free(arule); arule = NULL; branch->aggr_ruleset[i] = NULL;
     }
     free(branch->aggr_ruleset); branch->aggr_ruleset = NULL;    
-
-    /* free grouper_result */          
-    /* either no verbose or verbose==1 */
-    if (!verbose_vv) {
-      
-      /* free group members */
-      for (int j = 0; j < branch->grouper_result->num_groups; j++) {
-        struct group* group = branch->grouper_result->groupset[j];
-        for (int k = 0; k < group->num_members; k++)
-          group->members[k] = NULL;            
-        free(group->members); group->members = NULL;
-      }      
-    }      
   }  
   
   /* -----------------------------------------------------------------------*/

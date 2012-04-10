@@ -40,6 +40,7 @@
 #define GROUPERAGGREGATIONS
 #define GROUPFILTER
 #define MERGER
+#define UNGROUPER
 
 extern bool debug;
 

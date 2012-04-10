@@ -32,22 +32,22 @@ struct stream**
 ungrouper(struct flowquery* fquery){
   
   struct stream** streamset = NULL;
-  if (fquery->num_group_tuples != 0) {
+  if (fquery->merger_result->num_group_tuples != 0) {
     
     /* free'd after returning from ungrouper(...) */
-    streamset = calloc(fquery->num_group_tuples,
+    streamset = calloc(fquery->merger_result->num_group_tuples,
                                        sizeof(struct stream*));
     if (streamset == NULL)
       errExit("calloc");
     
-    for (int i = 0; i < fquery->num_group_tuples; i++) {
+    for (int i = 0; i < fquery->merger_result->num_group_tuples; i++) {
       
       /* free'd after returning from ungrouper(...) */
       struct stream* stream = calloc(1, sizeof(struct stream));
       if (stream == NULL)
         errExit("calloc");
       
-      struct group** group_tuple = fquery->group_tuples[i];
+      struct group** group_tuple = fquery->merger_result->group_tuples[i];
       
       for (int j = 0; j < fquery->num_branches; j++) {
         
