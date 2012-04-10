@@ -777,14 +777,15 @@ main(int argc, char **argv) {
   /* -----------------------------------------------------------------------*/  
   
   if (fquery->merger_result->num_group_tuples != 0){
-    fquery->streamset = ungrouper(fquery);
-    if (fquery->streamset == NULL)
+    
+    fquery->ungrouper_result = ungrouper(fquery);
+    if (fquery->ungrouper_result == NULL)
       errExit("ungrouper(...) returned NULL");
     else {
       
       /* echo ungrouper results */
-      echo_results(fquery->merger_result->num_group_tuples,
-                   fquery->streamset,
+      echo_results(fquery->ungrouper_result->num_streams,
+                   fquery->ungrouper_result->streamset,
                    param_data->trace);      
       
       /* free grouper leftovers */
@@ -802,21 +803,6 @@ main(int argc, char **argv) {
         free(branch->grouper_result); branch->grouper_result = NULL;
       }
       
-      /* free ungrouper results */
-      for (int j = 0; j < fquery->merger_result->num_group_tuples; j++) {
-        struct stream* stream = fquery->streamset[j];
-        for (int i = 0; i < stream->num_records; i++){
-          char* record = stream->recordset[i];
-          
-          /* unlink the record, */
-          /* all filtered records are free'd next at once */
-          record = NULL; stream->recordset[i] = NULL;        
-        }
-        free(stream->recordset); stream->recordset = NULL;
-        free(stream); stream = NULL;
-      }
-      free(fquery->streamset); fquery->streamset = NULL;
-      
       /* free merger results */
       for (int i = 0; i < fquery->merger_result->num_group_tuples; i++) {
         struct group** matched_tuple = fquery->merger_result->group_tuples[i];
@@ -831,6 +817,22 @@ main(int argc, char **argv) {
       fquery->merger_result->group_tuples = NULL;
       free(fquery->merger_result); fquery->merger_result = NULL;
       
+      /* free ungrouper results */
+      for (int j = 0; j < fquery->ungrouper_result->num_streams; j++) {
+        struct stream* stream = fquery->ungrouper_result->streamset[j];
+        for (int i = 0; i < stream->num_records; i++){
+          char* record = stream->recordset[i];
+          
+          /* unlink the record, */
+          /* all filtered records are free'd next at once */
+          record = NULL; stream->recordset[i] = NULL;        
+        }
+        free(stream->recordset); stream->recordset = NULL;
+        free(stream); stream = NULL;
+      }
+      free(fquery->ungrouper_result->streamset); 
+      fquery->ungrouper_result->streamset = NULL;
+      free(fquery->ungrouper_result); fquery->ungrouper_result = NULL;
     }    
   }
   

@@ -31,7 +31,7 @@
 #include "pipeline.h"
 #include "error_handlers.h"
 
-struct stream**
+struct ungrouper_result*
 ungrouper(struct flowquery* fquery);
 
 #endif

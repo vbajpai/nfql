@@ -158,8 +158,8 @@ struct flowquery {
   
   struct branch_info*             branchset;  
   struct merger_rule**            mruleset;
-  struct merger_result*           merger_result;  
-  struct stream**                 streamset;
+  struct merger_result*           merger_result; 
+  struct ungrouper_result*        ungrouper_result;
 };
 
 /*
@@ -191,9 +191,14 @@ struct merger_result {
   struct group***                 group_tuples;
 };
 
+struct ungrouper_result {
+  size_t                          num_streams;    
+  struct stream**                 streamset;
+};
+
 struct stream{
-  char ** recordset;
-  size_t num_records;
+  size_t                          num_records;
+  char**                          recordset;
 };
 
 

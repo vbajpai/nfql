@@ -28,18 +28,22 @@
 #include "ungrouper.h"
 
 #ifdef UNGROUPER
-struct stream**
+struct ungrouper_result*
 ungrouper(struct flowquery* fquery){
   
-  struct stream** streamset = NULL;
+  /* free'd after returning from ungrouper(...) */
+  struct ungrouper_result* uresult = calloc(1, sizeof(struct ungrouper_result));
+  if (uresult == NULL)
+    errExit("calloc");
+  
   if (fquery->merger_result->num_group_tuples != 0) {
     
     /* free'd after returning from ungrouper(...) */
-    streamset = calloc(fquery->merger_result->num_group_tuples,
+    struct stream** streamset = (struct stream**)
+                                calloc(fquery->merger_result->num_group_tuples,
                                        sizeof(struct stream*));
     if (streamset == NULL)
-      errExit("calloc");
-    
+      errExit("calloc");    
     for (int i = 0; i < fquery->merger_result->num_group_tuples; i++) {
       
       /* free'd after returning from ungrouper(...) */
@@ -47,15 +51,15 @@ ungrouper(struct flowquery* fquery){
       if (stream == NULL)
         errExit("calloc");
       
-      struct group** group_tuple = fquery->merger_result->group_tuples[i];
-      
+      struct group** group_tuple = fquery->merger_result->group_tuples[i];      
       for (int j = 0; j < fquery->num_branches; j++) {
         
         struct group* group = group_tuple[j];
+        
         /* free'd after returning from ungrouper(...) */
         stream->recordset = realloc(stream->recordset, 
-                                    (stream->num_records + 
-                                     group->num_members) * sizeof(char*));
+                                   (stream->num_records + 
+                                    group->num_members) * sizeof(char*));
         if (stream->recordset == NULL)
           errExit("realloc");      
         
@@ -67,8 +71,10 @@ ungrouper(struct flowquery* fquery){
       }
       
       streamset[i] = stream;
-    }
+    }    
+    uresult->streamset = streamset; streamset = NULL;
+    uresult->num_streams = fquery->merger_result->num_group_tuples;
   }
-  return streamset;
+  return uresult;
 }
 #endif
