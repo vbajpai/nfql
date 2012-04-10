@@ -867,6 +867,9 @@ main(int argc, char **argv) {
     branch->filter_result = NULL;
   }
   
+  /* free flowquery */
+  free(fquery->branchset); fquery->branchset = NULL;
+  free(fquery); fquery = NULL;
   
   /* free param_data */
   ft_close(param_data->trace); param_data->trace = NULL;
