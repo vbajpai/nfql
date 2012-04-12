@@ -64,8 +64,20 @@ struct grouper_intermediate_result {
 };
 
 
-void
-grouper_aggregations(struct branch *branch);
+char* 
+grouper_aggregations(
+                     size_t num_filter_rules,
+                     struct filter_rule** const filter_ruleset,
+                     
+                     size_t num_grouper_rules,
+                     struct grouper_rule** const grouper_ruleset,
+                     
+                     size_t num_aggr_rules,
+                     struct aggr_rule** const aggr_ruleset,
+                     
+                     struct group* const group,
+                     int rec_size
+                    );
 
 struct grouper_intermediate_result *
 get_grouper_intermediates(struct branch* branch,

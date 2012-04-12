@@ -30,8 +30,20 @@
 #include "grouper.h"
 
 
-void
-grouper_aggregations(struct branch *branch) {
+char* 
+grouper_aggregations(                    
+                     size_t num_filter_rules,
+                     struct filter_rule** const filter_ruleset,
+                     
+                     size_t num_grouper_rules,
+                     struct grouper_rule** const grouper_ruleset,
+                     
+                     size_t num_aggr_rules,
+                     struct aggr_rule** const aggr_ruleset,
+                     
+                     struct group* const group,
+                     int rec_size
+                    ) {
  
   struct aggr* (*aggr_function)(char **records,
                                 char *group_aggregation,
@@ -39,19 +51,16 @@ grouper_aggregations(struct branch *branch) {
                                 size_t field_offset,
                                 bool if_aggr_common) = NULL;
   
-  for (int i = 0; i < branch->grouper_result->num_groups; i++) {
-    
-    struct group* group = branch->grouper_result->groupset[i];
-    
     /* free'd just after returning from merger(...) */
-    struct aggr** aggrset = (struct aggr**)calloc(branch->num_aggr_rules,
-                                                  sizeof(struct aggr*));
+    struct aggr** aggrset = (struct aggr**)
+                             calloc(num_aggr_rules,
+                                    sizeof(struct aggr*));
     if (aggrset == NULL)
       errExit("calloc");
     group->aggrset = aggrset;
     
     /* free'd just after returning from merger(...) */
-    char* aggr_record = (char *)calloc(1, branch->data->rec_size);
+    char* aggr_record = (char *)calloc(1, rec_size);
     if (aggr_record == NULL)
       errExit("calloc");
     group->aggr_record = aggr_record;
@@ -62,10 +71,10 @@ grouper_aggregations(struct branch *branch) {
      * member has the same value for that field in the group, still need
      * to investigate how it might affect other filter operations */  
     bool ifgrouper = false;
-    for (int j = 0; j < branch->num_filter_rules; j++) {
+    for (int j = 0; j < num_filter_rules; j++) {
       
-      size_t field_offset = branch->filter_ruleset[j]->field_offset;
-      aggr_function = get_aggr_fptr(ifgrouper, branch->filter_ruleset[j]->op); 
+      size_t field_offset = filter_ruleset[j]->field_offset;
+      aggr_function = get_aggr_fptr(ifgrouper, filter_ruleset[j]->op); 
       if(aggr_function == NULL)
         errExit("get_aggr_fptr(...) returned NULL");
       
@@ -88,12 +97,12 @@ grouper_aggregations(struct branch *branch) {
      * member has the same value for that field in the group, still need
      * to investigate how it might affect other grouper operations */
     ifgrouper = true;
-    for (int j = 0; j < branch->num_grouper_rules; j++) {
+    for (int j = 0; j < num_grouper_rules; j++) {
       
-      size_t goffset_1 = branch->grouper_ruleset[j]->field_offset1;
-      size_t goffset_2 = branch->grouper_ruleset[j]->field_offset2;
+      size_t goffset_1 = grouper_ruleset[j]->field_offset1;
+      size_t goffset_2 = grouper_ruleset[j]->field_offset2;
       
-      aggr_function = get_aggr_fptr(ifgrouper, branch->grouper_ruleset[j]->op);
+      aggr_function = get_aggr_fptr(ifgrouper, grouper_ruleset[j]->op);
       if(aggr_function == NULL)
         errExit("get_aggr_fptr(...) returned NULL");
       
@@ -129,15 +138,15 @@ grouper_aggregations(struct branch *branch) {
     /* aggregate the fields, but ignore fields used in grouper and filter 
      * module. Again it assume that the operation is `eq`. Need to investigate 
      * more on how it might affect for other type of operations */
-    for (int j = 0; j < branch->num_aggr_rules; j++){    
+    for (int j = 0; j < num_aggr_rules; j++){    
 
       bool if_ignore_aggr_rule = false;
-      size_t aggr_offset = branch->aggr_ruleset[j]->field_offset;
+      size_t aggr_offset = aggr_ruleset[j]->field_offset;
       
       /* if aggr rule is same as any filter rule, just ignore it */
-      for (int k = 0; k < branch->num_filter_rules; k++) {
+      for (int k = 0; k < num_filter_rules; k++) {
         
-        size_t filter_offset = branch->filter_ruleset[k]->field_offset;      
+        size_t filter_offset = filter_ruleset[k]->field_offset;      
         if (aggr_offset == filter_offset){
           if_ignore_aggr_rule = true;
           break;
@@ -145,10 +154,10 @@ grouper_aggregations(struct branch *branch) {
       }    
       
       /* if aggr rule is same as any grouper rule, just ignore it */
-      for (int k = 0; k < branch->num_grouper_rules; k++) {
+      for (int k = 0; k < num_grouper_rules; k++) {
 
-        size_t goffset_1 = branch->grouper_ruleset[k]->field_offset1;
-        size_t goffset_2 = branch->grouper_ruleset[k]->field_offset2;      
+        size_t goffset_1 = grouper_ruleset[k]->field_offset1;
+        size_t goffset_2 = grouper_ruleset[k]->field_offset2;      
         
         if (aggr_offset == goffset_1 || aggr_offset == goffset_2){
           if_ignore_aggr_rule = true;
@@ -157,15 +166,15 @@ grouper_aggregations(struct branch *branch) {
       }
       
       /* free'd just after returning from merger(...) */
-      aggrset[j] = branch->aggr_ruleset[j]->func(group->members,
-                                                 aggr_record,
-                                                 group->num_members, 
-                                                 aggr_offset, 
-                                                 if_ignore_aggr_rule);
+      aggrset[j] = aggr_ruleset[j]->func(group->members,
+                                         aggr_record,
+                                         group->num_members, 
+                                         aggr_offset, 
+                                         if_ignore_aggr_rule);
     }    
-  }
-}
 
+  return aggr_record;
+}
 
 struct grouper_intermediate_result *
 get_grouper_intermediates(struct branch* branch,
@@ -460,7 +469,29 @@ grouper(struct branch* branch) {
 
 
 #ifdef GROUPERAGGREGATIONS
-  grouper_aggregations(branch);
+  
+  for (int i = 0; i < branch->grouper_result->num_groups; i++) {
+    
+    struct group* group = branch->grouper_result->groupset[i];
+    
+    group->aggr_record = grouper_aggregations(
+                                             branch->num_filter_rules,
+                                             branch->filter_ruleset,
+                                             
+                                             branch->num_grouper_rules,
+                                             branch->grouper_ruleset,
+                                             
+                                             branch->num_aggr_rules,
+                                             branch->aggr_ruleset,
+                                             
+                                             group,
+                                             branch->data->rec_size
+                                            );
+    if (group->aggr_record == NULL)
+      errExit("grouper_aggregations(...) returned NULL");
+    else
+      group = NULL;
+  }
 #endif  
   
   return gresult;
