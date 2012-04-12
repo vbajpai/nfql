@@ -36,6 +36,10 @@
 struct group {
   size_t                          num_members;
   char**                          members;
+  struct aggr_result*             aggr_result;
+};
+
+struct aggr_result {
   char*                           aggr_record;
   struct aggr**                   aggrset;
 };

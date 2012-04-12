@@ -64,7 +64,7 @@ struct grouper_intermediate_result {
 };
 
 
-char* 
+struct aggr_result*
 grouper_aggregations(
                      size_t num_filter_rules,
                      struct filter_rule** const filter_ruleset,
@@ -75,7 +75,7 @@ grouper_aggregations(
                      size_t num_aggr_rules,
                      struct aggr_rule** const aggr_ruleset,
                      
-                     struct group* const group,
+                     const struct group* const group,
                      int rec_size
                     );
 

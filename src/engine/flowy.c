@@ -720,12 +720,18 @@ main(int argc, char **argv) {
         
         /* free group aggregations */        
         for (int x = 0; x < branch->num_aggr_rules; x++){
-          struct aggr* aggr = group->aggrset[x];
+          struct aggr* aggr = group->aggr_result->aggrset[x];
           free(aggr->values); aggr->values = NULL;
-          free(aggr); aggr = NULL; group->aggrset[x] = NULL;
+          free(aggr); aggr = NULL; group->aggr_result->aggrset[x] = NULL;
         }  
-        free(group->aggrset); group->aggrset = NULL;
-        free(group->aggr_record); group->aggr_record = NULL;
+        free(group->aggr_result->aggrset); 
+        group->aggr_result->aggrset = NULL;
+        
+        free(group->aggr_result->aggr_record);         
+        group->aggr_result->aggr_record = NULL;
+        
+        free(group->aggr_result);
+        group->aggr_result = NULL;
 #endif
       }
       

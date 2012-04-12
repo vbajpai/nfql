@@ -43,7 +43,7 @@ echo_merger(struct flowquery* fquery,
         flow_print_record(trace, 
                           fquery->branchset[j]->gfilter_result->
                           filtered_groupset[iter->filtered_group_tuple[j]
-                                            - 1]->aggr_record);
+                                            - 1]->aggr_result->aggr_record);
       }
       printf("\n");
     }
@@ -57,7 +57,7 @@ echo_merger(struct flowquery* fquery,
     struct group** group_tuple = fquery->merger_result->group_tuples[j];
     for (int i = 0; i < fquery->num_branches; i++) {
       struct group* group = group_tuple[i];
-      flow_print_record(trace, group->aggr_record);
+      flow_print_record(trace, group->aggr_result->aggr_record);
     }
     printf("\n");
   }  
@@ -165,7 +165,7 @@ echo_group_aggr(struct branch* branch){
     puts(FLOWHEADER); 
   for (int j = 0; j < branch->grouper_result->num_groups; j++) {        
     struct group* group = branch->grouper_result->groupset[j];
-    flow_print_record(branch->data, group->aggr_record);    
+    flow_print_record(branch->data, group->aggr_result->aggr_record);    
   }
 }
 
@@ -179,7 +179,7 @@ echo_gfilter(struct branch* branch) {
   
   for (int j = 0; j < branch->gfilter_result->num_filtered_groups; j++) {      
     struct group* fgroup = branch->gfilter_result->filtered_groupset[j];
-    flow_print_record(branch->data, fgroup->aggr_record);
+    flow_print_record(branch->data, fgroup->aggr_result->aggr_record);
   }
 }
 

@@ -4789,7 +4789,7 @@ gfilter_eq_uint8_t(struct group *group,
                    uint64_t value, 
                    uint64_t delta) {
   
-  uint8_t* aggr_value = (uint8_t*)(group->aggr_record + field_offset);
+  uint8_t* aggr_value = (uint8_t*)(group->aggr_result->aggr_record + field_offset);
   return (*aggr_value >= value - delta) && (*aggr_value <= value + delta);
 }
 
@@ -4799,7 +4799,7 @@ gfilter_eq_uint16_t(struct group *group,
                     uint64_t value, 
                     uint64_t delta) {
   
-  uint16_t* aggr_value = (uint16_t*)(group->aggr_record + field_offset);
+  uint16_t* aggr_value = (uint16_t*)(group->aggr_result->aggr_record + field_offset);
   return (*aggr_value >= value - delta) && (*aggr_value <= value + delta);
 }
 
@@ -4809,7 +4809,7 @@ gfilter_eq_uint32_t(struct group *group,
                     uint64_t value, 
                     uint64_t delta) {
   
-  uint32_t* aggr_value = (uint32_t*)(group->aggr_record + field_offset);
+  uint32_t* aggr_value = (uint32_t*)(group->aggr_result->aggr_record + field_offset);
   return (*aggr_value >= value - delta) && (*aggr_value <= value + delta);
 }
 
@@ -4819,7 +4819,7 @@ gfilter_eq_uint64_t(struct group *group,
                     uint64_t value, 
                     uint64_t delta) {
   
-  uint64_t* aggr_value = (uint64_t*)(group->aggr_record + field_offset);
+  uint64_t* aggr_value = (uint64_t*)(group->aggr_result->aggr_record + field_offset);
   return (*aggr_value >= value - delta) && (*aggr_value <= value + delta);
 }
 
@@ -4829,7 +4829,7 @@ gfilter_ne_uint8_t(struct group *group,
                    uint64_t value, 
                    uint64_t delta) {
   
-  uint8_t* aggr_value = (uint8_t*)(group->aggr_record + field_offset);
+  uint8_t* aggr_value = (uint8_t*)(group->aggr_result->aggr_record + field_offset);
   return (*aggr_value < value - delta) || (*aggr_value > value + delta);
 }
 
@@ -4839,7 +4839,7 @@ gfilter_ne_uint16_t(struct group *group,
                     uint64_t value, 
                     uint64_t delta) {
   
-  uint16_t* aggr_value = (uint16_t*)(group->aggr_record + field_offset);
+  uint16_t* aggr_value = (uint16_t*)(group->aggr_result->aggr_record + field_offset);
   return (*aggr_value < value - delta) || (*aggr_value > value + delta);
 }
 
@@ -4849,7 +4849,7 @@ gfilter_ne_uint32_t(struct group *group,
                     uint64_t value, 
                     uint64_t delta) {
   
-  uint32_t* aggr_value = (uint32_t*)(group->aggr_record + field_offset);
+  uint32_t* aggr_value = (uint32_t*)(group->aggr_result->aggr_record + field_offset);
   return (*aggr_value < value - delta) || (*aggr_value > value + delta);
 }
 
@@ -4859,7 +4859,7 @@ gfilter_ne_uint64_t(struct group *group,
                     uint64_t value, 
                     uint64_t delta) {
   
-  uint64_t* aggr_value = (uint64_t*)(group->aggr_record + field_offset);
+  uint64_t* aggr_value = (uint64_t*)(group->aggr_result->aggr_record + field_offset);
   return (*aggr_value < value - delta) || (*aggr_value > value + delta);
 }
 
@@ -4869,7 +4869,7 @@ gfilter_lt_uint8_t(struct group *group,
                    uint64_t value, 
                    uint64_t delta) {
   
-  uint8_t* aggr_value = (uint8_t*)(group->aggr_record + field_offset);
+  uint8_t* aggr_value = (uint8_t*)(group->aggr_result->aggr_record + field_offset);
   return *aggr_value < value + delta;
 }
 
@@ -4879,7 +4879,7 @@ gfilter_lt_uint16_t(struct group *group,
                     uint64_t value, 
                     uint64_t delta) {
   
-  uint16_t* aggr_value = (uint16_t*)(group->aggr_record + field_offset);
+  uint16_t* aggr_value = (uint16_t*)(group->aggr_result->aggr_record + field_offset);
   return *aggr_value < value + delta;
 }
 
@@ -4889,7 +4889,7 @@ gfilter_lt_uint32_t(struct group *group,
                     uint64_t value, 
                     uint64_t delta) {
   
-  uint32_t* aggr_value = (uint32_t*)(group->aggr_record + field_offset);
+  uint32_t* aggr_value = (uint32_t*)(group->aggr_result->aggr_record + field_offset);
   return *aggr_value < value + delta;
 }
 
@@ -4899,7 +4899,7 @@ gfilter_lt_uint64_t(struct group *group,
                     uint64_t value, 
                     uint64_t delta) {
   
-  uint64_t* aggr_value = (uint64_t*)(group->aggr_record + field_offset);
+  uint64_t* aggr_value = (uint64_t*)(group->aggr_result->aggr_record + field_offset);
   return *aggr_value < value + delta;
 }
 
@@ -4909,7 +4909,7 @@ gfilter_gt_uint8_t(struct group *group,
                    uint64_t value, 
                    uint64_t delta) {
   
-  uint8_t* aggr_value = (uint8_t*)(group->aggr_record + field_offset);
+  uint8_t* aggr_value = (uint8_t*)(group->aggr_result->aggr_record + field_offset);
   return *aggr_value > value - delta;
 }
 
@@ -4919,7 +4919,7 @@ gfilter_gt_uint16_t(struct group *group,
                     uint64_t value, 
                     uint64_t delta) {
   
-  uint16_t* aggr_value = (uint16_t*)(group->aggr_record + field_offset);
+  uint16_t* aggr_value = (uint16_t*)(group->aggr_result->aggr_record + field_offset);
   return *aggr_value > value - delta;
 }
 
@@ -4929,7 +4929,7 @@ gfilter_gt_uint32_t(struct group *group,
                     uint64_t value, 
                     uint64_t delta) {
   
-  uint32_t* aggr_value = (uint32_t*)(group->aggr_record + field_offset);
+  uint32_t* aggr_value = (uint32_t*)(group->aggr_result->aggr_record + field_offset);
   return *aggr_value > value - delta;
 }
 
@@ -4939,7 +4939,7 @@ gfilter_gt_uint64_t(struct group *group,
                     uint64_t value, 
                     uint64_t delta) {
   
-  uint64_t* aggr_value = (uint64_t*)(group->aggr_record + field_offset);
+  uint64_t* aggr_value = (uint64_t*)(group->aggr_result->aggr_record + field_offset);
   return *aggr_value > value - delta;
 }
 
@@ -4949,7 +4949,7 @@ gfilter_le_uint8_t(struct group *group,
                    uint64_t value, 
                    uint64_t delta) {
   
-  uint8_t* aggr_value = (uint8_t*)(group->aggr_record + field_offset);
+  uint8_t* aggr_value = (uint8_t*)(group->aggr_result->aggr_record + field_offset);
   return *aggr_value <= value + delta;
 }
 
@@ -4959,7 +4959,7 @@ gfilter_le_uint16_t(struct group *group,
                     uint64_t value, 
                     uint64_t delta) {
   
-  uint16_t* aggr_value = (uint16_t*)(group->aggr_record + field_offset);
+  uint16_t* aggr_value = (uint16_t*)(group->aggr_result->aggr_record + field_offset);
   return *aggr_value <= value + delta;
 }
 
@@ -4969,7 +4969,7 @@ gfilter_le_uint32_t(struct group *group,
                     uint64_t value, 
                     uint64_t delta) {
   
-  uint32_t* aggr_value = (uint32_t*)(group->aggr_record + field_offset);
+  uint32_t* aggr_value = (uint32_t*)(group->aggr_result->aggr_record + field_offset);
   return *aggr_value <= value + delta;
 }
 
@@ -4979,7 +4979,7 @@ gfilter_le_uint64_t(struct group *group,
                     uint64_t value, 
                     uint64_t delta) {
   
-  uint64_t* aggr_value = (uint64_t*)(group->aggr_record + field_offset);
+  uint64_t* aggr_value = (uint64_t*)(group->aggr_result->aggr_record + field_offset);
   return *aggr_value <= value + delta;
 }
 
@@ -4989,7 +4989,7 @@ gfilter_ge_uint8_t(struct group *group,
                    uint64_t value, 
                    uint64_t delta) {
   
-  uint8_t* aggr_value = (uint8_t*)(group->aggr_record + field_offset);
+  uint8_t* aggr_value = (uint8_t*)(group->aggr_result->aggr_record + field_offset);
   return *aggr_value >= value - delta;
 }
 
@@ -4999,7 +4999,7 @@ gfilter_ge_uint16_t(struct group *group,
                     uint64_t value, 
                     uint64_t delta) {
   
-  uint16_t* aggr_value = (uint16_t*)(group->aggr_record + field_offset);
+  uint16_t* aggr_value = (uint16_t*)(group->aggr_result->aggr_record + field_offset);
   return *aggr_value >= value - delta;
 }
 
@@ -5009,7 +5009,7 @@ gfilter_ge_uint32_t(struct group *group,
                     uint64_t value, 
                     uint64_t delta) {
   
-  uint32_t* aggr_value = (uint32_t*)(group->aggr_record + field_offset);
+  uint32_t* aggr_value = (uint32_t*)(group->aggr_result->aggr_record + field_offset);
   return *aggr_value >= value - delta;
 }
 
@@ -5019,7 +5019,7 @@ gfilter_ge_uint64_t(struct group *group,
                     uint64_t value, 
                     uint64_t delta) {
   
-  uint64_t* aggr_value = (uint64_t*)(group->aggr_record + field_offset);
+  uint64_t* aggr_value = (uint64_t*)(group->aggr_result->aggr_record + field_offset);
   return *aggr_value >= value - delta;
 }
 
@@ -5030,15 +5030,15 @@ merger_eq_uint8_t_uint8_t(struct group *group1,
                           size_t field2_offset, 
                           uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint8_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint8_t*)(group2->aggr_record + field2_offset) - delta)
+  return (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) - delta)
   && 
-  (*(uint8_t*)(group1->aggr_record + field1_offset) <= 
-   *(uint8_t*)(group2->aggr_record + field2_offset) + delta);  
+  (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+   *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);  
   
 }
 
@@ -5049,15 +5049,15 @@ merger_eq_uint8_t_uint16_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint8_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint16_t*)(group2->aggr_record + field2_offset) - delta)
+  return (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) - delta)
   && 
-  (*(uint8_t*)(group1->aggr_record + field1_offset) <= 
-   *(uint16_t*)(group2->aggr_record + field2_offset) + delta);  
+  (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+   *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);  
   
 }
 
@@ -5068,15 +5068,15 @@ merger_eq_uint8_t_uint32_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint8_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint32_t*)(group2->aggr_record + field2_offset) - delta)
+  return (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) - delta)
   && 
-  (*(uint8_t*)(group1->aggr_record + field1_offset) <= 
-   *(uint32_t*)(group2->aggr_record + field2_offset) + delta);  
+  (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+   *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);  
   
 }
 
@@ -5087,15 +5087,15 @@ merger_eq_uint8_t_uint64_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint8_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint64_t*)(group2->aggr_record + field2_offset) - delta)
+  return (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) - delta)
   && 
-  (*(uint8_t*)(group1->aggr_record + field1_offset) <= 
-   *(uint64_t*)(group2->aggr_record + field2_offset) + delta);  
+  (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+   *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);  
   
 }
 
@@ -5106,15 +5106,15 @@ merger_eq_uint16_t_uint8_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint16_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint8_t*)(group2->aggr_record + field2_offset) - delta)
+  return (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) - delta)
   && 
-  (*(uint16_t*)(group1->aggr_record + field1_offset) <= 
-   *(uint8_t*)(group2->aggr_record + field2_offset) + delta);  
+  (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+   *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);  
   
 }
 
@@ -5125,15 +5125,15 @@ merger_eq_uint16_t_uint16_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint16_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint16_t*)(group2->aggr_record + field2_offset) - delta)
+  return (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) - delta)
   && 
-  (*(uint16_t*)(group1->aggr_record + field1_offset) <= 
-   *(uint16_t*)(group2->aggr_record + field2_offset) + delta);  
+  (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+   *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);  
   
 }
 
@@ -5144,15 +5144,15 @@ merger_eq_uint16_t_uint32_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint16_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint32_t*)(group2->aggr_record + field2_offset) - delta)
+  return (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) - delta)
   && 
-  (*(uint16_t*)(group1->aggr_record + field1_offset) <= 
-   *(uint32_t*)(group2->aggr_record + field2_offset) + delta);  
+  (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+   *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);  
   
 }
 
@@ -5163,15 +5163,15 @@ merger_eq_uint16_t_uint64_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint16_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint64_t*)(group2->aggr_record + field2_offset) - delta)
+  return (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) - delta)
   && 
-  (*(uint16_t*)(group1->aggr_record + field1_offset) <= 
-   *(uint64_t*)(group2->aggr_record + field2_offset) + delta);  
+  (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+   *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);  
   
 }
 
@@ -5182,15 +5182,15 @@ merger_eq_uint32_t_uint8_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint32_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint8_t*)(group2->aggr_record + field2_offset) - delta)
+  return (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) - delta)
   && 
-  (*(uint32_t*)(group1->aggr_record + field1_offset) <= 
-   *(uint8_t*)(group2->aggr_record + field2_offset) + delta);  
+  (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+   *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);  
   
 }
 
@@ -5201,15 +5201,15 @@ merger_eq_uint32_t_uint16_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint32_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint16_t*)(group2->aggr_record + field2_offset) - delta)
+  return (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) - delta)
   && 
-  (*(uint32_t*)(group1->aggr_record + field1_offset) <= 
-   *(uint16_t*)(group2->aggr_record + field2_offset) + delta);  
+  (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+   *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);  
   
 }
 
@@ -5220,15 +5220,15 @@ merger_eq_uint32_t_uint32_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint32_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint32_t*)(group2->aggr_record + field2_offset) - delta)
+  return (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) - delta)
   && 
-  (*(uint32_t*)(group1->aggr_record + field1_offset) <= 
-   *(uint32_t*)(group2->aggr_record + field2_offset) + delta);  
+  (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+   *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);  
   
 }
 
@@ -5239,15 +5239,15 @@ merger_eq_uint32_t_uint64_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint32_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint64_t*)(group2->aggr_record + field2_offset) - delta)
+  return (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) - delta)
   && 
-  (*(uint32_t*)(group1->aggr_record + field1_offset) <= 
-   *(uint64_t*)(group2->aggr_record + field2_offset) + delta);  
+  (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+   *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);  
   
 }
 
@@ -5258,15 +5258,15 @@ merger_eq_uint64_t_uint8_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint64_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint8_t*)(group2->aggr_record + field2_offset) - delta)
+  return (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) - delta)
   && 
-  (*(uint64_t*)(group1->aggr_record + field1_offset) <= 
-   *(uint8_t*)(group2->aggr_record + field2_offset) + delta);  
+  (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+   *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);  
   
 }
 
@@ -5277,15 +5277,15 @@ merger_eq_uint64_t_uint16_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint64_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint16_t*)(group2->aggr_record + field2_offset) - delta)
+  return (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) - delta)
   && 
-  (*(uint64_t*)(group1->aggr_record + field1_offset) <= 
-   *(uint16_t*)(group2->aggr_record + field2_offset) + delta);  
+  (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+   *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);  
   
 }
 
@@ -5296,15 +5296,15 @@ merger_eq_uint64_t_uint32_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint64_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint32_t*)(group2->aggr_record + field2_offset) - delta)
+  return (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) - delta)
   && 
-  (*(uint64_t*)(group1->aggr_record + field1_offset) <= 
-   *(uint32_t*)(group2->aggr_record + field2_offset) + delta);  
+  (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+   *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);  
   
 }
 
@@ -5315,15 +5315,15 @@ merger_eq_uint64_t_uint64_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint64_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint64_t*)(group2->aggr_record + field2_offset) - delta)
+  return (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) - delta)
   && 
-  (*(uint64_t*)(group1->aggr_record + field1_offset) <= 
-   *(uint64_t*)(group2->aggr_record + field2_offset) + delta);  
+  (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+   *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);  
   
 }
 
@@ -5334,15 +5334,15 @@ merger_ne_uint8_t_uint8_t(struct group *group1,
                           size_t field2_offset, 
                           uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint8_t*)(group1->aggr_record + field1_offset) < 
-          *(uint8_t*)(group2->aggr_record + field2_offset) - delta) 
+  return (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) - delta) 
   || 
-  (*(uint8_t*)(group1->aggr_record + field1_offset) > 
-   *(uint8_t*)(group2->aggr_record + field2_offset) + delta);          
+  (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+   *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);          
 }
 
 bool 
@@ -5352,15 +5352,15 @@ merger_ne_uint8_t_uint16_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint8_t*)(group1->aggr_record + field1_offset) < 
-          *(uint16_t*)(group2->aggr_record + field2_offset) - delta) 
+  return (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) - delta) 
   || 
-  (*(uint8_t*)(group1->aggr_record + field1_offset) > 
-   *(uint16_t*)(group2->aggr_record + field2_offset) + delta);          
+  (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+   *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);          
 }
 
 bool 
@@ -5370,15 +5370,15 @@ merger_ne_uint8_t_uint32_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint8_t*)(group1->aggr_record + field1_offset) < 
-          *(uint32_t*)(group2->aggr_record + field2_offset) - delta) 
+  return (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) - delta) 
   || 
-  (*(uint8_t*)(group1->aggr_record + field1_offset) > 
-   *(uint32_t*)(group2->aggr_record + field2_offset) + delta);          
+  (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+   *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);          
 }
 
 bool 
@@ -5388,15 +5388,15 @@ merger_ne_uint8_t_uint64_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint8_t*)(group1->aggr_record + field1_offset) < 
-          *(uint64_t*)(group2->aggr_record + field2_offset) - delta) 
+  return (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) - delta) 
   || 
-  (*(uint8_t*)(group1->aggr_record + field1_offset) > 
-   *(uint64_t*)(group2->aggr_record + field2_offset) + delta);          
+  (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+   *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);          
 }
 
 bool 
@@ -5406,15 +5406,15 @@ merger_ne_uint16_t_uint8_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint16_t*)(group1->aggr_record + field1_offset) < 
-          *(uint8_t*)(group2->aggr_record + field2_offset) - delta) 
+  return (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) - delta) 
   || 
-  (*(uint16_t*)(group1->aggr_record + field1_offset) > 
-   *(uint8_t*)(group2->aggr_record + field2_offset) + delta);          
+  (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+   *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);          
 }
 
 bool 
@@ -5424,15 +5424,15 @@ merger_ne_uint16_t_uint16_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint16_t*)(group1->aggr_record + field1_offset) < 
-          *(uint16_t*)(group2->aggr_record + field2_offset) - delta) 
+  return (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) - delta) 
   || 
-  (*(uint16_t*)(group1->aggr_record + field1_offset) > 
-   *(uint16_t*)(group2->aggr_record + field2_offset) + delta);          
+  (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+   *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);          
 }
 
 bool 
@@ -5442,15 +5442,15 @@ merger_ne_uint16_t_uint32_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint16_t*)(group1->aggr_record + field1_offset) < 
-          *(uint32_t*)(group2->aggr_record + field2_offset) - delta) 
+  return (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) - delta) 
   || 
-  (*(uint16_t*)(group1->aggr_record + field1_offset) > 
-   *(uint32_t*)(group2->aggr_record + field2_offset) + delta);          
+  (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+   *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);          
 }
 
 bool 
@@ -5460,15 +5460,15 @@ merger_ne_uint16_t_uint64_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint16_t*)(group1->aggr_record + field1_offset) < 
-          *(uint64_t*)(group2->aggr_record + field2_offset) - delta) 
+  return (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) - delta) 
   || 
-  (*(uint16_t*)(group1->aggr_record + field1_offset) > 
-   *(uint64_t*)(group2->aggr_record + field2_offset) + delta);          
+  (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+   *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);          
 }
 
 bool 
@@ -5478,15 +5478,15 @@ merger_ne_uint32_t_uint8_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint32_t*)(group1->aggr_record + field1_offset) < 
-          *(uint8_t*)(group2->aggr_record + field2_offset) - delta) 
+  return (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) - delta) 
   || 
-  (*(uint32_t*)(group1->aggr_record + field1_offset) > 
-   *(uint8_t*)(group2->aggr_record + field2_offset) + delta);          
+  (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+   *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);          
 }
 
 bool 
@@ -5496,15 +5496,15 @@ merger_ne_uint32_t_uint16_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint32_t*)(group1->aggr_record + field1_offset) < 
-          *(uint16_t*)(group2->aggr_record + field2_offset) - delta) 
+  return (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) - delta) 
   || 
-  (*(uint32_t*)(group1->aggr_record + field1_offset) > 
-   *(uint16_t*)(group2->aggr_record + field2_offset) + delta);          
+  (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+   *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);          
 }
 
 bool 
@@ -5514,15 +5514,15 @@ merger_ne_uint32_t_uint32_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint32_t*)(group1->aggr_record + field1_offset) < 
-          *(uint32_t*)(group2->aggr_record + field2_offset) - delta) 
+  return (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) - delta) 
   || 
-  (*(uint32_t*)(group1->aggr_record + field1_offset) > 
-   *(uint32_t*)(group2->aggr_record + field2_offset) + delta);          
+  (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+   *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);          
 }
 
 bool 
@@ -5532,15 +5532,15 @@ merger_ne_uint32_t_uint64_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint32_t*)(group1->aggr_record + field1_offset) < 
-          *(uint64_t*)(group2->aggr_record + field2_offset) - delta) 
+  return (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) - delta) 
   || 
-  (*(uint32_t*)(group1->aggr_record + field1_offset) > 
-   *(uint64_t*)(group2->aggr_record + field2_offset) + delta);          
+  (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+   *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);          
 }
 
 bool 
@@ -5550,15 +5550,15 @@ merger_ne_uint64_t_uint8_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint64_t*)(group1->aggr_record + field1_offset) < 
-          *(uint8_t*)(group2->aggr_record + field2_offset) - delta) 
+  return (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) - delta) 
   || 
-  (*(uint64_t*)(group1->aggr_record + field1_offset) > 
-   *(uint8_t*)(group2->aggr_record + field2_offset) + delta);          
+  (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+   *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);          
 }
 
 bool 
@@ -5568,15 +5568,15 @@ merger_ne_uint64_t_uint16_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint64_t*)(group1->aggr_record + field1_offset) < 
-          *(uint16_t*)(group2->aggr_record + field2_offset) - delta) 
+  return (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) - delta) 
   || 
-  (*(uint64_t*)(group1->aggr_record + field1_offset) > 
-   *(uint16_t*)(group2->aggr_record + field2_offset) + delta);          
+  (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+   *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);          
 }
 
 bool 
@@ -5586,15 +5586,15 @@ merger_ne_uint64_t_uint32_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint64_t*)(group1->aggr_record + field1_offset) < 
-          *(uint32_t*)(group2->aggr_record + field2_offset) - delta) 
+  return (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) - delta) 
   || 
-  (*(uint64_t*)(group1->aggr_record + field1_offset) > 
-   *(uint32_t*)(group2->aggr_record + field2_offset) + delta);          
+  (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+   *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);          
 }
 
 bool 
@@ -5604,15 +5604,15 @@ merger_ne_uint64_t_uint64_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint64_t*)(group1->aggr_record + field1_offset) < 
-          *(uint64_t*)(group2->aggr_record + field2_offset) - delta) 
+  return (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) - delta) 
   || 
-  (*(uint64_t*)(group1->aggr_record + field1_offset) > 
-   *(uint64_t*)(group2->aggr_record + field2_offset) + delta);          
+  (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+   *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);          
 }
 
 bool 
@@ -5622,12 +5622,12 @@ merger_lt_uint8_t_uint8_t(struct group *group1,
                           size_t field2_offset, 
                           uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint8_t*)(group1->aggr_record + field1_offset) < 
-          *(uint8_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -5638,12 +5638,12 @@ merger_lt_uint8_t_uint16_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint8_t*)(group1->aggr_record + field1_offset) < 
-          *(uint16_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -5654,12 +5654,12 @@ merger_lt_uint8_t_uint32_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint8_t*)(group1->aggr_record + field1_offset) < 
-          *(uint32_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -5670,12 +5670,12 @@ merger_lt_uint8_t_uint64_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint8_t*)(group1->aggr_record + field1_offset) < 
-          *(uint64_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -5686,12 +5686,12 @@ merger_lt_uint16_t_uint8_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint16_t*)(group1->aggr_record + field1_offset) < 
-          *(uint8_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -5702,12 +5702,12 @@ merger_lt_uint16_t_uint16_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint16_t*)(group1->aggr_record + field1_offset) < 
-          *(uint16_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -5718,12 +5718,12 @@ merger_lt_uint16_t_uint32_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint16_t*)(group1->aggr_record + field1_offset) < 
-          *(uint32_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -5734,12 +5734,12 @@ merger_lt_uint16_t_uint64_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint16_t*)(group1->aggr_record + field1_offset) < 
-          *(uint64_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -5750,12 +5750,12 @@ merger_lt_uint32_t_uint8_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint32_t*)(group1->aggr_record + field1_offset) < 
-          *(uint8_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -5766,12 +5766,12 @@ merger_lt_uint32_t_uint16_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint32_t*)(group1->aggr_record + field1_offset) < 
-          *(uint16_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -5782,12 +5782,12 @@ merger_lt_uint32_t_uint32_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint32_t*)(group1->aggr_record + field1_offset) < 
-          *(uint32_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -5798,12 +5798,12 @@ merger_lt_uint32_t_uint64_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint32_t*)(group1->aggr_record + field1_offset) < 
-          *(uint64_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -5814,12 +5814,12 @@ merger_lt_uint64_t_uint8_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint64_t*)(group1->aggr_record + field1_offset) < 
-          *(uint8_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -5830,12 +5830,12 @@ merger_lt_uint64_t_uint16_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint64_t*)(group1->aggr_record + field1_offset) < 
-          *(uint16_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -5846,12 +5846,12 @@ merger_lt_uint64_t_uint32_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint64_t*)(group1->aggr_record + field1_offset) < 
-          *(uint32_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -5862,12 +5862,12 @@ merger_lt_uint64_t_uint64_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint64_t*)(group1->aggr_record + field1_offset) < 
-          *(uint64_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) < 
+          *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -5878,12 +5878,12 @@ merger_gt_uint8_t_uint8_t(struct group *group1,
                           size_t field2_offset, 
                           uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint8_t*)(group1->aggr_record + field1_offset) > 
-          *(uint8_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+          *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -5894,12 +5894,12 @@ merger_gt_uint8_t_uint16_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint8_t*)(group1->aggr_record + field1_offset) > 
-          *(uint16_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+          *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -5910,12 +5910,12 @@ merger_gt_uint8_t_uint32_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint8_t*)(group1->aggr_record + field1_offset) > 
-          *(uint32_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+          *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -5926,12 +5926,12 @@ merger_gt_uint8_t_uint64_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint8_t*)(group1->aggr_record + field1_offset) > 
-          *(uint64_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+          *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -5942,12 +5942,12 @@ merger_gt_uint16_t_uint8_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint16_t*)(group1->aggr_record + field1_offset) > 
-          *(uint8_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+          *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -5958,12 +5958,12 @@ merger_gt_uint16_t_uint16_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint16_t*)(group1->aggr_record + field1_offset) > 
-          *(uint16_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+          *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -5974,12 +5974,12 @@ merger_gt_uint16_t_uint32_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint16_t*)(group1->aggr_record + field1_offset) > 
-          *(uint32_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+          *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -5990,12 +5990,12 @@ merger_gt_uint16_t_uint64_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint16_t*)(group1->aggr_record + field1_offset) > 
-          *(uint64_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+          *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -6006,12 +6006,12 @@ merger_gt_uint32_t_uint8_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint32_t*)(group1->aggr_record + field1_offset) > 
-          *(uint8_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+          *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -6022,12 +6022,12 @@ merger_gt_uint32_t_uint16_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint32_t*)(group1->aggr_record + field1_offset) > 
-          *(uint16_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+          *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -6038,12 +6038,12 @@ merger_gt_uint32_t_uint32_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint32_t*)(group1->aggr_record + field1_offset) > 
-          *(uint32_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+          *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -6054,12 +6054,12 @@ merger_gt_uint32_t_uint64_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint32_t*)(group1->aggr_record + field1_offset) > 
-          *(uint64_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+          *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -6070,12 +6070,12 @@ merger_gt_uint64_t_uint8_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint64_t*)(group1->aggr_record + field1_offset) > 
-          *(uint8_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+          *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -6086,12 +6086,12 @@ merger_gt_uint64_t_uint16_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint64_t*)(group1->aggr_record + field1_offset) > 
-          *(uint16_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+          *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -6102,12 +6102,12 @@ merger_gt_uint64_t_uint32_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint64_t*)(group1->aggr_record + field1_offset) > 
-          *(uint32_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+          *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -6118,12 +6118,12 @@ merger_gt_uint64_t_uint64_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint64_t*)(group1->aggr_record + field1_offset) > 
-          *(uint64_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) > 
+          *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -6134,12 +6134,12 @@ merger_le_uint8_t_uint8_t(struct group *group1,
                           size_t field2_offset, 
                           uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint8_t*)(group1->aggr_record + field1_offset) <= 
-          *(uint8_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+          *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -6150,12 +6150,12 @@ merger_le_uint8_t_uint16_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint8_t*)(group1->aggr_record + field1_offset) <= 
-          *(uint16_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+          *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -6166,12 +6166,12 @@ merger_le_uint8_t_uint32_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint8_t*)(group1->aggr_record + field1_offset) <= 
-          *(uint32_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+          *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -6182,12 +6182,12 @@ merger_le_uint8_t_uint64_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint8_t*)(group1->aggr_record + field1_offset) <= 
-          *(uint64_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+          *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -6198,12 +6198,12 @@ merger_le_uint16_t_uint8_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint16_t*)(group1->aggr_record + field1_offset) <= 
-          *(uint8_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+          *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -6214,12 +6214,12 @@ merger_le_uint16_t_uint16_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint16_t*)(group1->aggr_record + field1_offset) <= 
-          *(uint16_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+          *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -6230,12 +6230,12 @@ merger_le_uint16_t_uint32_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint16_t*)(group1->aggr_record + field1_offset) <= 
-          *(uint32_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+          *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -6246,12 +6246,12 @@ merger_le_uint16_t_uint64_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint16_t*)(group1->aggr_record + field1_offset) <= 
-          *(uint64_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+          *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -6262,12 +6262,12 @@ merger_le_uint32_t_uint8_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint32_t*)(group1->aggr_record + field1_offset) <= 
-          *(uint8_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+          *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -6278,12 +6278,12 @@ merger_le_uint32_t_uint16_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint32_t*)(group1->aggr_record + field1_offset) <= 
-          *(uint16_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+          *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -6294,12 +6294,12 @@ merger_le_uint32_t_uint32_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint32_t*)(group1->aggr_record + field1_offset) <= 
-          *(uint32_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+          *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -6310,12 +6310,12 @@ merger_le_uint32_t_uint64_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint32_t*)(group1->aggr_record + field1_offset) <= 
-          *(uint64_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+          *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -6326,12 +6326,12 @@ merger_le_uint64_t_uint8_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint64_t*)(group1->aggr_record + field1_offset) <= 
-          *(uint8_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+          *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -6342,12 +6342,12 @@ merger_le_uint64_t_uint16_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint64_t*)(group1->aggr_record + field1_offset) <= 
-          *(uint16_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+          *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -6358,12 +6358,12 @@ merger_le_uint64_t_uint32_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint64_t*)(group1->aggr_record + field1_offset) <= 
-          *(uint32_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+          *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -6374,12 +6374,12 @@ merger_le_uint64_t_uint64_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint64_t*)(group1->aggr_record + field1_offset) <= 
-          *(uint64_t*)(group2->aggr_record + field2_offset) + delta);
+  return (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) <= 
+          *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) + delta);
   
 }
 
@@ -6390,12 +6390,12 @@ merger_ge_uint8_t_uint8_t(struct group *group1,
                           size_t field2_offset, 
                           uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint8_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint8_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -6406,12 +6406,12 @@ merger_ge_uint8_t_uint16_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint8_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint16_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -6422,12 +6422,12 @@ merger_ge_uint8_t_uint32_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint8_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint32_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -6438,12 +6438,12 @@ merger_ge_uint8_t_uint64_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint8_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint64_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -6454,12 +6454,12 @@ merger_ge_uint16_t_uint8_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint16_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint8_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -6470,12 +6470,12 @@ merger_ge_uint16_t_uint16_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint16_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint16_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -6486,12 +6486,12 @@ merger_ge_uint16_t_uint32_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint16_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint32_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -6502,12 +6502,12 @@ merger_ge_uint16_t_uint64_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint16_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint64_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -6518,12 +6518,12 @@ merger_ge_uint32_t_uint8_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint32_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint8_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -6534,12 +6534,12 @@ merger_ge_uint32_t_uint16_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint32_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint16_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -6550,12 +6550,12 @@ merger_ge_uint32_t_uint32_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint32_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint32_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -6566,12 +6566,12 @@ merger_ge_uint32_t_uint64_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint32_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint64_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -6582,12 +6582,12 @@ merger_ge_uint64_t_uint8_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint64_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint8_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -6598,12 +6598,12 @@ merger_ge_uint64_t_uint16_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint64_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint16_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -6614,12 +6614,12 @@ merger_ge_uint64_t_uint32_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint64_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint32_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -6630,12 +6630,12 @@ merger_ge_uint64_t_uint64_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  return (*(uint64_t*)(group1->aggr_record + field1_offset) >= 
-          *(uint64_t*)(group2->aggr_record + field2_offset) - delta);
+  return (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) >= 
+          *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) - delta);
   
 }
 
@@ -6646,12 +6646,12 @@ merger_in_uint8_t_uint8_t(struct group *group1,
                           size_t field2_offset, 
                           uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  for (int i=0; i<group2->aggrset[field2_offset]->num_values; i++) {
-    if (group1->aggrset[field1_offset]->values[0] >= group2->aggrset[field2_offset]->values[i] - delta && group1->aggrset[field1_offset]->values[0] <= group2->aggrset[field2_offset]->values[i] + delta) {
+  for (int i=0; i<group2->aggr_result->aggrset[field2_offset]->num_values; i++) {
+    if (group1->aggr_result->aggrset[field1_offset]->values[0] >= group2->aggr_result->aggrset[field2_offset]->values[i] - delta && group1->aggr_result->aggrset[field1_offset]->values[0] <= group2->aggr_result->aggrset[field2_offset]->values[i] + delta) {
       return true;
     }
   }
@@ -6665,12 +6665,12 @@ merger_in_uint8_t_uint16_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  for (int i=0; i<group2->aggrset[field2_offset]->num_values; i++) {
-    if (group1->aggrset[field1_offset]->values[0] >= group2->aggrset[field2_offset]->values[i] - delta && group1->aggrset[field1_offset]->values[0] <= group2->aggrset[field2_offset]->values[i] + delta) {
+  for (int i=0; i<group2->aggr_result->aggrset[field2_offset]->num_values; i++) {
+    if (group1->aggr_result->aggrset[field1_offset]->values[0] >= group2->aggr_result->aggrset[field2_offset]->values[i] - delta && group1->aggr_result->aggrset[field1_offset]->values[0] <= group2->aggr_result->aggrset[field2_offset]->values[i] + delta) {
       return true;
     }
   }
@@ -6684,12 +6684,12 @@ merger_in_uint8_t_uint32_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  for (int i=0; i<group2->aggrset[field2_offset]->num_values; i++) {
-    if (group1->aggrset[field1_offset]->values[0] >= group2->aggrset[field2_offset]->values[i] - delta && group1->aggrset[field1_offset]->values[0] <= group2->aggrset[field2_offset]->values[i] + delta) {
+  for (int i=0; i<group2->aggr_result->aggrset[field2_offset]->num_values; i++) {
+    if (group1->aggr_result->aggrset[field1_offset]->values[0] >= group2->aggr_result->aggrset[field2_offset]->values[i] - delta && group1->aggr_result->aggrset[field1_offset]->values[0] <= group2->aggr_result->aggrset[field2_offset]->values[i] + delta) {
       return true;
     }
   }
@@ -6703,12 +6703,12 @@ merger_in_uint8_t_uint64_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint8_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint8_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  for (int i=0; i<group2->aggrset[field2_offset]->num_values; i++) {
-    if (group1->aggrset[field1_offset]->values[0] >= group2->aggrset[field2_offset]->values[i] - delta && group1->aggrset[field1_offset]->values[0] <= group2->aggrset[field2_offset]->values[i] + delta) {
+  for (int i=0; i<group2->aggr_result->aggrset[field2_offset]->num_values; i++) {
+    if (group1->aggr_result->aggrset[field1_offset]->values[0] >= group2->aggr_result->aggrset[field2_offset]->values[i] - delta && group1->aggr_result->aggrset[field1_offset]->values[0] <= group2->aggr_result->aggrset[field2_offset]->values[i] + delta) {
       return true;
     }
   }
@@ -6722,12 +6722,12 @@ merger_in_uint16_t_uint8_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  for (int i=0; i<group2->aggrset[field2_offset]->num_values; i++) {
-    if (group1->aggrset[field1_offset]->values[0] >= group2->aggrset[field2_offset]->values[i] - delta && group1->aggrset[field1_offset]->values[0] <= group2->aggrset[field2_offset]->values[i] + delta) {
+  for (int i=0; i<group2->aggr_result->aggrset[field2_offset]->num_values; i++) {
+    if (group1->aggr_result->aggrset[field1_offset]->values[0] >= group2->aggr_result->aggrset[field2_offset]->values[i] - delta && group1->aggr_result->aggrset[field1_offset]->values[0] <= group2->aggr_result->aggrset[field2_offset]->values[i] + delta) {
       return true;
     }
   }
@@ -6741,12 +6741,12 @@ merger_in_uint16_t_uint16_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  for (int i=0; i<group2->aggrset[field2_offset]->num_values; i++) {
-    if (group1->aggrset[field1_offset]->values[0] >= group2->aggrset[field2_offset]->values[i] - delta && group1->aggrset[field1_offset]->values[0] <= group2->aggrset[field2_offset]->values[i] + delta) {
+  for (int i=0; i<group2->aggr_result->aggrset[field2_offset]->num_values; i++) {
+    if (group1->aggr_result->aggrset[field1_offset]->values[0] >= group2->aggr_result->aggrset[field2_offset]->values[i] - delta && group1->aggr_result->aggrset[field1_offset]->values[0] <= group2->aggr_result->aggrset[field2_offset]->values[i] + delta) {
       return true;
     }
   }
@@ -6760,12 +6760,12 @@ merger_in_uint16_t_uint32_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  for (int i=0; i<group2->aggrset[field2_offset]->num_values; i++) {
-    if (group1->aggrset[field1_offset]->values[0] >= group2->aggrset[field2_offset]->values[i] - delta && group1->aggrset[field1_offset]->values[0] <= group2->aggrset[field2_offset]->values[i] + delta) {
+  for (int i=0; i<group2->aggr_result->aggrset[field2_offset]->num_values; i++) {
+    if (group1->aggr_result->aggrset[field1_offset]->values[0] >= group2->aggr_result->aggrset[field2_offset]->values[i] - delta && group1->aggr_result->aggrset[field1_offset]->values[0] <= group2->aggr_result->aggrset[field2_offset]->values[i] + delta) {
       return true;
     }
   }
@@ -6779,12 +6779,12 @@ merger_in_uint16_t_uint64_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint16_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint16_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  for (int i=0; i<group2->aggrset[field2_offset]->num_values; i++) {
-    if (group1->aggrset[field1_offset]->values[0] >= group2->aggrset[field2_offset]->values[i] - delta && group1->aggrset[field1_offset]->values[0] <= group2->aggrset[field2_offset]->values[i] + delta) {
+  for (int i=0; i<group2->aggr_result->aggrset[field2_offset]->num_values; i++) {
+    if (group1->aggr_result->aggrset[field1_offset]->values[0] >= group2->aggr_result->aggrset[field2_offset]->values[i] - delta && group1->aggr_result->aggrset[field1_offset]->values[0] <= group2->aggr_result->aggrset[field2_offset]->values[i] + delta) {
       return true;
     }
   }
@@ -6798,12 +6798,12 @@ merger_in_uint32_t_uint8_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  for (int i=0; i<group2->aggrset[field2_offset]->num_values; i++) {
-    if (group1->aggrset[field1_offset]->values[0] >= group2->aggrset[field2_offset]->values[i] - delta && group1->aggrset[field1_offset]->values[0] <= group2->aggrset[field2_offset]->values[i] + delta) {
+  for (int i=0; i<group2->aggr_result->aggrset[field2_offset]->num_values; i++) {
+    if (group1->aggr_result->aggrset[field1_offset]->values[0] >= group2->aggr_result->aggrset[field2_offset]->values[i] - delta && group1->aggr_result->aggrset[field1_offset]->values[0] <= group2->aggr_result->aggrset[field2_offset]->values[i] + delta) {
       return true;
     }
   }
@@ -6817,12 +6817,12 @@ merger_in_uint32_t_uint16_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  for (int i=0; i<group2->aggrset[field2_offset]->num_values; i++) {
-    if (group1->aggrset[field1_offset]->values[0] >= group2->aggrset[field2_offset]->values[i] - delta && group1->aggrset[field1_offset]->values[0] <= group2->aggrset[field2_offset]->values[i] + delta) {
+  for (int i=0; i<group2->aggr_result->aggrset[field2_offset]->num_values; i++) {
+    if (group1->aggr_result->aggrset[field1_offset]->values[0] >= group2->aggr_result->aggrset[field2_offset]->values[i] - delta && group1->aggr_result->aggrset[field1_offset]->values[0] <= group2->aggr_result->aggrset[field2_offset]->values[i] + delta) {
       return true;
     }
   }
@@ -6836,12 +6836,12 @@ merger_in_uint32_t_uint32_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  for (int i=0; i<group2->aggrset[field2_offset]->num_values; i++) {
-    if (group1->aggrset[field1_offset]->values[0] >= group2->aggrset[field2_offset]->values[i] - delta && group1->aggrset[field1_offset]->values[0] <= group2->aggrset[field2_offset]->values[i] + delta) {
+  for (int i=0; i<group2->aggr_result->aggrset[field2_offset]->num_values; i++) {
+    if (group1->aggr_result->aggrset[field1_offset]->values[0] >= group2->aggr_result->aggrset[field2_offset]->values[i] - delta && group1->aggr_result->aggrset[field1_offset]->values[0] <= group2->aggr_result->aggrset[field2_offset]->values[i] + delta) {
       return true;
     }
   }
@@ -6855,12 +6855,12 @@ merger_in_uint32_t_uint64_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint32_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint32_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  for (int i=0; i<group2->aggrset[field2_offset]->num_values; i++) {
-    if (group1->aggrset[field1_offset]->values[0] >= group2->aggrset[field2_offset]->values[i] - delta && group1->aggrset[field1_offset]->values[0] <= group2->aggrset[field2_offset]->values[i] + delta) {
+  for (int i=0; i<group2->aggr_result->aggrset[field2_offset]->num_values; i++) {
+    if (group1->aggr_result->aggrset[field1_offset]->values[0] >= group2->aggr_result->aggrset[field2_offset]->values[i] - delta && group1->aggr_result->aggrset[field1_offset]->values[0] <= group2->aggr_result->aggrset[field2_offset]->values[i] + delta) {
       return true;
     }
   }
@@ -6874,12 +6874,12 @@ merger_in_uint64_t_uint8_t(struct group *group1,
                            size_t field2_offset, 
                            uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint8_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint8_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  for (int i=0; i<group2->aggrset[field2_offset]->num_values; i++) {
-    if (group1->aggrset[field1_offset]->values[0] >= group2->aggrset[field2_offset]->values[i] - delta && group1->aggrset[field1_offset]->values[0] <= group2->aggrset[field2_offset]->values[i] + delta) {
+  for (int i=0; i<group2->aggr_result->aggrset[field2_offset]->num_values; i++) {
+    if (group1->aggr_result->aggrset[field1_offset]->values[0] >= group2->aggr_result->aggrset[field2_offset]->values[i] - delta && group1->aggr_result->aggrset[field1_offset]->values[0] <= group2->aggr_result->aggrset[field2_offset]->values[i] + delta) {
       return true;
     }
   }
@@ -6893,12 +6893,12 @@ merger_in_uint64_t_uint16_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint16_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint16_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  for (int i=0; i<group2->aggrset[field2_offset]->num_values; i++) {
-    if (group1->aggrset[field1_offset]->values[0] >= group2->aggrset[field2_offset]->values[i] - delta && group1->aggrset[field1_offset]->values[0] <= group2->aggrset[field2_offset]->values[i] + delta) {
+  for (int i=0; i<group2->aggr_result->aggrset[field2_offset]->num_values; i++) {
+    if (group1->aggr_result->aggrset[field1_offset]->values[0] >= group2->aggr_result->aggrset[field2_offset]->values[i] - delta && group1->aggr_result->aggrset[field1_offset]->values[0] <= group2->aggr_result->aggrset[field2_offset]->values[i] + delta) {
       return true;
     }
   }
@@ -6912,12 +6912,12 @@ merger_in_uint64_t_uint32_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint32_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint32_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  for (int i=0; i<group2->aggrset[field2_offset]->num_values; i++) {
-    if (group1->aggrset[field1_offset]->values[0] >= group2->aggrset[field2_offset]->values[i] - delta && group1->aggrset[field1_offset]->values[0] <= group2->aggrset[field2_offset]->values[i] + delta) {
+  for (int i=0; i<group2->aggr_result->aggrset[field2_offset]->num_values; i++) {
+    if (group1->aggr_result->aggrset[field1_offset]->values[0] >= group2->aggr_result->aggrset[field2_offset]->values[i] - delta && group1->aggr_result->aggrset[field1_offset]->values[0] <= group2->aggr_result->aggrset[field2_offset]->values[i] + delta) {
       return true;
     }
   }
@@ -6931,12 +6931,12 @@ merger_in_uint64_t_uint64_t(struct group *group1,
                             size_t field2_offset, 
                             uint64_t delta) {
   
-  if (*(uint64_t*)(group1->aggr_record + field1_offset) == 0 ||
-      *(uint64_t*)(group2->aggr_record + field2_offset) == 0)
+  if (*(uint64_t*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||
+      *(uint64_t*)(group2->aggr_result->aggr_record + field2_offset) == 0)
     return false;
   
-  for (int i=0; i<group2->aggrset[field2_offset]->num_values; i++) {
-    if (group1->aggrset[field1_offset]->values[0] >= group2->aggrset[field2_offset]->values[i] - delta && group1->aggrset[field1_offset]->values[0] <= group2->aggrset[field2_offset]->values[i] + delta) {
+  for (int i=0; i<group2->aggr_result->aggrset[field2_offset]->num_values; i++) {
+    if (group1->aggr_result->aggrset[field1_offset]->values[0] >= group2->aggr_result->aggrset[field2_offset]->values[i] - delta && group1->aggr_result->aggrset[field1_offset]->values[0] <= group2->aggr_result->aggrset[field2_offset]->values[i] + delta) {
       return true;
     }
   }
@@ -6950,8 +6950,8 @@ merger_allen_bf(struct group *group1,
                 size_t field2_offset, 
                 uint64_t delta) {
   
-  uint32_t* t1 = (u_int32_t*)(group1->aggr_record + field1_offset);
-  uint32_t* t2 = (u_int32_t*)(group2->aggr_record + field2_offset);
+  uint32_t* t1 = (u_int32_t*)(group1->aggr_result->aggr_record + field1_offset);
+  uint32_t* t2 = (u_int32_t*)(group2->aggr_result->aggr_record + field2_offset);
   return *t1 < *t2;
 }
 
@@ -6962,8 +6962,8 @@ merger_allen_af(struct group *group1,
                 size_t field2_offset, 
                 uint64_t delta) {
   
-  uint32_t* t1 = (u_int32_t*)(group1->aggr_record + field1_offset);
-  uint32_t* t2 = (u_int32_t*)(group2->aggr_record + field2_offset);
+  uint32_t* t1 = (u_int32_t*)(group1->aggr_result->aggr_record + field1_offset);
+  uint32_t* t2 = (u_int32_t*)(group2->aggr_result->aggr_record + field2_offset);
   return *t1 > *t2;
 }
 
@@ -6974,8 +6974,8 @@ merger_allen_m(struct group *group1,
                size_t field2_offset, 
                uint64_t delta) {
   
-  uint32_t* t1 = (u_int32_t*)(group1->aggr_record + field1_offset);
-  uint32_t* t2 = (u_int32_t*)(group2->aggr_record + field2_offset);
+  uint32_t* t1 = (u_int32_t*)(group1->aggr_result->aggr_record + field1_offset);
+  uint32_t* t2 = (u_int32_t*)(group2->aggr_result->aggr_record + field2_offset);
   return *t1 == *t2;
 }
 
@@ -6986,8 +6986,8 @@ merger_allen_mi(struct group *group1,
                 size_t field2_offset, 
                 uint64_t delta) {
   
-  uint32_t* t1 = (u_int32_t*)(group1->aggr_record + field1_offset);
-  uint32_t* t2 = (u_int32_t*)(group2->aggr_record + field2_offset);
+  uint32_t* t1 = (u_int32_t*)(group1->aggr_result->aggr_record + field1_offset);
+  uint32_t* t2 = (u_int32_t*)(group2->aggr_result->aggr_record + field2_offset);
   return *t1 == *t2;
 }
 
@@ -6998,8 +6998,8 @@ merger_allen_o(struct group *group1,
                size_t field2_offset, 
                uint64_t delta) {
   
-  uint32_t* t1 = (u_int32_t*)(group1->aggr_record + field1_offset);
-  uint32_t* t2 = (u_int32_t*)(group2->aggr_record + field2_offset);
+  uint32_t* t1 = (u_int32_t*)(group1->aggr_result->aggr_record + field1_offset);
+  uint32_t* t2 = (u_int32_t*)(group2->aggr_result->aggr_record + field2_offset);
   return *t1 < *t2 && *t1 > *t2;
 }
 
@@ -7010,8 +7010,8 @@ merger_allen_oi(struct group *group1,
                 size_t field2_offset, 
                 uint64_t delta) {
   
-  uint32_t* t1 = (u_int32_t*)(group1->aggr_record + field1_offset);
-  uint32_t* t2 = (u_int32_t*)(group2->aggr_record + field2_offset);
+  uint32_t* t1 = (u_int32_t*)(group1->aggr_result->aggr_record + field1_offset);
+  uint32_t* t2 = (u_int32_t*)(group2->aggr_result->aggr_record + field2_offset);
   return *t1 > *t2 && *t1 < *t2;
 }
 
@@ -7022,8 +7022,8 @@ merger_allen_s(struct group *group1,
                size_t field2_offset, 
                uint64_t delta) {
   
-  uint32_t* t1 = (u_int32_t*)(group1->aggr_record + field1_offset);
-  uint32_t* t2 = (u_int32_t*)(group2->aggr_record + field2_offset);
+  uint32_t* t1 = (u_int32_t*)(group1->aggr_result->aggr_record + field1_offset);
+  uint32_t* t2 = (u_int32_t*)(group2->aggr_result->aggr_record + field2_offset);
   return *t1 == *t2 && *t1 < *t2;
 }
 
@@ -7034,8 +7034,8 @@ merger_allen_si(struct group *group1,
                 size_t field2_offset, 
                 uint64_t delta) {
   
-  uint32_t* t1 = (u_int32_t*)(group1->aggr_record + field1_offset);
-  uint32_t* t2 = (u_int32_t*)(group2->aggr_record + field2_offset);
+  uint32_t* t1 = (u_int32_t*)(group1->aggr_result->aggr_record + field1_offset);
+  uint32_t* t2 = (u_int32_t*)(group2->aggr_result->aggr_record + field2_offset);
   return *t1 == *t2 && *t1 > *t2;
 }
 
@@ -7046,8 +7046,8 @@ merger_allen_d(struct group *group1,
                size_t field2_offset, 
                uint64_t delta) {
   
-  uint32_t* t1 = (u_int32_t*)(group1->aggr_record + field1_offset);
-  uint32_t* t2 = (u_int32_t*)(group2->aggr_record + field2_offset);
+  uint32_t* t1 = (u_int32_t*)(group1->aggr_result->aggr_record + field1_offset);
+  uint32_t* t2 = (u_int32_t*)(group2->aggr_result->aggr_record + field2_offset);
   return *t1 > *t2 && *t1 < *t2;
 }
 
@@ -7058,8 +7058,8 @@ merger_allen_di(struct group *group1,
                 size_t field2_offset, 
                 uint64_t delta) {
   
-  uint32_t* t1 = (u_int32_t*)(group1->aggr_record + field1_offset);
-  uint32_t* t2 = (u_int32_t*)(group2->aggr_record + field2_offset);
+  uint32_t* t1 = (u_int32_t*)(group1->aggr_result->aggr_record + field1_offset);
+  uint32_t* t2 = (u_int32_t*)(group2->aggr_result->aggr_record + field2_offset);
   return *t1 < *t2 && *t1 > *t2;
 }
 
@@ -7070,8 +7070,8 @@ merger_allen_f(struct group *group1,
                size_t field2_offset, 
                uint64_t delta) {
   
-  uint32_t* t1 = (u_int32_t*)(group1->aggr_record + field1_offset);
-  uint32_t* t2 = (u_int32_t*)(group2->aggr_record + field2_offset);
+  uint32_t* t1 = (u_int32_t*)(group1->aggr_result->aggr_record + field1_offset);
+  uint32_t* t2 = (u_int32_t*)(group2->aggr_result->aggr_record + field2_offset);
   return *t1 == *t2 && *t1 > *t2;
 }
 
@@ -7082,8 +7082,8 @@ merger_allen_fi(struct group *group1,
                 size_t field2_offset, 
                 uint64_t delta) {
   
-  uint32_t* t1 = (u_int32_t*)(group1->aggr_record + field1_offset);
-  uint32_t* t2 = (u_int32_t*)(group2->aggr_record + field2_offset);
+  uint32_t* t1 = (u_int32_t*)(group1->aggr_result->aggr_record + field1_offset);
+  uint32_t* t2 = (u_int32_t*)(group2->aggr_result->aggr_record + field2_offset);
   return *t1 == *t2 && *t1 < *t2;
 }
 
@@ -7094,8 +7094,8 @@ merger_allen_eq(struct group *group1,
                 size_t field2_offset, 
                 uint64_t delta) {
   
-  uint32_t* t1 = (u_int32_t*)(group1->aggr_record + field1_offset);
-  uint32_t* t2 = (u_int32_t*)(group2->aggr_record + field2_offset);
+  uint32_t* t1 = (u_int32_t*)(group1->aggr_result->aggr_record + field1_offset);
+  uint32_t* t2 = (u_int32_t*)(group2->aggr_result->aggr_record + field2_offset);
   return *t1 == *t2 && *t1 == *t2;
 }
 
