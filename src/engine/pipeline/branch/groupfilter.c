@@ -32,8 +32,7 @@ groupfilter(struct group **groupset,
             struct gfilter_rule** ruleset, 
             size_t num_gfilter_rules) {
   
-  /* TODO: when verbose_v is NOT set, when free'd? */
-  /* when verbose_v is set, free'd just before calling merger(...) */
+  /* free'd just before calling ungrouper(...) */
   struct groupfilter_result* 
   gfilter_result = calloc(1, sizeof(struct groupfilter_result));
   if (gfilter_result == NULL)
@@ -63,8 +62,7 @@ groupfilter(struct group **groupset,
     else {      
       gfilter_result->num_filtered_groups += 1;
 
-      /* TODO: when verbose_v is NOT set, when free'd? */
-      /* when verbose_v is set, free'd just before calling merger(...) */
+      /* free'd just after returning from ungrouper(...) */
       gfilter_result->filtered_groupset = (struct group**)
       realloc(gfilter_result->filtered_groupset, 
              (gfilter_result->num_filtered_groups) * sizeof(struct group*));
