@@ -29,7 +29,7 @@
 #include "flowy.h"
 
 struct parameters*
-parse_cmdline_args(int argc, char**argv) {
+parse_cmdline_args(int argc, char** const argv) {
 
   int                                 opt;
   char*                               shortopts = "v:d";
@@ -72,7 +72,7 @@ parse_cmdline_args(int argc, char**argv) {
 }
 
 struct parameters_data*
-read_param_data(struct parameters* param) {
+read_param_data(const struct parameters* const param) {
   
   int                                 fsock;
   
@@ -122,7 +122,7 @@ read_param_data(struct parameters* param) {
 }
 
 struct json*
-parse_json_query(char* query_mmap) {
+parse_json_query(const char* const query_mmap) {
   
   /* free'd after returning from prepare_flowquery(...) */
   struct json* json = calloc(1, sizeof(struct json));
@@ -177,8 +177,8 @@ parse_json_query(char* query_mmap) {
 }
 
 struct flowquery*
-prepare_flowquery(struct ft_data* trace,
-                  struct json* json_query) {
+prepare_flowquery(struct ft_data* const trace,
+                  const struct json* const json_query) {
   
   
   /* -----------------------------------------------------------------------*/  
@@ -456,7 +456,7 @@ prepare_flowquery(struct ft_data* trace,
 }
 
 pthread_t*
-run_branch_async(struct flowquery* fquery){
+run_branch_async(const struct flowquery* const fquery){
   
   /* allocate space for a dedicated thread for each branch */
   /* free'd after returning from this function */
@@ -571,8 +571,7 @@ main(int argc, char **argv) {
   /*                           prepare flowquery                            */
   /* -----------------------------------------------------------------------*/
   
-  struct flowquery* fquery = prepare_flowquery(param_data->trace, 
-                                               json_query); 
+  struct flowquery* fquery = prepare_flowquery(param_data->trace, json_query); 
   if (fquery == NULL)
     errExit("prepare_flowquery(...) returned NULL");
   else {

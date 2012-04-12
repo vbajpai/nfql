@@ -92,19 +92,19 @@ struct json_filter_rule_offset{
 
 
 struct parameters*
-parse_cmdline_args(int argc, char**argv);
+parse_cmdline_args(int argc, char** const argv);
 
 struct parameters_data*
-read_param_data(struct parameters* param);
+read_param_data(const struct parameters* const param);
 
 struct json*
-parse_json_query(char* query_mmap);
+parse_json_query(const char* const query_mmap);
 
 struct flowquery*
-prepare_flowquery(struct ft_data* trace,
-                  struct json* json_query);
+prepare_flowquery(struct ft_data* const trace,
+                  const struct json* const json_query);
 
 pthread_t*
-run_branch_async(struct flowquery* fquery);
+run_branch_async(const struct flowquery* const fquery);
 
 #endif
