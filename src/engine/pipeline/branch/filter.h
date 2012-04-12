@@ -31,8 +31,13 @@
 #include "pipeline.h"
 #include "ftreader.h"
 
-struct filter_result*
-filter(struct branch* branch);
+struct record;
 
+struct filter_result*
+filter(size_t num_records,
+       struct record** const recordset,
+       
+       size_t num_filter_rules,
+       struct filter_rule** const filter_ruleset);
 
 #endif

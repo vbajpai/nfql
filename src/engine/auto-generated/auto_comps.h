@@ -13,122 +13,122 @@
 
 #include <math.h>
 bool 
-filter_eq_uint8_t(char *record, 
+filter_eq_uint8_t(const char* const record, 
                   size_t field_offset, 
                   uint64_t value, 
                   uint64_t delta);
 bool 
-filter_eq_uint16_t(char *record, 
+filter_eq_uint16_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta);
 bool 
-filter_eq_uint32_t(char *record, 
+filter_eq_uint32_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta);
 bool 
-filter_eq_uint64_t(char *record, 
+filter_eq_uint64_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta);
 bool 
-filter_ne_uint8_t(char *record, 
+filter_ne_uint8_t(const char* const record, 
                   size_t field_offset, 
                   uint64_t value, 
                   uint64_t delta);
 bool 
-filter_ne_uint16_t(char *record, 
+filter_ne_uint16_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta);
 bool 
-filter_ne_uint32_t(char *record, 
+filter_ne_uint32_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta);
 bool 
-filter_ne_uint64_t(char *record, 
+filter_ne_uint64_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta);
 bool 
-filter_lt_uint8_t(char *record, 
+filter_lt_uint8_t(const char* const record, 
                   size_t field_offset, 
                   uint64_t value, 
                   uint64_t delta);
 bool 
-filter_lt_uint16_t(char *record, 
+filter_lt_uint16_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta);
 bool 
-filter_lt_uint32_t(char *record, 
+filter_lt_uint32_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta);
 bool 
-filter_lt_uint64_t(char *record, 
+filter_lt_uint64_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta);
 bool 
-filter_gt_uint8_t(char *record, 
+filter_gt_uint8_t(const char* const record, 
                   size_t field_offset, 
                   uint64_t value, 
                   uint64_t delta);
 bool 
-filter_gt_uint16_t(char *record, 
+filter_gt_uint16_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta);
 bool 
-filter_gt_uint32_t(char *record, 
+filter_gt_uint32_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta);
 bool 
-filter_gt_uint64_t(char *record, 
+filter_gt_uint64_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta);
 bool 
-filter_le_uint8_t(char *record, 
+filter_le_uint8_t(const char* const record, 
                   size_t field_offset, 
                   uint64_t value, 
                   uint64_t delta);
 bool 
-filter_le_uint16_t(char *record, 
+filter_le_uint16_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta);
 bool 
-filter_le_uint32_t(char *record, 
+filter_le_uint32_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta);
 bool 
-filter_le_uint64_t(char *record, 
+filter_le_uint64_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta);
 bool 
-filter_ge_uint8_t(char *record, 
+filter_ge_uint8_t(const char* const record, 
                   size_t field_offset, 
                   uint64_t value, 
                   uint64_t delta);
 bool 
-filter_ge_uint16_t(char *record, 
+filter_ge_uint16_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta);
 bool 
-filter_ge_uint32_t(char *record, 
+filter_ge_uint32_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta);
 bool 
-filter_ge_uint64_t(char *record, 
+filter_ge_uint64_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta);

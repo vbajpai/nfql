@@ -46,7 +46,7 @@ struct filter_rule {
   uint64_t                        delta;
   uint64_t                        op;
   bool (*func)(
-               char*              record,
+               const char* const  record,
                size_t             field_offset,
                uint64_t           value,
                uint64_t           delta

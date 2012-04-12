@@ -45,8 +45,13 @@ branch_start(void *arg) {
   /* -----------------------------------------------------------------------*/  
   /*                                filter                                  */
   /* -----------------------------------------------------------------------*/  
+
+  branch->filter_result = filter(branch->data->num_records,
+                                 branch->data->recordset,
+
+                                 branch->num_filter_rules,
+                                 branch->filter_ruleset);
   
-  branch->filter_result = filter(branch);
   if (branch->filter_result == NULL)
     errExit("filter(...) returned NULL");
   

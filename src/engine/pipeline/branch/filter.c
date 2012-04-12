@@ -27,7 +27,11 @@
 #include "filter.h"
 
 struct filter_result*
-filter(struct branch* branch) {
+filter(size_t num_records,
+       struct record** const recordset,
+       
+       size_t num_filter_rules,
+       struct filter_rule** const filter_ruleset) {
   
   /* free'd before exiting from main(...) */
   struct filter_result* fresult = calloc(1, sizeof(struct filter_result));
@@ -42,17 +46,18 @@ filter(struct branch* branch) {
     errExit("calloc");
   
   /* process each record */
-  for (int i = 0, j = 0; i < branch->data->num_records; i++) {
+  for (int i = 0, j = 0; i < num_records; i++) {
     
-    char* record = branch->data->recordset[i]->record;
+    char* record = recordset[i]->record;
     
     /* process each filter rule, for each record */
-    for (j = 0; j < branch->num_filter_rules; j++) {
+    for (j = 0; j < num_filter_rules; j++) {
       
-      struct filter_rule* frule = branch->filter_ruleset[j];
+      const struct filter_rule* frule = filter_ruleset[j];
       
       /* run the comparator function of the filter rule on the record */
-      if (!frule->func(record, 
+      if (!frule->func(
+                       record, 
                        frule->field_offset, 
                        frule->value, 
                        frule->delta
@@ -61,12 +66,12 @@ filter(struct branch* branch) {
     }
     
     /* if any rule is not satisfied */
-    if (j < branch->num_filter_rules)
+    if (j < num_filter_rules)
       continue;
     /* else, increment the filter counter, and save this record */
     else {
-      
-      branch->data->recordset[i]->if_filtered = true;
+
+      recordset[i]->if_filtered = true;
       fresult->num_filtered_records += 1;
       fresult->filtered_recordset = (char **) 
                        realloc(fresult->filtered_recordset,

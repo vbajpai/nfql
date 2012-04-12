@@ -42,7 +42,7 @@ struct ft_data {
   u_int64_t                       xfield;
   int                             rec_size;
   struct record**                 recordset;
-  int                             num_records;
+  size_t                          num_records;
 };
 
 struct record {

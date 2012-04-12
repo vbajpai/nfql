@@ -12,7 +12,7 @@ compar(const void *a, const void *b) {
 }
 
 bool 
-filter_eq_uint8_t(char *record, 
+filter_eq_uint8_t(const char* const record, 
                   size_t field_offset, 
                   uint64_t value, 
                   uint64_t delta) {
@@ -22,7 +22,7 @@ filter_eq_uint8_t(char *record,
 }
 
 bool 
-filter_eq_uint16_t(char *record, 
+filter_eq_uint16_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta) {
@@ -32,7 +32,7 @@ filter_eq_uint16_t(char *record,
 }
 
 bool 
-filter_eq_uint32_t(char *record, 
+filter_eq_uint32_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta) {
@@ -42,7 +42,7 @@ filter_eq_uint32_t(char *record,
 }
 
 bool 
-filter_eq_uint64_t(char *record, 
+filter_eq_uint64_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta) {
@@ -52,7 +52,7 @@ filter_eq_uint64_t(char *record,
 }
 
 bool 
-filter_ne_uint8_t(char *record, 
+filter_ne_uint8_t(const char* const record, 
                   size_t field_offset, 
                   uint64_t value, 
                   uint64_t delta) {
@@ -62,7 +62,7 @@ filter_ne_uint8_t(char *record,
 }
 
 bool 
-filter_ne_uint16_t(char *record, 
+filter_ne_uint16_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta) {
@@ -72,7 +72,7 @@ filter_ne_uint16_t(char *record,
 }
 
 bool 
-filter_ne_uint32_t(char *record, 
+filter_ne_uint32_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta) {
@@ -82,7 +82,7 @@ filter_ne_uint32_t(char *record,
 }
 
 bool 
-filter_ne_uint64_t(char *record, 
+filter_ne_uint64_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta) {
@@ -92,7 +92,7 @@ filter_ne_uint64_t(char *record,
 }
 
 bool 
-filter_lt_uint8_t(char *record, 
+filter_lt_uint8_t(const char* const record, 
                   size_t field_offset, 
                   uint64_t value, 
                   uint64_t delta) {
@@ -101,7 +101,7 @@ filter_lt_uint8_t(char *record,
 }
 
 bool 
-filter_lt_uint16_t(char *record, 
+filter_lt_uint16_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta) {
@@ -110,7 +110,7 @@ filter_lt_uint16_t(char *record,
 }
 
 bool 
-filter_lt_uint32_t(char *record, 
+filter_lt_uint32_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta) {
@@ -119,7 +119,7 @@ filter_lt_uint32_t(char *record,
 }
 
 bool 
-filter_lt_uint64_t(char *record, 
+filter_lt_uint64_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta) {
@@ -128,7 +128,7 @@ filter_lt_uint64_t(char *record,
 }
 
 bool 
-filter_gt_uint8_t(char *record, 
+filter_gt_uint8_t(const char* const record, 
                   size_t field_offset, 
                   uint64_t value, 
                   uint64_t delta) {
@@ -137,7 +137,7 @@ filter_gt_uint8_t(char *record,
 }
 
 bool 
-filter_gt_uint16_t(char *record, 
+filter_gt_uint16_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta) {
@@ -146,7 +146,7 @@ filter_gt_uint16_t(char *record,
 }
 
 bool 
-filter_gt_uint32_t(char *record, 
+filter_gt_uint32_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta) {
@@ -155,7 +155,7 @@ filter_gt_uint32_t(char *record,
 }
 
 bool 
-filter_gt_uint64_t(char *record, 
+filter_gt_uint64_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta) {
@@ -164,7 +164,7 @@ filter_gt_uint64_t(char *record,
 }
 
 bool 
-filter_le_uint8_t(char *record, 
+filter_le_uint8_t(const char* const record, 
                   size_t field_offset, 
                   uint64_t value, 
                   uint64_t delta) {
@@ -173,7 +173,7 @@ filter_le_uint8_t(char *record,
 }
 
 bool 
-filter_le_uint16_t(char *record, 
+filter_le_uint16_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta) {
@@ -182,7 +182,7 @@ filter_le_uint16_t(char *record,
 }
 
 bool 
-filter_le_uint32_t(char *record, 
+filter_le_uint32_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta) {
@@ -191,7 +191,7 @@ filter_le_uint32_t(char *record,
 }
 
 bool 
-filter_le_uint64_t(char *record, 
+filter_le_uint64_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta) {
@@ -200,7 +200,7 @@ filter_le_uint64_t(char *record,
 }
 
 bool 
-filter_ge_uint8_t(char *record, 
+filter_ge_uint8_t(const char* const record, 
                   size_t field_offset, 
                   uint64_t value, 
                   uint64_t delta) {
@@ -209,7 +209,7 @@ filter_ge_uint8_t(char *record,
 }
 
 bool 
-filter_ge_uint16_t(char *record, 
+filter_ge_uint16_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta) {
@@ -218,7 +218,7 @@ filter_ge_uint16_t(char *record,
 }
 
 bool 
-filter_ge_uint32_t(char *record, 
+filter_ge_uint32_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta) {
@@ -227,7 +227,7 @@ filter_ge_uint32_t(char *record,
 }
 
 bool 
-filter_ge_uint64_t(char *record, 
+filter_ge_uint64_t(const char* const record, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta) {

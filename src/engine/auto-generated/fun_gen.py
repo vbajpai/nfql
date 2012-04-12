@@ -129,7 +129,7 @@ compar(const void *a, const void *b) {
 """)
 
 filter_proto = """bool 
-                  filter_%s_%s(char *record, 
+                  filter_%s_%s(const char* const record, 
                                size_t field_offset, 
                                uint64_t value, 
                                uint64_t delta)"""
