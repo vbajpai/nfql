@@ -88,8 +88,21 @@ get_grouper_intermediates(
                           struct grouper_result* const gresult
                          );
 
-struct grouper_result* 
-grouper(struct branch* branch);
+struct grouper_result*
+grouper(
+        size_t num_filter_rules,
+        struct filter_rule** const filter_ruleset,
+        
+        size_t num_grouper_rules,
+        struct grouper_rule** const grouper_ruleset,
+        
+        size_t num_aggr_rules,
+        struct aggr_rule** const aggr_ruleset,
+        
+        const struct filter_result* const fresult,
+        int rec_size        
+        );
+
 
 int 
 comp_uint8_t(void *thunk, const void *e1, const void *e2);

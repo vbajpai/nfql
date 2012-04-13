@@ -290,14 +290,24 @@ get_grouper_intermediates(
 
 
 struct grouper_result*
-grouper(struct branch* branch) {
+grouper(
+        size_t num_filter_rules,
+        struct filter_rule** const filter_ruleset,
+        
+        size_t num_grouper_rules,
+        struct grouper_rule** const grouper_ruleset,
+        
+        size_t num_aggr_rules,
+        struct aggr_rule** const aggr_ruleset,
+     
+        const struct filter_result* const fresult,
+        int rec_size
+       ) {
   
   /* free'd just after returning from ungrouper(...) */
   struct grouper_result* gresult = calloc(1, sizeof(struct grouper_result));
   if (gresult == NULL)
     errExit("calloc");
-  else
-    branch->grouper_result = gresult;
   
   /* free'd just after returning from ungrouper(...) */
   struct group** groupset = (struct group **)calloc(1, sizeof(struct group *));
@@ -310,7 +320,7 @@ grouper(struct branch* branch) {
   /* club all filtered records into one group, 
    * if no group modules are defined 
    */
-  if (branch->num_grouper_rules == 0) {
+  if (num_grouper_rules == 0) {
     
     /* groupset with space for 1 group */
     gresult->num_groups = 1;
@@ -321,35 +331,36 @@ grouper(struct branch* branch) {
       errExit("calloc");    
     
     groupset[gresult->num_groups - 1] = group;
-    group->num_members = branch->filter_result->num_filtered_records;
+    group->num_members = fresult->num_filtered_records;
     
     /* free'd after returning from ungrouper(...) */    
     group->members = (char **)calloc(group->num_members, sizeof(char *));
     if (group->members == NULL)
       errExit("calloc");    
     
-    for (int i = 0; i < branch->filter_result->num_filtered_records; i++)
-      group->members[i] = branch->filter_result->filtered_recordset[i];    
+    for (int i = 0; i < fresult->num_filtered_records; i++)
+      group->members[i] = fresult->filtered_recordset[i];    
   }
   else {
     
     /* unlinked each item from original traces, ie filtered_recordset_copy[i] 
      * free'd filtered_recordset_copy just before exiting from this function 
      */
-    char** filtered_recordset_copy = 
-    calloc(branch->filter_result->num_filtered_records, sizeof(char*));    
+    char** filtered_recordset_copy = calloc(fresult->num_filtered_records, 
+                                            sizeof(char*));    
     if (filtered_recordset_copy == NULL)
-      errExit("calloc");      
-    for (int i = 0; i < branch->filter_result->num_filtered_records; i++)
-      filtered_recordset_copy[i] = branch->filter_result->filtered_recordset[i];
+      errExit("calloc");
+    
+    for (int i = 0; i < fresult->num_filtered_records; i++)
+      filtered_recordset_copy[i] = fresult->filtered_recordset[i];
     
     struct grouper_intermediate_result* intermediate_result = 
     get_grouper_intermediates(
-                              branch->filter_result->num_filtered_records,
+                              fresult->num_filtered_records,
                               filtered_recordset_copy,
                               
-                              branch->grouper_ruleset[0]->field_offset2,
-                              branch->grouper_result
+                              grouper_ruleset[0]->field_offset2,
+                              gresult
                              );
     
     if (intermediate_result == NULL)
@@ -371,7 +382,7 @@ grouper(struct branch* branch) {
         **intermediate_result->uniq_recordset.recordset_32[i].ptr;
     }
     
-    for (int i = 0; i < branch->filter_result->num_filtered_records; i++) {
+    for (int i = 0; i < fresult->num_filtered_records; i++) {
       
       if (filtered_recordset_copy[i] == NULL)
         continue;
@@ -411,7 +422,7 @@ grouper(struct branch* branch) {
                     (void *)intermediate_result[0].uniq_recordset.recordset_32,
                     intermediate_result[0].num_uniq_records,
                     sizeof(struct tree_item_uint32_t),
-                    (void *)&branch->grouper_ruleset[0]->field_offset1,
+                    (void *)&grouper_ruleset[0]->field_offset1,
                     comp_uint32_t_p
                    )
         )->ptr;
@@ -428,16 +439,15 @@ grouper(struct branch* branch) {
           continue;
         
         // check all module filter rules for those two records
-        for (k = 0; k < branch->num_grouper_rules; k++) {
+        for (k = 0; k < num_grouper_rules; k++) {
           if (
-              !branch->grouper_ruleset[k]->func
-                                   (
-                                     group, 
-                                     branch->grouper_ruleset[k]->field_offset1,
-                                     **record_iter, 
-                                     branch->grouper_ruleset[k]->field_offset2, 
-                                     branch->grouper_ruleset[k]->delta
-                                   )
+              !grouper_ruleset[k]->func(
+                                        group, 
+                                        grouper_ruleset[k]->field_offset1,
+                                        **record_iter, 
+                                        grouper_ruleset[k]->field_offset2, 
+                                        grouper_ruleset[k]->delta
+                                       )
             )
             break;
         }
@@ -447,7 +457,7 @@ grouper(struct branch* branch) {
           break;
         
         // one of the other rules didnt match
-        if (k < branch->num_grouper_rules)
+        if (k < num_grouper_rules)
           continue;
         
         group->num_members += 1;
@@ -470,7 +480,7 @@ grouper(struct branch* branch) {
     free(filtered_recordset_copy); filtered_recordset_copy = NULL;    
     
     // unlink the sorted records from the flow data
-    for (int i = 0; i < branch->filter_result->num_filtered_records; i++)
+    for (int i = 0; i < fresult->num_filtered_records; i++)
       intermediate_result->sorted_recordset_reference[i] = NULL;    
     free(intermediate_result->sorted_recordset_reference); 
     intermediate_result->sorted_recordset_reference = NULL;
@@ -486,22 +496,22 @@ grouper(struct branch* branch) {
 
 #ifdef GROUPERAGGREGATIONS
   
-  for (int i = 0; i < branch->grouper_result->num_groups; i++) {
+  for (int i = 0; i < gresult->num_groups; i++) {
     
-    struct group* group = branch->grouper_result->groupset[i];
+    struct group* group = gresult->groupset[i];
     
     group->aggr_result = grouper_aggregations(
-                                              branch->num_filter_rules,
-                                              branch->filter_ruleset,
+                                              num_filter_rules,
+                                              filter_ruleset,
                                                
-                                              branch->num_grouper_rules,
-                                              branch->grouper_ruleset,
+                                              num_grouper_rules,
+                                              grouper_ruleset,
                                               
-                                              branch->num_aggr_rules,
-                                              branch->aggr_ruleset,
+                                              num_aggr_rules,
+                                              aggr_ruleset,
                                                
                                               group,
-                                              branch->data->rec_size
+                                              rec_size
                                              );
     if (group->aggr_result == NULL)
       errExit("grouper_aggregations(...) returned NULL");

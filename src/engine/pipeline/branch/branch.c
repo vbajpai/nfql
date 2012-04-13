@@ -76,7 +76,19 @@ branch_start(void *arg) {
   /*                               grouper                                  */
   /* -----------------------------------------------------------------------*/  
   
-  branch->grouper_result = grouper(branch);
+  branch->grouper_result = grouper(
+                                   branch->num_filter_rules,
+                                   branch->filter_ruleset,
+                                   
+                                   branch->num_grouper_rules,
+                                   branch->grouper_ruleset,
+                                   
+                                   branch->num_aggr_rules,
+                                   branch->aggr_ruleset,
+                                   
+                                   branch->filter_result,
+                                   branch->data->rec_size
+                                  );
   if (branch->grouper_result == NULL)
     errExit("grouper(...) returned NULL");
   else {
