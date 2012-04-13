@@ -80,8 +80,13 @@ grouper_aggregations(
                     );
 
 struct grouper_intermediate_result *
-get_grouper_intermediates(struct branch* branch,
-                          char** filtered_recordset_copy);
+get_grouper_intermediates(
+                          size_t num_filtered_records,
+                          char** const filtered_recordset_copy,
+                          
+                          size_t grule1_rhs_offset,
+                          struct grouper_result* const gresult
+                         );
 
 struct grouper_result* 
 grouper(struct branch* branch);

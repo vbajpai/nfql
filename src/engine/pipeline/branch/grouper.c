@@ -184,53 +184,56 @@ grouper_aggregations(
 }
 
 struct grouper_intermediate_result *
-get_grouper_intermediates(struct branch* branch,
-                          char** filtered_recordset_copy) {
-  
-
-  size_t num_filtered_records = branch->filter_result->num_filtered_records;    
+get_grouper_intermediates(
+                          size_t num_filtered_records,
+                          char** const filtered_recordset_copy,                         
+                          
+                          size_t grule1_rhs_offset,                          
+                          struct grouper_result* const gresult
+                         ) {
   
   /* last record in sorted_records is NULL
    * unlinked sorted_recordset_ref[i], and free'd sorted_recordset_ref
    * just before calling grouper_aggregations(...) 
    */  
   char*** sorted_recordset_ref = (char ***)
-                                       calloc(num_filtered_records+1, 
-                                              sizeof(char **));
+                                  calloc(num_filtered_records+1, 
+                                         sizeof(char **));
   if (sorted_recordset_ref == NULL)
     errExit("calloc");
   
   for (int i = 0; i < num_filtered_records; i++)
     sorted_recordset_ref[i] = &filtered_recordset_copy[i];
   
-  /* sort the record references according to first grouper rule 
+  /* sort the record references according to the right hand side
+   * item in the statement of the first grouper rule 
    * and save them in sorted_recordset_reference in place  
    * TODO: different comp func sizes
    */
-  qsort_r(sorted_recordset_ref, 
+  qsort_r(
+          sorted_recordset_ref, 
           num_filtered_records, 
           sizeof(char **), 
-          (void *)&branch->grouper_ruleset[0]->field_offset2,
-          comp_uint32_t);
+          (void *)&grule1_rhs_offset,
+          comp_uint32_t
+         );
   
   if(verbose_vv){
     
     /* free'd just before calling merger(...) ?*/
-    branch->grouper_result->sorted_recordset = 
-                (char**) calloc(num_filtered_records, sizeof(char*));
-    if (branch->grouper_result->sorted_recordset == NULL)
+    gresult->sorted_recordset = (char**) calloc(num_filtered_records, 
+                                                sizeof(char*));
+    if (gresult->sorted_recordset == NULL)
       errExit("calloc");
     
     for (int i = 0; i < num_filtered_records; i++)
-      branch->grouper_result->sorted_recordset[i] = 
-      *sorted_recordset_ref[i];
+      gresult->sorted_recordset[i] = *sorted_recordset_ref[i];
   }
   
   /* free'd just before returning from grouper(...) */
-  struct tree_item_uint32_t* uniq_recordset = 
-                 (struct tree_item_uint32_t *)
-                 calloc(num_filtered_records, 
-                        sizeof(struct tree_item_uint32_t));
+  struct tree_item_uint32_t* uniq_recordset = (struct tree_item_uint32_t *)
+                                   calloc(num_filtered_records, 
+                                          sizeof(struct tree_item_uint32_t));
   if (uniq_recordset == NULL)
     errExit("calloc");  
   
@@ -238,20 +241,19 @@ get_grouper_intermediates(struct branch* branch,
    * unlinked uniq_recordset[0].ptr and free'd uniq_recordset
    * just before calling grouper_aggregations(...)
    */
-  uniq_recordset[0].value = 
-          *(uint32_t *)(*sorted_recordset_ref[0] + 
-                        branch->grouper_ruleset[0]->field_offset2);
+  uniq_recordset[0].value = *(uint32_t *)(*sorted_recordset_ref[0] + 
+                                          grule1_rhs_offset);
   uniq_recordset[0].ptr = &sorted_recordset_ref[0];
   size_t num_uniq_records = 1;
 
   for (int i = 0; i < num_filtered_records; i++) {
-    if (*(uint32_t *)(*sorted_recordset_ref[i] + 
-      branch->grouper_ruleset[0]->field_offset2) != 
-      uniq_recordset[num_uniq_records-1].value) {
+    if (
+        *(uint32_t *)(*sorted_recordset_ref[i] + grule1_rhs_offset) != 
+        uniq_recordset[num_uniq_records-1].value
+       ) {
       
       uniq_recordset[num_uniq_records].value = 
-      *(uint32_t *)(*sorted_recordset_ref[i] + 
-                    branch->grouper_ruleset[0]->field_offset2);
+      *(uint32_t *)(*sorted_recordset_ref[i] + grule1_rhs_offset);
       uniq_recordset[num_uniq_records].ptr = &sorted_recordset_ref[i];
       num_uniq_records++;
     }
@@ -342,7 +344,14 @@ grouper(struct branch* branch) {
       filtered_recordset_copy[i] = branch->filter_result->filtered_recordset[i];
     
     struct grouper_intermediate_result* intermediate_result = 
-    get_grouper_intermediates(branch, filtered_recordset_copy);
+    get_grouper_intermediates(
+                              branch->filter_result->num_filtered_records,
+                              filtered_recordset_copy,
+                              
+                              branch->grouper_ruleset[0]->field_offset2,
+                              branch->grouper_result
+                             );
+    
     if (intermediate_result == NULL)
       errExit("get_grouper_intermediates(...) returned NULL");
 

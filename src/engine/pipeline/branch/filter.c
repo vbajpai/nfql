@@ -27,11 +27,13 @@
 #include "filter.h"
 
 struct filter_result*
-filter(size_t num_records,
+filter(
+       size_t num_records,
        struct record** const recordset,
        
        size_t num_filter_rules,
-       struct filter_rule** const filter_ruleset) {
+       struct filter_rule** const filter_ruleset
+      ) {
   
   /* free'd before exiting from main(...) */
   struct filter_result* fresult = calloc(1, sizeof(struct filter_result));
