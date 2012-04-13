@@ -769,7 +769,10 @@ main(int argc, char **argv) {
   /*                                ungrouper                               */
   /* -----------------------------------------------------------------------*/  
   
-  fquery->ungrouper_result = ungrouper(fquery);
+  fquery->ungrouper_result = ungrouper(
+                                       fquery->num_branches,
+                                       fquery->merger_result
+                                      );
   if (fquery->ungrouper_result == NULL)
     errExit("ungrouper(...) returned NULL");
   else {

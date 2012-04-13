@@ -29,30 +29,33 @@
 
 #ifdef UNGROUPER
 struct ungrouper_result*
-ungrouper(struct flowquery* fquery){
+ungrouper(
+          size_t num_branches,
+          const struct merger_result* const mresult
+         ) {
   
   /* free'd after returning from ungrouper(...) */
   struct ungrouper_result* uresult = calloc(1, sizeof(struct ungrouper_result));
   if (uresult == NULL)
     errExit("calloc");
   
-  if (fquery->merger_result->num_group_tuples != 0) {
+  if (mresult->num_group_tuples != 0) {
     
     /* free'd after returning from ungrouper(...) */
     struct stream** streamset = (struct stream**)
-                                calloc(fquery->merger_result->num_group_tuples,
+                                calloc(mresult->num_group_tuples,
                                        sizeof(struct stream*));
     if (streamset == NULL)
       errExit("calloc");    
-    for (int i = 0; i < fquery->merger_result->num_group_tuples; i++) {
+    for (int i = 0; i < mresult->num_group_tuples; i++) {
       
       /* free'd after returning from ungrouper(...) */
       struct stream* stream = calloc(1, sizeof(struct stream));
       if (stream == NULL)
         errExit("calloc");
       
-      struct group** group_tuple = fquery->merger_result->group_tuples[i];      
-      for (int j = 0; j < fquery->num_branches; j++) {
+      struct group** group_tuple = mresult->group_tuples[i];      
+      for (int j = 0; j < num_branches; j++) {
         
         struct group* group = group_tuple[j];
         
@@ -73,7 +76,7 @@ ungrouper(struct flowquery* fquery){
       streamset[i] = stream;
     }    
     uresult->streamset = streamset; streamset = NULL;
-    uresult->num_streams = fquery->merger_result->num_group_tuples;
+    uresult->num_streams = mresult->num_group_tuples;
   }
   return uresult;
 }

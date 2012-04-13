@@ -32,6 +32,9 @@
 #include "error_handlers.h"
 
 struct ungrouper_result*
-ungrouper(struct flowquery* fquery);
+ungrouper(
+          size_t num_branches,
+          const struct merger_result* const mresult
+          );
 
 #endif
