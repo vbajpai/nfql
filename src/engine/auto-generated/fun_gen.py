@@ -151,9 +151,9 @@ def filter_body(op, atype):
     return result
 
 grouper_proto = """bool
-                   grouper_%s_%s_%s_%s(struct group *group, 
+                   grouper_%s_%s_%s_%s(const struct group const *group, 
                                        size_t field_offset1, 
-                                       char *record2, 
+                                       const char* const record2, 
                                        size_t field_offset2, 
                                        uint64_t delta)"""
 def grouper_body(op, atype1, atype2, dtype):
@@ -198,8 +198,8 @@ def grouper_body(op, atype1, atype2, dtype):
     return result;
 
 groupaggr_proto = """struct aggr* 
-                     aggr_%s_%s(char **records,
-                                char *group_aggregation,
+                     aggr_%s_%s(char** const records,
+                                char* group_aggregation,
                                 size_t num_records, 
                                 size_t field_offset, 
                                 bool if_aggr_common)"""

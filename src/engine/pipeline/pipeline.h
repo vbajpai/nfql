@@ -34,60 +34,60 @@
 /* -----------------------------------------------------------------------*/  
 
 struct group {
-  size_t                          num_members;
-  char**                          members;
-  struct aggr_result*             aggr_result;
+  size_t                                      num_members;
+  char**                                      members;
+  struct aggr_result*                         aggr_result;
 };
 
 struct aggr_result {
-  char*                           aggr_record;
-  struct aggr**                   aggrset;
+  char*                                       aggr_record;
+  struct aggr**                               aggrset;
 };
 
 struct filter_rule {
-  size_t                          field_offset;
-  uint64_t                        value;
-  uint64_t                        delta;
-  uint64_t                        op;
+  size_t                                      field_offset;
+  uint64_t                                    value;
+  uint64_t                                    delta;
+  uint64_t                                    op;
   bool (*func)(
-               const char* const  record,
-               size_t             field_offset,
-               uint64_t           value,
-               uint64_t           delta
+               const char* const              record,
+               size_t                         field_offset,
+               uint64_t                       value,
+               uint64_t                       delta
                );
 };
 
 struct grouper_rule {
-  size_t                          field_offset1;
-  size_t                          field_offset2;
-  uint64_t                        delta;
-  uint64_t                        op;
+  size_t                                      field_offset1;
+  size_t                                      field_offset2;
+  uint64_t                                    delta;
+  uint64_t                                    op;
   bool (*func)(
-               struct group*      group,
-               size_t             field_offset1,
-               char*              record2,
-               size_t             field_offset2,
-               uint64_t           delta
+               const struct group* const      group,
+               size_t                         field_offset1,
+               const char* const              record2,
+               size_t                         field_offset2,
+               uint64_t                       delta
                );
 };
 
 struct aggr_rule {
-  size_t                          field_offset;
-  uint64_t                        op;
+  size_t                                      field_offset;
+  uint64_t                                    op;
   struct aggr* (*func)(
-                       char**      group_records,
-                       char*       group_aggregation,
-                       size_t      num_records,
-                       size_t      field_offset,
-                       bool        if_aggr_common
+                       char** const           group_records,
+                       char*                  group_aggregation,
+                       size_t                 num_records,
+                       size_t                 field_offset,
+                       bool                   if_aggr_common
                        );
 };
 
 struct gfilter_rule {
-  size_t                          field;
-  uint64_t                        value;
-  uint64_t                        delta;
-  uint64_t                        op;
+  size_t                                      field;
+  uint64_t                                    value;
+  uint64_t                                    delta;
+  uint64_t                                    op;
   bool (*func)(
                const struct group* const      group,
                size_t                         field,
@@ -101,18 +101,18 @@ struct branch {
   /* -----------------------------------------------------------------------*/  
   /*                              inputs                                    */
   /* -----------------------------------------------------------------------*/  
-  int                             branch_id;
-  struct ft_data*                 data;
+  int                                         branch_id;
+  struct ft_data*                             data;
 
-  size_t                          num_filter_rules;
-  size_t                          num_grouper_rules;
-  size_t                          num_aggr_rules;
-  size_t                          num_gfilter_rules;
+  size_t                                      num_filter_rules;
+  size_t                                      num_grouper_rules;
+  size_t                                      num_aggr_rules;
+  size_t                                      num_gfilter_rules;
   
-  struct filter_rule**            filter_ruleset;  
-  struct grouper_rule**           grouper_ruleset;
-  struct aggr_rule**              aggr_ruleset;  
-  struct gfilter_rule**           gfilter_ruleset;  
+  struct filter_rule**                        filter_ruleset;  
+  struct grouper_rule**                       grouper_ruleset;
+  struct aggr_rule**                          aggr_ruleset;  
+  struct gfilter_rule**                       gfilter_ruleset;  
   /* -----------------------------------------------------------------------*/  
 
   
@@ -121,49 +121,49 @@ struct branch {
   /*                               output                                   */
   /* -----------------------------------------------------------------------*/  
   
-  struct filter_result*           filter_result;
-  struct grouper_result*          grouper_result;
-  struct groupfilter_result*      gfilter_result;
+  struct filter_result*                       filter_result;
+  struct grouper_result*                      grouper_result;
+  struct groupfilter_result*                  gfilter_result;
 
   /* -----------------------------------------------------------------------*/  
   
 };
 
 struct filter_result {  
-  size_t                          num_filtered_records;
-  char**                          filtered_recordset;  
+  size_t                                      num_filtered_records;
+  char**                                      filtered_recordset;  
 };
 
 struct grouper_result {
-  size_t                          num_unique_records;  
-  char**                          sorted_recordset;
-  char**                          unique_recordset;
+  size_t                                      num_unique_records;  
+  char**                                      sorted_recordset;
+  char**                                      unique_recordset;
   
-  size_t                          num_groups;  
-  struct group**                  groupset;
+  size_t                                      num_groups;  
+  struct group**                              groupset;
 };
 
 struct groupfilter_result {
-  size_t                          num_filtered_groups;  
-  struct group**                  filtered_groupset;
+  size_t                                      num_filtered_groups;  
+  struct group**                              filtered_groupset;
 };
 
 struct aggr {
-  size_t                          num_values;
-  uint64_t*                       values;
+  size_t                                      num_values;
+  uint64_t*                                   values;
 };
 
 /* -----------------------------------------------------------------------*/  
 
 
 struct flowquery {  
-  size_t                          num_branches;  
-  size_t                          num_merger_rules;  
+  size_t                                      num_branches;  
+  size_t                                      num_merger_rules;  
   
-  struct branch**                 branchset;  
-  struct merger_rule**            mruleset;
-  struct merger_result*           merger_result; 
-  struct ungrouper_result*        ungrouper_result;
+  struct branch**                             branchset;  
+  struct merger_rule**                        mruleset;
+  struct merger_result*                       merger_result; 
+  struct ungrouper_result*                    ungrouper_result;
 };
 
 /*
@@ -174,35 +174,35 @@ struct flowquery {
  * B.dstip = C.dstip
  */
 struct merger_rule {
-  struct branch*             branch1;
-  size_t                          field1;
-  struct branch*             branch2;
-  size_t                          field2;
-  uint64_t                        op;
-  uint64_t                        delta;
+  struct branch*                              branch1;
+  size_t                                      field1;
+  struct branch*                              branch2;
+  size_t                                      field2;
+  uint64_t                                    op;
+  uint64_t                                    delta;
   bool (*func)(
-               struct group*      group1,
-               size_t             field1,
-               struct group*      group2,
-               size_t             field2,
-               uint64_t           delta
+               struct group*                  group1,
+               size_t                         field1,
+               struct group*                  group2,
+               size_t                         field2,
+               uint64_t                       delta
                );
 };
 
 struct merger_result {
-  size_t                          num_group_tuples;  
-  size_t                          total_num_group_tuples;
-  struct group***                 group_tuples;
+  size_t                                      num_group_tuples;  
+  size_t                                      total_num_group_tuples;
+  struct group***                             group_tuples;
 };
 
 struct ungrouper_result {
-  size_t                          num_streams;    
-  struct stream**                 streamset;
+  size_t                                      num_streams;    
+  struct stream**                             streamset;
 };
 
 struct stream {
-  size_t                          num_records;
-  char**                          recordset;
+  size_t                                      num_records;
+  char**                                      recordset;
 };
 
 

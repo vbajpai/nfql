@@ -133,2042 +133,2042 @@ filter_ge_uint64_t(const char* const record,
                    uint64_t value, 
                    uint64_t delta);
 bool
-grouper_eq_uint8_t_uint8_t_no(struct group *group, 
+grouper_eq_uint8_t_uint8_t_no(const struct group const *group, 
                               size_t field_offset1, 
-                              char *record2, 
+                              const char* const record2, 
                               size_t field_offset2, 
                               uint64_t delta);
 bool
-grouper_eq_uint8_t_uint8_t_abs(struct group *group, 
+grouper_eq_uint8_t_uint8_t_abs(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_eq_uint8_t_uint8_t_rel(struct group *group, 
+grouper_eq_uint8_t_uint8_t_rel(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_eq_uint8_t_uint16_t_no(struct group *group, 
+grouper_eq_uint8_t_uint16_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_eq_uint8_t_uint16_t_abs(struct group *group, 
+grouper_eq_uint8_t_uint16_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_eq_uint8_t_uint16_t_rel(struct group *group, 
+grouper_eq_uint8_t_uint16_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_eq_uint8_t_uint32_t_no(struct group *group, 
+grouper_eq_uint8_t_uint32_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_eq_uint8_t_uint32_t_abs(struct group *group, 
+grouper_eq_uint8_t_uint32_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_eq_uint8_t_uint32_t_rel(struct group *group, 
+grouper_eq_uint8_t_uint32_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_eq_uint8_t_uint64_t_no(struct group *group, 
+grouper_eq_uint8_t_uint64_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_eq_uint8_t_uint64_t_abs(struct group *group, 
+grouper_eq_uint8_t_uint64_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_eq_uint8_t_uint64_t_rel(struct group *group, 
+grouper_eq_uint8_t_uint64_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_eq_uint16_t_uint8_t_no(struct group *group, 
+grouper_eq_uint16_t_uint8_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_eq_uint16_t_uint8_t_abs(struct group *group, 
+grouper_eq_uint16_t_uint8_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_eq_uint16_t_uint8_t_rel(struct group *group, 
+grouper_eq_uint16_t_uint8_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_eq_uint16_t_uint16_t_no(struct group *group, 
+grouper_eq_uint16_t_uint16_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_eq_uint16_t_uint16_t_abs(struct group *group, 
+grouper_eq_uint16_t_uint16_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_eq_uint16_t_uint16_t_rel(struct group *group, 
+grouper_eq_uint16_t_uint16_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_eq_uint16_t_uint32_t_no(struct group *group, 
+grouper_eq_uint16_t_uint32_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_eq_uint16_t_uint32_t_abs(struct group *group, 
+grouper_eq_uint16_t_uint32_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_eq_uint16_t_uint32_t_rel(struct group *group, 
+grouper_eq_uint16_t_uint32_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_eq_uint16_t_uint64_t_no(struct group *group, 
+grouper_eq_uint16_t_uint64_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_eq_uint16_t_uint64_t_abs(struct group *group, 
+grouper_eq_uint16_t_uint64_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_eq_uint16_t_uint64_t_rel(struct group *group, 
+grouper_eq_uint16_t_uint64_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_eq_uint32_t_uint8_t_no(struct group *group, 
+grouper_eq_uint32_t_uint8_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_eq_uint32_t_uint8_t_abs(struct group *group, 
+grouper_eq_uint32_t_uint8_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_eq_uint32_t_uint8_t_rel(struct group *group, 
+grouper_eq_uint32_t_uint8_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_eq_uint32_t_uint16_t_no(struct group *group, 
+grouper_eq_uint32_t_uint16_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_eq_uint32_t_uint16_t_abs(struct group *group, 
+grouper_eq_uint32_t_uint16_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_eq_uint32_t_uint16_t_rel(struct group *group, 
+grouper_eq_uint32_t_uint16_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_eq_uint32_t_uint32_t_no(struct group *group, 
+grouper_eq_uint32_t_uint32_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_eq_uint32_t_uint32_t_abs(struct group *group, 
+grouper_eq_uint32_t_uint32_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_eq_uint32_t_uint32_t_rel(struct group *group, 
+grouper_eq_uint32_t_uint32_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_eq_uint32_t_uint64_t_no(struct group *group, 
+grouper_eq_uint32_t_uint64_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_eq_uint32_t_uint64_t_abs(struct group *group, 
+grouper_eq_uint32_t_uint64_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_eq_uint32_t_uint64_t_rel(struct group *group, 
+grouper_eq_uint32_t_uint64_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_eq_uint64_t_uint8_t_no(struct group *group, 
+grouper_eq_uint64_t_uint8_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_eq_uint64_t_uint8_t_abs(struct group *group, 
+grouper_eq_uint64_t_uint8_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_eq_uint64_t_uint8_t_rel(struct group *group, 
+grouper_eq_uint64_t_uint8_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_eq_uint64_t_uint16_t_no(struct group *group, 
+grouper_eq_uint64_t_uint16_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_eq_uint64_t_uint16_t_abs(struct group *group, 
+grouper_eq_uint64_t_uint16_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_eq_uint64_t_uint16_t_rel(struct group *group, 
+grouper_eq_uint64_t_uint16_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_eq_uint64_t_uint32_t_no(struct group *group, 
+grouper_eq_uint64_t_uint32_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_eq_uint64_t_uint32_t_abs(struct group *group, 
+grouper_eq_uint64_t_uint32_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_eq_uint64_t_uint32_t_rel(struct group *group, 
+grouper_eq_uint64_t_uint32_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_eq_uint64_t_uint64_t_no(struct group *group, 
+grouper_eq_uint64_t_uint64_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_eq_uint64_t_uint64_t_abs(struct group *group, 
+grouper_eq_uint64_t_uint64_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_eq_uint64_t_uint64_t_rel(struct group *group, 
+grouper_eq_uint64_t_uint64_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ne_uint8_t_uint8_t_no(struct group *group, 
+grouper_ne_uint8_t_uint8_t_no(const struct group const *group, 
                               size_t field_offset1, 
-                              char *record2, 
+                              const char* const record2, 
                               size_t field_offset2, 
                               uint64_t delta);
 bool
-grouper_ne_uint8_t_uint8_t_abs(struct group *group, 
+grouper_ne_uint8_t_uint8_t_abs(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_ne_uint8_t_uint8_t_rel(struct group *group, 
+grouper_ne_uint8_t_uint8_t_rel(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_ne_uint8_t_uint16_t_no(struct group *group, 
+grouper_ne_uint8_t_uint16_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_ne_uint8_t_uint16_t_abs(struct group *group, 
+grouper_ne_uint8_t_uint16_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ne_uint8_t_uint16_t_rel(struct group *group, 
+grouper_ne_uint8_t_uint16_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ne_uint8_t_uint32_t_no(struct group *group, 
+grouper_ne_uint8_t_uint32_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_ne_uint8_t_uint32_t_abs(struct group *group, 
+grouper_ne_uint8_t_uint32_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ne_uint8_t_uint32_t_rel(struct group *group, 
+grouper_ne_uint8_t_uint32_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ne_uint8_t_uint64_t_no(struct group *group, 
+grouper_ne_uint8_t_uint64_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_ne_uint8_t_uint64_t_abs(struct group *group, 
+grouper_ne_uint8_t_uint64_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ne_uint8_t_uint64_t_rel(struct group *group, 
+grouper_ne_uint8_t_uint64_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ne_uint16_t_uint8_t_no(struct group *group, 
+grouper_ne_uint16_t_uint8_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_ne_uint16_t_uint8_t_abs(struct group *group, 
+grouper_ne_uint16_t_uint8_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ne_uint16_t_uint8_t_rel(struct group *group, 
+grouper_ne_uint16_t_uint8_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ne_uint16_t_uint16_t_no(struct group *group, 
+grouper_ne_uint16_t_uint16_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ne_uint16_t_uint16_t_abs(struct group *group, 
+grouper_ne_uint16_t_uint16_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ne_uint16_t_uint16_t_rel(struct group *group, 
+grouper_ne_uint16_t_uint16_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ne_uint16_t_uint32_t_no(struct group *group, 
+grouper_ne_uint16_t_uint32_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ne_uint16_t_uint32_t_abs(struct group *group, 
+grouper_ne_uint16_t_uint32_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ne_uint16_t_uint32_t_rel(struct group *group, 
+grouper_ne_uint16_t_uint32_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ne_uint16_t_uint64_t_no(struct group *group, 
+grouper_ne_uint16_t_uint64_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ne_uint16_t_uint64_t_abs(struct group *group, 
+grouper_ne_uint16_t_uint64_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ne_uint16_t_uint64_t_rel(struct group *group, 
+grouper_ne_uint16_t_uint64_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ne_uint32_t_uint8_t_no(struct group *group, 
+grouper_ne_uint32_t_uint8_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_ne_uint32_t_uint8_t_abs(struct group *group, 
+grouper_ne_uint32_t_uint8_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ne_uint32_t_uint8_t_rel(struct group *group, 
+grouper_ne_uint32_t_uint8_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ne_uint32_t_uint16_t_no(struct group *group, 
+grouper_ne_uint32_t_uint16_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ne_uint32_t_uint16_t_abs(struct group *group, 
+grouper_ne_uint32_t_uint16_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ne_uint32_t_uint16_t_rel(struct group *group, 
+grouper_ne_uint32_t_uint16_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ne_uint32_t_uint32_t_no(struct group *group, 
+grouper_ne_uint32_t_uint32_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ne_uint32_t_uint32_t_abs(struct group *group, 
+grouper_ne_uint32_t_uint32_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ne_uint32_t_uint32_t_rel(struct group *group, 
+grouper_ne_uint32_t_uint32_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ne_uint32_t_uint64_t_no(struct group *group, 
+grouper_ne_uint32_t_uint64_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ne_uint32_t_uint64_t_abs(struct group *group, 
+grouper_ne_uint32_t_uint64_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ne_uint32_t_uint64_t_rel(struct group *group, 
+grouper_ne_uint32_t_uint64_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ne_uint64_t_uint8_t_no(struct group *group, 
+grouper_ne_uint64_t_uint8_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_ne_uint64_t_uint8_t_abs(struct group *group, 
+grouper_ne_uint64_t_uint8_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ne_uint64_t_uint8_t_rel(struct group *group, 
+grouper_ne_uint64_t_uint8_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ne_uint64_t_uint16_t_no(struct group *group, 
+grouper_ne_uint64_t_uint16_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ne_uint64_t_uint16_t_abs(struct group *group, 
+grouper_ne_uint64_t_uint16_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ne_uint64_t_uint16_t_rel(struct group *group, 
+grouper_ne_uint64_t_uint16_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ne_uint64_t_uint32_t_no(struct group *group, 
+grouper_ne_uint64_t_uint32_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ne_uint64_t_uint32_t_abs(struct group *group, 
+grouper_ne_uint64_t_uint32_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ne_uint64_t_uint32_t_rel(struct group *group, 
+grouper_ne_uint64_t_uint32_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ne_uint64_t_uint64_t_no(struct group *group, 
+grouper_ne_uint64_t_uint64_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ne_uint64_t_uint64_t_abs(struct group *group, 
+grouper_ne_uint64_t_uint64_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ne_uint64_t_uint64_t_rel(struct group *group, 
+grouper_ne_uint64_t_uint64_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_lt_uint8_t_uint8_t_no(struct group *group, 
+grouper_lt_uint8_t_uint8_t_no(const struct group const *group, 
                               size_t field_offset1, 
-                              char *record2, 
+                              const char* const record2, 
                               size_t field_offset2, 
                               uint64_t delta);
 bool
-grouper_lt_uint8_t_uint8_t_abs(struct group *group, 
+grouper_lt_uint8_t_uint8_t_abs(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_lt_uint8_t_uint8_t_rel(struct group *group, 
+grouper_lt_uint8_t_uint8_t_rel(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_lt_uint8_t_uint16_t_no(struct group *group, 
+grouper_lt_uint8_t_uint16_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_lt_uint8_t_uint16_t_abs(struct group *group, 
+grouper_lt_uint8_t_uint16_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_lt_uint8_t_uint16_t_rel(struct group *group, 
+grouper_lt_uint8_t_uint16_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_lt_uint8_t_uint32_t_no(struct group *group, 
+grouper_lt_uint8_t_uint32_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_lt_uint8_t_uint32_t_abs(struct group *group, 
+grouper_lt_uint8_t_uint32_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_lt_uint8_t_uint32_t_rel(struct group *group, 
+grouper_lt_uint8_t_uint32_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_lt_uint8_t_uint64_t_no(struct group *group, 
+grouper_lt_uint8_t_uint64_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_lt_uint8_t_uint64_t_abs(struct group *group, 
+grouper_lt_uint8_t_uint64_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_lt_uint8_t_uint64_t_rel(struct group *group, 
+grouper_lt_uint8_t_uint64_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_lt_uint16_t_uint8_t_no(struct group *group, 
+grouper_lt_uint16_t_uint8_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_lt_uint16_t_uint8_t_abs(struct group *group, 
+grouper_lt_uint16_t_uint8_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_lt_uint16_t_uint8_t_rel(struct group *group, 
+grouper_lt_uint16_t_uint8_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_lt_uint16_t_uint16_t_no(struct group *group, 
+grouper_lt_uint16_t_uint16_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_lt_uint16_t_uint16_t_abs(struct group *group, 
+grouper_lt_uint16_t_uint16_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_lt_uint16_t_uint16_t_rel(struct group *group, 
+grouper_lt_uint16_t_uint16_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_lt_uint16_t_uint32_t_no(struct group *group, 
+grouper_lt_uint16_t_uint32_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_lt_uint16_t_uint32_t_abs(struct group *group, 
+grouper_lt_uint16_t_uint32_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_lt_uint16_t_uint32_t_rel(struct group *group, 
+grouper_lt_uint16_t_uint32_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_lt_uint16_t_uint64_t_no(struct group *group, 
+grouper_lt_uint16_t_uint64_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_lt_uint16_t_uint64_t_abs(struct group *group, 
+grouper_lt_uint16_t_uint64_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_lt_uint16_t_uint64_t_rel(struct group *group, 
+grouper_lt_uint16_t_uint64_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_lt_uint32_t_uint8_t_no(struct group *group, 
+grouper_lt_uint32_t_uint8_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_lt_uint32_t_uint8_t_abs(struct group *group, 
+grouper_lt_uint32_t_uint8_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_lt_uint32_t_uint8_t_rel(struct group *group, 
+grouper_lt_uint32_t_uint8_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_lt_uint32_t_uint16_t_no(struct group *group, 
+grouper_lt_uint32_t_uint16_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_lt_uint32_t_uint16_t_abs(struct group *group, 
+grouper_lt_uint32_t_uint16_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_lt_uint32_t_uint16_t_rel(struct group *group, 
+grouper_lt_uint32_t_uint16_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_lt_uint32_t_uint32_t_no(struct group *group, 
+grouper_lt_uint32_t_uint32_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_lt_uint32_t_uint32_t_abs(struct group *group, 
+grouper_lt_uint32_t_uint32_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_lt_uint32_t_uint32_t_rel(struct group *group, 
+grouper_lt_uint32_t_uint32_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_lt_uint32_t_uint64_t_no(struct group *group, 
+grouper_lt_uint32_t_uint64_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_lt_uint32_t_uint64_t_abs(struct group *group, 
+grouper_lt_uint32_t_uint64_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_lt_uint32_t_uint64_t_rel(struct group *group, 
+grouper_lt_uint32_t_uint64_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_lt_uint64_t_uint8_t_no(struct group *group, 
+grouper_lt_uint64_t_uint8_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_lt_uint64_t_uint8_t_abs(struct group *group, 
+grouper_lt_uint64_t_uint8_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_lt_uint64_t_uint8_t_rel(struct group *group, 
+grouper_lt_uint64_t_uint8_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_lt_uint64_t_uint16_t_no(struct group *group, 
+grouper_lt_uint64_t_uint16_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_lt_uint64_t_uint16_t_abs(struct group *group, 
+grouper_lt_uint64_t_uint16_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_lt_uint64_t_uint16_t_rel(struct group *group, 
+grouper_lt_uint64_t_uint16_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_lt_uint64_t_uint32_t_no(struct group *group, 
+grouper_lt_uint64_t_uint32_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_lt_uint64_t_uint32_t_abs(struct group *group, 
+grouper_lt_uint64_t_uint32_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_lt_uint64_t_uint32_t_rel(struct group *group, 
+grouper_lt_uint64_t_uint32_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_lt_uint64_t_uint64_t_no(struct group *group, 
+grouper_lt_uint64_t_uint64_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_lt_uint64_t_uint64_t_abs(struct group *group, 
+grouper_lt_uint64_t_uint64_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_lt_uint64_t_uint64_t_rel(struct group *group, 
+grouper_lt_uint64_t_uint64_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_gt_uint8_t_uint8_t_no(struct group *group, 
+grouper_gt_uint8_t_uint8_t_no(const struct group const *group, 
                               size_t field_offset1, 
-                              char *record2, 
+                              const char* const record2, 
                               size_t field_offset2, 
                               uint64_t delta);
 bool
-grouper_gt_uint8_t_uint8_t_abs(struct group *group, 
+grouper_gt_uint8_t_uint8_t_abs(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_gt_uint8_t_uint8_t_rel(struct group *group, 
+grouper_gt_uint8_t_uint8_t_rel(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_gt_uint8_t_uint16_t_no(struct group *group, 
+grouper_gt_uint8_t_uint16_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_gt_uint8_t_uint16_t_abs(struct group *group, 
+grouper_gt_uint8_t_uint16_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_gt_uint8_t_uint16_t_rel(struct group *group, 
+grouper_gt_uint8_t_uint16_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_gt_uint8_t_uint32_t_no(struct group *group, 
+grouper_gt_uint8_t_uint32_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_gt_uint8_t_uint32_t_abs(struct group *group, 
+grouper_gt_uint8_t_uint32_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_gt_uint8_t_uint32_t_rel(struct group *group, 
+grouper_gt_uint8_t_uint32_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_gt_uint8_t_uint64_t_no(struct group *group, 
+grouper_gt_uint8_t_uint64_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_gt_uint8_t_uint64_t_abs(struct group *group, 
+grouper_gt_uint8_t_uint64_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_gt_uint8_t_uint64_t_rel(struct group *group, 
+grouper_gt_uint8_t_uint64_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_gt_uint16_t_uint8_t_no(struct group *group, 
+grouper_gt_uint16_t_uint8_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_gt_uint16_t_uint8_t_abs(struct group *group, 
+grouper_gt_uint16_t_uint8_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_gt_uint16_t_uint8_t_rel(struct group *group, 
+grouper_gt_uint16_t_uint8_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_gt_uint16_t_uint16_t_no(struct group *group, 
+grouper_gt_uint16_t_uint16_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_gt_uint16_t_uint16_t_abs(struct group *group, 
+grouper_gt_uint16_t_uint16_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_gt_uint16_t_uint16_t_rel(struct group *group, 
+grouper_gt_uint16_t_uint16_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_gt_uint16_t_uint32_t_no(struct group *group, 
+grouper_gt_uint16_t_uint32_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_gt_uint16_t_uint32_t_abs(struct group *group, 
+grouper_gt_uint16_t_uint32_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_gt_uint16_t_uint32_t_rel(struct group *group, 
+grouper_gt_uint16_t_uint32_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_gt_uint16_t_uint64_t_no(struct group *group, 
+grouper_gt_uint16_t_uint64_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_gt_uint16_t_uint64_t_abs(struct group *group, 
+grouper_gt_uint16_t_uint64_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_gt_uint16_t_uint64_t_rel(struct group *group, 
+grouper_gt_uint16_t_uint64_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_gt_uint32_t_uint8_t_no(struct group *group, 
+grouper_gt_uint32_t_uint8_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_gt_uint32_t_uint8_t_abs(struct group *group, 
+grouper_gt_uint32_t_uint8_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_gt_uint32_t_uint8_t_rel(struct group *group, 
+grouper_gt_uint32_t_uint8_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_gt_uint32_t_uint16_t_no(struct group *group, 
+grouper_gt_uint32_t_uint16_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_gt_uint32_t_uint16_t_abs(struct group *group, 
+grouper_gt_uint32_t_uint16_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_gt_uint32_t_uint16_t_rel(struct group *group, 
+grouper_gt_uint32_t_uint16_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_gt_uint32_t_uint32_t_no(struct group *group, 
+grouper_gt_uint32_t_uint32_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_gt_uint32_t_uint32_t_abs(struct group *group, 
+grouper_gt_uint32_t_uint32_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_gt_uint32_t_uint32_t_rel(struct group *group, 
+grouper_gt_uint32_t_uint32_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_gt_uint32_t_uint64_t_no(struct group *group, 
+grouper_gt_uint32_t_uint64_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_gt_uint32_t_uint64_t_abs(struct group *group, 
+grouper_gt_uint32_t_uint64_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_gt_uint32_t_uint64_t_rel(struct group *group, 
+grouper_gt_uint32_t_uint64_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_gt_uint64_t_uint8_t_no(struct group *group, 
+grouper_gt_uint64_t_uint8_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_gt_uint64_t_uint8_t_abs(struct group *group, 
+grouper_gt_uint64_t_uint8_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_gt_uint64_t_uint8_t_rel(struct group *group, 
+grouper_gt_uint64_t_uint8_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_gt_uint64_t_uint16_t_no(struct group *group, 
+grouper_gt_uint64_t_uint16_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_gt_uint64_t_uint16_t_abs(struct group *group, 
+grouper_gt_uint64_t_uint16_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_gt_uint64_t_uint16_t_rel(struct group *group, 
+grouper_gt_uint64_t_uint16_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_gt_uint64_t_uint32_t_no(struct group *group, 
+grouper_gt_uint64_t_uint32_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_gt_uint64_t_uint32_t_abs(struct group *group, 
+grouper_gt_uint64_t_uint32_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_gt_uint64_t_uint32_t_rel(struct group *group, 
+grouper_gt_uint64_t_uint32_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_gt_uint64_t_uint64_t_no(struct group *group, 
+grouper_gt_uint64_t_uint64_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_gt_uint64_t_uint64_t_abs(struct group *group, 
+grouper_gt_uint64_t_uint64_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_gt_uint64_t_uint64_t_rel(struct group *group, 
+grouper_gt_uint64_t_uint64_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_le_uint8_t_uint8_t_no(struct group *group, 
+grouper_le_uint8_t_uint8_t_no(const struct group const *group, 
                               size_t field_offset1, 
-                              char *record2, 
+                              const char* const record2, 
                               size_t field_offset2, 
                               uint64_t delta);
 bool
-grouper_le_uint8_t_uint8_t_abs(struct group *group, 
+grouper_le_uint8_t_uint8_t_abs(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_le_uint8_t_uint8_t_rel(struct group *group, 
+grouper_le_uint8_t_uint8_t_rel(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_le_uint8_t_uint16_t_no(struct group *group, 
+grouper_le_uint8_t_uint16_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_le_uint8_t_uint16_t_abs(struct group *group, 
+grouper_le_uint8_t_uint16_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_le_uint8_t_uint16_t_rel(struct group *group, 
+grouper_le_uint8_t_uint16_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_le_uint8_t_uint32_t_no(struct group *group, 
+grouper_le_uint8_t_uint32_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_le_uint8_t_uint32_t_abs(struct group *group, 
+grouper_le_uint8_t_uint32_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_le_uint8_t_uint32_t_rel(struct group *group, 
+grouper_le_uint8_t_uint32_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_le_uint8_t_uint64_t_no(struct group *group, 
+grouper_le_uint8_t_uint64_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_le_uint8_t_uint64_t_abs(struct group *group, 
+grouper_le_uint8_t_uint64_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_le_uint8_t_uint64_t_rel(struct group *group, 
+grouper_le_uint8_t_uint64_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_le_uint16_t_uint8_t_no(struct group *group, 
+grouper_le_uint16_t_uint8_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_le_uint16_t_uint8_t_abs(struct group *group, 
+grouper_le_uint16_t_uint8_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_le_uint16_t_uint8_t_rel(struct group *group, 
+grouper_le_uint16_t_uint8_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_le_uint16_t_uint16_t_no(struct group *group, 
+grouper_le_uint16_t_uint16_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_le_uint16_t_uint16_t_abs(struct group *group, 
+grouper_le_uint16_t_uint16_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_le_uint16_t_uint16_t_rel(struct group *group, 
+grouper_le_uint16_t_uint16_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_le_uint16_t_uint32_t_no(struct group *group, 
+grouper_le_uint16_t_uint32_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_le_uint16_t_uint32_t_abs(struct group *group, 
+grouper_le_uint16_t_uint32_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_le_uint16_t_uint32_t_rel(struct group *group, 
+grouper_le_uint16_t_uint32_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_le_uint16_t_uint64_t_no(struct group *group, 
+grouper_le_uint16_t_uint64_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_le_uint16_t_uint64_t_abs(struct group *group, 
+grouper_le_uint16_t_uint64_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_le_uint16_t_uint64_t_rel(struct group *group, 
+grouper_le_uint16_t_uint64_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_le_uint32_t_uint8_t_no(struct group *group, 
+grouper_le_uint32_t_uint8_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_le_uint32_t_uint8_t_abs(struct group *group, 
+grouper_le_uint32_t_uint8_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_le_uint32_t_uint8_t_rel(struct group *group, 
+grouper_le_uint32_t_uint8_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_le_uint32_t_uint16_t_no(struct group *group, 
+grouper_le_uint32_t_uint16_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_le_uint32_t_uint16_t_abs(struct group *group, 
+grouper_le_uint32_t_uint16_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_le_uint32_t_uint16_t_rel(struct group *group, 
+grouper_le_uint32_t_uint16_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_le_uint32_t_uint32_t_no(struct group *group, 
+grouper_le_uint32_t_uint32_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_le_uint32_t_uint32_t_abs(struct group *group, 
+grouper_le_uint32_t_uint32_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_le_uint32_t_uint32_t_rel(struct group *group, 
+grouper_le_uint32_t_uint32_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_le_uint32_t_uint64_t_no(struct group *group, 
+grouper_le_uint32_t_uint64_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_le_uint32_t_uint64_t_abs(struct group *group, 
+grouper_le_uint32_t_uint64_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_le_uint32_t_uint64_t_rel(struct group *group, 
+grouper_le_uint32_t_uint64_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_le_uint64_t_uint8_t_no(struct group *group, 
+grouper_le_uint64_t_uint8_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_le_uint64_t_uint8_t_abs(struct group *group, 
+grouper_le_uint64_t_uint8_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_le_uint64_t_uint8_t_rel(struct group *group, 
+grouper_le_uint64_t_uint8_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_le_uint64_t_uint16_t_no(struct group *group, 
+grouper_le_uint64_t_uint16_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_le_uint64_t_uint16_t_abs(struct group *group, 
+grouper_le_uint64_t_uint16_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_le_uint64_t_uint16_t_rel(struct group *group, 
+grouper_le_uint64_t_uint16_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_le_uint64_t_uint32_t_no(struct group *group, 
+grouper_le_uint64_t_uint32_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_le_uint64_t_uint32_t_abs(struct group *group, 
+grouper_le_uint64_t_uint32_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_le_uint64_t_uint32_t_rel(struct group *group, 
+grouper_le_uint64_t_uint32_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_le_uint64_t_uint64_t_no(struct group *group, 
+grouper_le_uint64_t_uint64_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_le_uint64_t_uint64_t_abs(struct group *group, 
+grouper_le_uint64_t_uint64_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_le_uint64_t_uint64_t_rel(struct group *group, 
+grouper_le_uint64_t_uint64_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ge_uint8_t_uint8_t_no(struct group *group, 
+grouper_ge_uint8_t_uint8_t_no(const struct group const *group, 
                               size_t field_offset1, 
-                              char *record2, 
+                              const char* const record2, 
                               size_t field_offset2, 
                               uint64_t delta);
 bool
-grouper_ge_uint8_t_uint8_t_abs(struct group *group, 
+grouper_ge_uint8_t_uint8_t_abs(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_ge_uint8_t_uint8_t_rel(struct group *group, 
+grouper_ge_uint8_t_uint8_t_rel(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_ge_uint8_t_uint16_t_no(struct group *group, 
+grouper_ge_uint8_t_uint16_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_ge_uint8_t_uint16_t_abs(struct group *group, 
+grouper_ge_uint8_t_uint16_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ge_uint8_t_uint16_t_rel(struct group *group, 
+grouper_ge_uint8_t_uint16_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ge_uint8_t_uint32_t_no(struct group *group, 
+grouper_ge_uint8_t_uint32_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_ge_uint8_t_uint32_t_abs(struct group *group, 
+grouper_ge_uint8_t_uint32_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ge_uint8_t_uint32_t_rel(struct group *group, 
+grouper_ge_uint8_t_uint32_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ge_uint8_t_uint64_t_no(struct group *group, 
+grouper_ge_uint8_t_uint64_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_ge_uint8_t_uint64_t_abs(struct group *group, 
+grouper_ge_uint8_t_uint64_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ge_uint8_t_uint64_t_rel(struct group *group, 
+grouper_ge_uint8_t_uint64_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ge_uint16_t_uint8_t_no(struct group *group, 
+grouper_ge_uint16_t_uint8_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_ge_uint16_t_uint8_t_abs(struct group *group, 
+grouper_ge_uint16_t_uint8_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ge_uint16_t_uint8_t_rel(struct group *group, 
+grouper_ge_uint16_t_uint8_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ge_uint16_t_uint16_t_no(struct group *group, 
+grouper_ge_uint16_t_uint16_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ge_uint16_t_uint16_t_abs(struct group *group, 
+grouper_ge_uint16_t_uint16_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ge_uint16_t_uint16_t_rel(struct group *group, 
+grouper_ge_uint16_t_uint16_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ge_uint16_t_uint32_t_no(struct group *group, 
+grouper_ge_uint16_t_uint32_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ge_uint16_t_uint32_t_abs(struct group *group, 
+grouper_ge_uint16_t_uint32_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ge_uint16_t_uint32_t_rel(struct group *group, 
+grouper_ge_uint16_t_uint32_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ge_uint16_t_uint64_t_no(struct group *group, 
+grouper_ge_uint16_t_uint64_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ge_uint16_t_uint64_t_abs(struct group *group, 
+grouper_ge_uint16_t_uint64_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ge_uint16_t_uint64_t_rel(struct group *group, 
+grouper_ge_uint16_t_uint64_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ge_uint32_t_uint8_t_no(struct group *group, 
+grouper_ge_uint32_t_uint8_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_ge_uint32_t_uint8_t_abs(struct group *group, 
+grouper_ge_uint32_t_uint8_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ge_uint32_t_uint8_t_rel(struct group *group, 
+grouper_ge_uint32_t_uint8_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ge_uint32_t_uint16_t_no(struct group *group, 
+grouper_ge_uint32_t_uint16_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ge_uint32_t_uint16_t_abs(struct group *group, 
+grouper_ge_uint32_t_uint16_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ge_uint32_t_uint16_t_rel(struct group *group, 
+grouper_ge_uint32_t_uint16_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ge_uint32_t_uint32_t_no(struct group *group, 
+grouper_ge_uint32_t_uint32_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ge_uint32_t_uint32_t_abs(struct group *group, 
+grouper_ge_uint32_t_uint32_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ge_uint32_t_uint32_t_rel(struct group *group, 
+grouper_ge_uint32_t_uint32_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ge_uint32_t_uint64_t_no(struct group *group, 
+grouper_ge_uint32_t_uint64_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ge_uint32_t_uint64_t_abs(struct group *group, 
+grouper_ge_uint32_t_uint64_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ge_uint32_t_uint64_t_rel(struct group *group, 
+grouper_ge_uint32_t_uint64_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ge_uint64_t_uint8_t_no(struct group *group, 
+grouper_ge_uint64_t_uint8_t_no(const struct group const *group, 
                                size_t field_offset1, 
-                               char *record2, 
+                               const char* const record2, 
                                size_t field_offset2, 
                                uint64_t delta);
 bool
-grouper_ge_uint64_t_uint8_t_abs(struct group *group, 
+grouper_ge_uint64_t_uint8_t_abs(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ge_uint64_t_uint8_t_rel(struct group *group, 
+grouper_ge_uint64_t_uint8_t_rel(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ge_uint64_t_uint16_t_no(struct group *group, 
+grouper_ge_uint64_t_uint16_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ge_uint64_t_uint16_t_abs(struct group *group, 
+grouper_ge_uint64_t_uint16_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ge_uint64_t_uint16_t_rel(struct group *group, 
+grouper_ge_uint64_t_uint16_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ge_uint64_t_uint32_t_no(struct group *group, 
+grouper_ge_uint64_t_uint32_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ge_uint64_t_uint32_t_abs(struct group *group, 
+grouper_ge_uint64_t_uint32_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ge_uint64_t_uint32_t_rel(struct group *group, 
+grouper_ge_uint64_t_uint32_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ge_uint64_t_uint64_t_no(struct group *group, 
+grouper_ge_uint64_t_uint64_t_no(const struct group const *group, 
                                 size_t field_offset1, 
-                                char *record2, 
+                                const char* const record2, 
                                 size_t field_offset2, 
                                 uint64_t delta);
 bool
-grouper_ge_uint64_t_uint64_t_abs(struct group *group, 
+grouper_ge_uint64_t_uint64_t_abs(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 bool
-grouper_ge_uint64_t_uint64_t_rel(struct group *group, 
+grouper_ge_uint64_t_uint64_t_rel(const struct group const *group, 
                                  size_t field_offset1, 
-                                 char *record2, 
+                                 const char* const record2, 
                                  size_t field_offset2, 
                                  uint64_t delta);
 struct aggr* 
-aggr_static_uint8_t(char **records,
-                    char *group_aggregation,
+aggr_static_uint8_t(char** const records,
+                    char* group_aggregation,
                     size_t num_records, 
                     size_t field_offset, 
                     bool if_aggr_common);
 struct aggr* 
-aggr_static_uint16_t(char **records,
-                     char *group_aggregation,
+aggr_static_uint16_t(char** const records,
+                     char* group_aggregation,
                      size_t num_records, 
                      size_t field_offset, 
                      bool if_aggr_common);
 struct aggr* 
-aggr_static_uint32_t(char **records,
-                     char *group_aggregation,
+aggr_static_uint32_t(char** const records,
+                     char* group_aggregation,
                      size_t num_records, 
                      size_t field_offset, 
                      bool if_aggr_common);
 struct aggr* 
-aggr_static_uint64_t(char **records,
-                     char *group_aggregation,
+aggr_static_uint64_t(char** const records,
+                     char* group_aggregation,
                      size_t num_records, 
                      size_t field_offset, 
                      bool if_aggr_common);
 struct aggr* 
-aggr_count_uint8_t(char **records,
-                   char *group_aggregation,
+aggr_count_uint8_t(char** const records,
+                   char* group_aggregation,
                    size_t num_records, 
                    size_t field_offset, 
                    bool if_aggr_common);
 struct aggr* 
-aggr_count_uint16_t(char **records,
-                    char *group_aggregation,
+aggr_count_uint16_t(char** const records,
+                    char* group_aggregation,
                     size_t num_records, 
                     size_t field_offset, 
                     bool if_aggr_common);
 struct aggr* 
-aggr_count_uint32_t(char **records,
-                    char *group_aggregation,
+aggr_count_uint32_t(char** const records,
+                    char* group_aggregation,
                     size_t num_records, 
                     size_t field_offset, 
                     bool if_aggr_common);
 struct aggr* 
-aggr_count_uint64_t(char **records,
-                    char *group_aggregation,
+aggr_count_uint64_t(char** const records,
+                    char* group_aggregation,
                     size_t num_records, 
                     size_t field_offset, 
                     bool if_aggr_common);
 struct aggr* 
-aggr_union_uint8_t(char **records,
-                   char *group_aggregation,
+aggr_union_uint8_t(char** const records,
+                   char* group_aggregation,
                    size_t num_records, 
                    size_t field_offset, 
                    bool if_aggr_common);
 struct aggr* 
-aggr_union_uint16_t(char **records,
-                    char *group_aggregation,
+aggr_union_uint16_t(char** const records,
+                    char* group_aggregation,
                     size_t num_records, 
                     size_t field_offset, 
                     bool if_aggr_common);
 struct aggr* 
-aggr_union_uint32_t(char **records,
-                    char *group_aggregation,
+aggr_union_uint32_t(char** const records,
+                    char* group_aggregation,
                     size_t num_records, 
                     size_t field_offset, 
                     bool if_aggr_common);
 struct aggr* 
-aggr_union_uint64_t(char **records,
-                    char *group_aggregation,
+aggr_union_uint64_t(char** const records,
+                    char* group_aggregation,
                     size_t num_records, 
                     size_t field_offset, 
                     bool if_aggr_common);
 struct aggr* 
-aggr_min_uint8_t(char **records,
-                 char *group_aggregation,
+aggr_min_uint8_t(char** const records,
+                 char* group_aggregation,
                  size_t num_records, 
                  size_t field_offset, 
                  bool if_aggr_common);
 struct aggr* 
-aggr_min_uint16_t(char **records,
-                  char *group_aggregation,
+aggr_min_uint16_t(char** const records,
+                  char* group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr* 
-aggr_min_uint32_t(char **records,
-                  char *group_aggregation,
+aggr_min_uint32_t(char** const records,
+                  char* group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr* 
-aggr_min_uint64_t(char **records,
-                  char *group_aggregation,
+aggr_min_uint64_t(char** const records,
+                  char* group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr* 
-aggr_max_uint8_t(char **records,
-                 char *group_aggregation,
+aggr_max_uint8_t(char** const records,
+                 char* group_aggregation,
                  size_t num_records, 
                  size_t field_offset, 
                  bool if_aggr_common);
 struct aggr* 
-aggr_max_uint16_t(char **records,
-                  char *group_aggregation,
+aggr_max_uint16_t(char** const records,
+                  char* group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr* 
-aggr_max_uint32_t(char **records,
-                  char *group_aggregation,
+aggr_max_uint32_t(char** const records,
+                  char* group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr* 
-aggr_max_uint64_t(char **records,
-                  char *group_aggregation,
+aggr_max_uint64_t(char** const records,
+                  char* group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr* 
-aggr_median_uint8_t(char **records,
-                    char *group_aggregation,
+aggr_median_uint8_t(char** const records,
+                    char* group_aggregation,
                     size_t num_records, 
                     size_t field_offset, 
                     bool if_aggr_common);
 struct aggr* 
-aggr_median_uint16_t(char **records,
-                     char *group_aggregation,
+aggr_median_uint16_t(char** const records,
+                     char* group_aggregation,
                      size_t num_records, 
                      size_t field_offset, 
                      bool if_aggr_common);
 struct aggr* 
-aggr_median_uint32_t(char **records,
-                     char *group_aggregation,
+aggr_median_uint32_t(char** const records,
+                     char* group_aggregation,
                      size_t num_records, 
                      size_t field_offset, 
                      bool if_aggr_common);
 struct aggr* 
-aggr_median_uint64_t(char **records,
-                     char *group_aggregation,
+aggr_median_uint64_t(char** const records,
+                     char* group_aggregation,
                      size_t num_records, 
                      size_t field_offset, 
                      bool if_aggr_common);
 struct aggr* 
-aggr_mean_uint8_t(char **records,
-                  char *group_aggregation,
+aggr_mean_uint8_t(char** const records,
+                  char* group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr* 
-aggr_mean_uint16_t(char **records,
-                   char *group_aggregation,
+aggr_mean_uint16_t(char** const records,
+                   char* group_aggregation,
                    size_t num_records, 
                    size_t field_offset, 
                    bool if_aggr_common);
 struct aggr* 
-aggr_mean_uint32_t(char **records,
-                   char *group_aggregation,
+aggr_mean_uint32_t(char** const records,
+                   char* group_aggregation,
                    size_t num_records, 
                    size_t field_offset, 
                    bool if_aggr_common);
 struct aggr* 
-aggr_mean_uint64_t(char **records,
-                   char *group_aggregation,
+aggr_mean_uint64_t(char** const records,
+                   char* group_aggregation,
                    size_t num_records, 
                    size_t field_offset, 
                    bool if_aggr_common);
 struct aggr* 
-aggr_stddev_uint8_t(char **records,
-                    char *group_aggregation,
+aggr_stddev_uint8_t(char** const records,
+                    char* group_aggregation,
                     size_t num_records, 
                     size_t field_offset, 
                     bool if_aggr_common);
 struct aggr* 
-aggr_stddev_uint16_t(char **records,
-                     char *group_aggregation,
+aggr_stddev_uint16_t(char** const records,
+                     char* group_aggregation,
                      size_t num_records, 
                      size_t field_offset, 
                      bool if_aggr_common);
 struct aggr* 
-aggr_stddev_uint32_t(char **records,
-                     char *group_aggregation,
+aggr_stddev_uint32_t(char** const records,
+                     char* group_aggregation,
                      size_t num_records, 
                      size_t field_offset, 
                      bool if_aggr_common);
 struct aggr* 
-aggr_stddev_uint64_t(char **records,
-                     char *group_aggregation,
+aggr_stddev_uint64_t(char** const records,
+                     char* group_aggregation,
                      size_t num_records, 
                      size_t field_offset, 
                      bool if_aggr_common);
 struct aggr* 
-aggr_prod_uint8_t(char **records,
-                  char *group_aggregation,
+aggr_prod_uint8_t(char** const records,
+                  char* group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr* 
-aggr_prod_uint16_t(char **records,
-                   char *group_aggregation,
+aggr_prod_uint16_t(char** const records,
+                   char* group_aggregation,
                    size_t num_records, 
                    size_t field_offset, 
                    bool if_aggr_common);
 struct aggr* 
-aggr_prod_uint32_t(char **records,
-                   char *group_aggregation,
+aggr_prod_uint32_t(char** const records,
+                   char* group_aggregation,
                    size_t num_records, 
                    size_t field_offset, 
                    bool if_aggr_common);
 struct aggr* 
-aggr_prod_uint64_t(char **records,
-                   char *group_aggregation,
+aggr_prod_uint64_t(char** const records,
+                   char* group_aggregation,
                    size_t num_records, 
                    size_t field_offset, 
                    bool if_aggr_common);
 struct aggr* 
-aggr_sum_uint8_t(char **records,
-                 char *group_aggregation,
+aggr_sum_uint8_t(char** const records,
+                 char* group_aggregation,
                  size_t num_records, 
                  size_t field_offset, 
                  bool if_aggr_common);
 struct aggr* 
-aggr_sum_uint16_t(char **records,
-                  char *group_aggregation,
+aggr_sum_uint16_t(char** const records,
+                  char* group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr* 
-aggr_sum_uint32_t(char **records,
-                  char *group_aggregation,
+aggr_sum_uint32_t(char** const records,
+                  char* group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr* 
-aggr_sum_uint64_t(char **records,
-                  char *group_aggregation,
+aggr_sum_uint64_t(char** const records,
+                  char* group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr* 
-aggr_and_uint8_t(char **records,
-                 char *group_aggregation,
+aggr_and_uint8_t(char** const records,
+                 char* group_aggregation,
                  size_t num_records, 
                  size_t field_offset, 
                  bool if_aggr_common);
 struct aggr* 
-aggr_and_uint16_t(char **records,
-                  char *group_aggregation,
+aggr_and_uint16_t(char** const records,
+                  char* group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr* 
-aggr_and_uint32_t(char **records,
-                  char *group_aggregation,
+aggr_and_uint32_t(char** const records,
+                  char* group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr* 
-aggr_and_uint64_t(char **records,
-                  char *group_aggregation,
+aggr_and_uint64_t(char** const records,
+                  char* group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr* 
-aggr_or_uint8_t(char **records,
-                char *group_aggregation,
+aggr_or_uint8_t(char** const records,
+                char* group_aggregation,
                 size_t num_records, 
                 size_t field_offset, 
                 bool if_aggr_common);
 struct aggr* 
-aggr_or_uint16_t(char **records,
-                 char *group_aggregation,
+aggr_or_uint16_t(char** const records,
+                 char* group_aggregation,
                  size_t num_records, 
                  size_t field_offset, 
                  bool if_aggr_common);
 struct aggr* 
-aggr_or_uint32_t(char **records,
-                 char *group_aggregation,
+aggr_or_uint32_t(char** const records,
+                 char* group_aggregation,
                  size_t num_records, 
                  size_t field_offset, 
                  bool if_aggr_common);
 struct aggr* 
-aggr_or_uint64_t(char **records,
-                 char *group_aggregation,
+aggr_or_uint64_t(char** const records,
+                 char* group_aggregation,
                  size_t num_records, 
                  size_t field_offset, 
                  bool if_aggr_common);
 struct aggr* 
-aggr_xor_uint8_t(char **records,
-                 char *group_aggregation,
+aggr_xor_uint8_t(char** const records,
+                 char* group_aggregation,
                  size_t num_records, 
                  size_t field_offset, 
                  bool if_aggr_common);
 struct aggr* 
-aggr_xor_uint16_t(char **records,
-                  char *group_aggregation,
+aggr_xor_uint16_t(char** const records,
+                  char* group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr* 
-aggr_xor_uint32_t(char **records,
-                  char *group_aggregation,
+aggr_xor_uint32_t(char** const records,
+                  char* group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
 struct aggr* 
-aggr_xor_uint64_t(char **records,
-                  char *group_aggregation,
+aggr_xor_uint64_t(char** const records,
+                  char* group_aggregation,
                   size_t num_records, 
                   size_t field_offset, 
                   bool if_aggr_common);
