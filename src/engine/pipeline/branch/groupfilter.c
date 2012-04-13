@@ -27,10 +27,12 @@
 #include "groupfilter.h"
 
 struct groupfilter_result*
-groupfilter(struct group **groupset, 
-            size_t num_groups, 
-            struct gfilter_rule** ruleset, 
-            size_t num_gfilter_rules) {
+groupfilter(
+            size_t num_gfilter_rules,
+            struct gfilter_rule** const ruleset,
+            
+            const struct grouper_result* const gresult
+            ) {
   
   /* free'd just before calling ungrouper(...) */
   struct groupfilter_result* 
@@ -39,9 +41,9 @@ groupfilter(struct group **groupset,
     errExit("calloc");
   
   /* iterate over each group */
-  for (int i = 0, j = 0; i < num_groups; i++) {
+  for (int i = 0, j = 0; i < gresult->num_groups; i++) {
     
-    struct group* group = groupset[i];
+    struct group* group = gresult->groupset[i];
     
     /* iterate over each group filter rule */
     for (j = 0; j < num_gfilter_rules; j++) {
@@ -69,7 +71,7 @@ groupfilter(struct group **groupset,
       if (gfilter_result->filtered_groupset == NULL)
         errExit("realloc");
       gfilter_result->filtered_groupset
-      [gfilter_result->num_filtered_groups-1] = groupset[i];
+      [gfilter_result->num_filtered_groups-1] = gresult->groupset[i];
     }
   }
   return gfilter_result;

@@ -134,10 +134,12 @@ branch_start(void *arg) {
   /*                            grouper-filter                              */
   /* -----------------------------------------------------------------------*/  
   
-  branch->gfilter_result = groupfilter(branch->grouper_result->groupset, 
-                                       branch->grouper_result->num_groups, 
+  branch->gfilter_result = groupfilter(
+                                       branch->num_gfilter_rules,                                       
                                        branch->gfilter_ruleset, 
-                                       branch->num_gfilter_rules);
+                                       
+                                       branch->grouper_result
+                                      );
   
   if (branch->gfilter_result == NULL)
     errExit("groupfilter(...) returned NULL");

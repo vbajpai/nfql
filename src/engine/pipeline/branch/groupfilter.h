@@ -31,9 +31,11 @@
 #include "error_handlers.h"
 
 struct groupfilter_result*
-groupfilter(struct group** groups, 
-             size_t num_groups, 
-             struct gfilter_rule** ruleset, 
-             size_t num_gfilter_rules);
+groupfilter(
+            size_t num_gfilter_rules,
+            struct gfilter_rule** const ruleset,
+            
+            const struct grouper_result* const gresult
+           );
 
 #endif
