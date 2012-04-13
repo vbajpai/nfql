@@ -49,10 +49,14 @@ groupfilter(
     for (j = 0; j < num_gfilter_rules; j++) {
       
       /* break out if any one of the rules does NOT match */
-      if (!ruleset[j]->func(group, 
+      if (
+          !ruleset[j]->func(
+                            group, 
                             ruleset[j]->field, 
                             ruleset[j]->value, 
-                            ruleset[j]->delta))
+                            ruleset[j]->delta
+                           )
+         )
         break;
     }
     

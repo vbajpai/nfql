@@ -4784,7 +4784,7 @@ aggr_xor_uint64_t(char **records,
 }
 
 bool 
-gfilter_eq_uint8_t(struct group *group, 
+gfilter_eq_uint8_t(const struct group const *group, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta) {
@@ -4794,7 +4794,7 @@ gfilter_eq_uint8_t(struct group *group,
 }
 
 bool 
-gfilter_eq_uint16_t(struct group *group, 
+gfilter_eq_uint16_t(const struct group const *group, 
                     size_t field_offset, 
                     uint64_t value, 
                     uint64_t delta) {
@@ -4804,7 +4804,7 @@ gfilter_eq_uint16_t(struct group *group,
 }
 
 bool 
-gfilter_eq_uint32_t(struct group *group, 
+gfilter_eq_uint32_t(const struct group const *group, 
                     size_t field_offset, 
                     uint64_t value, 
                     uint64_t delta) {
@@ -4814,7 +4814,7 @@ gfilter_eq_uint32_t(struct group *group,
 }
 
 bool 
-gfilter_eq_uint64_t(struct group *group, 
+gfilter_eq_uint64_t(const struct group const *group, 
                     size_t field_offset, 
                     uint64_t value, 
                     uint64_t delta) {
@@ -4824,7 +4824,7 @@ gfilter_eq_uint64_t(struct group *group,
 }
 
 bool 
-gfilter_ne_uint8_t(struct group *group, 
+gfilter_ne_uint8_t(const struct group const *group, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta) {
@@ -4834,7 +4834,7 @@ gfilter_ne_uint8_t(struct group *group,
 }
 
 bool 
-gfilter_ne_uint16_t(struct group *group, 
+gfilter_ne_uint16_t(const struct group const *group, 
                     size_t field_offset, 
                     uint64_t value, 
                     uint64_t delta) {
@@ -4844,7 +4844,7 @@ gfilter_ne_uint16_t(struct group *group,
 }
 
 bool 
-gfilter_ne_uint32_t(struct group *group, 
+gfilter_ne_uint32_t(const struct group const *group, 
                     size_t field_offset, 
                     uint64_t value, 
                     uint64_t delta) {
@@ -4854,7 +4854,7 @@ gfilter_ne_uint32_t(struct group *group,
 }
 
 bool 
-gfilter_ne_uint64_t(struct group *group, 
+gfilter_ne_uint64_t(const struct group const *group, 
                     size_t field_offset, 
                     uint64_t value, 
                     uint64_t delta) {
@@ -4864,7 +4864,7 @@ gfilter_ne_uint64_t(struct group *group,
 }
 
 bool 
-gfilter_lt_uint8_t(struct group *group, 
+gfilter_lt_uint8_t(const struct group const *group, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta) {
@@ -4874,7 +4874,7 @@ gfilter_lt_uint8_t(struct group *group,
 }
 
 bool 
-gfilter_lt_uint16_t(struct group *group, 
+gfilter_lt_uint16_t(const struct group const *group, 
                     size_t field_offset, 
                     uint64_t value, 
                     uint64_t delta) {
@@ -4884,7 +4884,7 @@ gfilter_lt_uint16_t(struct group *group,
 }
 
 bool 
-gfilter_lt_uint32_t(struct group *group, 
+gfilter_lt_uint32_t(const struct group const *group, 
                     size_t field_offset, 
                     uint64_t value, 
                     uint64_t delta) {
@@ -4894,7 +4894,7 @@ gfilter_lt_uint32_t(struct group *group,
 }
 
 bool 
-gfilter_lt_uint64_t(struct group *group, 
+gfilter_lt_uint64_t(const struct group const *group, 
                     size_t field_offset, 
                     uint64_t value, 
                     uint64_t delta) {
@@ -4904,7 +4904,7 @@ gfilter_lt_uint64_t(struct group *group,
 }
 
 bool 
-gfilter_gt_uint8_t(struct group *group, 
+gfilter_gt_uint8_t(const struct group const *group, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta) {
@@ -4914,7 +4914,7 @@ gfilter_gt_uint8_t(struct group *group,
 }
 
 bool 
-gfilter_gt_uint16_t(struct group *group, 
+gfilter_gt_uint16_t(const struct group const *group, 
                     size_t field_offset, 
                     uint64_t value, 
                     uint64_t delta) {
@@ -4924,7 +4924,7 @@ gfilter_gt_uint16_t(struct group *group,
 }
 
 bool 
-gfilter_gt_uint32_t(struct group *group, 
+gfilter_gt_uint32_t(const struct group const *group, 
                     size_t field_offset, 
                     uint64_t value, 
                     uint64_t delta) {
@@ -4934,7 +4934,7 @@ gfilter_gt_uint32_t(struct group *group,
 }
 
 bool 
-gfilter_gt_uint64_t(struct group *group, 
+gfilter_gt_uint64_t(const struct group const *group, 
                     size_t field_offset, 
                     uint64_t value, 
                     uint64_t delta) {
@@ -4944,7 +4944,7 @@ gfilter_gt_uint64_t(struct group *group,
 }
 
 bool 
-gfilter_le_uint8_t(struct group *group, 
+gfilter_le_uint8_t(const struct group const *group, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta) {
@@ -4954,7 +4954,7 @@ gfilter_le_uint8_t(struct group *group,
 }
 
 bool 
-gfilter_le_uint16_t(struct group *group, 
+gfilter_le_uint16_t(const struct group const *group, 
                     size_t field_offset, 
                     uint64_t value, 
                     uint64_t delta) {
@@ -4964,7 +4964,7 @@ gfilter_le_uint16_t(struct group *group,
 }
 
 bool 
-gfilter_le_uint32_t(struct group *group, 
+gfilter_le_uint32_t(const struct group const *group, 
                     size_t field_offset, 
                     uint64_t value, 
                     uint64_t delta) {
@@ -4974,7 +4974,7 @@ gfilter_le_uint32_t(struct group *group,
 }
 
 bool 
-gfilter_le_uint64_t(struct group *group, 
+gfilter_le_uint64_t(const struct group const *group, 
                     size_t field_offset, 
                     uint64_t value, 
                     uint64_t delta) {
@@ -4984,7 +4984,7 @@ gfilter_le_uint64_t(struct group *group,
 }
 
 bool 
-gfilter_ge_uint8_t(struct group *group, 
+gfilter_ge_uint8_t(const struct group const *group, 
                    size_t field_offset, 
                    uint64_t value, 
                    uint64_t delta) {
@@ -4994,7 +4994,7 @@ gfilter_ge_uint8_t(struct group *group,
 }
 
 bool 
-gfilter_ge_uint16_t(struct group *group, 
+gfilter_ge_uint16_t(const struct group const *group, 
                     size_t field_offset, 
                     uint64_t value, 
                     uint64_t delta) {
@@ -5004,7 +5004,7 @@ gfilter_ge_uint16_t(struct group *group,
 }
 
 bool 
-gfilter_ge_uint32_t(struct group *group, 
+gfilter_ge_uint32_t(const struct group const *group, 
                     size_t field_offset, 
                     uint64_t value, 
                     uint64_t delta) {
@@ -5014,7 +5014,7 @@ gfilter_ge_uint32_t(struct group *group,
 }
 
 bool 
-gfilter_ge_uint64_t(struct group *group, 
+gfilter_ge_uint64_t(const struct group const *group, 
                     size_t field_offset, 
                     uint64_t value, 
                     uint64_t delta) {

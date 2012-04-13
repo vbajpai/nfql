@@ -349,7 +349,7 @@ def groupaggr_body(op, atype):
 
 
 gfilter_proto = """bool 
-                   gfilter_%s_%s(struct group *group, 
+                   gfilter_%s_%s(const struct group const *group, 
                                  size_t field_offset, 
                                  uint64_t value, 
                                  uint64_t delta)"""

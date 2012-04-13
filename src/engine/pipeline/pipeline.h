@@ -89,10 +89,10 @@ struct gfilter_rule {
   uint64_t                        delta;
   uint64_t                        op;
   bool (*func)(
-               struct group*      group,
-               size_t             field,
-               uint64_t           value,
-               uint64_t           delta
+               const struct group* const      group,
+               size_t                         field,
+               uint64_t                       value,
+               uint64_t                       delta
                );
 };
 

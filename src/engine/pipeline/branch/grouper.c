@@ -171,11 +171,13 @@ grouper_aggregations(
     }
     
     /* free'd just after returning from merger(...) */
-    aggrset[j] = aggr_ruleset[j]->func(group->members,
+    aggrset[j] = aggr_ruleset[j]->func(
+                                       group->members,
                                        aggr_record,
                                        group->num_members, 
                                        aggr_offset, 
-                                       if_ignore_aggr_rule);
+                                       if_ignore_aggr_rule
+                                      );
   }    
 
   aggrset = NULL; aggr_record = NULL;
