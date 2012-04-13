@@ -27,37 +27,43 @@
 #include "echo.h"
 
 void
-echo_merger(struct flowquery* fquery, 
-            struct ft_data* trace){  
+echo_merger(
+            size_t num_branches,
+            struct branch** const branchset,
+            
+            const struct merger_result* const mresult,
+            struct ft_data* const dataformat
+           ) {  
 
   if (verbose_vv) {
     
-    struct permut_iter* iter = iter_init(fquery->num_branches,
-                                         fquery->branchset);
+    struct permut_iter* iter = iter_init(num_branches, branchset);
     printf("\nNo. of (to be) Matched Groups: %zu \n", 
-           fquery->merger_result->total_num_group_tuples);
-    if (fquery->merger_result->total_num_group_tuples != 0)      
+           mresult->total_num_group_tuples);
+    if (mresult->total_num_group_tuples != 0)      
       puts(FLOWHEADER);      
     while(iter_next(iter)) {
-      for (int j = 0; j < fquery->num_branches; j++) {          
-        flow_print_record(trace, 
-                          fquery->branchset[j]->gfilter_result->
-                          filtered_groupset[iter->filtered_group_tuple[j]
-                                            - 1]->aggr_result->aggr_record);
+      for (int j = 0; j < num_branches; j++) {          
+        flow_print_record(
+                          dataformat, 
+                          branchset[j]->gfilter_result->filtered_groupset
+                          [
+                           iter->filtered_group_tuple[j] - 1                          
+                          ]->aggr_result->aggr_record
+                         );
       }
       printf("\n");
     }
     iter_destroy(iter);
   }    
-  printf("\nNo. of Merged Groups: %zu (Tuples)\n", 
-         fquery->merger_result->num_group_tuples);      
-  if (fquery->merger_result->num_group_tuples != 0)          
+  printf("\nNo. of Merged Groups: %zu (Tuples)\n", mresult->num_group_tuples);      
+  if (mresult->num_group_tuples != 0)          
     puts(FLOWHEADER);    
-  for (int j = 0; j < fquery->merger_result->num_group_tuples; j++) {
-    struct group** group_tuple = fquery->merger_result->group_tuples[j];
-    for (int i = 0; i < fquery->num_branches; i++) {
+  for (int j = 0; j < mresult->num_group_tuples; j++) {
+    struct group** group_tuple = mresult->group_tuples[j];
+    for (int i = 0; i < num_branches; i++) {
       struct group* group = group_tuple[i];
-      flow_print_record(trace, group->aggr_result->aggr_record);
+      flow_print_record(dataformat, group->aggr_result->aggr_record);
     }
     printf("\n");
   }  
@@ -69,9 +75,11 @@ echo_merger(struct flowquery* fquery,
 /* -----------------------------------------------------------------------*/ 
 
 void
-echo_branch(size_t num_branches,
+echo_branch(
+            size_t num_branches,
             struct branch** branchset,
-            struct ft_data* trace){
+            struct ft_data* dataformat
+           ){
   
   
   /* process each branch */
@@ -79,134 +87,162 @@ echo_branch(size_t num_branches,
     struct branch* branch = branchset[i];
 
 #ifdef FILTER
-    echo_filter(branch);
+    echo_filter(
+                branch->filter_result,
+                dataformat
+               );
 #endif
     
 
 #ifdef GROUPER    
     if (verbose_vv){
-      echo_grouper(branch);
+      echo_grouper(
+                   branch->num_grouper_rules,
+                   branch->filter_result->num_filtered_records,
+                   
+                   branch->grouper_result,
+                   branch->data
+                  );
     }
 #endif    
     
     
 #ifdef GROUPERAGGREGATIONS
-    echo_group_aggr(branch);
+    echo_group_aggr(
+                    branch->grouper_result,
+                    branch->data
+                   );
 #endif
     
     
 #ifdef GROUPFILTER
-    echo_gfilter(branch);
+    echo_gfilter(
+                 branch->gfilter_result,
+                 branch->data
+                );
 #endif
   }
 }
 
 void
-echo_filter(struct branch* branch){
+echo_filter(
+            const struct filter_result* const fresult,
+            struct ft_data* const dataformat
+           ) {
   
-  printf("\nNo. of Filtered Records: %zd\n", 
-         branch->filter_result->num_filtered_records);      
-  if (branch->filter_result->num_filtered_records != 0)
-    puts(FLOWHEADER);      
-  for (int j = 0; j < branch->filter_result->num_filtered_records; j++) {
+  printf("\nNo. of Filtered Records: %zd\n", fresult->num_filtered_records);
+  
+  if (fresult->num_filtered_records != 0)
+    puts(FLOWHEADER);
+  
+  for (int j = 0; j < fresult->num_filtered_records; j++) {
     
-    char* record = branch->filter_result->filtered_recordset[j];
-    flow_print_record(branch->data, record);
+    char* record = fresult->filtered_recordset[j];
+    flow_print_record(dataformat, record);
   }
 }
 
 void
-echo_grouper(struct branch* branch) {
+echo_grouper(
+             size_t num_grouper_rules,
+             size_t num_sorted_records,
+             
+             const struct grouper_result* const gresult,
+             struct ft_data* const dataformat
+            ) {
   
-  if(branch->num_grouper_rules > 0){
+  if(num_grouper_rules > 0) {
     
-    printf("\nNo. of Sorted Records: %zd\n", 
-           branch->filter_result->num_filtered_records);      
-    if (branch->filter_result->num_filtered_records != 0)          
+    printf("\nNo. of Sorted Records: %zd\n", num_sorted_records);      
+    if (num_sorted_records != 0)          
       puts(FLOWHEADER);      
-    for (int j = 0; j < branch->filter_result->num_filtered_records; j++)
-      flow_print_record(branch->data, 
-                        branch->grouper_result->sorted_recordset[j]);
+    for (int j = 0; j < num_sorted_records; j++)
+      flow_print_record(dataformat, gresult->sorted_recordset[j]);
     
-    printf("\nNo. of Unique Records: %zd\n", 
-           branch->grouper_result->num_unique_records);      
-    if (branch->grouper_result->num_unique_records != 0)          
+    printf("\nNo. of Unique Records: %zd\n", gresult->num_unique_records);      
+    if (gresult->num_unique_records != 0)          
       puts(FLOWHEADER);      
-    for (int j = 0; j < branch->grouper_result->num_unique_records; j++)
-      flow_print_record(branch->data, 
-                        branch->grouper_result->unique_recordset[j]);
+    for (int j = 0; j < gresult->num_unique_records; j++)
+      flow_print_record(dataformat, gresult->unique_recordset[j]);
   }      
   
-  printf("\nNo. of Groups: %zu (Verbose Output)\n", 
-         branch->grouper_result->num_groups);
+  printf("\nNo. of Groups: %zu (Verbose Output)\n", gresult->num_groups);
   
-  if (branch->grouper_result->num_groups > 0)
+  if (gresult->num_groups > 0)
     puts(FLOWHEADER); 
   
-  for (int j = 0; j < branch->grouper_result->num_groups; j++) {
+  for (int j = 0; j < gresult->num_groups; j++) {
     
     printf("\n");
-    struct group* group = branch->grouper_result->groupset[j];
+    struct group* group = gresult->groupset[j];
     
     /* print group members */ 
     for (int k = 0; k < group->num_members; k++)
-      flow_print_record(branch->data, group->members[k]);
+      flow_print_record(dataformat, group->members[k]);
   }
   
 }
 
 void
-echo_group_aggr(struct branch* branch){
+echo_group_aggr(
+                const struct grouper_result* const gresult,
+                struct ft_data* const dataformat
+               ) {
   
-  printf("\nNo. of Groups: %zu (Aggregations)\n", 
-         branch->grouper_result->num_groups);
+  printf("\nNo. of Groups: %zu (Aggregations)\n", gresult->num_groups);
   
-  if (branch->grouper_result->num_groups != 0)      
+  if (gresult->num_groups != 0)      
     puts(FLOWHEADER); 
-  for (int j = 0; j < branch->grouper_result->num_groups; j++) {        
-    struct group* group = branch->grouper_result->groupset[j];
-    flow_print_record(branch->data, group->aggr_result->aggr_record);    
+  
+  for (int j = 0; j < gresult->num_groups; j++) {
+    
+    struct group* group = gresult->groupset[j];
+    flow_print_record(dataformat, group->aggr_result->aggr_record);    
   }
 }
 
 void
-echo_gfilter(struct branch* branch) {
+echo_gfilter(
+             const struct groupfilter_result* const gfresult,
+             struct ft_data* const dataformat
+            ) {
   
   printf("\nNo. of Filtered Groups: %zu (Aggregations)\n", 
-         branch->gfilter_result->num_filtered_groups);      
-  if (branch->gfilter_result->num_filtered_groups != 0)      
+         gfresult->num_filtered_groups);      
+  if (gfresult->num_filtered_groups != 0)      
     puts(FLOWHEADER); 
   
-  for (int j = 0; j < branch->gfilter_result->num_filtered_groups; j++) {      
-    struct group* fgroup = branch->gfilter_result->filtered_groupset[j];
-    flow_print_record(branch->data, fgroup->aggr_result->aggr_record);
+  for (int j = 0; j < gfresult->num_filtered_groups; j++) {      
+    struct group* fgroup = gfresult->filtered_groupset[j];
+    flow_print_record(dataformat, fgroup->aggr_result->aggr_record);
   }
 }
 
 /* -----------------------------------------------------------------------*/  
 
 void 
-echo_results(size_t num_streams,
-             struct stream** streamset,
-             struct ft_data* trace) {
+echo_results(
+             const struct ungrouper_result* const uresult,
+             struct ft_data* const dataformat             
+            ) {
   
   
   /* -----------------------------------------------------------------------*/  
   /*                                results                                 */
   /* -----------------------------------------------------------------------*/  
   
-  printf("\nNo. of Streams: %zu \n", num_streams);
+  printf("\nNo. of Streams: %zu \n", uresult->num_streams);
   printf("----------------- \n");
   
-  for (int j = 0; j < num_streams; j++) {
+  for (int j = 0; j < uresult->num_streams; j++) {
     
-    struct stream* stream = streamset[j];
+    struct stream* stream = uresult->streamset[j];
     printf("\nNo. of Records in Stream (%d): %zu \n",j+1, stream->num_records);
     if (stream->num_records != 0)
       puts(FLOWHEADER);
     for (int i = 0; i < stream->num_records; i++) {
       char* record = stream->recordset[i];
-      flow_print_record(trace, record);
+      flow_print_record(dataformat, record);
     }
     printf("\n");
   }

@@ -628,9 +628,12 @@ main(int argc, char **argv) {
     
     /* print the filtered records if verbose mode is set */
     if (verbose_v) {
-      echo_branch(fquery->num_branches,
+      
+      echo_branch(
+                  fquery->num_branches,
                   fquery->branchset,
-                  param_data->trace);
+                  param_data->trace
+                 );
     }    
   }    
   
@@ -708,7 +711,13 @@ main(int argc, char **argv) {
     
     /* echo merger results, if verbose mode is SET */
     if (verbose_v)
-      echo_merger(fquery, param_data->trace);
+      echo_merger(
+                  fquery->num_branches,
+                  fquery->branchset,
+                  
+                  fquery->merger_result,
+                  param_data->trace
+                 );
     
     /* free grouper and groupfilter parts */
     for (int i = 0; i < fquery->num_branches; i++) {
@@ -778,9 +787,10 @@ main(int argc, char **argv) {
   else {
     
     /* echo ungrouper results */
-    echo_results(fquery->ungrouper_result->num_streams,
-                 fquery->ungrouper_result->streamset,
-                 param_data->trace);          
+    echo_results(
+                 fquery->ungrouper_result,
+                 param_data->trace
+                );
   }    
   
   /* -----------------------------------------------------------------------*/

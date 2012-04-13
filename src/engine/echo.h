@@ -41,28 +41,51 @@ echo_branch(size_t num_branches,
             struct ft_data* trace);
 
 void
-echo_filter(struct branch* branch);
+echo_filter(
+            const struct filter_result* const fresult,
+            struct ft_data* const dataformat
+           );
+  
+void
+echo_grouper(
+             size_t num_grouper_rules,
+             size_t num_sorted_records,
+             
+             const struct grouper_result* const gresult,
+             struct ft_data* const dataformat
+            );
+
 
 void
-echo_grouper(struct branch* branch);
+echo_group_aggr(
+                const struct grouper_result* const gresult,
+                struct ft_data* const dataformat
+               );
 
 void
-echo_group_aggr(struct branch* branch);
-
-void
-echo_gfilter(struct branch* branch);
+echo_gfilter(
+             const struct groupfilter_result* const gfresult,
+             struct ft_data* const dataformat
+             );
 
 /* -----------------------------------------------------------------------*/      
 
 
 void
-echo_merger(struct flowquery* fquery, 
-            struct ft_data* trace);
+echo_merger(
+            size_t num_branches,
+            struct branch** const branchset,
+            
+            const struct merger_result* const mresult,
+            struct ft_data* const dataformat
+            );
+
 
 void 
-echo_results(size_t num_streams,
-             struct stream** streamset,
-             struct ft_data* trace);
+echo_results(
+             const struct ungrouper_result* const uresult,
+             struct ft_data* const dataformat             
+            );
 
 
 #endif
