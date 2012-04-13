@@ -181,9 +181,9 @@ struct merger_rule {
   uint64_t                                    op;
   uint64_t                                    delta;
   bool (*func)(
-               struct group*                  group1,
+               const struct group* const      group1,
                size_t                         field1,
-               struct group*                  group2,
+               const struct group* const      group2,
                size_t                         field2,
                uint64_t                       delta
                );

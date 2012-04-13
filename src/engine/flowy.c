@@ -687,11 +687,13 @@ main(int argc, char **argv) {
   /*                                 merger                                 */
   /* -----------------------------------------------------------------------*/
   
-  fquery->merger_result = merger(fquery->branchset,
-                                 fquery->num_branches,
+  fquery->merger_result = merger(
+                                 fquery->num_merger_rules,
+                                 fquery->mruleset,
                                  
-                                 fquery->mruleset, 
-                                 fquery->num_merger_rules);
+                                 fquery->num_branches,
+                                 fquery->branchset
+                                );
   
   if (fquery->merger_result == NULL)
     errExit("merger(...) returned NULL");

@@ -90,8 +90,10 @@ bsearch_r(const void *key,
  * parsed at RUNTIME
  */
 struct permut_iter*
-iter_init(struct branch** branchset, 
-          int num_branches) {
+iter_init(
+          int num_branches,
+          struct branch** const branchset          
+         ) {
   
   /* free'd using iter_destroy(...) called before returning from merger(...) */
   struct permut_iter *iter = (struct permut_iter *)
@@ -126,7 +128,7 @@ iter_init(struct branch** branchset,
  * given the iterator, modify to represent the next permutation
  * and return true. if the last permutation is reached, return false.
  */
-bool iter_next(struct permut_iter *iter) {
+bool iter_next(const struct permut_iter *iter) {
   
   /* start from right to left in the group tuple */
   for (int i = iter->num_branches-1; i >= 0; --i) {

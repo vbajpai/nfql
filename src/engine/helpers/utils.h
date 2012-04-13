@@ -76,10 +76,12 @@ struct permut_iter {
 };
 
 struct permut_iter*
-iter_init(struct branch** branchset, int num_branches);
-
+iter_init(
+          int num_branches,
+          struct branch** const branchset          
+          );
 bool 
-iter_next(struct permut_iter *iter);
+iter_next(const struct permut_iter *iter);
 
 void 
 iter_destroy(struct permut_iter *iter);

@@ -32,11 +32,13 @@
 #ifdef MERGER
 
 struct merger_result*
-merger(struct branch** branchset, 
+merger(
+       size_t num_merger_rules,
+       struct merger_rule** const mruleset,
+
        size_t num_branches,
-       
-       struct merger_rule** mruleset, 
-       size_t num_merger_rules) {
+       struct branch** const branchset
+      ) {
   
   /* free'd just before calling ungrouper(...) */
   struct merger_result* mresult = calloc(1, sizeof(struct merger_result));
@@ -44,7 +46,7 @@ merger(struct branch** branchset,
     errExit("calloc");
   
   /* initialize the iterator */
-  struct permut_iter* iter = iter_init(branchset, num_branches);
+  struct permut_iter* iter = iter_init(num_branches, branchset);
   
   /* iterate over all permutations */
   unsigned int index = 0;

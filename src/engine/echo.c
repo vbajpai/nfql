@@ -32,8 +32,8 @@ echo_merger(struct flowquery* fquery,
 
   if (verbose_vv) {
     
-    struct permut_iter* iter = iter_init(fquery->branchset, 
-                                         fquery->num_branches);
+    struct permut_iter* iter = iter_init(fquery->num_branches,
+                                         fquery->branchset);
     printf("\nNo. of (to be) Matched Groups: %zu \n", 
            fquery->merger_result->total_num_group_tuples);
     if (fquery->merger_result->total_num_group_tuples != 0)      

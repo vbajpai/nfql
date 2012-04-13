@@ -2293,753 +2293,753 @@ gfilter_ge_uint64_t(const struct group const *group,
                     uint64_t value, 
                     uint64_t delta);
 bool 
-merger_eq_uint8_t_uint8_t(struct group *group1, 
+merger_eq_uint8_t_uint8_t(const struct group* const group1, 
                           size_t field1_offset, 
-                          struct group *group2, 
+                          const struct group* const group2, 
                           size_t field2_offset, 
                           uint64_t delta);
 bool 
-merger_eq_uint8_t_uint16_t(struct group *group1, 
+merger_eq_uint8_t_uint16_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_eq_uint8_t_uint32_t(struct group *group1, 
+merger_eq_uint8_t_uint32_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_eq_uint8_t_uint64_t(struct group *group1, 
+merger_eq_uint8_t_uint64_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_eq_uint16_t_uint8_t(struct group *group1, 
+merger_eq_uint16_t_uint8_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_eq_uint16_t_uint16_t(struct group *group1, 
+merger_eq_uint16_t_uint16_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_eq_uint16_t_uint32_t(struct group *group1, 
+merger_eq_uint16_t_uint32_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_eq_uint16_t_uint64_t(struct group *group1, 
+merger_eq_uint16_t_uint64_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_eq_uint32_t_uint8_t(struct group *group1, 
+merger_eq_uint32_t_uint8_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_eq_uint32_t_uint16_t(struct group *group1, 
+merger_eq_uint32_t_uint16_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_eq_uint32_t_uint32_t(struct group *group1, 
+merger_eq_uint32_t_uint32_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_eq_uint32_t_uint64_t(struct group *group1, 
+merger_eq_uint32_t_uint64_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_eq_uint64_t_uint8_t(struct group *group1, 
+merger_eq_uint64_t_uint8_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_eq_uint64_t_uint16_t(struct group *group1, 
+merger_eq_uint64_t_uint16_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_eq_uint64_t_uint32_t(struct group *group1, 
+merger_eq_uint64_t_uint32_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_eq_uint64_t_uint64_t(struct group *group1, 
+merger_eq_uint64_t_uint64_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_ne_uint8_t_uint8_t(struct group *group1, 
+merger_ne_uint8_t_uint8_t(const struct group* const group1, 
                           size_t field1_offset, 
-                          struct group *group2, 
+                          const struct group* const group2, 
                           size_t field2_offset, 
                           uint64_t delta);
 bool 
-merger_ne_uint8_t_uint16_t(struct group *group1, 
+merger_ne_uint8_t_uint16_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_ne_uint8_t_uint32_t(struct group *group1, 
+merger_ne_uint8_t_uint32_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_ne_uint8_t_uint64_t(struct group *group1, 
+merger_ne_uint8_t_uint64_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_ne_uint16_t_uint8_t(struct group *group1, 
+merger_ne_uint16_t_uint8_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_ne_uint16_t_uint16_t(struct group *group1, 
+merger_ne_uint16_t_uint16_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_ne_uint16_t_uint32_t(struct group *group1, 
+merger_ne_uint16_t_uint32_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_ne_uint16_t_uint64_t(struct group *group1, 
+merger_ne_uint16_t_uint64_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_ne_uint32_t_uint8_t(struct group *group1, 
+merger_ne_uint32_t_uint8_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_ne_uint32_t_uint16_t(struct group *group1, 
+merger_ne_uint32_t_uint16_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_ne_uint32_t_uint32_t(struct group *group1, 
+merger_ne_uint32_t_uint32_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_ne_uint32_t_uint64_t(struct group *group1, 
+merger_ne_uint32_t_uint64_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_ne_uint64_t_uint8_t(struct group *group1, 
+merger_ne_uint64_t_uint8_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_ne_uint64_t_uint16_t(struct group *group1, 
+merger_ne_uint64_t_uint16_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_ne_uint64_t_uint32_t(struct group *group1, 
+merger_ne_uint64_t_uint32_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_ne_uint64_t_uint64_t(struct group *group1, 
+merger_ne_uint64_t_uint64_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_lt_uint8_t_uint8_t(struct group *group1, 
+merger_lt_uint8_t_uint8_t(const struct group* const group1, 
                           size_t field1_offset, 
-                          struct group *group2, 
+                          const struct group* const group2, 
                           size_t field2_offset, 
                           uint64_t delta);
 bool 
-merger_lt_uint8_t_uint16_t(struct group *group1, 
+merger_lt_uint8_t_uint16_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_lt_uint8_t_uint32_t(struct group *group1, 
+merger_lt_uint8_t_uint32_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_lt_uint8_t_uint64_t(struct group *group1, 
+merger_lt_uint8_t_uint64_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_lt_uint16_t_uint8_t(struct group *group1, 
+merger_lt_uint16_t_uint8_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_lt_uint16_t_uint16_t(struct group *group1, 
+merger_lt_uint16_t_uint16_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_lt_uint16_t_uint32_t(struct group *group1, 
+merger_lt_uint16_t_uint32_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_lt_uint16_t_uint64_t(struct group *group1, 
+merger_lt_uint16_t_uint64_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_lt_uint32_t_uint8_t(struct group *group1, 
+merger_lt_uint32_t_uint8_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_lt_uint32_t_uint16_t(struct group *group1, 
+merger_lt_uint32_t_uint16_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_lt_uint32_t_uint32_t(struct group *group1, 
+merger_lt_uint32_t_uint32_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_lt_uint32_t_uint64_t(struct group *group1, 
+merger_lt_uint32_t_uint64_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_lt_uint64_t_uint8_t(struct group *group1, 
+merger_lt_uint64_t_uint8_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_lt_uint64_t_uint16_t(struct group *group1, 
+merger_lt_uint64_t_uint16_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_lt_uint64_t_uint32_t(struct group *group1, 
+merger_lt_uint64_t_uint32_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_lt_uint64_t_uint64_t(struct group *group1, 
+merger_lt_uint64_t_uint64_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_gt_uint8_t_uint8_t(struct group *group1, 
+merger_gt_uint8_t_uint8_t(const struct group* const group1, 
                           size_t field1_offset, 
-                          struct group *group2, 
+                          const struct group* const group2, 
                           size_t field2_offset, 
                           uint64_t delta);
 bool 
-merger_gt_uint8_t_uint16_t(struct group *group1, 
+merger_gt_uint8_t_uint16_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_gt_uint8_t_uint32_t(struct group *group1, 
+merger_gt_uint8_t_uint32_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_gt_uint8_t_uint64_t(struct group *group1, 
+merger_gt_uint8_t_uint64_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_gt_uint16_t_uint8_t(struct group *group1, 
+merger_gt_uint16_t_uint8_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_gt_uint16_t_uint16_t(struct group *group1, 
+merger_gt_uint16_t_uint16_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_gt_uint16_t_uint32_t(struct group *group1, 
+merger_gt_uint16_t_uint32_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_gt_uint16_t_uint64_t(struct group *group1, 
+merger_gt_uint16_t_uint64_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_gt_uint32_t_uint8_t(struct group *group1, 
+merger_gt_uint32_t_uint8_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_gt_uint32_t_uint16_t(struct group *group1, 
+merger_gt_uint32_t_uint16_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_gt_uint32_t_uint32_t(struct group *group1, 
+merger_gt_uint32_t_uint32_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_gt_uint32_t_uint64_t(struct group *group1, 
+merger_gt_uint32_t_uint64_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_gt_uint64_t_uint8_t(struct group *group1, 
+merger_gt_uint64_t_uint8_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_gt_uint64_t_uint16_t(struct group *group1, 
+merger_gt_uint64_t_uint16_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_gt_uint64_t_uint32_t(struct group *group1, 
+merger_gt_uint64_t_uint32_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_gt_uint64_t_uint64_t(struct group *group1, 
+merger_gt_uint64_t_uint64_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_le_uint8_t_uint8_t(struct group *group1, 
+merger_le_uint8_t_uint8_t(const struct group* const group1, 
                           size_t field1_offset, 
-                          struct group *group2, 
+                          const struct group* const group2, 
                           size_t field2_offset, 
                           uint64_t delta);
 bool 
-merger_le_uint8_t_uint16_t(struct group *group1, 
+merger_le_uint8_t_uint16_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_le_uint8_t_uint32_t(struct group *group1, 
+merger_le_uint8_t_uint32_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_le_uint8_t_uint64_t(struct group *group1, 
+merger_le_uint8_t_uint64_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_le_uint16_t_uint8_t(struct group *group1, 
+merger_le_uint16_t_uint8_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_le_uint16_t_uint16_t(struct group *group1, 
+merger_le_uint16_t_uint16_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_le_uint16_t_uint32_t(struct group *group1, 
+merger_le_uint16_t_uint32_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_le_uint16_t_uint64_t(struct group *group1, 
+merger_le_uint16_t_uint64_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_le_uint32_t_uint8_t(struct group *group1, 
+merger_le_uint32_t_uint8_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_le_uint32_t_uint16_t(struct group *group1, 
+merger_le_uint32_t_uint16_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_le_uint32_t_uint32_t(struct group *group1, 
+merger_le_uint32_t_uint32_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_le_uint32_t_uint64_t(struct group *group1, 
+merger_le_uint32_t_uint64_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_le_uint64_t_uint8_t(struct group *group1, 
+merger_le_uint64_t_uint8_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_le_uint64_t_uint16_t(struct group *group1, 
+merger_le_uint64_t_uint16_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_le_uint64_t_uint32_t(struct group *group1, 
+merger_le_uint64_t_uint32_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_le_uint64_t_uint64_t(struct group *group1, 
+merger_le_uint64_t_uint64_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_ge_uint8_t_uint8_t(struct group *group1, 
+merger_ge_uint8_t_uint8_t(const struct group* const group1, 
                           size_t field1_offset, 
-                          struct group *group2, 
+                          const struct group* const group2, 
                           size_t field2_offset, 
                           uint64_t delta);
 bool 
-merger_ge_uint8_t_uint16_t(struct group *group1, 
+merger_ge_uint8_t_uint16_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_ge_uint8_t_uint32_t(struct group *group1, 
+merger_ge_uint8_t_uint32_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_ge_uint8_t_uint64_t(struct group *group1, 
+merger_ge_uint8_t_uint64_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_ge_uint16_t_uint8_t(struct group *group1, 
+merger_ge_uint16_t_uint8_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_ge_uint16_t_uint16_t(struct group *group1, 
+merger_ge_uint16_t_uint16_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_ge_uint16_t_uint32_t(struct group *group1, 
+merger_ge_uint16_t_uint32_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_ge_uint16_t_uint64_t(struct group *group1, 
+merger_ge_uint16_t_uint64_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_ge_uint32_t_uint8_t(struct group *group1, 
+merger_ge_uint32_t_uint8_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_ge_uint32_t_uint16_t(struct group *group1, 
+merger_ge_uint32_t_uint16_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_ge_uint32_t_uint32_t(struct group *group1, 
+merger_ge_uint32_t_uint32_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_ge_uint32_t_uint64_t(struct group *group1, 
+merger_ge_uint32_t_uint64_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_ge_uint64_t_uint8_t(struct group *group1, 
+merger_ge_uint64_t_uint8_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_ge_uint64_t_uint16_t(struct group *group1, 
+merger_ge_uint64_t_uint16_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_ge_uint64_t_uint32_t(struct group *group1, 
+merger_ge_uint64_t_uint32_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_ge_uint64_t_uint64_t(struct group *group1, 
+merger_ge_uint64_t_uint64_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_in_uint8_t_uint8_t(struct group *group1, 
+merger_in_uint8_t_uint8_t(const struct group* const group1, 
                           size_t field1_offset, 
-                          struct group *group2, 
+                          const struct group* const group2, 
                           size_t field2_offset, 
                           uint64_t delta);
 bool 
-merger_in_uint8_t_uint16_t(struct group *group1, 
+merger_in_uint8_t_uint16_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_in_uint8_t_uint32_t(struct group *group1, 
+merger_in_uint8_t_uint32_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_in_uint8_t_uint64_t(struct group *group1, 
+merger_in_uint8_t_uint64_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_in_uint16_t_uint8_t(struct group *group1, 
+merger_in_uint16_t_uint8_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_in_uint16_t_uint16_t(struct group *group1, 
+merger_in_uint16_t_uint16_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_in_uint16_t_uint32_t(struct group *group1, 
+merger_in_uint16_t_uint32_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_in_uint16_t_uint64_t(struct group *group1, 
+merger_in_uint16_t_uint64_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_in_uint32_t_uint8_t(struct group *group1, 
+merger_in_uint32_t_uint8_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_in_uint32_t_uint16_t(struct group *group1, 
+merger_in_uint32_t_uint16_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_in_uint32_t_uint32_t(struct group *group1, 
+merger_in_uint32_t_uint32_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_in_uint32_t_uint64_t(struct group *group1, 
+merger_in_uint32_t_uint64_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_in_uint64_t_uint8_t(struct group *group1, 
+merger_in_uint64_t_uint8_t(const struct group* const group1, 
                            size_t field1_offset, 
-                           struct group *group2, 
+                           const struct group* const group2, 
                            size_t field2_offset, 
                            uint64_t delta);
 bool 
-merger_in_uint64_t_uint16_t(struct group *group1, 
+merger_in_uint64_t_uint16_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_in_uint64_t_uint32_t(struct group *group1, 
+merger_in_uint64_t_uint32_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_in_uint64_t_uint64_t(struct group *group1, 
+merger_in_uint64_t_uint64_t(const struct group* const group1, 
                             size_t field1_offset, 
-                            struct group *group2, 
+                            const struct group* const group2, 
                             size_t field2_offset, 
                             uint64_t delta);
 bool 
-merger_allen_bf(struct group *group1, 
+merger_allen_bf(const struct group* const group1, 
                 size_t field1_offset, 
-                struct group *group2, 
+                const struct group* const group2, 
                 size_t field2_offset, 
                 uint64_t delta);
 bool 
-merger_allen_af(struct group *group1, 
+merger_allen_af(const struct group* const group1, 
                 size_t field1_offset, 
-                struct group *group2, 
+                const struct group* const group2, 
                 size_t field2_offset, 
                 uint64_t delta);
 bool 
-merger_allen_m(struct group *group1, 
+merger_allen_m(const struct group* const group1, 
                size_t field1_offset, 
-               struct group *group2, 
+               const struct group* const group2, 
                size_t field2_offset, 
                uint64_t delta);
 bool 
-merger_allen_mi(struct group *group1, 
+merger_allen_mi(const struct group* const group1, 
                 size_t field1_offset, 
-                struct group *group2, 
+                const struct group* const group2, 
                 size_t field2_offset, 
                 uint64_t delta);
 bool 
-merger_allen_o(struct group *group1, 
+merger_allen_o(const struct group* const group1, 
                size_t field1_offset, 
-               struct group *group2, 
+               const struct group* const group2, 
                size_t field2_offset, 
                uint64_t delta);
 bool 
-merger_allen_oi(struct group *group1, 
+merger_allen_oi(const struct group* const group1, 
                 size_t field1_offset, 
-                struct group *group2, 
+                const struct group* const group2, 
                 size_t field2_offset, 
                 uint64_t delta);
 bool 
-merger_allen_s(struct group *group1, 
+merger_allen_s(const struct group* const group1, 
                size_t field1_offset, 
-               struct group *group2, 
+               const struct group* const group2, 
                size_t field2_offset, 
                uint64_t delta);
 bool 
-merger_allen_si(struct group *group1, 
+merger_allen_si(const struct group* const group1, 
                 size_t field1_offset, 
-                struct group *group2, 
+                const struct group* const group2, 
                 size_t field2_offset, 
                 uint64_t delta);
 bool 
-merger_allen_d(struct group *group1, 
+merger_allen_d(const struct group* const group1, 
                size_t field1_offset, 
-               struct group *group2, 
+               const struct group* const group2, 
                size_t field2_offset, 
                uint64_t delta);
 bool 
-merger_allen_di(struct group *group1, 
+merger_allen_di(const struct group* const group1, 
                 size_t field1_offset, 
-                struct group *group2, 
+                const struct group* const group2, 
                 size_t field2_offset, 
                 uint64_t delta);
 bool 
-merger_allen_f(struct group *group1, 
+merger_allen_f(const struct group* const group1, 
                size_t field1_offset, 
-               struct group *group2, 
+               const struct group* const group2, 
                size_t field2_offset, 
                uint64_t delta);
 bool 
-merger_allen_fi(struct group *group1, 
+merger_allen_fi(const struct group* const group1, 
                 size_t field1_offset, 
-                struct group *group2, 
+                const struct group* const group2, 
                 size_t field2_offset, 
                 uint64_t delta);
 bool 
-merger_allen_eq(struct group *group1, 
+merger_allen_eq(const struct group* const group1, 
                 size_t field1_offset, 
-                struct group *group2, 
+                const struct group* const group2, 
                 size_t field2_offset, 
                 uint64_t delta);
 #endif

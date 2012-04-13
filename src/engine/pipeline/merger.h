@@ -36,10 +36,11 @@
 struct merger_rule;
 
 struct merger_result*
-merger(struct branch** branchset,
-       size_t num_threads,
-       
-       struct merger_rule** mruleset, 
-       size_t num_merger_rule);
+merger(
+       size_t num_merger_rules,
+       struct merger_rule** const mruleset,
 
+       size_t num_branches,       
+       struct branch** const branchset
+      );
 #endif
