@@ -43,8 +43,8 @@ grouper_aggregations(
                      
                      const struct group* const group,
                      int rec_size
-                    ) {
-
+                     ) {
+  
   /* free'd just after returning from merger(...) */
   struct aggr_result* aresult = calloc(1, sizeof(struct aggr_result));
   if (aresult == NULL)
@@ -58,8 +58,8 @@ grouper_aggregations(
   
   /* free'd just after returning from merger(...) */
   struct aggr** aggrset = (struct aggr**)
-                           calloc(num_aggr_rules,
-                                  sizeof(struct aggr*));
+  calloc(num_aggr_rules,
+         sizeof(struct aggr*));
   if (aggrset == NULL)
     errExit("calloc");
   aresult->aggrset = aggrset;
@@ -112,7 +112,7 @@ grouper_aggregations(
       errExit("get_aggr_fptr(...) returned NULL");
     
     if(goffset_1 != goffset_2){
-
+      
       struct aggr* aggr = (*aggr_function)(group->members, 
                                            aggr_record,
                                            group->num_members, 
@@ -144,7 +144,7 @@ grouper_aggregations(
    * module. Again it assume that the operation is `eq`. Need to investigate 
    * more on how it might affect for other type of operations */
   for (int j = 0; j < num_aggr_rules; j++){    
-
+    
     bool if_ignore_aggr_rule = false;
     size_t aggr_offset = aggr_ruleset[j]->field_offset;
     
@@ -160,7 +160,7 @@ grouper_aggregations(
     
     /* if aggr rule is same as any grouper rule, just ignore it */
     for (int k = 0; k < num_grouper_rules; k++) {
-
+      
       size_t goffset_1 = grouper_ruleset[k]->field_offset1;
       size_t goffset_2 = grouper_ruleset[k]->field_offset2;      
       
@@ -177,30 +177,34 @@ grouper_aggregations(
                                        group->num_members, 
                                        aggr_offset, 
                                        if_ignore_aggr_rule
-                                      );
+                                       );
   }    
-
+  
   aggrset = NULL; aggr_record = NULL;
   
   return aresult;
 }
+
 
 struct grouper_intermediate_result *
 get_grouper_intermediates(
                           size_t num_filtered_records,
                           char** const filtered_recordset_copy,                         
                           
-                          size_t grule1_rhs_offset,                          
-                          struct grouper_result* const gresult
-                         ) {
+                          size_t num_grouper_rules,
+                          struct grouper_rule** const grouper_ruleset,
+                          
+                          struct grouper_result* const gresult,
+                          uint64_t op
+                          ) {
   
   /* last record in sorted_records is NULL
    * unlinked sorted_recordset_ref[i], and free'd sorted_recordset_ref
    * just before calling grouper_aggregations(...) 
    */  
   char*** sorted_recordset_ref = (char ***)
-                                  calloc(num_filtered_records+1, 
-                                         sizeof(char **));
+  calloc(num_filtered_records+1, 
+         sizeof(char **));
   if (sorted_recordset_ref == NULL)
     errExit("calloc");
   
@@ -210,15 +214,14 @@ get_grouper_intermediates(
   /* sort the record references according to the right hand side
    * item in the statement of the first grouper rule 
    * and save them in sorted_recordset_reference in place  
-   * TODO: different comp func sizes
-   */
+   */  
   qsort_r(
           sorted_recordset_ref, 
           num_filtered_records, 
           sizeof(char **), 
-          (void *)&grule1_rhs_offset,
-          comp_uint32_t
-         );
+          (void*)&grouper_ruleset[0]->field_offset2,
+          get_qsort_fptr(op)
+          );
   
   if(verbose_vv){
     
@@ -234,8 +237,8 @@ get_grouper_intermediates(
   
   /* free'd just before returning from grouper(...) */
   struct tree_item_uint32_t* uniq_recordset = (struct tree_item_uint32_t *)
-                                   calloc(num_filtered_records, 
-                                          sizeof(struct tree_item_uint32_t));
+  calloc(num_filtered_records, 
+         sizeof(struct tree_item_uint32_t));
   if (uniq_recordset == NULL)
     errExit("calloc");  
   
@@ -244,45 +247,47 @@ get_grouper_intermediates(
    * just before calling grouper_aggregations(...)
    */
   uniq_recordset[0].value = *(uint32_t *)(*sorted_recordset_ref[0] + 
-                                          grule1_rhs_offset);
+                                          grouper_ruleset[0]->field_offset2);
   uniq_recordset[0].ptr = &sorted_recordset_ref[0];
   size_t num_uniq_records = 1;
-
+  
   for (int i = 0; i < num_filtered_records; i++) {
     if (
-        *(uint32_t *)(*sorted_recordset_ref[i] + grule1_rhs_offset) != 
+        *(uint32_t *)(*sorted_recordset_ref[i] + 
+                      grouper_ruleset[0]->field_offset2) != 
         uniq_recordset[num_uniq_records-1].value
-       ) {
+        ) {
       
       uniq_recordset[num_uniq_records].value = 
-      *(uint32_t *)(*sorted_recordset_ref[i] + grule1_rhs_offset);
+      *(uint32_t *)(*sorted_recordset_ref[i] + 
+                    grouper_ruleset[0]->field_offset2);
       uniq_recordset[num_uniq_records].ptr = &sorted_recordset_ref[i];
       num_uniq_records++;
     }
   }
-
+  
   /* TODO: UINT32_T assumed */
   uniq_recordset = (struct tree_item_uint32_t *)
-                    realloc(uniq_recordset, 
-                            num_uniq_records*sizeof(struct tree_item_uint32_t));
+  realloc(uniq_recordset, 
+          num_uniq_records*sizeof(struct tree_item_uint32_t));
   if (uniq_recordset == NULL)
     errExit("realloc");
   
   // mark the end of sorted records
   sorted_recordset_ref[num_filtered_records] = NULL;
   
-
+  
   /* free'd just before calling grouper_aggregations(...) */
   struct grouper_intermediate_result*
   intermediate_result = (struct grouper_intermediate_result *)
-                        calloc(1 , sizeof(struct grouper_intermediate_result));
+  calloc(1 , sizeof(struct grouper_intermediate_result));
   if (intermediate_result == NULL)
     errExit("calloc");
   
   /* TODO: UINT32_T assumed */
   intermediate_result->type = UINT32_T;
   intermediate_result->num_uniq_records = num_uniq_records;
-  intermediate_result->uniq_recordset.recordset_32 = uniq_recordset;
+  intermediate_result->uniq_recordset.recordset_uint32_t = uniq_recordset;
   uniq_recordset = NULL;
   intermediate_result->sorted_recordset_reference = sorted_recordset_ref;
   sorted_recordset_ref = NULL;
@@ -301,10 +306,13 @@ grouper(
         
         size_t num_aggr_rules,
         struct aggr_rule** const aggr_ruleset,
-     
+        
         const struct filter_result* const fresult,
         int rec_size
-       ) {
+        ) {
+  
+  /* temporary */
+  uint64_t op = RULE_S2_32;  
   
   /* free'd just after returning from ungrouper(...) */
   struct grouper_result* gresult = calloc(1, sizeof(struct grouper_result));
@@ -317,7 +325,7 @@ grouper(
     errExit("calloc");
   else
     gresult->groupset = groupset;
-
+  
   
   /* club all filtered records into one group, 
    * if no group modules are defined 
@@ -361,27 +369,30 @@ grouper(
                               fresult->num_filtered_records,
                               filtered_recordset_copy,
                               
-                              grouper_ruleset[0]->field_offset2,
-                              gresult
-                             );
+                              num_grouper_rules,
+                              grouper_ruleset,
+                              
+                              gresult,
+                              op
+                              );
     
     if (intermediate_result == NULL)
       errExit("get_grouper_intermediates(...) returned NULL");
-
+    
     if(verbose_vv){  
       
       /* free'd just before calling merger(...) */      
       gresult->num_unique_records = intermediate_result->num_uniq_records;
       gresult->unique_recordset = (char**) 
-                                  calloc(gresult->num_unique_records, 
-                                         sizeof(char*));      
+      calloc(gresult->num_unique_records, 
+             sizeof(char*));      
       if (gresult->unique_recordset == NULL)
         errExit("calloc");
       
       /* TODO: UINT32_T assumed */
       for (int i = 0; i < gresult->num_unique_records; i++)
         gresult->unique_recordset[i] = 
-        **intermediate_result->uniq_recordset.recordset_32[i].ptr;
+        **intermediate_result->uniq_recordset.recordset_uint32_t[i].ptr;
     }
     
     for (int i = 0; i < fresult->num_filtered_records; i++) {
@@ -393,7 +404,7 @@ grouper(
       
       /* free'd just after returning from ungrouper(...) */
       groupset = (struct group **)
-                 realloc(groupset, (gresult->num_groups)*sizeof(struct group*));
+      realloc(groupset, (gresult->num_groups)*sizeof(struct group*));
       if (groupset == NULL)
         errExit("realloc");
       else
@@ -412,22 +423,15 @@ grouper(
       if (group->members == NULL)
         errExit("calloc");      
       group->members[0] = filtered_recordset_copy[i];
-
+      
       // search for left hand side of comparison in records ordered by right
       // hand side of comparison
-      /* TODO: UINT32_T assumed */
-      char ***record_iter = 
-        (
-          (struct tree_item_uint32_t *)
-          bsearch_r(
-                    filtered_recordset_copy[i],
-                    (void *)intermediate_result[0].uniq_recordset.recordset_32,
-                    intermediate_result[0].num_uniq_records,
-                    sizeof(struct tree_item_uint32_t),
-                    (void *)&grouper_ruleset[0]->field_offset1,
-                    comp_uint32_t_p
-                   )
-        )->ptr;
+      char ***record_iter = bsearch_s(
+                                      filtered_recordset_copy[i],
+                                      grouper_ruleset,
+                                      intermediate_result,
+                                      op
+                                      );
       
       // iterate until terminating NULL in sorted_records
       for (int k = 0; *record_iter != NULL; record_iter++) {
@@ -449,8 +453,8 @@ grouper(
                                         **record_iter, 
                                         grouper_ruleset[k]->field_offset2, 
                                         grouper_ruleset[k]->delta
-                                       )
-            )
+                                        )
+              )
             break;
         }
         
@@ -465,8 +469,8 @@ grouper(
         group->num_members += 1;
         
         group->members = (char **)
-                            realloc(group->members, 
-                                    sizeof(char *)*group->num_members);
+        realloc(group->members, 
+                sizeof(char *)*group->num_members);
         
         // assign entry in filtered_records to group
         group->members[group->num_members-1] = **record_iter; 
@@ -488,14 +492,15 @@ grouper(
     intermediate_result->sorted_recordset_reference = NULL;
     
     // unlink the uniq records from the flow data
+    // TODO: UINT32 assumptions
     for (int i = 0; i < intermediate_result->num_uniq_records; i++)
-      intermediate_result->uniq_recordset.recordset_32[i].ptr = NULL;
-    free(intermediate_result->uniq_recordset.recordset_32);    
-    intermediate_result->uniq_recordset.recordset_32 = NULL;
+      intermediate_result->uniq_recordset.recordset_uint32_t[i].ptr = NULL;
+    free(intermediate_result->uniq_recordset.recordset_uint32_t);    
+    intermediate_result->uniq_recordset.recordset_uint32_t = NULL;
     free(intermediate_result); intermediate_result = NULL;    
   }
-
-
+  
+  
 #ifdef GROUPERAGGREGATIONS
   
   for (int i = 0; i < gresult->num_groups; i++) {
@@ -505,16 +510,16 @@ grouper(
     group->aggr_result = grouper_aggregations(
                                               num_filter_rules,
                                               filter_ruleset,
-                                               
+                                              
                                               num_grouper_rules,
                                               grouper_ruleset,
                                               
                                               num_aggr_rules,
                                               aggr_ruleset,
-                                               
+                                              
                                               group,
                                               rec_size
-                                             );
+                                              );
     if (group->aggr_result == NULL)
       errExit("grouper_aggregations(...) returned NULL");
     else

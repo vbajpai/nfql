@@ -1951,3 +1951,113 @@ struct aggr* (*get_aggr_fptr(bool ifgrouper,
   }
   return aggr_function;
 }
+
+char***
+bsearch_s(
+          const char* const filtered_record,
+          struct grouper_rule** const grouper_ruleset,
+          const struct grouper_intermediate_result* const intermediate_result,
+          uint64_t op
+          ) {
+  
+  char ***record_iter = NULL;
+  
+  switch (op) {
+    case RULE_S2_8:
+      
+      record_iter = 
+      (
+       (struct tree_item_uint8_t *)
+       bsearch_r(
+                 filtered_record,
+                 (void *)intermediate_result[0].uniq_recordset.recordset_uint8_t,
+                 intermediate_result[0].num_uniq_records,
+                 sizeof(struct tree_item_uint8_t),
+                 (void *)&grouper_ruleset[0]->field_offset1,
+                 comp_uint8_t_p
+                 )
+       )->ptr;
+      
+      break;
+    case RULE_S2_16:
+      
+      record_iter = 
+      (
+       (struct tree_item_uint16_t *)
+       bsearch_r(
+                 filtered_record,
+                 (void *)intermediate_result[0].uniq_recordset.recordset_uint16_t,
+                 intermediate_result[0].num_uniq_records,
+                 sizeof(struct tree_item_uint16_t),
+                 (void *)&grouper_ruleset[0]->field_offset1,
+                 comp_uint16_t_p
+                 )
+       )->ptr;
+      
+      break;
+    case RULE_S2_32:
+      
+      record_iter = 
+      (
+       (struct tree_item_uint32_t *)
+       bsearch_r(
+                 filtered_record,
+                 (void *)intermediate_result[0].uniq_recordset.recordset_uint32_t,
+                 intermediate_result[0].num_uniq_records,
+                 sizeof(struct tree_item_uint32_t),
+                 (void *)&grouper_ruleset[0]->field_offset1,
+                 comp_uint32_t_p
+                 )
+       )->ptr;
+      
+      break;
+    case RULE_S2_64:
+      
+      record_iter = 
+      (
+       (struct tree_item_uint64_t *)
+       bsearch_r(
+                 filtered_record,
+                 (void *)intermediate_result[0].uniq_recordset.recordset_uint64_t,
+                 intermediate_result[0].num_uniq_records,
+                 sizeof(struct tree_item_uint64_t),
+                 (void *)&grouper_ruleset[0]->field_offset1,
+                 comp_uint64_t_p
+                 )
+       )->ptr;
+      
+      break;
+  }
+  return record_iter;
+}
+
+
+int (*get_qsort_fptr(uint64_t op))(
+                                   void* thunk,
+                                   const void* e1,
+                                   const void* e2
+                                   ) {
+  
+  int (*sortfunc)(
+                  void* thunk,
+                  const void* e1,
+                  const void* e2
+                  ) = NULL;
+  
+  switch (op) {
+    case RULE_S2_8:
+      sortfunc = comp_uint8_t;
+      break;
+    case RULE_S2_16:
+      sortfunc = comp_uint16_t;
+      break;
+    case RULE_S2_32:
+      sortfunc = comp_uint32_t;
+      break;
+    case RULE_S2_64:
+      sortfunc = comp_uint64_t;
+      break;
+  }
+  return sortfunc;
+}
+

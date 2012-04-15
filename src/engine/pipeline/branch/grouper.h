@@ -31,14 +31,15 @@
 #include "utils.h"
 #include "error_handlers.h"
 #include "ftreader.h"
+#include "auto_assign.h"
 
 struct grouper_rule;
 struct grouper_aggr;
 
 #define tree_item(size) \
 struct tree_item_##size { \
-  size                            value; \
-  char***                         ptr; \
+size                            value; \
+char***                         ptr; \
 };
 
 tree_item(uint8_t);
@@ -54,10 +55,10 @@ struct grouper_intermediate_result {
   size_t                          num_uniq_records;
   
   union {
-    struct tree_item_uint8_t*     recordset_8;
-    struct tree_item_uint16_t*    recordset_16;
-    struct tree_item_uint32_t*    recordset_32;
-    struct tree_item_uint64_t*    recordset_64;
+    struct tree_item_uint8_t*     recordset_uint8_t;
+    struct tree_item_uint16_t*    recordset_uint16_t;
+    struct tree_item_uint32_t*    recordset_uint32_t;
+    struct tree_item_uint64_t*    recordset_uint64_t;
   }uniq_recordset;
   
   char***                         sorted_recordset_reference;
@@ -77,16 +78,19 @@ grouper_aggregations(
                      
                      const struct group* const group,
                      int rec_size
-                    );
+                     );
 
 struct grouper_intermediate_result *
 get_grouper_intermediates(
                           size_t num_filtered_records,
                           char** const filtered_recordset_copy,
                           
-                          size_t grule1_rhs_offset,
-                          struct grouper_result* const gresult
-                         );
+                          size_t num_grouper_rules,
+                          struct grouper_rule** const grouper_ruleset,
+                          
+                          struct grouper_result* const gresult,
+                          uint64_t op
+                          );
 
 struct grouper_result*
 grouper(

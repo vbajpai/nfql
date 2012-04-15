@@ -8,6 +8,9 @@
 #define flowy_engine_auto_assign_h
 
 #include "auto_comps.h"
+#include "grouper.h"
+
+struct grouper_intermediate_result;
 
 void
 assign_fptr(struct flowquery *fquery);
@@ -20,4 +23,18 @@ struct aggr*
                               size_t field_offset,
                               bool if_aggr_common);
 
+
+char***
+bsearch_s(
+          const char* const filtered_record,
+          struct grouper_rule** const grouper_ruleset,
+          const struct grouper_intermediate_result* const intermediate_result,
+          uint64_t op
+          );
+
+int (*get_qsort_fptr(uint64_t op))(
+                                   void* thunk,
+                                   const void* e1,
+                                   const void* e2
+                                   );  
 #endif

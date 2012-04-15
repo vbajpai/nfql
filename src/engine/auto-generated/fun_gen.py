@@ -527,7 +527,10 @@ source.write(preamble)
 header.write("#ifndef flowy_engine_auto_assign_h\n")
 header.write("#define flowy_engine_auto_assign_h\n\n")
 
-header.write("#include \"auto_comps.h\"\n\n")
+header.write('#include "auto_comps.h"\n')
+header.write('#include "grouper.h"\n\n')
+header.write('struct grouper_intermediate_result;\n\n')
+
 header.write("""void
   assign_fptr(struct flowquery *fquery);\n\n""")
 
@@ -540,6 +543,25 @@ header.write("""struct aggr*
   bool if_aggr_common);\n
   """)
 
+
+header.write("""
+  char***
+  bsearch_s(
+  const char* const filtered_record,
+  struct grouper_rule** const grouper_ruleset,
+  const struct grouper_intermediate_result* const intermediate_result,
+  uint64_t op
+  );
+  """)
+
+
+header.write("""
+  int (*get_qsort_fptr(uint64_t op))(
+  void* thunk,
+  const void* e1,
+  const void* e2
+  );  
+  """)
 
 source.write("#include \"auto_assign.h\"\n")
 
@@ -742,6 +764,84 @@ for atype1 in 'RULE_S1_8', 'RULE_S1_16', 'RULE_S1_32', 'RULE_S1_64':
   source.write("break;\n")
 source.write("}\n}\n")
 source.write("return aggr_function;\n}\n")
+
+
+# bsearch_s(...)
+
+source.write("""  
+  char***
+  bsearch_s(
+  const char* const filtered_record,
+  struct grouper_rule** const grouper_ruleset,
+  const struct grouper_intermediate_result* const intermediate_result,
+  uint64_t op
+  ) {
+  
+  char ***record_iter = NULL;
+  
+  """)
+
+source.write('switch (op) {\n')
+
+for atype in 'RULE_S2_8', 'RULE_S2_16', 'RULE_S2_32', 'RULE_S2_64':
+  
+  source.write("case %s:\n"%(atype))
+  
+  source.write("""
+    record_iter = 
+    (
+    (struct tree_item_%s *)
+    bsearch_r(
+    filtered_record,
+    (void *)intermediate_result[0].uniq_recordset.recordset_%s,
+    intermediate_result[0].num_uniq_records,
+    sizeof(struct tree_item_%s),
+    (void *)&grouper_ruleset[0]->field_offset1,
+    comp_%s_p
+    )
+    )->ptr;
+    
+    """%(enum_map[atype], 
+         enum_map[atype], 
+         enum_map[atype], 
+         enum_map[atype]
+         )
+               )
+  
+  source.write("break;\n")
+source.write('}\n')
+source.write('return record_iter;\n}\n\n')
+
+
+
+# get_qsort_fptr(...)
+
+source.write("""  
+  int (*get_qsort_fptr(uint64_t op))(
+  void* thunk,
+  const void* e1,
+  const void* e2
+  ) {
+  
+  int (*sortfunc)(
+  void* thunk,
+  const void* e1,
+  const void* e2
+  ) = NULL;
+  
+  """)
+
+source.write('switch (op) {\n')
+
+for atype in 'RULE_S2_8', 'RULE_S2_16', 'RULE_S2_32', 'RULE_S2_64':
+  
+  source.write("case %s:\n"%(atype))
+  source.write("sortfunc = comp_%s;\n"%enum_map[atype])
+  source.write("break;\n")
+
+source.write('}\n')
+source.write('return sortfunc;\n}\n\n');
+
 
 header.write("#endif\n")
 header.close()
