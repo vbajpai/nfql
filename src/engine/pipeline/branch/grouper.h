@@ -51,7 +51,6 @@ typedef enum { UINT8_T, UINT16_T, UINT32_T, UINT64_T } int_sizes;
 
 struct grouper_intermediate_result {    
   
-  int_sizes                       type;
   size_t                          num_uniq_records;
   
   union {

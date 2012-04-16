@@ -235,7 +235,26 @@ get_grouper_intermediates(
       gresult->sorted_recordset[i] = *sorted_recordset_ref[i];
   }
   
+  // mark the end of sorted records
+  sorted_recordset_ref[num_filtered_records] = NULL;
+  
+  /* free'd just before calling grouper_aggregations(...) */
+  struct grouper_intermediate_result*
+  intermediate_result = (struct grouper_intermediate_result *)
+  calloc(1 , sizeof(struct grouper_intermediate_result));
+  if (intermediate_result == NULL)
+    errExit("calloc");
+  
+  intermediate_result->sorted_recordset_reference = sorted_recordset_ref;
+  
+  
+  
+  /* -----------------------------------------------------------------------*/  
+  /*                                uint32                                  */  
+  /* -----------------------------------------------------------------------*/   
+  
   /* free'd just before returning from grouper(...) */
+  /* TODO: uint32_t assumed */
   struct tree_item_uint32_t* uniq_recordset = (struct tree_item_uint32_t *)
   calloc(num_filtered_records, 
          sizeof(struct tree_item_uint32_t));
@@ -271,26 +290,32 @@ get_grouper_intermediates(
   realloc(uniq_recordset, 
           num_uniq_records*sizeof(struct tree_item_uint32_t));
   if (uniq_recordset == NULL)
-    errExit("realloc");
-  
-  // mark the end of sorted records
-  sorted_recordset_ref[num_filtered_records] = NULL;
-  
-  
-  /* free'd just before calling grouper_aggregations(...) */
-  struct grouper_intermediate_result*
-  intermediate_result = (struct grouper_intermediate_result *)
-  calloc(1 , sizeof(struct grouper_intermediate_result));
-  if (intermediate_result == NULL)
-    errExit("calloc");
+    errExit("realloc"); 
   
   /* TODO: UINT32_T assumed */
-  intermediate_result->type = UINT32_T;
   intermediate_result->num_uniq_records = num_uniq_records;
   intermediate_result->uniq_recordset.recordset_uint32_t = uniq_recordset;
   uniq_recordset = NULL;
-  intermediate_result->sorted_recordset_reference = sorted_recordset_ref;
   sorted_recordset_ref = NULL;
+  
+  if(verbose_vv){  
+    
+    /* free'd just before calling merger(...) */      
+    gresult->num_unique_records = intermediate_result->num_uniq_records;
+    gresult->unique_recordset = (char**) 
+    calloc(gresult->num_unique_records, 
+           sizeof(char*));      
+    if (gresult->unique_recordset == NULL)
+      errExit("calloc");
+    
+    /* TODO: UINT32_T assumed */
+    for (int i = 0; i < gresult->num_unique_records; i++)
+      gresult->unique_recordset[i] = 
+      **intermediate_result->uniq_recordset.recordset_uint32_t[i].ptr;
+  }
+
+  
+  /* -----------------------------------------------------------------------*/  
   
   return intermediate_result;
 }
@@ -382,22 +407,6 @@ grouper(
     
     if (intermediate_result == NULL)
       errExit("get_grouper_intermediates(...) returned NULL");
-    
-    if(verbose_vv){  
-      
-      /* free'd just before calling merger(...) */      
-      gresult->num_unique_records = intermediate_result->num_uniq_records;
-      gresult->unique_recordset = (char**) 
-      calloc(gresult->num_unique_records, 
-             sizeof(char*));      
-      if (gresult->unique_recordset == NULL)
-        errExit("calloc");
-      
-      /* TODO: UINT32_T assumed */
-      for (int i = 0; i < gresult->num_unique_records; i++)
-        gresult->unique_recordset[i] = 
-        **intermediate_result->uniq_recordset.recordset_uint32_t[i].ptr;
-    }
     
     for (int i = 0; i < fresult->num_filtered_records; i++) {
       
@@ -493,7 +502,9 @@ grouper(
       intermediate_result->sorted_recordset_reference[i] = NULL;    
     free(intermediate_result->sorted_recordset_reference); 
     intermediate_result->sorted_recordset_reference = NULL;
+
     
+  /* -----------------------------------------------------------------------*/  
     // unlink the uniq records from the flow data
     // TODO: UINT32 assumptions
     for (int i = 0; i < intermediate_result->num_uniq_records; i++)
@@ -501,6 +512,8 @@ grouper(
     free(intermediate_result->uniq_recordset.recordset_uint32_t);    
     intermediate_result->uniq_recordset.recordset_uint32_t = NULL;
     free(intermediate_result); intermediate_result = NULL;    
+  /* -----------------------------------------------------------------------*/  
+    
     
     // free gtype
     free(gtype);
