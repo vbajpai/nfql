@@ -24,17 +24,6 @@ struct aggr*
                               bool if_aggr_common);
 
 
-char***
-bsearch_s(
-          const char* const filtered_record,
-          struct grouper_rule** const grouper_ruleset,
-          const struct grouper_intermediate_result* const intermediate_result,
-          uint64_t op
-          );
+struct grouper_type* get_gtype(uint64_t op);
 
-int (*get_qsort_fptr(uint64_t op))(
-                                   void* thunk,
-                                   const void* e1,
-                                   const void* e2
-                                   );  
 #endif

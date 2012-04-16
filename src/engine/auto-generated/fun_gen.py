@@ -114,9 +114,12 @@ source.write(preamble)
 header.write("#ifndef flowy_engine_auto_comps_h\n")
 header.write("#define flowy_engine_auto_comps_h\n\n")
 
-header.write('#include "pipeline.h"\n\n')
-header.write('#include "error_handlers.h"\n\n')
-header.write("#include <math.h>\n")
+header.write('#include <math.h>\n')
+header.write('#include "pipeline.h"\n')
+header.write('#include "error_handlers.h"\n')
+header.write('#include "utils.h"\n')
+header.write('#include "grouper.h"\n')
+header.write('struct grouper_intermediate_result;\n\n')
 
 source.write('#include "auto_comps.h"\n')
 
@@ -465,6 +468,41 @@ def merger2_body(op):
   result += "}\n\n"
   return result;
 
+
+#bsearch_r_uintX_t wrappers
+
+bsearch_proto = """  
+                    char*** 
+                    bsearch_%s(
+                    const char* const filtered_record,
+                    struct grouper_rule** const grouper_ruleset,
+                    const struct grouper_intermediate_result* const intermediate_result
+                    )
+                """
+
+def bsearch_body(atype):
+  result = " {\n\n"
+  result += """
+                char*** record_iter = 
+                (
+                 (struct tree_item_%s *)
+                  bsearch_r(
+                            filtered_record,
+                            (void *)intermediate_result[0].uniq_recordset.recordset_%s,
+                            intermediate_result[0].num_uniq_records,
+                            sizeof(struct tree_item_%s),
+                            (void *)&grouper_ruleset[0]->field_offset1,
+                            comp_%s_p
+                           )
+                )->ptr;
+    
+            """%(enum_map[atype],
+                 enum_map[atype],
+                 enum_map[atype],
+                 enum_map[atype])
+  result += "return record_iter;\n}\n\n"
+  return result;
+
 # filter
 for op in 'eq', 'ne', 'lt', 'gt', 'le', 'ge':
   for atype in 'uint8_t', 'uint16_t', 'uint32_t', 'uint64_t':
@@ -512,6 +550,12 @@ for op in 'allen_bf', 'allen_af', 'allen_m', 'allen_mi', 'allen_o', \
     header.write(merger2_proto%(op)+";\n")
     source.write(merger2_proto%(op))
     source.write(merger2_body(op))
+
+#bsearch_r
+for atype in 'RULE_S1_8', 'RULE_S1_16', 'RULE_S1_32', 'RULE_S1_64':
+  header.write(bsearch_proto%(enum_map[atype])+";\n")
+  source.write(bsearch_proto%(enum_map[atype]))
+  source.write(bsearch_body(atype))
 
 
 header.write("#endif\n")

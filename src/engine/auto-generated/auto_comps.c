@@ -7099,3 +7099,107 @@ merger_allen_eq(const struct group* const group1,
   return *t1 == *t2 && *t1 == *t2;
 }
 
+
+char*** 
+bsearch_uint8_t(
+                const char* const filtered_record,
+                struct grouper_rule** const grouper_ruleset,
+                const struct grouper_intermediate_result* const intermediate_result
+                )
+{
+  
+  
+  char*** record_iter = 
+  (
+   (struct tree_item_uint8_t *)
+   bsearch_r(
+             filtered_record,
+             (void *)intermediate_result[0].uniq_recordset.recordset_uint8_t,
+             intermediate_result[0].num_uniq_records,
+             sizeof(struct tree_item_uint8_t),
+             (void *)&grouper_ruleset[0]->field_offset1,
+             comp_uint8_t_p
+             )
+   )->ptr;
+  
+  return record_iter;
+}
+
+
+char*** 
+bsearch_uint16_t(
+                 const char* const filtered_record,
+                 struct grouper_rule** const grouper_ruleset,
+                 const struct grouper_intermediate_result* const intermediate_result
+                 )
+{
+  
+  
+  char*** record_iter = 
+  (
+   (struct tree_item_uint16_t *)
+   bsearch_r(
+             filtered_record,
+             (void *)intermediate_result[0].uniq_recordset.recordset_uint16_t,
+             intermediate_result[0].num_uniq_records,
+             sizeof(struct tree_item_uint16_t),
+             (void *)&grouper_ruleset[0]->field_offset1,
+             comp_uint16_t_p
+             )
+   )->ptr;
+  
+  return record_iter;
+}
+
+
+char*** 
+bsearch_uint32_t(
+                 const char* const filtered_record,
+                 struct grouper_rule** const grouper_ruleset,
+                 const struct grouper_intermediate_result* const intermediate_result
+                 )
+{
+  
+  
+  char*** record_iter = 
+  (
+   (struct tree_item_uint32_t *)
+   bsearch_r(
+             filtered_record,
+             (void *)intermediate_result[0].uniq_recordset.recordset_uint32_t,
+             intermediate_result[0].num_uniq_records,
+             sizeof(struct tree_item_uint32_t),
+             (void *)&grouper_ruleset[0]->field_offset1,
+             comp_uint32_t_p
+             )
+   )->ptr;
+  
+  return record_iter;
+}
+
+
+char*** 
+bsearch_uint64_t(
+                 const char* const filtered_record,
+                 struct grouper_rule** const grouper_ruleset,
+                 const struct grouper_intermediate_result* const intermediate_result
+                 )
+{
+  
+  
+  char*** record_iter = 
+  (
+   (struct tree_item_uint64_t *)
+   bsearch_r(
+             filtered_record,
+             (void *)intermediate_result[0].uniq_recordset.recordset_uint64_t,
+             intermediate_result[0].num_uniq_records,
+             sizeof(struct tree_item_uint64_t),
+             (void *)&grouper_ruleset[0]->field_offset1,
+             comp_uint64_t_p
+             )
+   )->ptr;
+  
+  return record_iter;
+}
+

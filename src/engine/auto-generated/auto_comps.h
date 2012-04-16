@@ -7,11 +7,13 @@
 #ifndef flowy_engine_auto_comps_h
 #define flowy_engine_auto_comps_h
 
-#include "pipeline.h"
-
-#include "error_handlers.h"
-
 #include <math.h>
+#include "pipeline.h"
+#include "error_handlers.h"
+#include "utils.h"
+#include "grouper.h"
+struct grouper_intermediate_result;
+
 bool 
 filter_eq_uint8_t(const char* const record, 
                   size_t field_offset, 
@@ -3042,4 +3044,36 @@ merger_allen_eq(const struct group* const group1,
                 const struct group* const group2, 
                 size_t field2_offset, 
                 uint64_t delta);
+
+char*** 
+bsearch_uint8_t(
+                const char* const filtered_record,
+                struct grouper_rule** const grouper_ruleset,
+                const struct grouper_intermediate_result* const intermediate_result
+                )
+;
+
+char*** 
+bsearch_uint16_t(
+                 const char* const filtered_record,
+                 struct grouper_rule** const grouper_ruleset,
+                 const struct grouper_intermediate_result* const intermediate_result
+                 )
+;
+
+char*** 
+bsearch_uint32_t(
+                 const char* const filtered_record,
+                 struct grouper_rule** const grouper_ruleset,
+                 const struct grouper_intermediate_result* const intermediate_result
+                 )
+;
+
+char*** 
+bsearch_uint64_t(
+                 const char* const filtered_record,
+                 struct grouper_rule** const grouper_ruleset,
+                 const struct grouper_intermediate_result* const intermediate_result
+                 )
+;
 #endif

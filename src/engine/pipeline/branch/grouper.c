@@ -195,7 +195,7 @@ get_grouper_intermediates(
                           struct grouper_rule** const grouper_ruleset,
                           
                           struct grouper_result* const gresult,
-                          uint64_t op
+                          const struct grouper_type* const gtype
                           ) {
   
   /* last record in sorted_records is NULL
@@ -220,8 +220,8 @@ get_grouper_intermediates(
           num_filtered_records, 
           sizeof(char **), 
           (void*)&grouper_ruleset[0]->field_offset2,
-          get_qsort_fptr(op)
-          );
+          gtype->qsort_comp
+         );
   
   if(verbose_vv){
     
@@ -353,6 +353,10 @@ grouper(
   }
   else {
     
+    struct grouper_type* gtype = get_gtype(op);
+    if (gtype == NULL)
+      errExit("get_type(...) returned NULL");
+    
     /* unlinked each item from original traces, ie filtered_recordset_copy[i] 
      * free'd filtered_recordset_copy just before exiting from this function 
      */
@@ -373,7 +377,7 @@ grouper(
                               grouper_ruleset,
                               
                               gresult,
-                              op
+                              gtype
                               );
     
     if (intermediate_result == NULL)
@@ -426,12 +430,11 @@ grouper(
       
       // search for left hand side of comparison in records ordered by right
       // hand side of comparison
-      char ***record_iter = bsearch_s(
-                                      filtered_recordset_copy[i],
-                                      grouper_ruleset,
-                                      intermediate_result,
-                                      op
-                                      );
+      char ***record_iter = gtype->bsearch(
+                                           filtered_recordset_copy[i],
+                                           grouper_ruleset,
+                                           intermediate_result
+                                          );
       
       // iterate until terminating NULL in sorted_records
       for (int k = 0; *record_iter != NULL; record_iter++) {

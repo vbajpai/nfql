@@ -64,6 +64,23 @@ struct grouper_intermediate_result {
   char***                         sorted_recordset_reference;
 };
 
+struct grouper_type {
+  
+  int (*qsort_comp)(
+                    void*                           thunk,
+                    const void*                     e1,
+                    const void*                     e2
+                    );
+  
+  char*** (*bsearch)(
+                     const char* const              filtered_record,
+                     struct grouper_rule** const    grouper_ruleset,
+                     const struct 
+                     grouper_intermediate_result* 
+                     const                          intermediate_result
+                     );  
+};
+
 
 struct aggr_result*
 grouper_aggregations(
@@ -89,7 +106,7 @@ get_grouper_intermediates(
                           struct grouper_rule** const grouper_ruleset,
                           
                           struct grouper_result* const gresult,
-                          uint64_t op
+                          const struct grouper_type* const gtype
                           );
 
 struct grouper_result*
