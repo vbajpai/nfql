@@ -501,6 +501,9 @@ grouper(
     free(intermediate_result->uniq_recordset.recordset_uint32_t);    
     intermediate_result->uniq_recordset.recordset_uint32_t = NULL;
     free(intermediate_result); intermediate_result = NULL;    
+    
+    // free gtype
+    free(gtype);
   }
   
   

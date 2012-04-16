@@ -3044,36 +3044,28 @@ merger_allen_eq(const struct group* const group1,
                 const struct group* const group2, 
                 size_t field2_offset, 
                 uint64_t delta);
-
 char*** 
 bsearch_uint8_t(
                 const char* const filtered_record,
                 struct grouper_rule** const grouper_ruleset,
                 const struct grouper_intermediate_result* const intermediate_result
-                )
-;
-
+                );
 char*** 
 bsearch_uint16_t(
                  const char* const filtered_record,
                  struct grouper_rule** const grouper_ruleset,
                  const struct grouper_intermediate_result* const intermediate_result
-                 )
-;
-
+                 );
 char*** 
 bsearch_uint32_t(
                  const char* const filtered_record,
                  struct grouper_rule** const grouper_ruleset,
                  const struct grouper_intermediate_result* const intermediate_result
-                 )
-;
-
+                 );
 char*** 
 bsearch_uint64_t(
                  const char* const filtered_record,
                  struct grouper_rule** const grouper_ruleset,
                  const struct grouper_intermediate_result* const intermediate_result
-                 )
-;
+                 );
 #endif

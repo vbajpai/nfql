@@ -1954,11 +1954,10 @@ struct aggr* (*get_aggr_fptr(bool ifgrouper,
 
 struct grouper_type* get_gtype(uint64_t op) {
   
-  /* TODO: when free'd? */
+  /* free'd just before calling grouper_aggregations(...) */
   struct grouper_type* gtype = calloc(1, sizeof(struct grouper_type));
   if(gtype == NULL)
-    errExit("calloc");  
-    
+    errExit("calloc"); 
   switch (op) {
     case RULE_S2_8:
       gtype->qsort_comp = comp_uint8_t;
@@ -1966,15 +1965,15 @@ struct grouper_type* get_gtype(uint64_t op) {
       break;
     case RULE_S2_16:
       gtype->qsort_comp = comp_uint16_t;
-      gtype->bsearch = bsearch_uint16_t;      
+      gtype->bsearch = bsearch_uint16_t;
       break;
     case RULE_S2_32:
       gtype->qsort_comp = comp_uint32_t;
-      gtype->bsearch = bsearch_uint32_t;      
+      gtype->bsearch = bsearch_uint32_t;
       break;
     case RULE_S2_64:
       gtype->qsort_comp = comp_uint64_t;
-      gtype->bsearch = bsearch_uint64_t;      
+      gtype->bsearch = bsearch_uint64_t;
       break;
   }
   return gtype;

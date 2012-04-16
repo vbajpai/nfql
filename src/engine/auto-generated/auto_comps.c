@@ -7099,14 +7099,12 @@ merger_allen_eq(const struct group* const group1,
   return *t1 == *t2 && *t1 == *t2;
 }
 
-
 char*** 
 bsearch_uint8_t(
                 const char* const filtered_record,
                 struct grouper_rule** const grouper_ruleset,
                 const struct grouper_intermediate_result* const intermediate_result
-                )
-{
+                ) {
   
   
   char*** record_iter = 
@@ -7125,14 +7123,12 @@ bsearch_uint8_t(
   return record_iter;
 }
 
-
 char*** 
 bsearch_uint16_t(
                  const char* const filtered_record,
                  struct grouper_rule** const grouper_ruleset,
                  const struct grouper_intermediate_result* const intermediate_result
-                 )
-{
+                 ) {
   
   
   char*** record_iter = 
@@ -7151,14 +7147,12 @@ bsearch_uint16_t(
   return record_iter;
 }
 
-
 char*** 
 bsearch_uint32_t(
                  const char* const filtered_record,
                  struct grouper_rule** const grouper_ruleset,
                  const struct grouper_intermediate_result* const intermediate_result
-                 )
-{
+                 ) {
   
   
   char*** record_iter = 
@@ -7177,14 +7171,12 @@ bsearch_uint32_t(
   return record_iter;
 }
 
-
 char*** 
 bsearch_uint64_t(
                  const char* const filtered_record,
                  struct grouper_rule** const grouper_ruleset,
                  const struct grouper_intermediate_result* const intermediate_result
-                 )
-{
+                 ) {
   
   
   char*** record_iter = 

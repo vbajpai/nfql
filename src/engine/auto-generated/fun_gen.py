@@ -471,14 +471,12 @@ def merger2_body(op):
 
 #bsearch_r_uintX_t wrappers
 
-bsearch_proto = """  
-                    char*** 
+bsearch_proto = """ char*** 
                     bsearch_%s(
-                    const char* const filtered_record,
-                    struct grouper_rule** const grouper_ruleset,
-                    const struct grouper_intermediate_result* const intermediate_result
-                    )
-                """
+                                const char* const filtered_record,
+                                struct grouper_rule** const grouper_ruleset,
+                                const struct grouper_intermediate_result* const intermediate_result
+                    )"""
 
 def bsearch_body(atype):
   result = " {\n\n"
@@ -587,25 +585,7 @@ header.write("""struct aggr*
   bool if_aggr_common);\n
   """)
 
-
-header.write("""
-  char***
-  bsearch_s(
-  const char* const filtered_record,
-  struct grouper_rule** const grouper_ruleset,
-  const struct grouper_intermediate_result* const intermediate_result,
-  uint64_t op
-  );
-  """)
-
-
-header.write("""
-  int (*get_qsort_fptr(uint64_t op))(
-  void* thunk,
-  const void* e1,
-  const void* e2
-  );  
-  """)
+header.write("""struct grouper_type* get_gtype(uint64_t op);\n\n""");
 
 source.write("#include \"auto_assign.h\"\n")
 
@@ -810,81 +790,28 @@ source.write("}\n}\n")
 source.write("return aggr_function;\n}\n")
 
 
-# bsearch_s(...)
+# get_gtype(...)
 
 source.write("""  
-  char***
-  bsearch_s(
-  const char* const filtered_record,
-  struct grouper_rule** const grouper_ruleset,
-  const struct grouper_intermediate_result* const intermediate_result,
-  uint64_t op
-  ) {
-  
-  char ***record_iter = NULL;
-  
-  """)
+                  struct grouper_type* get_gtype(uint64_t op) {
+                  
+                  /* free'd just before calling grouper_aggregations(...) */
+                  struct grouper_type* gtype = calloc(1, sizeof(struct grouper_type));
+                  if(gtype == NULL)
+                  errExit("calloc"); 
+             """)
 
 source.write('switch (op) {\n')
 
 for atype in 'RULE_S2_8', 'RULE_S2_16', 'RULE_S2_32', 'RULE_S2_64':
   
   source.write("case %s:\n"%(atype))
-  
-  source.write("""
-    record_iter = 
-    (
-    (struct tree_item_%s *)
-    bsearch_r(
-    filtered_record,
-    (void *)intermediate_result[0].uniq_recordset.recordset_%s,
-    intermediate_result[0].num_uniq_records,
-    sizeof(struct tree_item_%s),
-    (void *)&grouper_ruleset[0]->field_offset1,
-    comp_%s_p
-    )
-    )->ptr;
-    
-    """%(enum_map[atype], 
-         enum_map[atype], 
-         enum_map[atype], 
-         enum_map[atype]
-         )
-               )
-  
-  source.write("break;\n")
-source.write('}\n')
-source.write('return record_iter;\n}\n\n')
-
-
-
-# get_qsort_fptr(...)
-
-source.write("""  
-  int (*get_qsort_fptr(uint64_t op))(
-  void* thunk,
-  const void* e1,
-  const void* e2
-  ) {
-  
-  int (*sortfunc)(
-  void* thunk,
-  const void* e1,
-  const void* e2
-  ) = NULL;
-  
-  """)
-
-source.write('switch (op) {\n')
-
-for atype in 'RULE_S2_8', 'RULE_S2_16', 'RULE_S2_32', 'RULE_S2_64':
-  
-  source.write("case %s:\n"%(atype))
-  source.write("sortfunc = comp_%s;\n"%enum_map[atype])
+  source.write("gtype->qsort_comp = comp_%s;\n"%enum_map[atype])
+  source.write("gtype->bsearch = bsearch_%s;\n"%enum_map[atype])  
   source.write("break;\n")
 
 source.write('}\n')
-source.write('return sortfunc;\n}\n\n');
+source.write('return gtype;\n}\n\n');
 
 
 header.write("#endif\n")

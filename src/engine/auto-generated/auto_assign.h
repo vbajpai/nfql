@@ -23,7 +23,6 @@ struct aggr*
                               size_t field_offset,
                               bool if_aggr_common);
 
-
 struct grouper_type* get_gtype(uint64_t op);
 
 #endif
