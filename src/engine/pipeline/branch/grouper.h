@@ -73,7 +73,7 @@ struct grouper_type {
                     void*                           thunk,
                     const void*                     e1,
                     const void*                     e2
-                    );
+                   );
   
   char*** (*bsearch)(
                      const char* const              filtered_record,
@@ -81,7 +81,7 @@ struct grouper_type {
                      const struct 
                      grouper_intermediate_result* 
                      const                          intermediate_result
-                     );
+                    );
   
   struct uniq_recordset_result*
   (*alloc_uniqresult)(

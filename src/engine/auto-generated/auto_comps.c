@@ -7197,17 +7197,135 @@ bsearch_uint64_t(
 
 
 struct uniq_recordset_result*
-alloc_uniqresult_uint32_t(
-                        size_t num_filtered_records,
-                        struct grouper_rule** const grouper_ruleset,
-                        char*** const sorted_recordset_ref
-                       ) {
-
-  /* TODO: when free'd? */
+alloc_uniqresult_uint8_t(
+                         size_t num_filtered_records,
+                         struct grouper_rule** const grouper_ruleset,
+                         char*** const sorted_recordset_ref
+                         ) {
+  
+  
+  
+  /* free'd just before calling grouper_aggregations(...) */
   struct uniq_recordset_result* 
   uresult = calloc(1, sizeof(struct uniq_recordset_result));
   if (uresult == NULL)
-    errExit("calloc");
+    errExit("calloc"); 
+  
+  /* free'd just before returning from grouper(...) */
+  struct tree_item_uint8_t* uniq_recordset = (struct tree_item_uint8_t*)
+  calloc(num_filtered_records, 
+         sizeof(struct tree_item_uint8_t));
+  if (uniq_recordset == NULL)
+    errExit("calloc");  
+  
+  /* unlinked uniq_recordset[0].ptr and free'd uniq_recordset
+   * just before calling grouper_aggregations(...)
+   */
+  uniq_recordset[0].value = *(uint8_t *)(*sorted_recordset_ref[0] + 
+                                         grouper_ruleset[0]->field_offset2);
+  uniq_recordset[0].ptr = &sorted_recordset_ref[0];
+  size_t num_uniq_records = 1;
+  
+  for (int i = 0; i < num_filtered_records; i++) {
+    if (
+        *(uint8_t *)(*sorted_recordset_ref[i] + 
+                     grouper_ruleset[0]->field_offset2) != 
+        uniq_recordset[num_uniq_records-1].value
+        ) {
+      
+      uniq_recordset[num_uniq_records].value = 
+      *(uint8_t *)(*sorted_recordset_ref[i] + 
+                   grouper_ruleset[0]->field_offset2);
+      uniq_recordset[num_uniq_records].ptr = &sorted_recordset_ref[i];
+      num_uniq_records++;
+    }
+  }
+  
+  uniq_recordset = (struct tree_item_uint8_t *)
+  realloc(uniq_recordset, 
+          num_uniq_records*sizeof(struct tree_item_uint8_t));
+  if (uniq_recordset == NULL)
+    errExit("realloc");
+  
+  uresult->num_uniq_records = num_uniq_records;
+  uresult->uniq_recordset.recordset_uint8_t = uniq_recordset;
+  
+  return uresult;
+}
+
+
+struct uniq_recordset_result*
+alloc_uniqresult_uint16_t(
+                          size_t num_filtered_records,
+                          struct grouper_rule** const grouper_ruleset,
+                          char*** const sorted_recordset_ref
+                          ) {
+  
+  
+  
+  /* free'd just before calling grouper_aggregations(...) */
+  struct uniq_recordset_result* 
+  uresult = calloc(1, sizeof(struct uniq_recordset_result));
+  if (uresult == NULL)
+    errExit("calloc"); 
+  
+  /* free'd just before returning from grouper(...) */
+  struct tree_item_uint16_t* uniq_recordset = (struct tree_item_uint16_t*)
+  calloc(num_filtered_records, 
+         sizeof(struct tree_item_uint16_t));
+  if (uniq_recordset == NULL)
+    errExit("calloc");  
+  
+  /* unlinked uniq_recordset[0].ptr and free'd uniq_recordset
+   * just before calling grouper_aggregations(...)
+   */
+  uniq_recordset[0].value = *(uint16_t *)(*sorted_recordset_ref[0] + 
+                                          grouper_ruleset[0]->field_offset2);
+  uniq_recordset[0].ptr = &sorted_recordset_ref[0];
+  size_t num_uniq_records = 1;
+  
+  for (int i = 0; i < num_filtered_records; i++) {
+    if (
+        *(uint16_t *)(*sorted_recordset_ref[i] + 
+                      grouper_ruleset[0]->field_offset2) != 
+        uniq_recordset[num_uniq_records-1].value
+        ) {
+      
+      uniq_recordset[num_uniq_records].value = 
+      *(uint16_t *)(*sorted_recordset_ref[i] + 
+                    grouper_ruleset[0]->field_offset2);
+      uniq_recordset[num_uniq_records].ptr = &sorted_recordset_ref[i];
+      num_uniq_records++;
+    }
+  }
+  
+  uniq_recordset = (struct tree_item_uint16_t *)
+  realloc(uniq_recordset, 
+          num_uniq_records*sizeof(struct tree_item_uint16_t));
+  if (uniq_recordset == NULL)
+    errExit("realloc");
+  
+  uresult->num_uniq_records = num_uniq_records;
+  uresult->uniq_recordset.recordset_uint16_t = uniq_recordset;
+  
+  return uresult;
+}
+
+
+struct uniq_recordset_result*
+alloc_uniqresult_uint32_t(
+                          size_t num_filtered_records,
+                          struct grouper_rule** const grouper_ruleset,
+                          char*** const sorted_recordset_ref
+                          ) {
+  
+  
+  
+  /* free'd just before calling grouper_aggregations(...) */
+  struct uniq_recordset_result* 
+  uresult = calloc(1, sizeof(struct uniq_recordset_result));
+  if (uresult == NULL)
+    errExit("calloc"); 
   
   /* free'd just before returning from grouper(...) */
   struct tree_item_uint32_t* uniq_recordset = (struct tree_item_uint32_t*)
@@ -7251,20 +7369,165 @@ alloc_uniqresult_uint32_t(
   return uresult;
 }
 
-char*
-get_uniq_record_uint32_t(const struct uniq_recordset_result* const uniq_result,
-                         int index) {
-  return **uniq_result->uniq_recordset.recordset_uint32_t[index].ptr;
+
+struct uniq_recordset_result*
+alloc_uniqresult_uint64_t(
+                          size_t num_filtered_records,
+                          struct grouper_rule** const grouper_ruleset,
+                          char*** const sorted_recordset_ref
+                          ) {
+  
+  
+  
+  /* free'd just before calling grouper_aggregations(...) */
+  struct uniq_recordset_result* 
+  uresult = calloc(1, sizeof(struct uniq_recordset_result));
+  if (uresult == NULL)
+    errExit("calloc"); 
+  
+  /* free'd just before returning from grouper(...) */
+  struct tree_item_uint64_t* uniq_recordset = (struct tree_item_uint64_t*)
+  calloc(num_filtered_records, 
+         sizeof(struct tree_item_uint64_t));
+  if (uniq_recordset == NULL)
+    errExit("calloc");  
+  
+  /* unlinked uniq_recordset[0].ptr and free'd uniq_recordset
+   * just before calling grouper_aggregations(...)
+   */
+  uniq_recordset[0].value = *(uint64_t *)(*sorted_recordset_ref[0] + 
+                                          grouper_ruleset[0]->field_offset2);
+  uniq_recordset[0].ptr = &sorted_recordset_ref[0];
+  size_t num_uniq_records = 1;
+  
+  for (int i = 0; i < num_filtered_records; i++) {
+    if (
+        *(uint64_t *)(*sorted_recordset_ref[i] + 
+                      grouper_ruleset[0]->field_offset2) != 
+        uniq_recordset[num_uniq_records-1].value
+        ) {
+      
+      uniq_recordset[num_uniq_records].value = 
+      *(uint64_t *)(*sorted_recordset_ref[i] + 
+                    grouper_ruleset[0]->field_offset2);
+      uniq_recordset[num_uniq_records].ptr = &sorted_recordset_ref[i];
+      num_uniq_records++;
+    }
+  }
+  
+  uniq_recordset = (struct tree_item_uint64_t *)
+  realloc(uniq_recordset, 
+          num_uniq_records*sizeof(struct tree_item_uint64_t));
+  if (uniq_recordset == NULL)
+    errExit("realloc");
+  
+  uresult->num_uniq_records = num_uniq_records;
+  uresult->uniq_recordset.recordset_uint64_t = uniq_recordset;
+  
+  return uresult;
 }
+
+
+void
+dealloc_uniqresult_uint8_t(struct uniq_recordset_result* uniq_result) {
+  
+  
+  
+  // unlink the uniq records from the flow data
+  for (int i = 0; i < uniq_result->num_uniq_records; i++)
+    uniq_result->uniq_recordset.recordset_uint8_t[i].ptr = NULL;
+  free(uniq_result->uniq_recordset.recordset_uint8_t);    
+  uniq_result->uniq_recordset.recordset_uint8_t = NULL;    
+  
+  free(uniq_result);
+  uniq_result = NULL;
+}
+
+
+void
+dealloc_uniqresult_uint16_t(struct uniq_recordset_result* uniq_result) {
+  
+  
+  
+  // unlink the uniq records from the flow data
+  for (int i = 0; i < uniq_result->num_uniq_records; i++)
+    uniq_result->uniq_recordset.recordset_uint16_t[i].ptr = NULL;
+  free(uniq_result->uniq_recordset.recordset_uint16_t);    
+  uniq_result->uniq_recordset.recordset_uint16_t = NULL;    
+  
+  free(uniq_result);
+  uniq_result = NULL;
+}
+
 
 void
 dealloc_uniqresult_uint32_t(struct uniq_recordset_result* uniq_result) {
-
+  
+  
+  
   // unlink the uniq records from the flow data
   for (int i = 0; i < uniq_result->num_uniq_records; i++)
     uniq_result->uniq_recordset.recordset_uint32_t[i].ptr = NULL;
   free(uniq_result->uniq_recordset.recordset_uint32_t);    
   uniq_result->uniq_recordset.recordset_uint32_t = NULL;    
-  free(uniq_result); 
+  
+  free(uniq_result);
   uniq_result = NULL;
 }
+
+
+void
+dealloc_uniqresult_uint64_t(struct uniq_recordset_result* uniq_result) {
+  
+  
+  
+  // unlink the uniq records from the flow data
+  for (int i = 0; i < uniq_result->num_uniq_records; i++)
+    uniq_result->uniq_recordset.recordset_uint64_t[i].ptr = NULL;
+  free(uniq_result->uniq_recordset.recordset_uint64_t);    
+  uniq_result->uniq_recordset.recordset_uint64_t = NULL;    
+  
+  free(uniq_result);
+  uniq_result = NULL;
+}
+
+
+char*
+get_uniq_record_uint8_t(const struct uniq_recordset_result* const uniq_result,
+                        int index) {
+  
+  
+  return **uniq_result->uniq_recordset.recordset_uint8_t[index].ptr;
+}
+
+
+
+char*
+get_uniq_record_uint16_t(const struct uniq_recordset_result* const uniq_result,
+                         int index) {
+  
+  
+  return **uniq_result->uniq_recordset.recordset_uint16_t[index].ptr;
+}
+
+
+
+char*
+get_uniq_record_uint32_t(const struct uniq_recordset_result* const uniq_result,
+                         int index) {
+  
+  
+  return **uniq_result->uniq_recordset.recordset_uint32_t[index].ptr;
+}
+
+
+
+char*
+get_uniq_record_uint64_t(const struct uniq_recordset_result* const uniq_result,
+                         int index) {
+  
+  
+  return **uniq_result->uniq_recordset.recordset_uint64_t[index].ptr;
+}
+
+

@@ -469,37 +469,153 @@ def merger2_body(op):
   return result;
 
 
+# alloc_uniqresult
+
+alloc_uniqresult_proto = """ 
+          struct uniq_recordset_result*
+          alloc_uniqresult_%s(
+                                    size_t num_filtered_records,
+                                    struct grouper_rule** const grouper_ruleset,
+                                    char*** const sorted_recordset_ref
+                                   )"""
+                         
+def alloc_uniqresult_body(atype):
+  result = " {\n\n"
+  result += """
+    
+    /* free'd just before calling grouper_aggregations(...) */
+    struct uniq_recordset_result* 
+    uresult = calloc(1, sizeof(struct uniq_recordset_result));
+    if (uresult == NULL)
+    errExit("calloc"); """
+    
+  result += """
+    
+    /* free'd just before returning from grouper(...) */
+    struct tree_item_%s* uniq_recordset = (struct tree_item_%s*)
+    calloc(num_filtered_records, 
+    sizeof(struct tree_item_%s));
+    if (uniq_recordset == NULL)
+    errExit("calloc");  
+    
+    /* unlinked uniq_recordset[0].ptr and free'd uniq_recordset
+    * just before calling grouper_aggregations(...)
+    */
+    uniq_recordset[0].value = *(%s *)(*sorted_recordset_ref[0] + 
+    grouper_ruleset[0]->field_offset2);
+    uniq_recordset[0].ptr = &sorted_recordset_ref[0];
+    size_t num_uniq_records = 1;
+    
+    for (int i = 0; i < num_filtered_records; i++) {
+    if (
+    *(%s *)(*sorted_recordset_ref[i] + 
+    grouper_ruleset[0]->field_offset2) != 
+    uniq_recordset[num_uniq_records-1].value
+    ) {
+    
+    uniq_recordset[num_uniq_records].value = 
+    *(%s *)(*sorted_recordset_ref[i] + 
+    grouper_ruleset[0]->field_offset2);
+    uniq_recordset[num_uniq_records].ptr = &sorted_recordset_ref[i];
+    num_uniq_records++;
+    }
+    }
+    
+    uniq_recordset = (struct tree_item_%s *)
+    realloc(uniq_recordset, 
+    num_uniq_records*sizeof(struct tree_item_%s));
+    if (uniq_recordset == NULL)
+    errExit("realloc");
+    
+    uresult->num_uniq_records = num_uniq_records;
+    uresult->uniq_recordset.recordset_%s = uniq_recordset;
+   
+            """%(enum_map[atype],
+                 enum_map[atype],
+                 enum_map[atype],
+                 enum_map[atype],
+                 enum_map[atype],
+                 enum_map[atype],
+                 enum_map[atype],
+                 enum_map[atype],
+                 enum_map[atype])
+  
+  result += "return uresult;\n}\n\n"
+  return result;
+
+
+# dealloc_uniqresult
+
+dealloc_uniqresult_proto = """   
+  void
+  dealloc_uniqresult_%s(struct uniq_recordset_result* uniq_result)"""
+
+def dealloc_uniqresult_body(atype):
+  result = " {\n\n"
+  result += """
+    
+    // unlink the uniq records from the flow data
+    for (int i = 0; i < uniq_result->num_uniq_records; i++)
+    uniq_result->uniq_recordset.recordset_%s[i].ptr = NULL;
+    free(uniq_result->uniq_recordset.recordset_%s);    
+    uniq_result->uniq_recordset.recordset_%s = NULL;    
+   
+    """%(enum_map[atype],
+         enum_map[atype],
+         enum_map[atype])
+  
+  result += "free(uniq_result);\n";
+  result += "uniq_result = NULL;\n}\n\n"
+  return result;
+
+
+# get_uniq_record
+
+get_uniq_record_proto = """
+  char*
+  get_uniq_record_%s(const struct uniq_recordset_result* const uniq_result,
+  int index)"""
+
+def get_uniq_record_body(atype):
+  result = " {\n\n"
+  result += """    
+  return **uniq_result->uniq_recordset.recordset_%s[index].ptr;\n}\n\n
+    """%(enum_map[atype])
+  return result;
+
+
 #bsearch_r_uintX_t wrappers
 
 bsearch_proto = """ char*** 
-                    bsearch_%s(
-                                const char* const filtered_record,
-                                struct grouper_rule** const grouper_ruleset,
-                                const struct grouper_intermediate_result* const intermediate_result
-                    )"""
+  bsearch_%s(
+  const char* const filtered_record,
+  struct grouper_rule** const grouper_ruleset,
+  const struct grouper_intermediate_result* const intermediate_result
+  )"""
 
 def bsearch_body(atype):
   result = " {\n\n"
   result += """
-                char*** record_iter = 
-                (
-                 (struct tree_item_%s *)
-                  bsearch_r(
-                            filtered_record,
-                            (void *)intermediate_result[0].uniq_recordset.recordset_%s,
-                            intermediate_result[0].num_uniq_records,
-                            sizeof(struct tree_item_%s),
-                            (void *)&grouper_ruleset[0]->field_offset1,
-                            comp_%s_p
-                           )
-                )->ptr;
+    char*** record_iter = 
+    (
+    (struct tree_item_%s *)
+    bsearch_r(
+    filtered_record,
+    (void *)intermediate_result[0].uniq_result->uniq_recordset.recordset_%s,
+    intermediate_result[0].uniq_result->num_uniq_records,
+    sizeof(struct tree_item_%s),
+    (void *)&grouper_ruleset[0]->field_offset1,
+    comp_%s_p
+    )
+    )->ptr;
     
-            """%(enum_map[atype],
-                 enum_map[atype],
-                 enum_map[atype],
-                 enum_map[atype])
+    """%(enum_map[atype],
+         enum_map[atype],
+         enum_map[atype],
+         enum_map[atype])
   result += "return record_iter;\n}\n\n"
   return result;
+
 
 # filter
 for op in 'eq', 'ne', 'lt', 'gt', 'le', 'ge':
@@ -555,6 +671,23 @@ for atype in 'RULE_S1_8', 'RULE_S1_16', 'RULE_S1_32', 'RULE_S1_64':
   source.write(bsearch_proto%(enum_map[atype]))
   source.write(bsearch_body(atype))
 
+#alloc_uniqresult
+for atype in 'RULE_S1_8', 'RULE_S1_16', 'RULE_S1_32', 'RULE_S1_64':
+  header.write(alloc_uniqresult_proto%(enum_map[atype])+";\n")
+  source.write(alloc_uniqresult_proto%(enum_map[atype]))
+  source.write(alloc_uniqresult_body(atype))
+
+#dealloc_uniqresult
+for atype in 'RULE_S1_8', 'RULE_S1_16', 'RULE_S1_32', 'RULE_S1_64':
+  header.write(dealloc_uniqresult_proto%(enum_map[atype])+";\n")
+  source.write(dealloc_uniqresult_proto%(enum_map[atype]))
+  source.write(dealloc_uniqresult_body(atype))
+
+#get_uniq_record
+for atype in 'RULE_S1_8', 'RULE_S1_16', 'RULE_S1_32', 'RULE_S1_64':
+  header.write(get_uniq_record_proto%(enum_map[atype])+";\n")
+  source.write(get_uniq_record_proto%(enum_map[atype]))
+  source.write(get_uniq_record_body(atype))
 
 header.write("#endif\n")
 header.close()
@@ -807,7 +940,11 @@ for atype in 'RULE_S2_8', 'RULE_S2_16', 'RULE_S2_32', 'RULE_S2_64':
   
   source.write("case %s:\n"%(atype))
   source.write("gtype->qsort_comp = comp_%s;\n"%enum_map[atype])
+  source.write("gtype->bsearch = bsearch_%s;\n"%enum_map[atype])
   source.write("gtype->bsearch = bsearch_%s;\n"%enum_map[atype])  
+  source.write("gtype->alloc_uniqresult = alloc_uniqresult_%s;\n"%enum_map[atype])  
+  source.write("gtype->dealloc_uniqresult = dealloc_uniqresult_%s;\n"%enum_map[atype])    
+  source.write("gtype->get_uniq_record = get_uniq_record_%s;\n"%enum_map[atype])      
   source.write("break;\n")
 
 source.write('}\n')
