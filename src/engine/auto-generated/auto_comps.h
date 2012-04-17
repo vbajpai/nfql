@@ -3049,36 +3049,38 @@ bsearch_uint8_t(
                 const char* const filtered_record,
                 struct grouper_rule** const grouper_ruleset,
                 const struct grouper_intermediate_result* const intermediate_result
-                );
+               );
 char*** 
 bsearch_uint16_t(
                  const char* const filtered_record,
                  struct grouper_rule** const grouper_ruleset,
                  const struct grouper_intermediate_result* const intermediate_result
-                 );
+                );
 char*** 
 bsearch_uint32_t(
                  const char* const filtered_record,
                  struct grouper_rule** const grouper_ruleset,
                  const struct grouper_intermediate_result* const intermediate_result
-                 );
+                );
 char*** 
 bsearch_uint64_t(
                  const char* const filtered_record,
                  struct grouper_rule** const grouper_ruleset,
                  const struct grouper_intermediate_result* const intermediate_result
-                 );
+                );
 
 struct uniq_recordset_result*
 alloc_uniqresult_uint32_t(
                           size_t num_filtered_records,
-                          struct grouper_rule** grouper_ruleset,
-                          char*** sorted_recordset_ref
-                          );
+                          struct grouper_rule** const grouper_ruleset,
+                          char*** const sorted_recordset_ref
+                         );
 
 char*
-get_uniq_record_uint32_t(struct uniq_recordset_result* uniq_result,
-                         int index);
+get_uniq_record_uint32_t(
+                         const struct uniq_recordset_result* const uniq_result, 
+                         int index
+                        );
 
 void
 dealloc_uniqresult_uint32_t(struct uniq_recordset_result* uniq_result);

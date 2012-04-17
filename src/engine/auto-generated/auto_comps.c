@@ -7199,8 +7199,8 @@ bsearch_uint64_t(
 struct uniq_recordset_result*
 alloc_uniqresult_uint32_t(
                         size_t num_filtered_records,
-                        struct grouper_rule** grouper_ruleset,
-                        char*** sorted_recordset_ref
+                        struct grouper_rule** const grouper_ruleset,
+                        char*** const sorted_recordset_ref
                        ) {
 
   /* TODO: when free'd? */
@@ -7252,7 +7252,7 @@ alloc_uniqresult_uint32_t(
 }
 
 char*
-get_uniq_record_uint32_t(struct uniq_recordset_result* uniq_result,
+get_uniq_record_uint32_t(const struct uniq_recordset_result* const uniq_result,
                          int index) {
   return **uniq_result->uniq_recordset.recordset_uint32_t[index].ptr;
 }

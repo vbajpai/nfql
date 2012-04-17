@@ -84,15 +84,15 @@ struct grouper_type {
                      );
   
   struct uniq_recordset_result*
-  (*alloc_uniqresult) (
-                     size_t                         num_filtered_records,
-                     struct grouper_rule**          grouper_ruleset,
-                     char***                        sorted_recordset_ref
-                    );
+  (*alloc_uniqresult)(
+                      size_t                         num_filtered_records,
+                      struct grouper_rule** const    grouper_ruleset,
+                      char*** const                  sorted_recordset_ref
+                     );
   
   char*
   (*get_uniq_record)(
-                     struct uniq_recordset_result* uniq_result,
+                     const struct uniq_recordset_result* const uniq_result,
                      int index
                     );
   
