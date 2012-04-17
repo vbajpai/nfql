@@ -3070,13 +3070,17 @@ bsearch_uint64_t(
                  );
 
 struct uniq_recordset_result*
-get_uniqresult_uint32_t(
-                        size_t num_filtered_records,
-                        struct grouper_rule** grouper_ruleset,
-                        char*** sorted_recordset_ref
-                       );
+alloc_uniqresult_uint32_t(
+                          size_t num_filtered_records,
+                          struct grouper_rule** grouper_ruleset,
+                          char*** sorted_recordset_ref
+                          );
 
 char*
 get_uniq_record_uint32_t(struct uniq_recordset_result* uniq_result,
                          int index);
+
+void
+dealloc_uniqresult_uint32_t(struct uniq_recordset_result* uniq_result);
+
 #endif

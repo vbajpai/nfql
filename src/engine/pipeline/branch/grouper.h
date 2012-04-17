@@ -84,7 +84,7 @@ struct grouper_type {
                      );
   
   struct uniq_recordset_result*
-  (*get_uniqresult) (
+  (*alloc_uniqresult) (
                      size_t                         num_filtered_records,
                      struct grouper_rule**          grouper_ruleset,
                      char***                        sorted_recordset_ref
@@ -95,6 +95,9 @@ struct grouper_type {
                      struct uniq_recordset_result* uniq_result,
                      int index
                     );
+  
+  void
+  (*dealloc_uniqresult)(struct uniq_recordset_result* uniq_result);
 };
 
 

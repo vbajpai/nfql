@@ -1969,8 +1969,9 @@ struct grouper_type* get_gtype(uint64_t op) {
     case RULE_S2_32:
       gtype->qsort_comp = comp_uint32_t;
       gtype->bsearch = bsearch_uint32_t;
-      gtype->get_uniqresult = get_uniqresult_uint32_t;
+      gtype->alloc_uniqresult = alloc_uniqresult_uint32_t;
       gtype->get_uniq_record = get_uniq_record_uint32_t;
+      gtype->dealloc_uniqresult = dealloc_uniqresult_uint32_t;
       break;
     case RULE_S2_64:
       gtype->qsort_comp = comp_uint64_t;

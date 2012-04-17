@@ -7197,7 +7197,7 @@ bsearch_uint64_t(
 
 
 struct uniq_recordset_result*
-get_uniqresult_uint32_t(
+alloc_uniqresult_uint32_t(
                         size_t num_filtered_records,
                         struct grouper_rule** grouper_ruleset,
                         char*** sorted_recordset_ref
@@ -7255,4 +7255,16 @@ char*
 get_uniq_record_uint32_t(struct uniq_recordset_result* uniq_result,
                          int index) {
   return **uniq_result->uniq_recordset.recordset_uint32_t[index].ptr;
-}      
+}
+
+void
+dealloc_uniqresult_uint32_t(struct uniq_recordset_result* uniq_result) {
+
+  // unlink the uniq records from the flow data
+  for (int i = 0; i < uniq_result->num_uniq_records; i++)
+    uniq_result->uniq_recordset.recordset_uint32_t[i].ptr = NULL;
+  free(uniq_result->uniq_recordset.recordset_uint32_t);    
+  uniq_result->uniq_recordset.recordset_uint32_t = NULL;    
+  free(uniq_result); 
+  uniq_result = NULL;
+}

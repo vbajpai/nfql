@@ -248,11 +248,11 @@ get_grouper_intermediates(
   intermediate_result->sorted_recordset_reference = sorted_recordset_ref;
   
   struct uniq_recordset_result* 
-  uresult = gtype->get_uniqresult(
-                                  num_filtered_records,
-                                  grouper_ruleset,
-                                  sorted_recordset_ref
-                                 );
+  uresult = gtype->alloc_uniqresult(
+                                    num_filtered_records,
+                                    grouper_ruleset,
+                                    sorted_recordset_ref
+                                   );
   
   if (uresult == NULL)
     errExit("get_uniqrecordset(...) returned NULL");
@@ -464,23 +464,10 @@ grouper(
       intermediate_result->sorted_recordset_reference[i] = NULL;    
     free(intermediate_result->sorted_recordset_reference); 
     intermediate_result->sorted_recordset_reference = NULL;
-
     
-  /* -----------------------------------------------------------------------*/  
     // unlink the uniq records from the flow data
-    // TODO: UINT32 assumptions
-    for (int i = 0; i < intermediate_result->uniq_result->num_uniq_records; i++)
-      intermediate_result->uniq_result->uniq_recordset.recordset_uint32_t[i].ptr = NULL;
-    free(intermediate_result->uniq_result->uniq_recordset.recordset_uint32_t);    
-    intermediate_result->uniq_result->uniq_recordset.recordset_uint32_t = NULL;
-    
-    free(intermediate_result->uniq_result); 
-    intermediate_result->uniq_result = NULL;    
+    gtype->dealloc_uniqresult(intermediate_result->uniq_result);
     free(intermediate_result); intermediate_result = NULL;    
-  /* -----------------------------------------------------------------------*/  
-    
-    
-    // free gtype
     free(gtype);
   }
   
