@@ -51,8 +51,13 @@ typedef enum { UINT8_T, UINT16_T, UINT32_T, UINT64_T } int_sizes;
 
 struct grouper_intermediate_result {    
   
-  size_t                          num_uniq_records;
+  struct uniq_recordset_result*   uniq_result;  
+  char***                         sorted_recordset_reference;
+};
+
+struct uniq_recordset_result {
   
+  size_t                          num_uniq_records;  
   union {
     struct tree_item_uint8_t*     recordset_uint8_t;
     struct tree_item_uint16_t*    recordset_uint16_t;
@@ -60,7 +65,6 @@ struct grouper_intermediate_result {
     struct tree_item_uint64_t*    recordset_uint64_t;
   }uniq_recordset;
   
-  char***                         sorted_recordset_reference;
 };
 
 struct grouper_type {
@@ -77,7 +81,20 @@ struct grouper_type {
                      const struct 
                      grouper_intermediate_result* 
                      const                          intermediate_result
-                     );  
+                     );
+  
+  struct uniq_recordset_result*
+  (*get_uniqresult) (
+                     size_t                         num_filtered_records,
+                     struct grouper_rule**          grouper_ruleset,
+                     char***                        sorted_recordset_ref
+                    );
+  
+  char*
+  (*get_uniq_record)(
+                     struct uniq_recordset_result* uniq_result,
+                     int index
+                    );
 };
 
 

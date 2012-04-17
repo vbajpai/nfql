@@ -3068,4 +3068,15 @@ bsearch_uint64_t(
                  struct grouper_rule** const grouper_ruleset,
                  const struct grouper_intermediate_result* const intermediate_result
                  );
+
+struct uniq_recordset_result*
+get_uniqresult_uint32_t(
+                        size_t num_filtered_records,
+                        struct grouper_rule** grouper_ruleset,
+                        char*** sorted_recordset_ref
+                       );
+
+char*
+get_uniq_record_uint32_t(struct uniq_recordset_result* uniq_result,
+                         int index);
 #endif

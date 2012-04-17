@@ -247,75 +247,18 @@ get_grouper_intermediates(
   
   intermediate_result->sorted_recordset_reference = sorted_recordset_ref;
   
+  struct uniq_recordset_result* 
+  uresult = gtype->get_uniqresult(
+                                  num_filtered_records,
+                                  grouper_ruleset,
+                                  sorted_recordset_ref
+                                 );
   
+  if (uresult == NULL)
+    errExit("get_uniqrecordset(...) returned NULL");
   
-  /* -----------------------------------------------------------------------*/  
-  /*                                uint32                                  */  
-  /* -----------------------------------------------------------------------*/   
-  
-  /* free'd just before returning from grouper(...) */
-  /* TODO: uint32_t assumed */
-  struct tree_item_uint32_t* uniq_recordset = (struct tree_item_uint32_t *)
-  calloc(num_filtered_records, 
-         sizeof(struct tree_item_uint32_t));
-  if (uniq_recordset == NULL)
-    errExit("calloc");  
-  
-  /* TODO: uint32_t assumed 
-   * unlinked uniq_recordset[0].ptr and free'd uniq_recordset
-   * just before calling grouper_aggregations(...)
-   */
-  uniq_recordset[0].value = *(uint32_t *)(*sorted_recordset_ref[0] + 
-                                          grouper_ruleset[0]->field_offset2);
-  uniq_recordset[0].ptr = &sorted_recordset_ref[0];
-  size_t num_uniq_records = 1;
-  
-  for (int i = 0; i < num_filtered_records; i++) {
-    if (
-        *(uint32_t *)(*sorted_recordset_ref[i] + 
-                      grouper_ruleset[0]->field_offset2) != 
-        uniq_recordset[num_uniq_records-1].value
-        ) {
-      
-      uniq_recordset[num_uniq_records].value = 
-      *(uint32_t *)(*sorted_recordset_ref[i] + 
-                    grouper_ruleset[0]->field_offset2);
-      uniq_recordset[num_uniq_records].ptr = &sorted_recordset_ref[i];
-      num_uniq_records++;
-    }
-  }
-  
-  /* TODO: UINT32_T assumed */
-  uniq_recordset = (struct tree_item_uint32_t *)
-  realloc(uniq_recordset, 
-          num_uniq_records*sizeof(struct tree_item_uint32_t));
-  if (uniq_recordset == NULL)
-    errExit("realloc"); 
-  
-  /* TODO: UINT32_T assumed */
-  intermediate_result->num_uniq_records = num_uniq_records;
-  intermediate_result->uniq_recordset.recordset_uint32_t = uniq_recordset;
-  uniq_recordset = NULL;
-  sorted_recordset_ref = NULL;
-  
-  if(verbose_vv){  
-    
-    /* free'd just before calling merger(...) */      
-    gresult->num_unique_records = intermediate_result->num_uniq_records;
-    gresult->unique_recordset = (char**) 
-    calloc(gresult->num_unique_records, 
-           sizeof(char*));      
-    if (gresult->unique_recordset == NULL)
-      errExit("calloc");
-    
-    /* TODO: UINT32_T assumed */
-    for (int i = 0; i < gresult->num_unique_records; i++)
-      gresult->unique_recordset[i] = 
-      **intermediate_result->uniq_recordset.recordset_uint32_t[i].ptr;
-  }
-
-  
-  /* -----------------------------------------------------------------------*/  
+  intermediate_result->uniq_result = uresult; uresult = NULL;
+  sorted_recordset_ref = NULL;   
   
   return intermediate_result;
 }
@@ -407,6 +350,25 @@ grouper(
     
     if (intermediate_result == NULL)
       errExit("get_grouper_intermediates(...) returned NULL");
+    
+    if(verbose_vv){  
+      
+      /* free'd just before calling merger(...) */      
+      gresult->num_unique_records = intermediate_result->
+                                    uniq_result->num_uniq_records;
+      gresult->unique_recordset = (char**) 
+      calloc(gresult->num_unique_records, 
+             sizeof(char*));      
+      if (gresult->unique_recordset == NULL)
+        errExit("calloc");
+    
+      for (int i = 0; i < gresult->num_unique_records; i++) {
+        gresult->unique_recordset[i] = 
+        gtype->get_uniq_record(intermediate_result->uniq_result,i);
+        if (gresult->unique_recordset[i] == NULL)
+          errExit("get_uniq_record(...) returned NULL");      
+      }
+    }
     
     for (int i = 0; i < fresult->num_filtered_records; i++) {
       
@@ -507,10 +469,13 @@ grouper(
   /* -----------------------------------------------------------------------*/  
     // unlink the uniq records from the flow data
     // TODO: UINT32 assumptions
-    for (int i = 0; i < intermediate_result->num_uniq_records; i++)
-      intermediate_result->uniq_recordset.recordset_uint32_t[i].ptr = NULL;
-    free(intermediate_result->uniq_recordset.recordset_uint32_t);    
-    intermediate_result->uniq_recordset.recordset_uint32_t = NULL;
+    for (int i = 0; i < intermediate_result->uniq_result->num_uniq_records; i++)
+      intermediate_result->uniq_result->uniq_recordset.recordset_uint32_t[i].ptr = NULL;
+    free(intermediate_result->uniq_result->uniq_recordset.recordset_uint32_t);    
+    intermediate_result->uniq_result->uniq_recordset.recordset_uint32_t = NULL;
+    
+    free(intermediate_result->uniq_result); 
+    intermediate_result->uniq_result = NULL;    
     free(intermediate_result); intermediate_result = NULL;    
   /* -----------------------------------------------------------------------*/  
     

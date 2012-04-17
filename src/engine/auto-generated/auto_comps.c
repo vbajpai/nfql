@@ -7112,8 +7112,8 @@ bsearch_uint8_t(
    (struct tree_item_uint8_t *)
    bsearch_r(
              filtered_record,
-             (void *)intermediate_result[0].uniq_recordset.recordset_uint8_t,
-             intermediate_result[0].num_uniq_records,
+             (void *)intermediate_result[0].uniq_result->uniq_recordset.recordset_uint8_t,
+             intermediate_result[0].uniq_result->num_uniq_records,
              sizeof(struct tree_item_uint8_t),
              (void *)&grouper_ruleset[0]->field_offset1,
              comp_uint8_t_p
@@ -7136,8 +7136,8 @@ bsearch_uint16_t(
    (struct tree_item_uint16_t *)
    bsearch_r(
              filtered_record,
-             (void *)intermediate_result[0].uniq_recordset.recordset_uint16_t,
-             intermediate_result[0].num_uniq_records,
+             (void *)intermediate_result[0].uniq_result->uniq_recordset.recordset_uint16_t,
+             intermediate_result[0].uniq_result->num_uniq_records,
              sizeof(struct tree_item_uint16_t),
              (void *)&grouper_ruleset[0]->field_offset1,
              comp_uint16_t_p
@@ -7160,8 +7160,8 @@ bsearch_uint32_t(
    (struct tree_item_uint32_t *)
    bsearch_r(
              filtered_record,
-             (void *)intermediate_result[0].uniq_recordset.recordset_uint32_t,
-             intermediate_result[0].num_uniq_records,
+             (void *)intermediate_result[0].uniq_result->uniq_recordset.recordset_uint32_t,
+             intermediate_result[0].uniq_result->num_uniq_records,
              sizeof(struct tree_item_uint32_t),
              (void *)&grouper_ruleset[0]->field_offset1,
              comp_uint32_t_p
@@ -7184,8 +7184,8 @@ bsearch_uint64_t(
    (struct tree_item_uint64_t *)
    bsearch_r(
              filtered_record,
-             (void *)intermediate_result[0].uniq_recordset.recordset_uint64_t,
-             intermediate_result[0].num_uniq_records,
+             (void *)intermediate_result[0].uniq_result->uniq_recordset.recordset_uint64_t,
+             intermediate_result[0].uniq_result->num_uniq_records,
              sizeof(struct tree_item_uint64_t),
              (void *)&grouper_ruleset[0]->field_offset1,
              comp_uint64_t_p
@@ -7195,3 +7195,64 @@ bsearch_uint64_t(
   return record_iter;
 }
 
+
+struct uniq_recordset_result*
+get_uniqresult_uint32_t(
+                        size_t num_filtered_records,
+                        struct grouper_rule** grouper_ruleset,
+                        char*** sorted_recordset_ref
+                       ) {
+
+  /* TODO: when free'd? */
+  struct uniq_recordset_result* 
+  uresult = calloc(1, sizeof(struct uniq_recordset_result));
+  if (uresult == NULL)
+    errExit("calloc");
+  
+  /* free'd just before returning from grouper(...) */
+  struct tree_item_uint32_t* uniq_recordset = (struct tree_item_uint32_t*)
+  calloc(num_filtered_records, 
+         sizeof(struct tree_item_uint32_t));
+  if (uniq_recordset == NULL)
+    errExit("calloc");  
+  
+  /* unlinked uniq_recordset[0].ptr and free'd uniq_recordset
+   * just before calling grouper_aggregations(...)
+   */
+  uniq_recordset[0].value = *(uint32_t *)(*sorted_recordset_ref[0] + 
+                                          grouper_ruleset[0]->field_offset2);
+  uniq_recordset[0].ptr = &sorted_recordset_ref[0];
+  size_t num_uniq_records = 1;
+  
+  for (int i = 0; i < num_filtered_records; i++) {
+    if (
+        *(uint32_t *)(*sorted_recordset_ref[i] + 
+                      grouper_ruleset[0]->field_offset2) != 
+        uniq_recordset[num_uniq_records-1].value
+        ) {
+      
+      uniq_recordset[num_uniq_records].value = 
+      *(uint32_t *)(*sorted_recordset_ref[i] + 
+                    grouper_ruleset[0]->field_offset2);
+      uniq_recordset[num_uniq_records].ptr = &sorted_recordset_ref[i];
+      num_uniq_records++;
+    }
+  }
+  
+  uniq_recordset = (struct tree_item_uint32_t *)
+  realloc(uniq_recordset, 
+          num_uniq_records*sizeof(struct tree_item_uint32_t));
+  if (uniq_recordset == NULL)
+    errExit("realloc");
+  
+  uresult->num_uniq_records = num_uniq_records;
+  uresult->uniq_recordset.recordset_uint32_t = uniq_recordset;
+  
+  return uresult;
+}
+
+char*
+get_uniq_record_uint32_t(struct uniq_recordset_result* uniq_result,
+                         int index) {
+  return **uniq_result->uniq_recordset.recordset_uint32_t[index].ptr;
+}      
