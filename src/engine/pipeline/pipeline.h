@@ -73,7 +73,7 @@ struct grouper_rule {
 
 struct aggr_rule {
   size_t                                      field_offset;
-  uint64_t                                    op;
+  struct aggr_op*                             op;
   struct aggr* (*func)(
                        char** const           group_records,
                        char*                  group_aggregation,
@@ -87,7 +87,7 @@ struct gfilter_rule {
   size_t                                      field;
   uint64_t                                    value;
   uint64_t                                    delta;
-  uint64_t                                    op;
+  struct gfilter_op*                          op;
   bool (*func)(
                const struct group* const      group,
                size_t                         field,
@@ -178,7 +178,7 @@ struct merger_rule {
   size_t                                      field1;
   struct branch*                              branch2;
   size_t                                      field2;
-  uint64_t                                    op;
+  struct merger_op*                           op;
   uint64_t                                    delta;
   bool (*func)(
                const struct group* const      group1,
@@ -205,6 +205,13 @@ struct stream {
   char**                                      recordset;
 };
 
+
+
+struct filter_op {
+  uint64_t                                    op;
+  uint64_t                                    field_type;
+};
+
 struct grouper_op {
   uint64_t                                    op;
   uint64_t                                    field1_type;
@@ -212,9 +219,20 @@ struct grouper_op {
   uint64_t                                    optype;
 };
 
-struct filter_op {
+struct aggr_op {
   uint64_t                                    op;
   uint64_t                                    field_type;
+};
+
+struct gfilter_op {
+  uint64_t                                    op;
+  uint64_t                                    field_type;
+};
+
+struct merger_op {
+  uint64_t                                    op;
+  uint64_t                                    field1_type;
+  uint64_t                                    field2_type;
 };
 
 

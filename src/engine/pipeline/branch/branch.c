@@ -112,6 +112,7 @@ branch_start(void *arg) {
     /* free grouper aggregation rules */
     for (int i = 0; i < branch->num_aggr_rules; i++) {
       struct aggr_rule* arule = branch->aggr_ruleset[i];
+      free(arule->op); arule->op = NULL;                  
       free(arule); arule = NULL; branch->aggr_ruleset[i] = NULL;
     }
     free(branch->aggr_ruleset); branch->aggr_ruleset = NULL;    
@@ -150,6 +151,7 @@ branch_start(void *arg) {
     /* free group filter rules */
     for (int i = 0; i < branch->num_gfilter_rules; i++) {
       struct gfilter_rule* gfrule = branch->gfilter_ruleset[i];
+      free(gfrule->op); gfrule->op = NULL;
       free(gfrule); gfrule = NULL; branch->gfilter_ruleset[i] = NULL;
     }    
     free(branch->gfilter_ruleset); branch->gfilter_ruleset = NULL;    

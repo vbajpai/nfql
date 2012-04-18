@@ -792,8 +792,11 @@ source.write("""
   
   /* for loop for the group-aggregation */
   for (int j = 0; j < branch->num_aggr_rules; j++) {
-  struct aggr_rule* aggrule = branch->aggr_ruleset[j];  
-  switch (aggrule->op) {
+  struct aggr_rule* arule = branch->aggr_ruleset[j];  
+  switch (
+          arule->op->op |
+          arule->op->field_type
+         ) {
   """)
 
 for op in 'RULE_STATIC', \
@@ -811,12 +814,12 @@ for op in 'RULE_STATIC', \
   'RULE_OR':     \
     
     for atype in 'RULE_S1_8',  \
-      'RULE_S1_16', \
-      'RULE_S1_32', \
-      'RULE_S1_64': \
+                 'RULE_S1_16', \
+                 'RULE_S1_32', \
+                 'RULE_S1_64': \
         
         source.write("case %s | %s:\n"%(op, atype))
-        source.write("aggrule->func = aggr_%s_%s;\n"
+        source.write("arule->func = aggr_%s_%s;\n"
                      %(aggr_map[op], enum_map[atype]))
         source.write("break;\n")
 
@@ -833,7 +836,10 @@ source.write("""
   /* for loop for the group-filter */
   for (int j = 0; j < branch->num_gfilter_rules; j++) {
   struct gfilter_rule* gfrule = branch->gfilter_ruleset[j];  
-  switch (gfrule->op) {
+  switch (
+           gfrule->op->op |
+           gfrule->op->field_type
+         ) {
   """)
 
 for op in 'RULE_EQ', 'RULE_NE', 'RULE_GT', 'RULE_LT', 'RULE_LE', 'RULE_GE':
@@ -856,7 +862,11 @@ source.write("""
   /* for loop for the merger */
   for (int j = 0; j < fquery->num_merger_rules; j++) {
   struct merger_rule* mrule = fquery->mruleset[j];  
-  switch (mrule->op) {
+  switch (
+           mrule->op->op |
+           mrule->op->field1_type |
+           mrule->op->field2_type          
+         ) {
   """)
 
 for op in 'RULE_EQ', 'RULE_NE', 'RULE_GT', 'RULE_LT', 'RULE_LE', 'RULE_GE', 'RULE_IN':

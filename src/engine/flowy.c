@@ -256,12 +256,12 @@ prepare_flowquery(struct ft_data* const trace,
       if (frule == NULL)
         errExit("calloc");      
       
-      /* TODO: when free'd? */
+      /* free'd after returning from grouper(...) in branch.c */
       struct filter_op* op = calloc(1, sizeof(struct filter_op));
       if (op == NULL)
         errExit("calloc");
       else
-        frule->op = op;
+        frule->op = op; op = NULL;
       
       /* TODO: hardcoded */
       switch (i) {
@@ -272,11 +272,13 @@ prepare_flowquery(struct ft_data* const trace,
           frule->field_offset      =         trace->offsets.srcport;
           break;
       }
+      
       frule->value                 =         json_query->fruleset[0]->off->value;
       frule->delta                 =         json_query->fruleset[0]->delta;
       
       frule->op->op                =         RULE_EQ;
       frule->op->field_type        =         RULE_S1_16;
+      
       frule->func                  =         NULL;      
       
       fruleset[j] = frule; frule = NULL;
@@ -296,12 +298,12 @@ prepare_flowquery(struct ft_data* const trace,
       if (grule == NULL)
         errExit("calloc");
       
-      /* TODO: when free'd? */
+      /* free'd after returning from grouper(...) in branch.c */
       struct grouper_op* op = calloc(1, sizeof(struct grouper_op));
       if (op == NULL)
         errExit("calloc");
       else
-        grule->op = op;
+        grule->op = op; op = NULL;
       
       /* TODO: hardcoded */
       switch (j) {
@@ -341,6 +343,14 @@ prepare_flowquery(struct ft_data* const trace,
       if (arule == NULL)
         errExit("calloc");
       
+      /* free'd after returning from grouper(...) */
+      struct aggr_op* op = calloc(1, sizeof(struct aggr_op));
+      if (op == NULL)
+        errExit("calloc");
+      else
+        arule->op = op; op = NULL;
+
+      
       /* TODO: hardcoded */      
       switch (j) {
         case 0:
@@ -355,17 +365,19 @@ prepare_flowquery(struct ft_data* const trace,
         case 3:
           arule->field_offset    =         trace->offsets.dOctets;
           break;
-      }
+      }      
       switch (j) {
         case 0:
         case 1:
-          arule->op              =         RULE_STATIC | RULE_S1_32;
+          arule->op->op          =         RULE_STATIC;
           break;
         case 2:
         case 3:
-          arule->op              =         RULE_SUM | RULE_S1_32;
+          arule->op->op          =         RULE_SUM;
           break;
       }      
+      arule->op->field_type      =         RULE_S1_32;
+      
       arule->func                =         NULL;
       
       aruleset[j] = arule; arule = NULL;
@@ -384,11 +396,20 @@ prepare_flowquery(struct ft_data* const trace,
       struct gfilter_rule* gfrule = calloc(1, sizeof(struct gfilter_rule));
       if (gfrule == NULL)
         errExit("calloc");
+      
+      /* free'd after returning from groupfilter(...) */
+      struct gfilter_op* op = calloc(1, sizeof(struct gfilter_op));
+      if (op == NULL)
+        errExit("calloc");
+      else
+        gfrule->op = op; op = NULL;
 
       gfrule->field                =         trace->offsets.dPkts;
       gfrule->value                =         200;
       gfrule->delta                =         0;
-      gfrule->op                   =         RULE_GT | RULE_S1_32;
+      
+      gfrule->op->op               =         RULE_GT;
+      gfrule->op->field_type       =         RULE_S1_32;
       gfrule->func                 =         NULL;
       
       gfruleset[j] = gfrule; gfrule = NULL;
@@ -425,6 +446,14 @@ prepare_flowquery(struct ft_data* const trace,
     if (mrule == NULL)
       errExit("calloc");
     
+    /* free'd after returning from merger(...) */
+    struct merger_op* op = calloc(1, sizeof(struct merger_op));
+    if (op == NULL)
+      errExit("calloc");
+    else
+      mrule->op = op; op = NULL;
+
+    
     mrule->branch1               =         fquery->branchset[0];
     mrule->branch2               =         fquery->branchset[1];    
 
@@ -440,7 +469,11 @@ prepare_flowquery(struct ft_data* const trace,
         break;
     }
     mrule->delta                 =         0;
-    mrule->op                    =         RULE_EQ | RULE_S1_32 | RULE_S2_32;
+
+    mrule->op->op                =         RULE_EQ;
+    mrule->op->field1_type       =         RULE_S1_32;
+    mrule->op->field2_type       =         RULE_S2_32;
+    
     mrule->func                  =         NULL;
     
     mruleset[j] = mrule; mrule = NULL;
@@ -727,6 +760,7 @@ main(int argc, char **argv) {
     /* free merger rules */
     for (int i = 0; i < fquery->num_merger_rules; i++) {
       struct merger_rule* mrule = fquery->mruleset[i];
+      free(mrule->op); mrule->op = NULL;
       free(mrule); mrule = NULL; fquery->mruleset[i] = NULL;      
     }
     free(fquery->mruleset); fquery->mruleset = NULL;

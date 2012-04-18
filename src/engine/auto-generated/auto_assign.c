@@ -978,163 +978,166 @@ assign_fptr(struct flowquery *fquery) {
     
     /* for loop for the group-aggregation */
     for (int j = 0; j < branch->num_aggr_rules; j++) {
-      struct aggr_rule* aggrule = branch->aggr_ruleset[j];  
-      switch (aggrule->op) {
+      struct aggr_rule* arule = branch->aggr_ruleset[j];  
+      switch (
+              arule->op->op |
+              arule->op->field_type
+              ) {
         case RULE_STATIC | RULE_S1_8:
-          aggrule->func = aggr_static_uint8_t;
+          arule->func = aggr_static_uint8_t;
           break;
         case RULE_STATIC | RULE_S1_16:
-          aggrule->func = aggr_static_uint16_t;
+          arule->func = aggr_static_uint16_t;
           break;
         case RULE_STATIC | RULE_S1_32:
-          aggrule->func = aggr_static_uint32_t;
+          arule->func = aggr_static_uint32_t;
           break;
         case RULE_STATIC | RULE_S1_64:
-          aggrule->func = aggr_static_uint64_t;
+          arule->func = aggr_static_uint64_t;
           break;
         case RULE_COUNT | RULE_S1_8:
-          aggrule->func = aggr_count_uint8_t;
+          arule->func = aggr_count_uint8_t;
           break;
         case RULE_COUNT | RULE_S1_16:
-          aggrule->func = aggr_count_uint16_t;
+          arule->func = aggr_count_uint16_t;
           break;
         case RULE_COUNT | RULE_S1_32:
-          aggrule->func = aggr_count_uint32_t;
+          arule->func = aggr_count_uint32_t;
           break;
         case RULE_COUNT | RULE_S1_64:
-          aggrule->func = aggr_count_uint64_t;
+          arule->func = aggr_count_uint64_t;
           break;
         case RULE_UNION | RULE_S1_8:
-          aggrule->func = aggr_union_uint8_t;
+          arule->func = aggr_union_uint8_t;
           break;
         case RULE_UNION | RULE_S1_16:
-          aggrule->func = aggr_union_uint16_t;
+          arule->func = aggr_union_uint16_t;
           break;
         case RULE_UNION | RULE_S1_32:
-          aggrule->func = aggr_union_uint32_t;
+          arule->func = aggr_union_uint32_t;
           break;
         case RULE_UNION | RULE_S1_64:
-          aggrule->func = aggr_union_uint64_t;
+          arule->func = aggr_union_uint64_t;
           break;
         case RULE_MIN | RULE_S1_8:
-          aggrule->func = aggr_min_uint8_t;
+          arule->func = aggr_min_uint8_t;
           break;
         case RULE_MIN | RULE_S1_16:
-          aggrule->func = aggr_min_uint16_t;
+          arule->func = aggr_min_uint16_t;
           break;
         case RULE_MIN | RULE_S1_32:
-          aggrule->func = aggr_min_uint32_t;
+          arule->func = aggr_min_uint32_t;
           break;
         case RULE_MIN | RULE_S1_64:
-          aggrule->func = aggr_min_uint64_t;
+          arule->func = aggr_min_uint64_t;
           break;
         case RULE_MAX | RULE_S1_8:
-          aggrule->func = aggr_max_uint8_t;
+          arule->func = aggr_max_uint8_t;
           break;
         case RULE_MAX | RULE_S1_16:
-          aggrule->func = aggr_max_uint16_t;
+          arule->func = aggr_max_uint16_t;
           break;
         case RULE_MAX | RULE_S1_32:
-          aggrule->func = aggr_max_uint32_t;
+          arule->func = aggr_max_uint32_t;
           break;
         case RULE_MAX | RULE_S1_64:
-          aggrule->func = aggr_max_uint64_t;
+          arule->func = aggr_max_uint64_t;
           break;
         case RULE_MEDIAN | RULE_S1_8:
-          aggrule->func = aggr_median_uint8_t;
+          arule->func = aggr_median_uint8_t;
           break;
         case RULE_MEDIAN | RULE_S1_16:
-          aggrule->func = aggr_median_uint16_t;
+          arule->func = aggr_median_uint16_t;
           break;
         case RULE_MEDIAN | RULE_S1_32:
-          aggrule->func = aggr_median_uint32_t;
+          arule->func = aggr_median_uint32_t;
           break;
         case RULE_MEDIAN | RULE_S1_64:
-          aggrule->func = aggr_median_uint64_t;
+          arule->func = aggr_median_uint64_t;
           break;
         case RULE_MEAN | RULE_S1_8:
-          aggrule->func = aggr_mean_uint8_t;
+          arule->func = aggr_mean_uint8_t;
           break;
         case RULE_MEAN | RULE_S1_16:
-          aggrule->func = aggr_mean_uint16_t;
+          arule->func = aggr_mean_uint16_t;
           break;
         case RULE_MEAN | RULE_S1_32:
-          aggrule->func = aggr_mean_uint32_t;
+          arule->func = aggr_mean_uint32_t;
           break;
         case RULE_MEAN | RULE_S1_64:
-          aggrule->func = aggr_mean_uint64_t;
+          arule->func = aggr_mean_uint64_t;
           break;
         case RULE_STDDEV | RULE_S1_8:
-          aggrule->func = aggr_stddev_uint8_t;
+          arule->func = aggr_stddev_uint8_t;
           break;
         case RULE_STDDEV | RULE_S1_16:
-          aggrule->func = aggr_stddev_uint16_t;
+          arule->func = aggr_stddev_uint16_t;
           break;
         case RULE_STDDEV | RULE_S1_32:
-          aggrule->func = aggr_stddev_uint32_t;
+          arule->func = aggr_stddev_uint32_t;
           break;
         case RULE_STDDEV | RULE_S1_64:
-          aggrule->func = aggr_stddev_uint64_t;
+          arule->func = aggr_stddev_uint64_t;
           break;
         case RULE_XOR | RULE_S1_8:
-          aggrule->func = aggr_xor_uint8_t;
+          arule->func = aggr_xor_uint8_t;
           break;
         case RULE_XOR | RULE_S1_16:
-          aggrule->func = aggr_xor_uint16_t;
+          arule->func = aggr_xor_uint16_t;
           break;
         case RULE_XOR | RULE_S1_32:
-          aggrule->func = aggr_xor_uint32_t;
+          arule->func = aggr_xor_uint32_t;
           break;
         case RULE_XOR | RULE_S1_64:
-          aggrule->func = aggr_xor_uint64_t;
+          arule->func = aggr_xor_uint64_t;
           break;
         case RULE_SUM | RULE_S1_8:
-          aggrule->func = aggr_sum_uint8_t;
+          arule->func = aggr_sum_uint8_t;
           break;
         case RULE_SUM | RULE_S1_16:
-          aggrule->func = aggr_sum_uint16_t;
+          arule->func = aggr_sum_uint16_t;
           break;
         case RULE_SUM | RULE_S1_32:
-          aggrule->func = aggr_sum_uint32_t;
+          arule->func = aggr_sum_uint32_t;
           break;
         case RULE_SUM | RULE_S1_64:
-          aggrule->func = aggr_sum_uint64_t;
+          arule->func = aggr_sum_uint64_t;
           break;
         case RULE_PROD | RULE_S1_8:
-          aggrule->func = aggr_prod_uint8_t;
+          arule->func = aggr_prod_uint8_t;
           break;
         case RULE_PROD | RULE_S1_16:
-          aggrule->func = aggr_prod_uint16_t;
+          arule->func = aggr_prod_uint16_t;
           break;
         case RULE_PROD | RULE_S1_32:
-          aggrule->func = aggr_prod_uint32_t;
+          arule->func = aggr_prod_uint32_t;
           break;
         case RULE_PROD | RULE_S1_64:
-          aggrule->func = aggr_prod_uint64_t;
+          arule->func = aggr_prod_uint64_t;
           break;
         case RULE_AND | RULE_S1_8:
-          aggrule->func = aggr_and_uint8_t;
+          arule->func = aggr_and_uint8_t;
           break;
         case RULE_AND | RULE_S1_16:
-          aggrule->func = aggr_and_uint16_t;
+          arule->func = aggr_and_uint16_t;
           break;
         case RULE_AND | RULE_S1_32:
-          aggrule->func = aggr_and_uint32_t;
+          arule->func = aggr_and_uint32_t;
           break;
         case RULE_AND | RULE_S1_64:
-          aggrule->func = aggr_and_uint64_t;
+          arule->func = aggr_and_uint64_t;
           break;
         case RULE_OR | RULE_S1_8:
-          aggrule->func = aggr_or_uint8_t;
+          arule->func = aggr_or_uint8_t;
           break;
         case RULE_OR | RULE_S1_16:
-          aggrule->func = aggr_or_uint16_t;
+          arule->func = aggr_or_uint16_t;
           break;
         case RULE_OR | RULE_S1_32:
-          aggrule->func = aggr_or_uint32_t;
+          arule->func = aggr_or_uint32_t;
           break;
         case RULE_OR | RULE_S1_64:
-          aggrule->func = aggr_or_uint64_t;
+          arule->func = aggr_or_uint64_t;
           break;
           
       }
@@ -1144,7 +1147,10 @@ assign_fptr(struct flowquery *fquery) {
     /* for loop for the group-filter */
     for (int j = 0; j < branch->num_gfilter_rules; j++) {
       struct gfilter_rule* gfrule = branch->gfilter_ruleset[j];  
-      switch (gfrule->op) {
+      switch (
+              gfrule->op->op |
+              gfrule->op->field_type
+              ) {
         case RULE_EQ | RULE_S1_8:
           gfrule->func = gfilter_eq_uint8_t;
           break;
@@ -1226,7 +1232,11 @@ assign_fptr(struct flowquery *fquery) {
   /* for loop for the merger */
   for (int j = 0; j < fquery->num_merger_rules; j++) {
     struct merger_rule* mrule = fquery->mruleset[j];  
-    switch (mrule->op) {
+    switch (
+            mrule->op->op |
+            mrule->op->field1_type |
+            mrule->op->field2_type          
+            ) {
       case RULE_EQ | RULE_S1_8 | RULE_S2_8:
         mrule->func = merger_eq_uint8_t_uint8_t;
         break;
