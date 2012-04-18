@@ -95,7 +95,8 @@ branch_start(void *arg) {
     
     /* free filter rules */
     for (int i = 0; i < branch->num_filter_rules; i++) {
-      struct filter_rule* frule = branch->filter_ruleset[i];
+      struct filter_rule* frule = branch->filter_ruleset[i];      
+      free(frule->op); frule->op = NULL;      
       free(frule); frule = NULL; branch->filter_ruleset[i] = NULL;      
     }
     free(branch->filter_ruleset); branch->filter_ruleset = NULL;
@@ -103,6 +104,7 @@ branch_start(void *arg) {
     /* free grouper rules */
     for (int i = 0; i < branch->num_grouper_rules; i++) {
       struct grouper_rule* grule = branch->grouper_ruleset[i];
+      free(grule->op); grule->op = NULL;            
       free(grule); grule = NULL; branch->grouper_ruleset[i] = NULL;
     }
     free(branch->grouper_ruleset); branch->grouper_ruleset = NULL;

@@ -79,7 +79,8 @@ grouper_aggregations(
   for (int j = 0; j < num_filter_rules; j++) {
     
     size_t field_offset = filter_ruleset[j]->field_offset;
-    aggr_function = get_aggr_fptr(ifgrouper, filter_ruleset[j]->op); 
+    aggr_function = get_aggr_fptr(ifgrouper, 
+                                  filter_ruleset[j]->op->field_type); 
     if(aggr_function == NULL)
       errExit("get_aggr_fptr(...) returned NULL");
     
@@ -107,7 +108,9 @@ grouper_aggregations(
     size_t goffset_1 = grouper_ruleset[j]->field_offset1;
     size_t goffset_2 = grouper_ruleset[j]->field_offset2;
     
-    aggr_function = get_aggr_fptr(ifgrouper, grouper_ruleset[j]->op);
+    aggr_function = get_aggr_fptr(ifgrouper, 
+                                  grouper_ruleset[j]->op->field1_type);
+
     if(aggr_function == NULL)
       errExit("get_aggr_fptr(...) returned NULL");
     
@@ -278,10 +281,7 @@ grouper(
         const struct filter_result* const fresult,
         int rec_size
         ) {
-  
-  /* temporary */
-  uint64_t op = RULE_S2_32;  
-  
+ 
   /* free'd just after returning from ungrouper(...) */
   struct grouper_result* gresult = calloc(1, sizeof(struct grouper_result));
   if (gresult == NULL)
@@ -321,7 +321,10 @@ grouper(
   }
   else {
     
-    struct grouper_type* gtype = get_gtype(op);
+    /* get uintX_t specific function pointers, given the type of the 
+     * RHS field of the first grouper rule 
+     */
+    struct grouper_type* gtype = get_gtype(grouper_ruleset[0]->op->field2_type);
     if (gtype == NULL)
       errExit("get_type(...) returned NULL");
     

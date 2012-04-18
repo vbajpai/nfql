@@ -248,12 +248,20 @@ prepare_flowquery(struct ft_data* const trace,
                                             sizeof(struct filter_rule*));
     if (fruleset == NULL)
       errExit("calloc");
+    
     for (int j = 0; j < branch->num_filter_rules; j++) {
 
       /* free'd after returning from grouper(...) in branch.c */
       struct filter_rule* frule = calloc(1, sizeof(struct filter_rule));
       if (frule == NULL)
         errExit("calloc");      
+      
+      /* TODO: when free'd? */
+      struct filter_op* op = calloc(1, sizeof(struct filter_op));
+      if (op == NULL)
+        errExit("calloc");
+      else
+        frule->op = op;
       
       /* TODO: hardcoded */
       switch (i) {
@@ -266,7 +274,9 @@ prepare_flowquery(struct ft_data* const trace,
       }
       frule->value                 =         json_query->fruleset[0]->off->value;
       frule->delta                 =         json_query->fruleset[0]->delta;
-      frule->op                    =         RULE_EQ | RULE_S1_16;
+      
+      frule->op->op                =         RULE_EQ;
+      frule->op->field_type        =         RULE_S1_16;
       frule->func                  =         NULL;      
       
       fruleset[j] = frule; frule = NULL;
@@ -286,6 +296,13 @@ prepare_flowquery(struct ft_data* const trace,
       if (grule == NULL)
         errExit("calloc");
       
+      /* TODO: when free'd? */
+      struct grouper_op* op = calloc(1, sizeof(struct grouper_op));
+      if (op == NULL)
+        errExit("calloc");
+      else
+        grule->op = op;
+      
       /* TODO: hardcoded */
       switch (j) {
         case 0:
@@ -296,10 +313,15 @@ prepare_flowquery(struct ft_data* const trace,
           grule->field_offset1     =        trace->offsets.dstaddr;      
           grule->field_offset2     =        trace->offsets.dstaddr;         
           break;
-      }      
-      grule->delta                 =         0;
-      grule->op                    =         RULE_EQ | RULE_S1_32 | 
-                                             RULE_S2_32 | RULE_NO;
+      }
+      
+      grule->delta                 =        0;
+      
+      grule->op->op                =        RULE_EQ;
+      grule->op->field1_type       =        RULE_S1_32;
+      grule->op->field2_type       =        RULE_S2_32;
+      grule->op->optype            =        RULE_NO;
+      
       grule->func                  =         NULL;
       
       gruleset[j] = grule; grule = NULL;

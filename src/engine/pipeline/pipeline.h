@@ -48,7 +48,7 @@ struct filter_rule {
   size_t                                      field_offset;
   uint64_t                                    value;
   uint64_t                                    delta;
-  uint64_t                                    op;
+  struct filter_op*                           op;
   bool (*func)(
                const char* const              record,
                size_t                         field_offset,
@@ -61,7 +61,7 @@ struct grouper_rule {
   size_t                                      field_offset1;
   size_t                                      field_offset2;
   uint64_t                                    delta;
-  uint64_t                                    op;
+  struct grouper_op*                          op;
   bool (*func)(
                const struct group* const      group,
                size_t                         field_offset1,
@@ -205,8 +205,17 @@ struct stream {
   char**                                      recordset;
 };
 
+struct grouper_op {
+  uint64_t                                    op;
+  uint64_t                                    field1_type;
+  uint64_t                                    field2_type;
+  uint64_t                                    optype;
+};
 
-
+struct filter_op {
+  uint64_t                                    op;
+  uint64_t                                    field_type;
+};
 
 
 /*

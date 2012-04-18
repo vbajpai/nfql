@@ -15,7 +15,10 @@ assign_fptr(struct flowquery *fquery) {
     /* for loop for the filter */
     for (int j = 0; j < branch->num_filter_rules; j++) {
       struct filter_rule* frule = branch->filter_ruleset[j];          
-      switch (frule->op) {
+      switch ( 
+              frule->op->op | 
+              frule->op->field_type
+              ) {
           
         case RULE_EQ | RULE_S1_8:
           frule->func = filter_eq_uint8_t;
@@ -97,7 +100,13 @@ assign_fptr(struct flowquery *fquery) {
     /* for loop for the grouper */
     for (int j = 0; j < branch->num_grouper_rules; j++) {
       struct grouper_rule* grule = branch->grouper_ruleset[j];  
-      switch (grule->op) {
+      switch (
+              grule->op->op | 
+              grule->op->field1_type | 
+              grule->op->field2_type | 
+              grule->op->optype
+              ) {
+          
         case RULE_EQ | RULE_S1_8 | RULE_S2_8 | RULE_ABS:
           grule->func = grouper_eq_uint8_t_uint8_t_abs;
           break;
@@ -1614,36 +1623,16 @@ struct aggr* (*get_aggr_fptr(bool ifgrouper,
   if(!ifgrouper) {
     /* cases for the filter-stage */
     switch (op) {
-      case RULE_EQ | RULE_S1_8:
-      case RULE_NE | RULE_S1_8:
-      case RULE_GT | RULE_S1_8:
-      case RULE_LT | RULE_S1_8:
-      case RULE_LE | RULE_S1_8:
-      case RULE_GE | RULE_S1_8:
+      case RULE_S1_8:
         aggr_function = aggr_static_uint8_t;
         break;
-      case RULE_EQ | RULE_S1_16:
-      case RULE_NE | RULE_S1_16:
-      case RULE_GT | RULE_S1_16:
-      case RULE_LT | RULE_S1_16:
-      case RULE_LE | RULE_S1_16:
-      case RULE_GE | RULE_S1_16:
+      case RULE_S1_16:
         aggr_function = aggr_static_uint16_t;
         break;
-      case RULE_EQ | RULE_S1_32:
-      case RULE_NE | RULE_S1_32:
-      case RULE_GT | RULE_S1_32:
-      case RULE_LT | RULE_S1_32:
-      case RULE_LE | RULE_S1_32:
-      case RULE_GE | RULE_S1_32:
+      case RULE_S1_32:
         aggr_function = aggr_static_uint32_t;
         break;
-      case RULE_EQ | RULE_S1_64:
-      case RULE_NE | RULE_S1_64:
-      case RULE_GT | RULE_S1_64:
-      case RULE_LT | RULE_S1_64:
-      case RULE_LE | RULE_S1_64:
-      case RULE_GE | RULE_S1_64:
+      case RULE_S1_64:
         aggr_function = aggr_static_uint64_t;
         break;
     }
@@ -1651,300 +1640,16 @@ struct aggr* (*get_aggr_fptr(bool ifgrouper,
   else {
     /* cases for the grouper-stage */
     switch (op) {
-      case RULE_EQ | RULE_S1_8 | RULE_S2_8 | RULE_ABS:
-      case RULE_EQ | RULE_S1_8 | RULE_S2_8 | RULE_REL:
-      case RULE_EQ | RULE_S1_8 | RULE_S2_8 | RULE_NO:
-      case RULE_EQ | RULE_S1_8 | RULE_S2_16 | RULE_ABS:
-      case RULE_EQ | RULE_S1_8 | RULE_S2_16 | RULE_REL:
-      case RULE_EQ | RULE_S1_8 | RULE_S2_16 | RULE_NO:
-      case RULE_EQ | RULE_S1_8 | RULE_S2_32 | RULE_ABS:
-      case RULE_EQ | RULE_S1_8 | RULE_S2_32 | RULE_REL:
-      case RULE_EQ | RULE_S1_8 | RULE_S2_32 | RULE_NO:
-      case RULE_EQ | RULE_S1_8 | RULE_S2_64 | RULE_ABS:
-      case RULE_EQ | RULE_S1_8 | RULE_S2_64 | RULE_REL:
-      case RULE_EQ | RULE_S1_8 | RULE_S2_64 | RULE_NO:
-      case RULE_NE | RULE_S1_8 | RULE_S2_8 | RULE_ABS:
-      case RULE_NE | RULE_S1_8 | RULE_S2_8 | RULE_REL:
-      case RULE_NE | RULE_S1_8 | RULE_S2_8 | RULE_NO:
-      case RULE_NE | RULE_S1_8 | RULE_S2_16 | RULE_ABS:
-      case RULE_NE | RULE_S1_8 | RULE_S2_16 | RULE_REL:
-      case RULE_NE | RULE_S1_8 | RULE_S2_16 | RULE_NO:
-      case RULE_NE | RULE_S1_8 | RULE_S2_32 | RULE_ABS:
-      case RULE_NE | RULE_S1_8 | RULE_S2_32 | RULE_REL:
-      case RULE_NE | RULE_S1_8 | RULE_S2_32 | RULE_NO:
-      case RULE_NE | RULE_S1_8 | RULE_S2_64 | RULE_ABS:
-      case RULE_NE | RULE_S1_8 | RULE_S2_64 | RULE_REL:
-      case RULE_NE | RULE_S1_8 | RULE_S2_64 | RULE_NO:
-      case RULE_GT | RULE_S1_8 | RULE_S2_8 | RULE_ABS:
-      case RULE_GT | RULE_S1_8 | RULE_S2_8 | RULE_REL:
-      case RULE_GT | RULE_S1_8 | RULE_S2_8 | RULE_NO:
-      case RULE_GT | RULE_S1_8 | RULE_S2_16 | RULE_ABS:
-      case RULE_GT | RULE_S1_8 | RULE_S2_16 | RULE_REL:
-      case RULE_GT | RULE_S1_8 | RULE_S2_16 | RULE_NO:
-      case RULE_GT | RULE_S1_8 | RULE_S2_32 | RULE_ABS:
-      case RULE_GT | RULE_S1_8 | RULE_S2_32 | RULE_REL:
-      case RULE_GT | RULE_S1_8 | RULE_S2_32 | RULE_NO:
-      case RULE_GT | RULE_S1_8 | RULE_S2_64 | RULE_ABS:
-      case RULE_GT | RULE_S1_8 | RULE_S2_64 | RULE_REL:
-      case RULE_GT | RULE_S1_8 | RULE_S2_64 | RULE_NO:
-      case RULE_LT | RULE_S1_8 | RULE_S2_8 | RULE_ABS:
-      case RULE_LT | RULE_S1_8 | RULE_S2_8 | RULE_REL:
-      case RULE_LT | RULE_S1_8 | RULE_S2_8 | RULE_NO:
-      case RULE_LT | RULE_S1_8 | RULE_S2_16 | RULE_ABS:
-      case RULE_LT | RULE_S1_8 | RULE_S2_16 | RULE_REL:
-      case RULE_LT | RULE_S1_8 | RULE_S2_16 | RULE_NO:
-      case RULE_LT | RULE_S1_8 | RULE_S2_32 | RULE_ABS:
-      case RULE_LT | RULE_S1_8 | RULE_S2_32 | RULE_REL:
-      case RULE_LT | RULE_S1_8 | RULE_S2_32 | RULE_NO:
-      case RULE_LT | RULE_S1_8 | RULE_S2_64 | RULE_ABS:
-      case RULE_LT | RULE_S1_8 | RULE_S2_64 | RULE_REL:
-      case RULE_LT | RULE_S1_8 | RULE_S2_64 | RULE_NO:
-      case RULE_LE | RULE_S1_8 | RULE_S2_8 | RULE_ABS:
-      case RULE_LE | RULE_S1_8 | RULE_S2_8 | RULE_REL:
-      case RULE_LE | RULE_S1_8 | RULE_S2_8 | RULE_NO:
-      case RULE_LE | RULE_S1_8 | RULE_S2_16 | RULE_ABS:
-      case RULE_LE | RULE_S1_8 | RULE_S2_16 | RULE_REL:
-      case RULE_LE | RULE_S1_8 | RULE_S2_16 | RULE_NO:
-      case RULE_LE | RULE_S1_8 | RULE_S2_32 | RULE_ABS:
-      case RULE_LE | RULE_S1_8 | RULE_S2_32 | RULE_REL:
-      case RULE_LE | RULE_S1_8 | RULE_S2_32 | RULE_NO:
-      case RULE_LE | RULE_S1_8 | RULE_S2_64 | RULE_ABS:
-      case RULE_LE | RULE_S1_8 | RULE_S2_64 | RULE_REL:
-      case RULE_LE | RULE_S1_8 | RULE_S2_64 | RULE_NO:
-      case RULE_GE | RULE_S1_8 | RULE_S2_8 | RULE_ABS:
-      case RULE_GE | RULE_S1_8 | RULE_S2_8 | RULE_REL:
-      case RULE_GE | RULE_S1_8 | RULE_S2_8 | RULE_NO:
-      case RULE_GE | RULE_S1_8 | RULE_S2_16 | RULE_ABS:
-      case RULE_GE | RULE_S1_8 | RULE_S2_16 | RULE_REL:
-      case RULE_GE | RULE_S1_8 | RULE_S2_16 | RULE_NO:
-      case RULE_GE | RULE_S1_8 | RULE_S2_32 | RULE_ABS:
-      case RULE_GE | RULE_S1_8 | RULE_S2_32 | RULE_REL:
-      case RULE_GE | RULE_S1_8 | RULE_S2_32 | RULE_NO:
-      case RULE_GE | RULE_S1_8 | RULE_S2_64 | RULE_ABS:
-      case RULE_GE | RULE_S1_8 | RULE_S2_64 | RULE_REL:
-      case RULE_GE | RULE_S1_8 | RULE_S2_64 | RULE_NO:
+      case RULE_S1_8:
         aggr_function = aggr_static_uint8_t;
         break;
-      case RULE_EQ | RULE_S1_16 | RULE_S2_8 | RULE_ABS:
-      case RULE_EQ | RULE_S1_16 | RULE_S2_8 | RULE_REL:
-      case RULE_EQ | RULE_S1_16 | RULE_S2_8 | RULE_NO:
-      case RULE_EQ | RULE_S1_16 | RULE_S2_16 | RULE_ABS:
-      case RULE_EQ | RULE_S1_16 | RULE_S2_16 | RULE_REL:
-      case RULE_EQ | RULE_S1_16 | RULE_S2_16 | RULE_NO:
-      case RULE_EQ | RULE_S1_16 | RULE_S2_32 | RULE_ABS:
-      case RULE_EQ | RULE_S1_16 | RULE_S2_32 | RULE_REL:
-      case RULE_EQ | RULE_S1_16 | RULE_S2_32 | RULE_NO:
-      case RULE_EQ | RULE_S1_16 | RULE_S2_64 | RULE_ABS:
-      case RULE_EQ | RULE_S1_16 | RULE_S2_64 | RULE_REL:
-      case RULE_EQ | RULE_S1_16 | RULE_S2_64 | RULE_NO:
-      case RULE_NE | RULE_S1_16 | RULE_S2_8 | RULE_ABS:
-      case RULE_NE | RULE_S1_16 | RULE_S2_8 | RULE_REL:
-      case RULE_NE | RULE_S1_16 | RULE_S2_8 | RULE_NO:
-      case RULE_NE | RULE_S1_16 | RULE_S2_16 | RULE_ABS:
-      case RULE_NE | RULE_S1_16 | RULE_S2_16 | RULE_REL:
-      case RULE_NE | RULE_S1_16 | RULE_S2_16 | RULE_NO:
-      case RULE_NE | RULE_S1_16 | RULE_S2_32 | RULE_ABS:
-      case RULE_NE | RULE_S1_16 | RULE_S2_32 | RULE_REL:
-      case RULE_NE | RULE_S1_16 | RULE_S2_32 | RULE_NO:
-      case RULE_NE | RULE_S1_16 | RULE_S2_64 | RULE_ABS:
-      case RULE_NE | RULE_S1_16 | RULE_S2_64 | RULE_REL:
-      case RULE_NE | RULE_S1_16 | RULE_S2_64 | RULE_NO:
-      case RULE_GT | RULE_S1_16 | RULE_S2_8 | RULE_ABS:
-      case RULE_GT | RULE_S1_16 | RULE_S2_8 | RULE_REL:
-      case RULE_GT | RULE_S1_16 | RULE_S2_8 | RULE_NO:
-      case RULE_GT | RULE_S1_16 | RULE_S2_16 | RULE_ABS:
-      case RULE_GT | RULE_S1_16 | RULE_S2_16 | RULE_REL:
-      case RULE_GT | RULE_S1_16 | RULE_S2_16 | RULE_NO:
-      case RULE_GT | RULE_S1_16 | RULE_S2_32 | RULE_ABS:
-      case RULE_GT | RULE_S1_16 | RULE_S2_32 | RULE_REL:
-      case RULE_GT | RULE_S1_16 | RULE_S2_32 | RULE_NO:
-      case RULE_GT | RULE_S1_16 | RULE_S2_64 | RULE_ABS:
-      case RULE_GT | RULE_S1_16 | RULE_S2_64 | RULE_REL:
-      case RULE_GT | RULE_S1_16 | RULE_S2_64 | RULE_NO:
-      case RULE_LT | RULE_S1_16 | RULE_S2_8 | RULE_ABS:
-      case RULE_LT | RULE_S1_16 | RULE_S2_8 | RULE_REL:
-      case RULE_LT | RULE_S1_16 | RULE_S2_8 | RULE_NO:
-      case RULE_LT | RULE_S1_16 | RULE_S2_16 | RULE_ABS:
-      case RULE_LT | RULE_S1_16 | RULE_S2_16 | RULE_REL:
-      case RULE_LT | RULE_S1_16 | RULE_S2_16 | RULE_NO:
-      case RULE_LT | RULE_S1_16 | RULE_S2_32 | RULE_ABS:
-      case RULE_LT | RULE_S1_16 | RULE_S2_32 | RULE_REL:
-      case RULE_LT | RULE_S1_16 | RULE_S2_32 | RULE_NO:
-      case RULE_LT | RULE_S1_16 | RULE_S2_64 | RULE_ABS:
-      case RULE_LT | RULE_S1_16 | RULE_S2_64 | RULE_REL:
-      case RULE_LT | RULE_S1_16 | RULE_S2_64 | RULE_NO:
-      case RULE_LE | RULE_S1_16 | RULE_S2_8 | RULE_ABS:
-      case RULE_LE | RULE_S1_16 | RULE_S2_8 | RULE_REL:
-      case RULE_LE | RULE_S1_16 | RULE_S2_8 | RULE_NO:
-      case RULE_LE | RULE_S1_16 | RULE_S2_16 | RULE_ABS:
-      case RULE_LE | RULE_S1_16 | RULE_S2_16 | RULE_REL:
-      case RULE_LE | RULE_S1_16 | RULE_S2_16 | RULE_NO:
-      case RULE_LE | RULE_S1_16 | RULE_S2_32 | RULE_ABS:
-      case RULE_LE | RULE_S1_16 | RULE_S2_32 | RULE_REL:
-      case RULE_LE | RULE_S1_16 | RULE_S2_32 | RULE_NO:
-      case RULE_LE | RULE_S1_16 | RULE_S2_64 | RULE_ABS:
-      case RULE_LE | RULE_S1_16 | RULE_S2_64 | RULE_REL:
-      case RULE_LE | RULE_S1_16 | RULE_S2_64 | RULE_NO:
-      case RULE_GE | RULE_S1_16 | RULE_S2_8 | RULE_ABS:
-      case RULE_GE | RULE_S1_16 | RULE_S2_8 | RULE_REL:
-      case RULE_GE | RULE_S1_16 | RULE_S2_8 | RULE_NO:
-      case RULE_GE | RULE_S1_16 | RULE_S2_16 | RULE_ABS:
-      case RULE_GE | RULE_S1_16 | RULE_S2_16 | RULE_REL:
-      case RULE_GE | RULE_S1_16 | RULE_S2_16 | RULE_NO:
-      case RULE_GE | RULE_S1_16 | RULE_S2_32 | RULE_ABS:
-      case RULE_GE | RULE_S1_16 | RULE_S2_32 | RULE_REL:
-      case RULE_GE | RULE_S1_16 | RULE_S2_32 | RULE_NO:
-      case RULE_GE | RULE_S1_16 | RULE_S2_64 | RULE_ABS:
-      case RULE_GE | RULE_S1_16 | RULE_S2_64 | RULE_REL:
-      case RULE_GE | RULE_S1_16 | RULE_S2_64 | RULE_NO:
+      case RULE_S1_16:
         aggr_function = aggr_static_uint16_t;
         break;
-      case RULE_EQ | RULE_S1_32 | RULE_S2_8 | RULE_ABS:
-      case RULE_EQ | RULE_S1_32 | RULE_S2_8 | RULE_REL:
-      case RULE_EQ | RULE_S1_32 | RULE_S2_8 | RULE_NO:
-      case RULE_EQ | RULE_S1_32 | RULE_S2_16 | RULE_ABS:
-      case RULE_EQ | RULE_S1_32 | RULE_S2_16 | RULE_REL:
-      case RULE_EQ | RULE_S1_32 | RULE_S2_16 | RULE_NO:
-      case RULE_EQ | RULE_S1_32 | RULE_S2_32 | RULE_ABS:
-      case RULE_EQ | RULE_S1_32 | RULE_S2_32 | RULE_REL:
-      case RULE_EQ | RULE_S1_32 | RULE_S2_32 | RULE_NO:
-      case RULE_EQ | RULE_S1_32 | RULE_S2_64 | RULE_ABS:
-      case RULE_EQ | RULE_S1_32 | RULE_S2_64 | RULE_REL:
-      case RULE_EQ | RULE_S1_32 | RULE_S2_64 | RULE_NO:
-      case RULE_NE | RULE_S1_32 | RULE_S2_8 | RULE_ABS:
-      case RULE_NE | RULE_S1_32 | RULE_S2_8 | RULE_REL:
-      case RULE_NE | RULE_S1_32 | RULE_S2_8 | RULE_NO:
-      case RULE_NE | RULE_S1_32 | RULE_S2_16 | RULE_ABS:
-      case RULE_NE | RULE_S1_32 | RULE_S2_16 | RULE_REL:
-      case RULE_NE | RULE_S1_32 | RULE_S2_16 | RULE_NO:
-      case RULE_NE | RULE_S1_32 | RULE_S2_32 | RULE_ABS:
-      case RULE_NE | RULE_S1_32 | RULE_S2_32 | RULE_REL:
-      case RULE_NE | RULE_S1_32 | RULE_S2_32 | RULE_NO:
-      case RULE_NE | RULE_S1_32 | RULE_S2_64 | RULE_ABS:
-      case RULE_NE | RULE_S1_32 | RULE_S2_64 | RULE_REL:
-      case RULE_NE | RULE_S1_32 | RULE_S2_64 | RULE_NO:
-      case RULE_GT | RULE_S1_32 | RULE_S2_8 | RULE_ABS:
-      case RULE_GT | RULE_S1_32 | RULE_S2_8 | RULE_REL:
-      case RULE_GT | RULE_S1_32 | RULE_S2_8 | RULE_NO:
-      case RULE_GT | RULE_S1_32 | RULE_S2_16 | RULE_ABS:
-      case RULE_GT | RULE_S1_32 | RULE_S2_16 | RULE_REL:
-      case RULE_GT | RULE_S1_32 | RULE_S2_16 | RULE_NO:
-      case RULE_GT | RULE_S1_32 | RULE_S2_32 | RULE_ABS:
-      case RULE_GT | RULE_S1_32 | RULE_S2_32 | RULE_REL:
-      case RULE_GT | RULE_S1_32 | RULE_S2_32 | RULE_NO:
-      case RULE_GT | RULE_S1_32 | RULE_S2_64 | RULE_ABS:
-      case RULE_GT | RULE_S1_32 | RULE_S2_64 | RULE_REL:
-      case RULE_GT | RULE_S1_32 | RULE_S2_64 | RULE_NO:
-      case RULE_LT | RULE_S1_32 | RULE_S2_8 | RULE_ABS:
-      case RULE_LT | RULE_S1_32 | RULE_S2_8 | RULE_REL:
-      case RULE_LT | RULE_S1_32 | RULE_S2_8 | RULE_NO:
-      case RULE_LT | RULE_S1_32 | RULE_S2_16 | RULE_ABS:
-      case RULE_LT | RULE_S1_32 | RULE_S2_16 | RULE_REL:
-      case RULE_LT | RULE_S1_32 | RULE_S2_16 | RULE_NO:
-      case RULE_LT | RULE_S1_32 | RULE_S2_32 | RULE_ABS:
-      case RULE_LT | RULE_S1_32 | RULE_S2_32 | RULE_REL:
-      case RULE_LT | RULE_S1_32 | RULE_S2_32 | RULE_NO:
-      case RULE_LT | RULE_S1_32 | RULE_S2_64 | RULE_ABS:
-      case RULE_LT | RULE_S1_32 | RULE_S2_64 | RULE_REL:
-      case RULE_LT | RULE_S1_32 | RULE_S2_64 | RULE_NO:
-      case RULE_LE | RULE_S1_32 | RULE_S2_8 | RULE_ABS:
-      case RULE_LE | RULE_S1_32 | RULE_S2_8 | RULE_REL:
-      case RULE_LE | RULE_S1_32 | RULE_S2_8 | RULE_NO:
-      case RULE_LE | RULE_S1_32 | RULE_S2_16 | RULE_ABS:
-      case RULE_LE | RULE_S1_32 | RULE_S2_16 | RULE_REL:
-      case RULE_LE | RULE_S1_32 | RULE_S2_16 | RULE_NO:
-      case RULE_LE | RULE_S1_32 | RULE_S2_32 | RULE_ABS:
-      case RULE_LE | RULE_S1_32 | RULE_S2_32 | RULE_REL:
-      case RULE_LE | RULE_S1_32 | RULE_S2_32 | RULE_NO:
-      case RULE_LE | RULE_S1_32 | RULE_S2_64 | RULE_ABS:
-      case RULE_LE | RULE_S1_32 | RULE_S2_64 | RULE_REL:
-      case RULE_LE | RULE_S1_32 | RULE_S2_64 | RULE_NO:
-      case RULE_GE | RULE_S1_32 | RULE_S2_8 | RULE_ABS:
-      case RULE_GE | RULE_S1_32 | RULE_S2_8 | RULE_REL:
-      case RULE_GE | RULE_S1_32 | RULE_S2_8 | RULE_NO:
-      case RULE_GE | RULE_S1_32 | RULE_S2_16 | RULE_ABS:
-      case RULE_GE | RULE_S1_32 | RULE_S2_16 | RULE_REL:
-      case RULE_GE | RULE_S1_32 | RULE_S2_16 | RULE_NO:
-      case RULE_GE | RULE_S1_32 | RULE_S2_32 | RULE_ABS:
-      case RULE_GE | RULE_S1_32 | RULE_S2_32 | RULE_REL:
-      case RULE_GE | RULE_S1_32 | RULE_S2_32 | RULE_NO:
-      case RULE_GE | RULE_S1_32 | RULE_S2_64 | RULE_ABS:
-      case RULE_GE | RULE_S1_32 | RULE_S2_64 | RULE_REL:
-      case RULE_GE | RULE_S1_32 | RULE_S2_64 | RULE_NO:
+      case RULE_S1_32:
         aggr_function = aggr_static_uint32_t;
         break;
-      case RULE_EQ | RULE_S1_64 | RULE_S2_8 | RULE_ABS:
-      case RULE_EQ | RULE_S1_64 | RULE_S2_8 | RULE_REL:
-      case RULE_EQ | RULE_S1_64 | RULE_S2_8 | RULE_NO:
-      case RULE_EQ | RULE_S1_64 | RULE_S2_16 | RULE_ABS:
-      case RULE_EQ | RULE_S1_64 | RULE_S2_16 | RULE_REL:
-      case RULE_EQ | RULE_S1_64 | RULE_S2_16 | RULE_NO:
-      case RULE_EQ | RULE_S1_64 | RULE_S2_32 | RULE_ABS:
-      case RULE_EQ | RULE_S1_64 | RULE_S2_32 | RULE_REL:
-      case RULE_EQ | RULE_S1_64 | RULE_S2_32 | RULE_NO:
-      case RULE_EQ | RULE_S1_64 | RULE_S2_64 | RULE_ABS:
-      case RULE_EQ | RULE_S1_64 | RULE_S2_64 | RULE_REL:
-      case RULE_EQ | RULE_S1_64 | RULE_S2_64 | RULE_NO:
-      case RULE_NE | RULE_S1_64 | RULE_S2_8 | RULE_ABS:
-      case RULE_NE | RULE_S1_64 | RULE_S2_8 | RULE_REL:
-      case RULE_NE | RULE_S1_64 | RULE_S2_8 | RULE_NO:
-      case RULE_NE | RULE_S1_64 | RULE_S2_16 | RULE_ABS:
-      case RULE_NE | RULE_S1_64 | RULE_S2_16 | RULE_REL:
-      case RULE_NE | RULE_S1_64 | RULE_S2_16 | RULE_NO:
-      case RULE_NE | RULE_S1_64 | RULE_S2_32 | RULE_ABS:
-      case RULE_NE | RULE_S1_64 | RULE_S2_32 | RULE_REL:
-      case RULE_NE | RULE_S1_64 | RULE_S2_32 | RULE_NO:
-      case RULE_NE | RULE_S1_64 | RULE_S2_64 | RULE_ABS:
-      case RULE_NE | RULE_S1_64 | RULE_S2_64 | RULE_REL:
-      case RULE_NE | RULE_S1_64 | RULE_S2_64 | RULE_NO:
-      case RULE_GT | RULE_S1_64 | RULE_S2_8 | RULE_ABS:
-      case RULE_GT | RULE_S1_64 | RULE_S2_8 | RULE_REL:
-      case RULE_GT | RULE_S1_64 | RULE_S2_8 | RULE_NO:
-      case RULE_GT | RULE_S1_64 | RULE_S2_16 | RULE_ABS:
-      case RULE_GT | RULE_S1_64 | RULE_S2_16 | RULE_REL:
-      case RULE_GT | RULE_S1_64 | RULE_S2_16 | RULE_NO:
-      case RULE_GT | RULE_S1_64 | RULE_S2_32 | RULE_ABS:
-      case RULE_GT | RULE_S1_64 | RULE_S2_32 | RULE_REL:
-      case RULE_GT | RULE_S1_64 | RULE_S2_32 | RULE_NO:
-      case RULE_GT | RULE_S1_64 | RULE_S2_64 | RULE_ABS:
-      case RULE_GT | RULE_S1_64 | RULE_S2_64 | RULE_REL:
-      case RULE_GT | RULE_S1_64 | RULE_S2_64 | RULE_NO:
-      case RULE_LT | RULE_S1_64 | RULE_S2_8 | RULE_ABS:
-      case RULE_LT | RULE_S1_64 | RULE_S2_8 | RULE_REL:
-      case RULE_LT | RULE_S1_64 | RULE_S2_8 | RULE_NO:
-      case RULE_LT | RULE_S1_64 | RULE_S2_16 | RULE_ABS:
-      case RULE_LT | RULE_S1_64 | RULE_S2_16 | RULE_REL:
-      case RULE_LT | RULE_S1_64 | RULE_S2_16 | RULE_NO:
-      case RULE_LT | RULE_S1_64 | RULE_S2_32 | RULE_ABS:
-      case RULE_LT | RULE_S1_64 | RULE_S2_32 | RULE_REL:
-      case RULE_LT | RULE_S1_64 | RULE_S2_32 | RULE_NO:
-      case RULE_LT | RULE_S1_64 | RULE_S2_64 | RULE_ABS:
-      case RULE_LT | RULE_S1_64 | RULE_S2_64 | RULE_REL:
-      case RULE_LT | RULE_S1_64 | RULE_S2_64 | RULE_NO:
-      case RULE_LE | RULE_S1_64 | RULE_S2_8 | RULE_ABS:
-      case RULE_LE | RULE_S1_64 | RULE_S2_8 | RULE_REL:
-      case RULE_LE | RULE_S1_64 | RULE_S2_8 | RULE_NO:
-      case RULE_LE | RULE_S1_64 | RULE_S2_16 | RULE_ABS:
-      case RULE_LE | RULE_S1_64 | RULE_S2_16 | RULE_REL:
-      case RULE_LE | RULE_S1_64 | RULE_S2_16 | RULE_NO:
-      case RULE_LE | RULE_S1_64 | RULE_S2_32 | RULE_ABS:
-      case RULE_LE | RULE_S1_64 | RULE_S2_32 | RULE_REL:
-      case RULE_LE | RULE_S1_64 | RULE_S2_32 | RULE_NO:
-      case RULE_LE | RULE_S1_64 | RULE_S2_64 | RULE_ABS:
-      case RULE_LE | RULE_S1_64 | RULE_S2_64 | RULE_REL:
-      case RULE_LE | RULE_S1_64 | RULE_S2_64 | RULE_NO:
-      case RULE_GE | RULE_S1_64 | RULE_S2_8 | RULE_ABS:
-      case RULE_GE | RULE_S1_64 | RULE_S2_8 | RULE_REL:
-      case RULE_GE | RULE_S1_64 | RULE_S2_8 | RULE_NO:
-      case RULE_GE | RULE_S1_64 | RULE_S2_16 | RULE_ABS:
-      case RULE_GE | RULE_S1_64 | RULE_S2_16 | RULE_REL:
-      case RULE_GE | RULE_S1_64 | RULE_S2_16 | RULE_NO:
-      case RULE_GE | RULE_S1_64 | RULE_S2_32 | RULE_ABS:
-      case RULE_GE | RULE_S1_64 | RULE_S2_32 | RULE_REL:
-      case RULE_GE | RULE_S1_64 | RULE_S2_32 | RULE_NO:
-      case RULE_GE | RULE_S1_64 | RULE_S2_64 | RULE_ABS:
-      case RULE_GE | RULE_S1_64 | RULE_S2_64 | RULE_REL:
-      case RULE_GE | RULE_S1_64 | RULE_S2_64 | RULE_NO:
+      case RULE_S1_64:
         aggr_function = aggr_static_uint64_t;
         break;
     }

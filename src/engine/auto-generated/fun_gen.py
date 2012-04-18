@@ -737,7 +737,10 @@ source.write("""
   /* for loop for the filter */
   for (int j = 0; j < branch->num_filter_rules; j++) {
   struct filter_rule* frule = branch->filter_ruleset[j];          
-  switch (frule->op) {
+  switch ( 
+            frule->op->op | 
+            frule->op->field_type
+         ) {
   
   """)  
 
@@ -759,7 +762,13 @@ source.write("""
   /* for loop for the grouper */
   for (int j = 0; j < branch->num_grouper_rules; j++) {
   struct grouper_rule* grule = branch->grouper_ruleset[j];  
-  switch (grule->op) {
+  switch (
+  grule->op->op | 
+  grule->op->field1_type | 
+  grule->op->field2_type | 
+  grule->op->optype
+  ) {
+
   """)
 
 for op in 'RULE_EQ', 'RULE_NE', 'RULE_GT', 'RULE_LT', 'RULE_LE', 'RULE_GE':
@@ -904,8 +913,7 @@ source.write("if(!ifgrouper) {\n")
 source.write("/* cases for the filter-stage */\n")
 source.write("switch (op) {\n")
 for atype in 'RULE_S1_8', 'RULE_S1_16', 'RULE_S1_32', 'RULE_S1_64':
-  for op in 'RULE_EQ', 'RULE_NE', 'RULE_GT', 'RULE_LT', 'RULE_LE', 'RULE_GE':  
-    source.write("case %s | %s:\n"%(op, atype))
+  source.write("case %s:\n"%(atype))
   source.write("aggr_function = aggr_static_%s;\n"%(enum_map[atype]))
   source.write("break;\n")
 source.write("}\n} \nelse {\n")             
@@ -913,10 +921,7 @@ source.write("}\n} \nelse {\n")
 source.write("/* cases for the grouper-stage */\n")
 source.write("switch (op) {\n")             
 for atype1 in 'RULE_S1_8', 'RULE_S1_16', 'RULE_S1_32', 'RULE_S1_64':
-  for op in 'RULE_EQ', 'RULE_NE', 'RULE_GT', 'RULE_LT', 'RULE_LE', 'RULE_GE':
-    for atype2 in 'RULE_S2_8', 'RULE_S2_16', 'RULE_S2_32', 'RULE_S2_64':
-      for dtype in 'RULE_ABS', 'RULE_REL', 'RULE_NO':
-        source.write("case %s | %s | %s | %s:\n"%(op, atype1, atype2, dtype))
+  source.write("case %s:\n"%(atype1))
   source.write("aggr_function = aggr_static_%s;\n"%(enum_map[atype1]))        
   source.write("break;\n")
 source.write("}\n}\n")
