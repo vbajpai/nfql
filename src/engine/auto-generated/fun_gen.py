@@ -706,8 +706,20 @@ header.write('#include "auto_comps.h"\n')
 header.write('#include "grouper.h"\n\n')
 header.write('struct grouper_intermediate_result;\n\n')
 
-header.write("""void
-  assign_fptr(struct flowquery *fquery);\n\n""")
+header.write("""void 
+  assign_filter_func(struct filter_rule* const frule);\n\n""")
+
+header.write("""void 
+  assign_grouper_func(struct grouper_rule* const grule);\n\n""")
+
+header.write("""void 
+  assign_aggr_func(struct aggr_rule* const arule);\n\n""")
+
+header.write("""void 
+  assign_gfilter_func(struct gfilter_rule* const gfrule);\n\n""")
+
+header.write("""void 
+  assign_merger_func(struct merger_rule* const mrule);\n\n""")
 
 header.write("""struct aggr* 
   (*get_aggr_fptr(bool ifgrouper,
@@ -722,25 +734,20 @@ header.write("""struct grouper_type* get_gtype(uint64_t op);\n\n""");
 
 source.write("#include \"auto_assign.h\"\n")
 
-source.write("""
+
+# assign_filter_func(...)
+
+source.write("""  
   void 
-  assign_fptr(struct flowquery *fquery) {
-  for (int i = 0; i < fquery->num_branches; i++) {
-  struct branch* branch = fquery->branchset[i];
+  assign_filter_func(struct filter_rule* const frule) {  
   """)
-
-
-# switch statement for the filter
 
 source.write("""
   
-  /* for loop for the filter */
-  for (int j = 0; j < branch->num_filter_rules; j++) {
-  struct filter_rule* frule = branch->filter_ruleset[j];          
   switch ( 
-            frule->op->op | 
-            frule->op->field_type
-         ) {
+  frule->op->op | 
+  frule->op->field_type
+  ) {
   
   """)  
 
@@ -755,44 +762,49 @@ source.write("""
   }
   """)
 
-# switch statement for the grouper
+
+# assign_grouper_func(...)
+
+source.write("""  
+  void 
+  assign_grouper_func(struct grouper_rule* const grule) {
+  """)
 
 source.write("""
   
-  /* for loop for the grouper */
-  for (int j = 0; j < branch->num_grouper_rules; j++) {
-  struct grouper_rule* grule = branch->grouper_ruleset[j];  
   switch (
-  grule->op->op | 
-  grule->op->field1_type | 
-  grule->op->field2_type | 
-  grule->op->optype
-  ) {
-
+          grule->op->op | 
+          grule->op->field1_type | 
+          grule->op->field2_type | 
+          grule->op->optype
+         ) {
+  
   """)
 
 for op in 'RULE_EQ', 'RULE_NE', 'RULE_GT', 'RULE_LT', 'RULE_LE', 'RULE_GE':
   for atype1 in 'RULE_S1_8', 'RULE_S1_16', 'RULE_S1_32', 'RULE_S1_64':
     for atype2 in 'RULE_S2_8', 'RULE_S2_16', 'RULE_S2_32', 'RULE_S2_64':
       for dtype in 'RULE_ABS', 'RULE_REL', 'RULE_NO':
-        source.write("                case %s | %s | %s | %s:\n"%(op, atype1, atype2, dtype))
-        source.write("                    grule->func = grouper_%s_%s_%s_%s;\n"%(
-                                                                                 enum_map[op], enum_map[atype1], enum_map[atype2], enum_map[dtype]))
-        source.write("                    break;\n")
+        source.write("case %s | %s | %s | %s:\n"%(op, atype1, atype2, dtype))
+        source.write("grule->func = grouper_%s_%s_%s_%s;\n"%(
+                                                             enum_map[op], 
+                                                             enum_map[atype1], 
+                                                             enum_map[atype2], 
+                                                             enum_map[dtype]))
+        source.write("break;\n")
 
-source.write("""
-  }
-  }
+source.write("""}\n}\n""")
+
+
+# assign_aggr_func(...)
+
+source.write("""  
+  void 
+  assign_aggr_func(struct aggr_rule* const arule) {
   """)
-
-
-# switch statement for the group-aggregation
 
 source.write("""
   
-  /* for loop for the group-aggregation */
-  for (int j = 0; j < branch->num_aggr_rules; j++) {
-  struct aggr_rule* arule = branch->aggr_ruleset[j];  
   switch (
           arule->op->op |
           arule->op->field_type
@@ -814,31 +826,30 @@ for op in 'RULE_STATIC', \
   'RULE_OR':     \
     
     for atype in 'RULE_S1_8',  \
-                 'RULE_S1_16', \
-                 'RULE_S1_32', \
-                 'RULE_S1_64': \
+      'RULE_S1_16', \
+      'RULE_S1_32', \
+      'RULE_S1_64': \
         
         source.write("case %s | %s:\n"%(op, atype))
         source.write("arule->func = aggr_%s_%s;\n"
                      %(aggr_map[op], enum_map[atype]))
         source.write("break;\n")
 
-source.write("""
-  }
-  }
+source.write("""}\n}\n""")
+
+
+# assign_gfilter_func(...)
+
+source.write("""  
+  void 
+  assign_gfilter_func(struct gfilter_rule* const gfrule) {
   """)
 
-
-# switch statement for the grouper-filter
-
 source.write("""
-  
-  /* for loop for the group-filter */
-  for (int j = 0; j < branch->num_gfilter_rules; j++) {
-  struct gfilter_rule* gfrule = branch->gfilter_ruleset[j];  
+
   switch (
-           gfrule->op->op |
-           gfrule->op->field_type
+          gfrule->op->op |
+          gfrule->op->field_type
          ) {
   """)
 
@@ -848,20 +859,19 @@ for op in 'RULE_EQ', 'RULE_NE', 'RULE_GT', 'RULE_LT', 'RULE_LE', 'RULE_GE':
     source.write("gfrule->func = gfilter_%s_%s;\n"%(enum_map[op], enum_map[atype1]))
     source.write("break;\n")
 
-source.write("""
-  }
-  }
-  }
+source.write("}\n}\n")
+
+
+
+# assign_merger_func(...)
+
+source.write("""  
+  void 
+  assign_merger_func(struct merger_rule* const mrule) {  
   """)
-
-
-# switch statement for the merger
 
 source.write("""
   
-  /* for loop for the merger */
-  for (int j = 0; j < fquery->num_merger_rules; j++) {
-  struct merger_rule* mrule = fquery->mruleset[j];  
   switch (
            mrule->op->op |
            mrule->op->field1_type |
@@ -898,8 +908,7 @@ for op in 'RULE_ALLEN_BF',  \
 
 source.write("""
   }
-  }
-  }
+  }\n  
   """)
 
 

@@ -59,8 +59,11 @@ merger(
       
       struct merger_rule* rule = mruleset[i];
       size_t group1_id = iter->filtered_group_tuple[rule->branch1->branch_id];
-      size_t group2_id = iter->filtered_group_tuple[rule->branch2->branch_id];                                                    
-
+      size_t group2_id = iter->filtered_group_tuple[rule->branch2->branch_id];
+      
+      /* assign a unitX_t function depending on rule->op */
+      assign_merger_func(rule);
+      
       if (!rule->
           func(
                rule->branch1->gfilter_result->filtered_groupset[group1_id-1],

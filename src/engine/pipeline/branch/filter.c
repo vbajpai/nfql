@@ -55,7 +55,10 @@ filter(
     /* process each filter rule, for each record */
     for (j = 0; j < num_filter_rules; j++) {
       
-      const struct filter_rule* frule = filter_ruleset[j];
+      struct filter_rule* const frule = filter_ruleset[j];
+      
+      /* get a uintX_t specific function depending on frule->op */
+      assign_filter_func(frule);
       
       /* run the comparator function of the filter rule on the record */
       if (!frule->func(

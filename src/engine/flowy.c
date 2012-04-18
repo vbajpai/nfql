@@ -489,23 +489,6 @@ prepare_flowquery(struct ft_data* const trace,
   
   
   
-  /* -----------------------------------------------------------------------*/  
-  /*             fills filter_rule.func, grouper_rule.func                  */
-  /*               gfilter_rule.func, merger_rule.func by                   */
-  /*              falling through a huge switch statement                   */
-  /* -----------------------------------------------------------------------*/    
-  
-  assign_fptr(fquery);
-  
-  /* -----------------------------------------------------------------------*/
-  
-  
-  
-  
-  
-  
-  
-  
   
   return fquery;
 }

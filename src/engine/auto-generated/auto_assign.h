@@ -12,8 +12,20 @@
 
 struct grouper_intermediate_result;
 
-void
-assign_fptr(struct flowquery *fquery);
+void 
+assign_filter_func(struct filter_rule* const frule);
+
+void 
+assign_grouper_func(struct grouper_rule* const grule);
+
+void 
+assign_aggr_func(struct aggr_rule* const arule);
+
+void 
+assign_gfilter_func(struct gfilter_rule* const gfrule);
+
+void 
+assign_merger_func(struct merger_rule* const mrule);
 
 struct aggr* 
 (*get_aggr_fptr(bool ifgrouper,

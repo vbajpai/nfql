@@ -48,14 +48,19 @@ groupfilter(
     /* iterate over each group filter rule */
     for (j = 0; j < num_gfilter_rules; j++) {
       
+      struct gfilter_rule* rule = ruleset[j];
+      
+      /* assign a specific uintX_t function depending on rule->op */
+      assign_gfilter_func(rule);
+      
       /* break out if any one of the rules does NOT match */
       if (
-          !ruleset[j]->func(
-                            group, 
-                            ruleset[j]->field, 
-                            ruleset[j]->value, 
-                            ruleset[j]->delta
-                           )
+          !rule->func(
+                      group, 
+                      rule->field, 
+                      rule->value, 
+                      rule->delta
+                     )
          )
         break;
     }

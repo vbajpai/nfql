@@ -149,7 +149,9 @@ grouper_aggregations(
   for (int j = 0; j < num_aggr_rules; j++){    
     
     bool if_ignore_aggr_rule = false;
-    size_t aggr_offset = aggr_ruleset[j]->field_offset;
+    struct aggr_rule* arule = aggr_ruleset[j];
+    size_t aggr_offset = arule->field_offset;
+    
     
     /* if aggr rule is same as any filter rule, just ignore it */
     for (int k = 0; k < num_filter_rules; k++) {
@@ -173,14 +175,17 @@ grouper_aggregations(
       }
     }
     
+    /* assign a specific uintX_t function depending on aggrule->op */
+    assign_aggr_func(arule);
+    
     /* free'd just after returning from merger(...) */
-    aggrset[j] = aggr_ruleset[j]->func(
-                                       group->members,
-                                       aggr_record,
-                                       group->num_members, 
-                                       aggr_offset, 
-                                       if_ignore_aggr_rule
-                                       );
+    aggrset[j] = arule->func(
+                             group->members,
+                             aggr_record,
+                             group->num_members, 
+                             aggr_offset, 
+                             if_ignore_aggr_rule
+                            );
   }    
   
   aggrset = NULL; aggr_record = NULL;
@@ -423,14 +428,20 @@ grouper(
         
         // check all module filter rules for those two records
         for (k = 0; k < num_grouper_rules; k++) {
+          
+          struct grouper_rule* grule = grouper_ruleset[k];
+          
+          /* assign a uintX_t specific function depending on grule->op */
+          assign_grouper_func(grule);
+          
           if (
-              !grouper_ruleset[k]->func(
-                                        group, 
-                                        grouper_ruleset[k]->field_offset1,
-                                        **record_iter, 
-                                        grouper_ruleset[k]->field_offset2, 
-                                        grouper_ruleset[k]->delta
-                                        )
+              !grule->func(
+                           group, 
+                           grule->field_offset1,
+                           **record_iter, 
+                           grule->field_offset2, 
+                           grule->delta
+                          )
               )
             break;
         }

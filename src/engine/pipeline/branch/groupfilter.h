@@ -29,6 +29,7 @@
 
 #include "pipeline.h"
 #include "error_handlers.h"
+#include "auto_assign.h"
 
 struct groupfilter_result*
 groupfilter(
