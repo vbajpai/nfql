@@ -128,15 +128,21 @@ parse_json_query(const char* const query_mmap) {
   struct json* json = calloc(1, sizeof(struct json));
   if (json == NULL)
     errExit("calloc");
-  json->num_frules = 1;
+  
+  /* TODO: hardcoded */
+  json->num_frules = 2;
   
   /* free'd after returning from prepare_flowquery(...) */
   json->fruleset = calloc(json->num_frules, 
                           sizeof(struct json_filter_rule*));
   if (json->fruleset == NULL)
     errExit("calloc");
+  
+  struct json_object* query = json_tokener_parse(query_mmap);
+  struct json_object* fruleset = json_object_object_get(query, "filter");
 
   for (int i = 0; i < json->num_frules; i++) {
+    
     /* free'd after returning from prepare_flowquery(...) */
     json->fruleset[i] = calloc(1, sizeof(struct json_filter_rule));
     if (json->fruleset[i] == NULL)
@@ -148,20 +154,28 @@ parse_json_query(const char* const query_mmap) {
     if (json->fruleset[i]->off == NULL)
       errExit("calloc");
     
-    /* free'd before returning from this function */
-    struct json_object* query = json_tokener_parse(query_mmap);
-    struct json_object* delta = json_object_object_get(query, "delta");
-    struct json_object* op = json_object_object_get(query, "op");
-    struct json_object* foffset = json_object_object_get(query, "offset");    
+    struct json_object* frule = NULL;
+    if (i == 0) {
+      frule = json_object_object_get(fruleset, "www_request");
+    }else if (i == 1) {
+      frule = json_object_object_get(fruleset, "www_response");    
+    }    
+    
+    /* free'd before returning from this function */   
+    struct json_object* delta = json_object_object_get(frule, "delta");
+    struct json_object* op = json_object_object_get(frule, "op");
+    struct json_object* foffset = json_object_object_get(frule, "offset");    
     struct json_object* fo_name = json_object_object_get(foffset, "name");
     struct json_object* fo_val = json_object_object_get(foffset, "value");
     struct json_object* fo_type = json_object_object_get(foffset, "datatype");
     
     json->fruleset[i]->delta = json_object_get_int(delta);  
-    json->fruleset[i]->op = json_object_get_string(op);
-    json->fruleset[i]->off->name = json_object_get_string(fo_name);  
+    json->fruleset[i]->op = json_object_get_int(op);
+    json->fruleset[i]->off->name = strdup(json_object_get_string(fo_name));
+    if (json->fruleset[i]->off->name == NULL)
+      errExit("strdup");
     json->fruleset[i]->off->value = json_object_get_int(fo_val);
-    json->fruleset[i]->off->datatype = json_object_get_string(fo_type);
+    json->fruleset[i]->off->datatype = json_object_get_int(fo_type);
     
     /* free the json objects */
     json_object_put(fo_name); fo_name = NULL;
@@ -170,8 +184,11 @@ parse_json_query(const char* const query_mmap) {
     json_object_put(foffset); foffset = NULL; 
     json_object_put(delta); delta = NULL;
     json_object_put(op); op = NULL;        
-    json_object_put(query); query = NULL;    
+    json_object_put(frule); frule = NULL;          
   } 
+
+  json_object_put(fruleset); fruleset = NULL;    
+  json_object_put(query); query = NULL;      
   
   return json;
 }
@@ -263,21 +280,18 @@ prepare_flowquery(struct ft_data* const trace,
       else
         frule->op = op; op = NULL;
       
-      /* TODO: hardcoded */
-      switch (i) {
-        case 0:
-          frule->field_offset      =         trace->offsets.dstport;
-          break;
-        case 1:          
-          frule->field_offset      =         trace->offsets.srcport;
-          break;
-      }
+      /* TODO: hardcoded */      
+      size_t offset = get_offset(json_query->fruleset[i]->off->name, 
+                                 &trace->offsets);
+      if (offset == -1)
+        errExit("get_offset(...) returned -1");
       
-      frule->value                 =         json_query->fruleset[0]->off->value;
-      frule->delta                 =         json_query->fruleset[0]->delta;
+      frule->field_offset          =         offset;
+      frule->value                 =         json_query->fruleset[i]->off->value;
+      frule->delta                 =         json_query->fruleset[i]->delta;
       
-      frule->op->op                =         RULE_EQ;
-      frule->op->field_type        =         RULE_S1_16;
+      frule->op->op                =         json_query->fruleset[i]->op;
+      frule->op->field_type        =         json_query->fruleset[i]->off->datatype;
       
       frule->func                  =         NULL;      
       
@@ -617,6 +631,7 @@ main(int argc, char **argv) {
     /* deallocate the json query buffers */
     for (int i = 0; i < json_query->num_frules; i++) {
       struct json_filter_rule* frule = json_query->fruleset[i];
+      free(frule->off->name); frule->off->name = NULL;
       free(frule->off); frule->off = NULL;
       free(frule); frule = NULL;
     }
@@ -660,8 +675,9 @@ main(int argc, char **argv) {
     /* free all the records that were not filtered from the original trace */
     for (int i = 0; i < param_data->trace->num_records; i++) {      
       struct record* recordinfo = param_data->trace->recordset[i];
-      if (recordinfo->if_filtered == false)
-        free(recordinfo->record); recordinfo->record = NULL;
+      if (recordinfo->if_filtered == false) {
+        free(recordinfo->record); recordinfo->record = NULL;      
+      }
     }
     
     /* print the filtered records if verbose mode is set */
@@ -896,13 +912,13 @@ main(int argc, char **argv) {
   free(fquery->ungrouper_result); fquery->ungrouper_result = NULL;
 
   
-  /* free filter_result */
+  /* freee filter_result */
   for (int i = 0; i < fquery->num_branches; i++) {
     struct branch* branch = fquery->branchset[i];
     for (int j = 0; j < branch->filter_result->num_filtered_records; j++) {
-      char* record = branch->filter_result->filtered_recordset[j];
-      free(record); record = NULL; 
-      branch->filter_result->filtered_recordset[j] = NULL;
+      char* record = branch->filter_result->filtered_recordset[j]; 
+      /* unlink the records */
+      record = NULL; branch->filter_result->filtered_recordset[j] = NULL;
     }
     
     free(branch->filter_result->filtered_recordset);

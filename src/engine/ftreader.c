@@ -367,8 +367,8 @@ void
 ft_close(struct ft_data* data) {
   
   ftio_close(&data->io);  
-  for (int i=0; i<data->num_records; i++){
-    data->recordset[i]->record = NULL;
+  for (int i=0; i<data->num_records; i++) {
+    free(data->recordset[i]->record); data->recordset[i]->record = NULL;
     free(data->recordset[i]); data->recordset[i] = NULL;
   }  
   free(data->recordset); data->recordset = NULL;  
@@ -377,22 +377,6 @@ ft_close(struct ft_data* data) {
     close(data->fd);
   free(data); data = NULL;
 }
-
-void 
-ft_close_free(struct ft_data* data) {
-
-  ftio_close(&data->io);  
-  for (int i=0; i<data->num_records; i++) {
-    free(data->recordset[i]->record); data->recordset[i]->record = NULL;
-    free(data->recordset[i]); data->recordset[i] = NULL;
-  }    
-  free(data->recordset); data->recordset = NULL;  
-   
-  if(data->fd)
-    close(data->fd);
-  free(data); data = NULL;
-}
-
 
 void
 flow_print_record(struct ft_data *data, char *record){

@@ -31,9 +31,12 @@
 #include "base.h"
 #include "pipeline.h"
 #include "error_handlers.h"
+#include "ftlib.h"
 
 
-
+size_t 
+get_offset(const char * const name, 
+           const struct fts3rec_offsets* const offsets);
 
 
 

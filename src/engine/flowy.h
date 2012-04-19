@@ -79,15 +79,15 @@ struct json {
 };
 
 struct json_filter_rule {
-  const char*                     op;
+  uint64_t                        op;
   uint64_t                        delta;
   struct json_filter_rule_offset* off;
 };
 
 struct json_filter_rule_offset{
-  const char*                     name;
+  char*                           name;
   uint64_t                        value;
-  const char*                     datatype;
+  uint64_t                        datatype;
 };
 
 

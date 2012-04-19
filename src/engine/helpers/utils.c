@@ -28,6 +28,69 @@
 #include "utils.h"
 
 
+
+/* -----------------------------------------------------------------------*/  
+/*                         query parsing utilities                        */
+/* -----------------------------------------------------------------------*/
+
+size_t 
+get_offset(const char * const name, 
+           const struct fts3rec_offsets* const offsets) {
+  
+  #define CASE(memb)                          \
+  if (strcmp(name, #memb) == 0)               \
+    return offsets->memb
+  
+  CASE(unix_secs);
+  CASE(unix_nsecs);
+  CASE(sysUpTime);
+  CASE(exaddr);
+  CASE(srcaddr);
+  CASE(dstaddr);
+  CASE(nexthop);
+  CASE(input);
+  CASE(output);
+  CASE(dFlows);
+  CASE(dPkts);
+  CASE(dOctets);
+  CASE(First);
+  CASE(Last);
+  CASE(srcport);
+  CASE(dstport);
+  CASE(prot);
+  CASE(tos);
+  CASE(tcp_flags);
+  CASE(pad);
+  CASE(engine_type);
+  CASE(engine_id);
+  CASE(src_mask);
+  CASE(dst_mask);
+  CASE(src_as);
+  CASE(dst_as);
+  CASE(in_encaps);
+  CASE(out_encaps);
+  CASE(peer_nexthop);
+  CASE(router_sc);
+  CASE(src_tag);
+  CASE(dst_tag);
+  CASE(extra_pkts);
+  CASE(marked_tos);
+ 
+  return -1;
+}
+
+/* -----------------------------------------------------------------------*/  
+
+
+
+
+
+
+
+
+
+
+
 /* -----------------------------------------------------------------------*/  
 /*                         grouper utilities                              */
 /* -----------------------------------------------------------------------*/
