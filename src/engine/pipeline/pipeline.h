@@ -233,6 +233,7 @@ struct merger_op {
   uint64_t                                    op;
   uint64_t                                    field1_type;
   uint64_t                                    field2_type;
+  uint64_t                                    optype;  
 };
 
 

@@ -43,14 +43,10 @@
 #include "ftreader.h"
 #include "echo.h"
 
-/* this should go away once the rules come from the JSON */
-#define NUM_MERGER_RULES 2
-
 struct parameters {
   char*                           query_filename;
   char*                           trace_filename;
 };
-
 struct parameters_data {
   char*                           query_mmap;
   struct stat*                    query_mmap_stat;  
@@ -59,7 +55,10 @@ struct parameters_data {
 
 struct json {
   size_t                          num_branches;
+  size_t                          num_mrules;
+  
   struct json_branch_rules**      branchset;
+  struct json_merger_rule**       mruleset;
 };
 struct json_branch_rules {
   size_t                          num_frules;
@@ -125,6 +124,29 @@ struct json_gfilter_rule_offset{
   uint64_t                        datatype;
 };
 
+struct json_merger_rule {
+
+  uint64_t                        b1_id;  
+  uint64_t                        b2_id;  
+  uint64_t                        delta;
+  
+  struct 
+  json_grouper_rule_offset*       off;
+  struct 
+  json_grouper_rule_op*           op;  
+};
+struct json_merger_rule_offset {
+  char*                           f1_name;
+  char*                           f2_name;
+  
+  uint64_t                        f1_datatype;  
+  uint64_t                        f2_datatype;
+};
+struct json_merger_rule_op {
+  uint64_t                        name;
+  uint64_t                        type;
+  
+};
 
 struct parameters*
 parse_cmdline_args(int argc, char** const argv);

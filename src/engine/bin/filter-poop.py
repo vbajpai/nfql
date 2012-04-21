@@ -114,15 +114,40 @@ class GroupFilterRule:
     self.delta = delta
     self.op = op
 
+class MergerRule: 
+  
+  def __init__(self, branch1_id, branch2_id,
+                     field1_name, field1_type, 
+                     field2_name, field2_type, delta, 
+                     op_name, op_type):
+    
+    self.offset = {
+      'f1_name': field1_name,
+      'f1_datatype': field1_type,
+      'f2_name': field2_name,
+      'f2_datatype': field2_type,
+    }
+    
+    self.op = {
+      'name' : op_name,
+      'type' : op_type,
+    }
+
+    self.branch1_id = branch1_id;
+    self.branch2_id = branch2_id;  
+    self.delta = delta
+
 
 if __name__ == '__main__':
   
   fruleset = []
-  fruleset.append(vars(FilterRule('dstport', 80, rule_map['RULE_S1_16'], 0, rule_map['RULE_EQ'])))
+  fruleset.append(vars(FilterRule('dstport', 80, rule_map['RULE_S1_16'], 0, 
+                                                 rule_map['RULE_EQ'])))
   filter1 = {'num_rules': len(fruleset), 'ruleset': fruleset}
 
   fruleset = []
-  fruleset.append(vars(FilterRule('srcport', 80, rule_map['RULE_S1_16'], 0, rule_map['RULE_EQ'])))    
+  fruleset.append(vars(FilterRule('srcport', 80, rule_map['RULE_S1_16'], 0, 
+                                                 rule_map['RULE_EQ'])))    
   filter2 = {'num_rules': len(fruleset), 'ruleset': fruleset}
   
   gruleset = []
@@ -192,7 +217,22 @@ if __name__ == '__main__':
                     'gfilter': gfilter2,
                    })  
   
-  query = {'num_branches': len(branchset), 'branchset': branchset}  
+  mruleset = []
+  mruleset.append(vars(MergerRule(0, 1, 'srcaddr', rule_map['RULE_S1_32'],
+                                    'dstaddr', rule_map['RULE_S2_32'], 0, 
+                                               rule_map['RULE_EQ'], 
+                                               rule_map['RULE_ABS'])))
+  
+  mruleset.append(vars(MergerRule(0, 1, 'dstaddr', rule_map['RULE_S1_32'],
+                                    'srcaddr', rule_map['RULE_S2_32'], 0, 
+                                               rule_map['RULE_EQ'], 
+                                               rule_map['RULE_ABS'])))
+  
+  merger = {'num_rules' : len(mruleset), 'ruleset' : mruleset}
+  
+  query = {'num_branches': len(branchset), 
+           'branchset': branchset,
+           'merger': merger}  
   
   fjson = json.dumps(query, indent=2)
   fsock = open('query.json', 'w')

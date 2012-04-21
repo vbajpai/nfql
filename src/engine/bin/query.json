@@ -1,4 +1,39 @@
 {
+  "merger": {
+    "num_rules": 2, 
+    "ruleset": [
+      {
+        "branch2_id": 1, 
+        "branch1_id": 0, 
+        "delta": 0, 
+        "op": {
+          "type": 0, 
+          "name": 0
+        }, 
+        "offset": {
+          "f2_datatype": 2, 
+          "f1_name": "srcaddr", 
+          "f1_datatype": 8, 
+          "f2_name": "dstaddr"
+        }
+      }, 
+      {
+        "branch2_id": 1, 
+        "branch1_id": 0, 
+        "delta": 0, 
+        "op": {
+          "type": 0, 
+          "name": 0
+        }, 
+        "offset": {
+          "f2_datatype": 2, 
+          "f1_name": "dstaddr", 
+          "f1_datatype": 8, 
+          "f2_name": "srcaddr"
+        }
+      }
+    ]
+  }, 
   "branchset": [
     {
       "filter": {

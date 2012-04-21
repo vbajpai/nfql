@@ -475,6 +475,81 @@ parse_json_query(const char* const query_mmap) {
   /* -----------------------------------------------------------------------*/  
   /*                        parse merger rules                              */
   /* -----------------------------------------------------------------------*/
+
+  struct json_object* merger = 
+  json_object_object_get(query, "merger");
+  struct json_object* 
+  mnum_rules = json_object_object_get(merger, "num_rules");
+  json->num_mrules = json_object_get_int(mnum_rules);
+  
+  /* free'd after returning from prepare_flowquery(...) */
+  json->mruleset = calloc(json->num_mrules, 
+                          sizeof(struct json_merger_rule*));
+  if (json->mruleset == NULL)
+    errExit("calloc");  
+  struct json_object* mruleset = json_object_object_get(merger, "ruleset");
+  
+  for (int i = 0; i < json->num_mrules; i++) {
+    
+    /* free'd after returning from prepare_flowquery(...) */
+    struct json_merger_rule* 
+    mrule = calloc(1, sizeof(struct json_merger_rule));
+    if (mrule == NULL)
+      errExit("calloc");
+    json->mruleset[i] = mrule;
+    
+    /* free'd after returning from prepare_flowquery(...) */
+    mrule->off = calloc(1, sizeof(struct json_merger_rule_offset));
+    if (mrule->off == NULL)
+      errExit("calloc");
+    
+    /* free'd after returning from prepare_flowquery(...) */
+    mrule->op = calloc(1, sizeof(struct json_merger_rule_op));
+    if (mrule->op == NULL)
+      errExit("calloc");
+    
+    struct json_object* mrule_json = json_object_array_get_idx(mruleset, i);
+    
+    /* free'd before returning from this function */   
+    struct json_object* 
+    delta = json_object_object_get(mrule_json, "delta");
+    struct json_object* 
+    op = json_object_object_get(mrule_json, "op");
+    struct json_object* 
+    offset = json_object_object_get(mrule_json, "offset");
+    struct json_object* 
+    b1_id = json_object_object_get(mrule_json, "branch1_id");
+    struct json_object* 
+    b2_id = json_object_object_get(mrule_json, "branch2_id");    
+    
+    struct json_object* 
+    f1_name = json_object_object_get(offset, "f1_name");
+    struct json_object* 
+    f2_name = json_object_object_get(offset, "f2_name");
+    struct json_object* 
+    f1_datatype = json_object_object_get(offset, "f1_datatype");
+    struct json_object* 
+    f2_datatype = json_object_object_get(offset, "f2_datatype");    
+    
+    struct json_object* 
+    op_type = json_object_object_get(op, "type");
+    struct json_object* 
+    op_name = json_object_object_get(op, "name");
+    
+    mrule->delta = json_object_get_int(delta);
+    mrule->b1_id = json_object_get_int(b1_id);
+    mrule->b2_id = json_object_get_int(b2_id);    
+    
+    mrule->op->name = json_object_get_int(op_name);
+    mrule->op->type = json_object_get_int(op_type);
+    
+    mrule->off->f1_name = strdup(json_object_get_string(f1_name));
+    if (mrule->off->f1_name == NULL) errExit("strdup");
+    mrule->off->f2_name = strdup(json_object_get_string(f2_name));
+    if (mrule->off->f2_name == NULL) errExit("strdup");    
+    mrule->off->f1_datatype = json_object_get_int(f1_datatype);
+    mrule->off->f2_datatype = json_object_get_int(f2_datatype);
+  } 
   
   /* -----------------------------------------------------------------------*/
   
@@ -720,8 +795,7 @@ prepare_flowquery(struct ft_data* const trace,
   /*                       assigning merger rules                           */
   /* -----------------------------------------------------------------------*/  
 
-  /* TODO: hardcoded */
-  fquery->num_merger_rules = NUM_MERGER_RULES;
+  fquery->num_merger_rules = json_query->num_mrules;
 
   /* free'd after returning from merger(...) */
   struct merger_rule** mruleset = (struct merger_rule**)
@@ -744,10 +818,18 @@ prepare_flowquery(struct ft_data* const trace,
     else
       mrule->op = op; op = NULL;
 
-    
-    mrule->branch1               =         fquery->branchset[0];
-    mrule->branch2               =         fquery->branchset[1];    
+    struct json_merger_rule* mrule_json = json_query->mruleset[j];
 
+    size_t f1_offset = get_offset(mrule_json->off->f1_name,
+                                  &trace->offsets);
+    if (f1_offset == -1)
+      errExit("get_offset(grule_json->off->f1_name) returned -1");
+    
+    size_t f2_offset = get_offset(mrule_json->off->f2_name,
+                                  &trace->offsets);
+    if (f2_offset == -1)
+      errExit("get_offset(grule_json->off->f2_name) returned -1");
+    
     /* TODO: hardcoded */
     switch (j) {
       case 0:
@@ -764,7 +846,19 @@ prepare_flowquery(struct ft_data* const trace,
     mrule->op->op                =         RULE_EQ;
     mrule->op->field1_type       =         RULE_S1_32;
     mrule->op->field2_type       =         RULE_S2_32;
+    mrule->op->optype            =         RULE_ABS;
     
+
+    
+    mrule->field1                =         f1_offset;
+    mrule->field2                =         f2_offset;
+    mrule->op->op                =         mrule_json->op->name;
+    mrule->op->field1_type       =         mrule_json->off->f1_datatype;
+    mrule->op->field2_type       =         mrule_json->off->f2_datatype;
+    mrule->op->optype            =         mrule_json->op->type;
+    mrule->branch1               =         fquery->branchset[mrule_json->b1_id];
+    mrule->branch2               =         fquery->branchset[mrule_json->b2_id];
+    mrule->delta                 =         0;    
     mrule->func                  =         NULL;
     
     mruleset[j] = mrule; mrule = NULL;
@@ -949,6 +1043,17 @@ main(int argc, char **argv) {
       
       free(json_branch); json_branch = NULL; json_query->branchset[i] = NULL;
     }
+    
+    /* deallocate the grouper json query buffers */    
+    for (int i = 0; i < json_query->num_mrules; i++) {
+      struct json_merger_rule* mrule = json_query->mruleset[i];
+      free(mrule->off->f1_name); mrule->off->f1_name = NULL;
+      free(mrule->off->f2_name); mrule->off->f2_name = NULL;
+      free(mrule->off); mrule->off = NULL;
+      free(mrule->op); mrule->op = NULL;      
+      free(mrule); mrule = NULL;
+    }
+    free(json_query->mruleset); json_query->mruleset = NULL;    
     free(json_query->branchset); json_query->branchset = NULL;
     free(json_query); json_query = NULL;
   }  
