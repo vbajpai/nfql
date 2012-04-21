@@ -73,11 +73,12 @@ class FilterRule:
 
 if __name__ == '__main__':
   
-  frule1 = FilterRule('dstport', 80, rule_map['RULE_S1_16'], 0, rule_map['RULE_EQ'])
-  frule2 = FilterRule('srcport', 80, rule_map['RULE_S1_16'], 0, rule_map['RULE_EQ'])
+  fruleset = []
+  fruleset.append(vars(FilterRule('dstport', 21, rule_map['RULE_S1_16'], 0, rule_map['RULE_EQ'])))
+  fruleset.append(vars(FilterRule('srcport', 80, rule_map['RULE_S1_16'], 0, rule_map['RULE_EQ'])))
   
-  fruleset = {'www_request': vars(frule1), 'www_response': vars(frule2)}
-  query = {'filter': fruleset}
+  filter = {'num_rules': len(fruleset), 'ruleset': fruleset}
+  query = {'filter': filter}
   
   fjson = json.dumps(query, indent=2)
   fsock = open('query.json', 'w')

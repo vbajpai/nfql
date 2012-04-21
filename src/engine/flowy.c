@@ -124,13 +124,16 @@ read_param_data(const struct parameters* const param) {
 struct json*
 parse_json_query(const char* const query_mmap) {
   
+  struct json_object* query = json_tokener_parse(query_mmap);
+  struct json_object* filter = json_object_object_get(query, "filter");
+  
   /* free'd after returning from prepare_flowquery(...) */
   struct json* json = calloc(1, sizeof(struct json));
   if (json == NULL)
     errExit("calloc");
-  
-  /* TODO: hardcoded */
-  json->num_frules = 2;
+
+  struct json_object* fnum_rules = json_object_object_get(filter, "num_rules");
+  json->num_frules = json_object_get_int(fnum_rules);
   
   /* free'd after returning from prepare_flowquery(...) */
   json->fruleset = calloc(json->num_frules, 
@@ -138,56 +141,40 @@ parse_json_query(const char* const query_mmap) {
   if (json->fruleset == NULL)
     errExit("calloc");
   
-  struct json_object* query = json_tokener_parse(query_mmap);
-  struct json_object* fruleset = json_object_object_get(query, "filter");
-
+  struct json_object* fruleset = json_object_object_get(filter, "ruleset");
+  
   for (int i = 0; i < json->num_frules; i++) {
     
     /* free'd after returning from prepare_flowquery(...) */
-    json->fruleset[i] = calloc(1, sizeof(struct json_filter_rule));
-    if (json->fruleset[i] == NULL)
+    struct json_filter_rule* frule = calloc(1, sizeof(struct json_filter_rule));
+    if (frule == NULL)
       errExit("calloc");
+    json->fruleset[i] = frule;
     
     /* free'd after returning from prepare_flowquery(...) */
-    json->fruleset[i]->off = 
-    calloc(1, sizeof(struct json_filter_rule_offset));
-    if (json->fruleset[i]->off == NULL)
+    frule->off = calloc(1, sizeof(struct json_filter_rule_offset));
+    if (frule->off == NULL)
       errExit("calloc");
-    
-    struct json_object* frule = NULL;
-    if (i == 0) {
-      frule = json_object_object_get(fruleset, "www_request");
-    }else if (i == 1) {
-      frule = json_object_object_get(fruleset, "www_response");    
-    }    
-    
+
+    struct json_object* frule_json = json_object_array_get_idx(fruleset, i);
+
     /* free'd before returning from this function */   
-    struct json_object* delta = json_object_object_get(frule, "delta");
-    struct json_object* op = json_object_object_get(frule, "op");
-    struct json_object* foffset = json_object_object_get(frule, "offset");    
+    struct json_object* delta = json_object_object_get(frule_json, "delta");
+    struct json_object* op = json_object_object_get(frule_json, "op");
+    struct json_object* foffset = json_object_object_get(frule_json, "offset");    
     struct json_object* fo_name = json_object_object_get(foffset, "name");
     struct json_object* fo_val = json_object_object_get(foffset, "value");
     struct json_object* fo_type = json_object_object_get(foffset, "datatype");
     
-    json->fruleset[i]->delta = json_object_get_int(delta);  
-    json->fruleset[i]->op = json_object_get_int(op);
-    json->fruleset[i]->off->name = strdup(json_object_get_string(fo_name));
-    if (json->fruleset[i]->off->name == NULL)
-      errExit("strdup");
-    json->fruleset[i]->off->value = json_object_get_int(fo_val);
-    json->fruleset[i]->off->datatype = json_object_get_int(fo_type);
-    
-    /* free the json objects */
-    json_object_put(fo_name); fo_name = NULL;
-    json_object_put(fo_val); fo_val = NULL;
-    json_object_put(fo_type); fo_type = NULL;    
-    json_object_put(foffset); foffset = NULL; 
-    json_object_put(delta); delta = NULL;
-    json_object_put(op); op = NULL;        
-    json_object_put(frule); frule = NULL;          
+    frule->delta = json_object_get_int(delta);  
+    frule->op = json_object_get_int(op);
+    frule->off->name = strdup(json_object_get_string(fo_name));
+    if (frule->off->name == NULL) errExit("strdup");
+    frule->off->value = json_object_get_int(fo_val);
+    frule->off->datatype = json_object_get_int(fo_type);
   } 
 
-  json_object_put(fruleset); fruleset = NULL;    
+  /* call put(...) only on the root to decremenet the reference count */
   json_object_put(query); query = NULL;      
   
   return json;
@@ -280,7 +267,6 @@ prepare_flowquery(struct ft_data* const trace,
       else
         frule->op = op; op = NULL;
       
-      /* TODO: hardcoded */      
       size_t offset = get_offset(json_query->fruleset[i]->off->name, 
                                  &trace->offsets);
       if (offset == -1)
@@ -898,11 +884,9 @@ main(int argc, char **argv) {
   for (int j = 0; j < fquery->ungrouper_result->num_streams; j++) {
     struct stream* stream = fquery->ungrouper_result->streamset[j];
     for (int i = 0; i < stream->num_records; i++){
-      char* record = stream->recordset[i];
-      
       /* unlink the record, */
       /* all filtered records are free'd next at once */
-      record = NULL; stream->recordset[i] = NULL;        
+      stream->recordset[i] = NULL;        
     }
     free(stream->recordset); stream->recordset = NULL;
     free(stream); stream = NULL;

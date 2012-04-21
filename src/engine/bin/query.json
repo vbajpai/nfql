@@ -1,22 +1,25 @@
 {
   "filter": {
-    "www_request": {
-      "delta": 0, 
-      "op": 0, 
-      "offset": {
-        "datatype": 4, 
-        "name": "dstport", 
-        "value": 80
+    "num_rules": 2, 
+    "ruleset": [
+      {
+        "delta": 0, 
+        "op": 0, 
+        "offset": {
+          "datatype": 4, 
+          "name": "dstport", 
+          "value": 80
+        }
+      }, 
+      {
+        "delta": 0, 
+        "op": 0, 
+        "offset": {
+          "datatype": 4, 
+          "name": "srcport", 
+          "value": 80
+        }
       }
-    }, 
-    "www_response": {
-      "delta": 0, 
-      "op": 0, 
-      "offset": {
-        "datatype": 4, 
-        "name": "srcport", 
-        "value": 80
-      }
-    }
+    ]
   }
 }
