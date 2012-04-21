@@ -71,14 +71,45 @@ class FilterRule:
     self.delta = delta
     self.op = op
 
+class GrouperRule: 
+  
+  def __init__(self, field1_name, field1_type, field2_name, field2_type, 
+               delta, op_name, op_type):
+    
+    self.offset = {
+      'f1_name': field1_name,
+      'f1_datatype': field1_type,
+      'f2_name': field2_name,
+      'f2_datatype': field2_type
+    }
+    
+    self.delta = delta
+        
+    self.op = {
+      'name' : op_name,
+      'type' : op_type
+    }
+
+
 if __name__ == '__main__':
   
   fruleset = []
-  fruleset.append(vars(FilterRule('dstport', 21, rule_map['RULE_S1_16'], 0, rule_map['RULE_EQ'])))
-  fruleset.append(vars(FilterRule('srcport', 80, rule_map['RULE_S1_16'], 0, rule_map['RULE_EQ'])))
-  
+  fruleset.append(vars(FilterRule('dstport', 80, rule_map['RULE_S1_16'], 0, rule_map['RULE_EQ'])))
+  fruleset.append(vars(FilterRule('srcport', 80, rule_map['RULE_S1_16'], 0, rule_map['RULE_EQ'])))  
   filter = {'num_rules': len(fruleset), 'ruleset': fruleset}
-  query = {'filter': filter}
+  
+  
+  gruleset = []
+  gruleset.append(vars(GrouperRule('srcaddr', rule_map['RULE_S1_32'], 
+                                   'srcaddr', rule_map['RULE_S2_32'], 0,  
+                                    rule_map['RULE_EQ'], rule_map['RULE_ABS'])))
+  gruleset.append(vars(GrouperRule('dstaddr', rule_map['RULE_S1_32'], 
+                                   'dstaddr', rule_map['RULE_S2_32'], 0,  
+                                   rule_map['RULE_EQ'], rule_map['RULE_ABS'])))
+  grouper = {'num_rules': len(gruleset), 'ruleset': gruleset} 
+  
+  
+  query = {'filter': filter, 'grouper': grouper}
   
   fjson = json.dumps(query, indent=2)
   fsock = open('query.json', 'w')

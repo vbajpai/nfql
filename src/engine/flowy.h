@@ -74,8 +74,12 @@ struct parameters_data {
 };
 
 struct json {
-  struct json_filter_rule**       fruleset;
   size_t                          num_frules;
+  size_t                          num_grules;
+  
+  struct json_grouper_rule**      gruleset;
+  struct json_filter_rule**       fruleset;
+
 };
 
 struct json_filter_rule {
@@ -83,11 +87,30 @@ struct json_filter_rule {
   uint64_t                        delta;
   struct json_filter_rule_offset* off;
 };
-
 struct json_filter_rule_offset{
   char*                           name;
   uint64_t                        value;
   uint64_t                        datatype;
+};
+
+struct json_grouper_rule {
+  uint64_t                        delta;
+  struct 
+  json_grouper_rule_offset*       off;
+  struct 
+  json_grouper_rule_op*           op;  
+};
+struct json_grouper_rule_offset {
+  char*                           f1_name;
+  char*                           f2_name;
+  
+  uint64_t                        f1_datatype;  
+  uint64_t                        f2_datatype;
+};
+struct json_grouper_rule_op {
+  uint64_t                        name;
+  uint64_t                        type;
+  
 };
 
 
