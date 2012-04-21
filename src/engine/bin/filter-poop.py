@@ -91,6 +91,18 @@ class GrouperRule:
     }
 
 
+class AggregationRule: 
+  
+  def __init__(self, name, datatype, op):
+    
+    self.offset = {
+      'name': name,
+      'datatype': datatype
+    }
+    
+    self.op = op
+
+
 if __name__ == '__main__':
   
   fruleset = []
@@ -118,12 +130,43 @@ if __name__ == '__main__':
   gruleset.append(vars(GrouperRule('dstaddr', rule_map['RULE_S1_32'], 
                                    'dstaddr', rule_map['RULE_S2_32'], 0,  
                                    rule_map['RULE_EQ'], rule_map['RULE_ABS'])))
-  grouper2 = {'num_rules': len(gruleset), 'ruleset': gruleset} 
+  grouper2 = {'num_rules': len(gruleset), 'ruleset': gruleset}
+  
+  
+  aruleset = []
+  aruleset.append(vars(AggregationRule('srcaddr', rule_map['RULE_S1_32'], 
+                                                  rule_map['RULE_STATIC'])))
+  aruleset.append(vars(AggregationRule('dstaddr', rule_map['RULE_S1_32'], 
+                                                  rule_map['RULE_STATIC'])))
+  aruleset.append(vars(AggregationRule('dPkts', rule_map['RULE_S1_32'], 
+                                                rule_map['RULE_SUM'])))
+  aruleset.append(vars(AggregationRule('dOctets', rule_map['RULE_S1_32'], 
+                                                  rule_map['RULE_SUM'])))
+  a1 = {'num_rules' : len(aruleset), 'ruleset' : aruleset}
 
+  aruleset = []
+
+  aruleset.append(vars(AggregationRule('srcaddr', rule_map['RULE_S1_32'], 
+                                                  rule_map['RULE_STATIC'])))
+  aruleset.append(vars(AggregationRule('dstaddr', rule_map['RULE_S1_32'], 
+                                                  rule_map['RULE_STATIC'])))
+  aruleset.append(vars(AggregationRule('dPkts', rule_map['RULE_S1_32'], 
+                                                rule_map['RULE_SUM'])))
+  aruleset.append(vars(AggregationRule('dOctets', rule_map['RULE_S1_32'], 
+                                                  rule_map['RULE_SUM'])))                  
+                  
+  a2 = {'num_rules' : len(aruleset), 'ruleset' : aruleset}
   
   branchset = []
-  branchset.append({'filter': filter1, 'grouper': grouper1})
-  branchset.append({'filter': filter2, 'grouper': grouper2})  
+  branchset.append({'filter': filter1, 
+                    'grouper': grouper1, 
+                    'aggregation': a1
+                   })
+  
+  branchset.append({'filter': filter2, 
+                    'grouper': grouper2, 
+                    'aggregation' : a2
+                   })  
   
   query = {'num_branches': len(branchset), 'branchset': branchset}  
   

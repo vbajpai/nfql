@@ -15,6 +15,39 @@
           }
         ]
       }, 
+      "aggregation": {
+        "num_rules": 4, 
+        "ruleset": [
+          {
+            "op": 512, 
+            "offset": {
+              "datatype": 8, 
+              "name": "srcaddr"
+            }
+          }, 
+          {
+            "op": 512, 
+            "offset": {
+              "datatype": 8, 
+              "name": "dstaddr"
+            }
+          }, 
+          {
+            "op": 262144, 
+            "offset": {
+              "datatype": 8, 
+              "name": "dPkts"
+            }
+          }, 
+          {
+            "op": 262144, 
+            "offset": {
+              "datatype": 8, 
+              "name": "dOctets"
+            }
+          }
+        ]
+      }, 
       "grouper": {
         "num_rules": 2, 
         "ruleset": [
@@ -58,6 +91,39 @@
               "datatype": 4, 
               "name": "srcport", 
               "value": 80
+            }
+          }
+        ]
+      }, 
+      "aggregation": {
+        "num_rules": 4, 
+        "ruleset": [
+          {
+            "op": 512, 
+            "offset": {
+              "datatype": 8, 
+              "name": "srcaddr"
+            }
+          }, 
+          {
+            "op": 512, 
+            "offset": {
+              "datatype": 8, 
+              "name": "dstaddr"
+            }
+          }, 
+          {
+            "op": 262144, 
+            "offset": {
+              "datatype": 8, 
+              "name": "dPkts"
+            }
+          }, 
+          {
+            "op": 262144, 
+            "offset": {
+              "datatype": 8, 
+              "name": "dOctets"
             }
           }
         ]

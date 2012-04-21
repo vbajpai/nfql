@@ -25,11 +25,6 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-/*
- * this header contains the public flowy interface
- */
-
-
 #ifndef flowy_engine_flowy_h
 #define flowy_engine_flowy_h
 
@@ -51,8 +46,6 @@
 
 
 /* this should go away once the rules come from the JSON */
-#define NUM_GROUPER_AGGREGATION_RULES_BRANCH1 4
-#define NUM_GROUPER_AGGREGATION_RULES_BRANCH2 4
 #define NUM_GROUP_FILTER_RULES_BRANCH1 1
 #define NUM_GROUP_FILTER_RULES_BRANCH2 1
 #define NUM_MERGER_RULES 2
@@ -72,13 +65,14 @@ struct json {
   size_t                          num_branches;
   struct json_branch_rules**      branchset;
 };
-
 struct json_branch_rules {
   size_t                          num_frules;
   size_t                          num_grules;
+  size_t                          num_arules;  
   
-  struct json_grouper_rule**      gruleset;
   struct json_filter_rule**       fruleset;
+  struct json_grouper_rule**      gruleset;
+  struct json_aggr_rule**         aruleset;  
 };
 
 struct json_filter_rule {
@@ -110,6 +104,15 @@ struct json_grouper_rule_op {
   uint64_t                        name;
   uint64_t                        type;
   
+};
+
+struct json_aggr_rule {
+  uint64_t                        op;
+  struct json_aggr_rule_offset* off;
+};
+struct json_aggr_rule_offset{
+  char*                           name;
+  uint64_t                        datatype;
 };
 
 

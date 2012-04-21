@@ -324,6 +324,53 @@ parse_json_query(const char* const query_mmap) {
     /* -----------------------------------------------------------------------*/  
     /*                        parse aggr rules                                */
     /* -----------------------------------------------------------------------*/
+
+    struct json_object* aggr = 
+    json_object_object_get(branch_json, "aggregation");
+    struct json_object* 
+    anum_rules = json_object_object_get(aggr, "num_rules");
+    branch->num_arules = json_object_get_int(anum_rules);
+    
+    /* free'd after returning from prepare_flowquery(...) */
+    branch->aruleset = calloc(branch->num_arules, 
+                              sizeof(struct json_aggr_rule*));
+    if (branch->aruleset == NULL)
+      errExit("calloc");  
+    struct json_object* aruleset = json_object_object_get(aggr, "ruleset");
+    
+    for (int i = 0; i < branch->num_arules; i++) {
+      
+      /* free'd after returning from prepare_flowquery(...) */
+      struct json_aggr_rule* 
+      arule = calloc(1, sizeof(struct json_aggr_rule));
+      if (arule == NULL)
+        errExit("calloc");
+      branch->aruleset[i] = arule;
+      
+      /* free'd after returning from prepare_flowquery(...) */
+      arule->off = calloc(1, sizeof(struct json_aggr_rule_offset));
+      if (arule->off == NULL)
+        errExit("calloc");
+      
+      struct json_object* arule_json = json_object_array_get_idx(aruleset, i);
+      
+      /* free'd before returning from this function */   
+      struct json_object* 
+      op = json_object_object_get(arule_json, "op");
+      struct json_object* 
+      offset = json_object_object_get(arule_json, "offset");
+      
+      struct json_object* 
+      name = json_object_object_get(offset, "name");
+      struct json_object* 
+      datatype = json_object_object_get(offset, "datatype");
+      
+      arule->op = json_object_get_int(op);
+      arule->off->name = strdup(json_object_get_string(name));
+      if (arule->off->name == NULL) errExit("strdup");
+      arule->off->datatype = json_object_get_int(datatype);
+    }     
+    
     
     /* -----------------------------------------------------------------------*/
     
@@ -444,15 +491,14 @@ prepare_flowquery(struct ft_data* const trace,
     
     branch->num_filter_rules = json_branch->num_frules;
     branch->num_grouper_rules = json_branch->num_grules;
+    branch->num_aggr_rules = json_branch->num_arules;    
     
     /* TODO: hardcoded */
     switch (i) {
       case 0:
-        branch->num_aggr_rules = NUM_GROUPER_AGGREGATION_RULES_BRANCH1;
         branch->num_gfilter_rules = NUM_GROUP_FILTER_RULES_BRANCH1;
         break;
       case 1:  
-        branch->num_aggr_rules = NUM_GROUPER_AGGREGATION_RULES_BRANCH2;
         branch->num_gfilter_rules = NUM_GROUP_FILTER_RULES_BRANCH2;
         break;
     }
@@ -566,34 +612,15 @@ prepare_flowquery(struct ft_data* const trace,
       else
         arule->op = op; op = NULL;
 
+      struct json_aggr_rule* arule_json = json_branch->aruleset[j];
+      size_t offset = get_offset(arule_json->off->name,
+                                 &trace->offsets);
+      if (offset == -1)
+        errExit("get_offset(arule_json->off->name) returned -1");
       
-      /* TODO: hardcoded */      
-      switch (j) {
-        case 0:
-          arule->field_offset    =         trace->offsets.srcaddr;
-          break;
-        case 1:
-          arule->field_offset    =         trace->offsets.dstaddr;
-          break;
-        case 2:
-          arule->field_offset    =         trace->offsets.dPkts;
-          break;
-        case 3:
-          arule->field_offset    =         trace->offsets.dOctets;
-          break;
-      }      
-      switch (j) {
-        case 0:
-        case 1:
-          arule->op->op          =         RULE_STATIC;
-          break;
-        case 2:
-        case 3:
-          arule->op->op          =         RULE_SUM;
-          break;
-      }      
-      arule->op->field_type      =         RULE_S1_32;
-      
+      arule->field_offset        =         offset;
+      arule->op->op              =         arule_json->op;
+      arule->op->field_type      =         arule_json->off->datatype;
       arule->func                =         NULL;
       
       aruleset[j] = arule; arule = NULL;
@@ -853,6 +880,15 @@ main(int argc, char **argv) {
         free(grule); grule = NULL;
       }
       free(json_branch->gruleset); json_branch->gruleset = NULL;
+      
+      /* deallocate the aggr json query buffers */
+      for (int j = 0; j < json_branch->num_arules; j++) {
+        struct json_aggr_rule* arule = json_branch->aruleset[j];
+        free(arule->off->name); arule->off->name = NULL;
+        free(arule->off); arule->off = NULL;
+        free(arule); arule = NULL;
+      }
+      free(json_branch->aruleset); json_branch->aruleset = NULL;
       
       free(json_branch); json_branch = NULL; json_query->branchset[i] = NULL;
     }
