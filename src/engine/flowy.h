@@ -51,11 +51,6 @@
 
 
 /* this should go away once the rules come from the JSON */
-#define NUM_BRANCHES 2
-#define NUM_FILTER_RULES_BRANCH1 1
-#define NUM_FILTER_RULES_BRANCH2 1
-#define NUM_GROUPER_RULES_BRANCH1 2 
-#define NUM_GROUPER_RULES_BRANCH2 2
 #define NUM_GROUPER_AGGREGATION_RULES_BRANCH1 4
 #define NUM_GROUPER_AGGREGATION_RULES_BRANCH2 4
 #define NUM_GROUP_FILTER_RULES_BRANCH1 1
@@ -74,12 +69,16 @@ struct parameters_data {
 };
 
 struct json {
+  size_t                          num_branches;
+  struct json_branch_rules**      branchset;
+};
+
+struct json_branch_rules {
   size_t                          num_frules;
   size_t                          num_grules;
   
   struct json_grouper_rule**      gruleset;
   struct json_filter_rule**       fruleset;
-
 };
 
 struct json_filter_rule {

@@ -95,9 +95,11 @@ if __name__ == '__main__':
   
   fruleset = []
   fruleset.append(vars(FilterRule('dstport', 80, rule_map['RULE_S1_16'], 0, rule_map['RULE_EQ'])))
-  fruleset.append(vars(FilterRule('srcport', 80, rule_map['RULE_S1_16'], 0, rule_map['RULE_EQ'])))  
-  filter = {'num_rules': len(fruleset), 'ruleset': fruleset}
-  
+  filter1 = {'num_rules': len(fruleset), 'ruleset': fruleset}
+
+  fruleset = []
+  fruleset.append(vars(FilterRule('srcport', 80, rule_map['RULE_S1_16'], 0, rule_map['RULE_EQ'])))    
+  filter2 = {'num_rules': len(fruleset), 'ruleset': fruleset}
   
   gruleset = []
   gruleset.append(vars(GrouperRule('srcaddr', rule_map['RULE_S1_32'], 
@@ -106,10 +108,24 @@ if __name__ == '__main__':
   gruleset.append(vars(GrouperRule('dstaddr', rule_map['RULE_S1_32'], 
                                    'dstaddr', rule_map['RULE_S2_32'], 0,  
                                    rule_map['RULE_EQ'], rule_map['RULE_ABS'])))
-  grouper = {'num_rules': len(gruleset), 'ruleset': gruleset} 
+  grouper1 = {'num_rules': len(gruleset), 'ruleset': gruleset} 
   
   
-  query = {'filter': filter, 'grouper': grouper}
+  gruleset = []
+  gruleset.append(vars(GrouperRule('srcaddr', rule_map['RULE_S1_32'], 
+                                   'srcaddr', rule_map['RULE_S2_32'], 0,  
+                                   rule_map['RULE_EQ'], rule_map['RULE_ABS'])))
+  gruleset.append(vars(GrouperRule('dstaddr', rule_map['RULE_S1_32'], 
+                                   'dstaddr', rule_map['RULE_S2_32'], 0,  
+                                   rule_map['RULE_EQ'], rule_map['RULE_ABS'])))
+  grouper2 = {'num_rules': len(gruleset), 'ruleset': gruleset} 
+
+  
+  branchset = []
+  branchset.append({'filter': filter1, 'grouper': grouper1})
+  branchset.append({'filter': filter2, 'grouper': grouper2})  
+  
+  query = {'num_branches': len(branchset), 'branchset': branchset}  
   
   fjson = json.dumps(query, indent=2)
   fsock = open('query.json', 'w')

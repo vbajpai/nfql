@@ -1,56 +1,99 @@
 {
-  "filter": {
-    "num_rules": 2, 
-    "ruleset": [
-      {
-        "delta": 0, 
-        "op": 0, 
-        "offset": {
-          "datatype": 4, 
-          "name": "dstport", 
-          "value": 80
-        }
+  "branchset": [
+    {
+      "filter": {
+        "num_rules": 1, 
+        "ruleset": [
+          {
+            "delta": 0, 
+            "op": 0, 
+            "offset": {
+              "datatype": 4, 
+              "name": "dstport", 
+              "value": 80
+            }
+          }
+        ]
       }, 
-      {
-        "delta": 0, 
-        "op": 0, 
-        "offset": {
-          "datatype": 4, 
-          "name": "srcport", 
-          "value": 80
-        }
+      "grouper": {
+        "num_rules": 2, 
+        "ruleset": [
+          {
+            "delta": 0, 
+            "op": {
+              "type": 0, 
+              "name": 0
+            }, 
+            "offset": {
+              "f2_datatype": 2, 
+              "f1_name": "srcaddr", 
+              "f1_datatype": 8, 
+              "f2_name": "srcaddr"
+            }
+          }, 
+          {
+            "delta": 0, 
+            "op": {
+              "type": 0, 
+              "name": 0
+            }, 
+            "offset": {
+              "f2_datatype": 2, 
+              "f1_name": "dstaddr", 
+              "f1_datatype": 8, 
+              "f2_name": "dstaddr"
+            }
+          }
+        ]
       }
-    ]
-  }, 
-  "grouper": {
-    "num_rules": 2, 
-    "ruleset": [
-      {
-        "delta": 0, 
-        "op": {
-          "type": 0, 
-          "name": 0
-        }, 
-        "offset": {
-          "f2_datatype": 2, 
-          "f1_name": "srcaddr", 
-          "f1_datatype": 8, 
-          "f2_name": "srcaddr"
-        }
+    }, 
+    {
+      "filter": {
+        "num_rules": 1, 
+        "ruleset": [
+          {
+            "delta": 0, 
+            "op": 0, 
+            "offset": {
+              "datatype": 4, 
+              "name": "srcport", 
+              "value": 80
+            }
+          }
+        ]
       }, 
-      {
-        "delta": 0, 
-        "op": {
-          "type": 0, 
-          "name": 0
-        }, 
-        "offset": {
-          "f2_datatype": 2, 
-          "f1_name": "dstaddr", 
-          "f1_datatype": 8, 
-          "f2_name": "dstaddr"
-        }
+      "grouper": {
+        "num_rules": 2, 
+        "ruleset": [
+          {
+            "delta": 0, 
+            "op": {
+              "type": 0, 
+              "name": 0
+            }, 
+            "offset": {
+              "f2_datatype": 2, 
+              "f1_name": "srcaddr", 
+              "f1_datatype": 8, 
+              "f2_name": "srcaddr"
+            }
+          }, 
+          {
+            "delta": 0, 
+            "op": {
+              "type": 0, 
+              "name": 0
+            }, 
+            "offset": {
+              "f2_datatype": 2, 
+              "f1_name": "dstaddr", 
+              "f1_datatype": 8, 
+              "f2_name": "dstaddr"
+            }
+          }
+        ]
       }
-    ]
-  }
+    }
+  ], 
+  "num_branches": 2
 }
