@@ -15,6 +15,20 @@
           }
         ]
       }, 
+      "gfilter": {
+        "num_rules": 1, 
+        "ruleset": [
+          {
+            "delta": 0, 
+            "op": 128, 
+            "offset": {
+              "datatype": 8, 
+              "name": "dPkts", 
+              "value": 200
+            }
+          }
+        ]
+      }, 
       "aggregation": {
         "num_rules": 4, 
         "ruleset": [
@@ -91,6 +105,20 @@
               "datatype": 4, 
               "name": "srcport", 
               "value": 80
+            }
+          }
+        ]
+      }, 
+      "gfilter": {
+        "num_rules": 1, 
+        "ruleset": [
+          {
+            "delta": 0, 
+            "op": 128, 
+            "offset": {
+              "datatype": 8, 
+              "name": "dPkts", 
+              "value": 200
             }
           }
         ]

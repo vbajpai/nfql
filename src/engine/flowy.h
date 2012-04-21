@@ -43,11 +43,7 @@
 #include "ftreader.h"
 #include "echo.h"
 
-
-
 /* this should go away once the rules come from the JSON */
-#define NUM_GROUP_FILTER_RULES_BRANCH1 1
-#define NUM_GROUP_FILTER_RULES_BRANCH2 1
 #define NUM_MERGER_RULES 2
 
 struct parameters {
@@ -68,11 +64,13 @@ struct json {
 struct json_branch_rules {
   size_t                          num_frules;
   size_t                          num_grules;
-  size_t                          num_arules;  
+  size_t                          num_arules;
+  size_t                          num_gfrules;
   
   struct json_filter_rule**       fruleset;
   struct json_grouper_rule**      gruleset;
   struct json_aggr_rule**         aruleset;  
+  struct json_gfilter_rule**      gfruleset;    
 };
 
 struct json_filter_rule {
@@ -112,6 +110,18 @@ struct json_aggr_rule {
 };
 struct json_aggr_rule_offset{
   char*                           name;
+  uint64_t                        datatype;
+};
+
+struct json_gfilter_rule {
+  uint64_t                        op;
+  uint64_t                        delta;
+  struct 
+  json_gfilter_rule_offset*       off;
+};
+struct json_gfilter_rule_offset{
+  char*                           name;
+  uint64_t                        value;
   uint64_t                        datatype;
 };
 

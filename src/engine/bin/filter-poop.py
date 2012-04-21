@@ -90,7 +90,6 @@ class GrouperRule:
       'type' : op_type
     }
 
-
 class AggregationRule: 
   
   def __init__(self, name, datatype, op):
@@ -100,6 +99,19 @@ class AggregationRule:
       'datatype': datatype
     }
     
+    self.op = op
+
+class GroupFilterRule: 
+  
+  def __init__(self, name, value, datatype, delta, op):
+    
+    self.offset = {
+      'name': name,
+      'value': value,
+      'datatype': datatype
+    }
+    
+    self.delta = delta
     self.op = op
 
 
@@ -145,7 +157,6 @@ if __name__ == '__main__':
   a1 = {'num_rules' : len(aruleset), 'ruleset' : aruleset}
 
   aruleset = []
-
   aruleset.append(vars(AggregationRule('srcaddr', rule_map['RULE_S1_32'], 
                                                   rule_map['RULE_STATIC'])))
   aruleset.append(vars(AggregationRule('dstaddr', rule_map['RULE_S1_32'], 
@@ -153,19 +164,32 @@ if __name__ == '__main__':
   aruleset.append(vars(AggregationRule('dPkts', rule_map['RULE_S1_32'], 
                                                 rule_map['RULE_SUM'])))
   aruleset.append(vars(AggregationRule('dOctets', rule_map['RULE_S1_32'], 
-                                                  rule_map['RULE_SUM'])))                  
-                  
+                                                  rule_map['RULE_SUM'])))
   a2 = {'num_rules' : len(aruleset), 'ruleset' : aruleset}
+  
+  gfruleset = []
+  gfruleset.append(vars(GroupFilterRule('dPkts', 200, 
+                                        rule_map['RULE_S1_32'], 0,
+                                        rule_map['RULE_GT'])))
+  gfilter1 = {'num_rules' : len(gfruleset), 'ruleset' : gfruleset}
+  
+  gfruleset = []
+  gfruleset.append(vars(GroupFilterRule('dPkts', 200, 
+                                        rule_map['RULE_S1_32'], 0,
+                                        rule_map['RULE_GT'])))
+  gfilter2 = {'num_rules' : len(gfruleset), 'ruleset' : gfruleset}
   
   branchset = []
   branchset.append({'filter': filter1, 
                     'grouper': grouper1, 
-                    'aggregation': a1
+                    'aggregation': a1,
+                    'gfilter': gfilter1,
                    })
   
   branchset.append({'filter': filter2, 
                     'grouper': grouper2, 
-                    'aggregation' : a2
+                    'aggregation' : a2,
+                    'gfilter': gfilter2,
                    })  
   
   query = {'num_branches': len(branchset), 'branchset': branchset}  

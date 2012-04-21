@@ -395,6 +395,59 @@ parse_json_query(const char* const query_mmap) {
     /* -----------------------------------------------------------------------*/  
     /*                        parse gfilter rules                             */
     /* -----------------------------------------------------------------------*/
+
+    struct json_object* 
+    gfilter = json_object_object_get(branch_json, "gfilter");  
+    struct json_object* 
+    gfnum_rules = json_object_object_get(gfilter, "num_rules");
+    branch->num_gfrules = json_object_get_int(gfnum_rules);
+    
+    /* free'd after returning from prepare_flowquery(...) */
+    branch->gfruleset = calloc(branch->num_gfrules, 
+                               sizeof(struct json_gfilter_rule*));
+    if (branch->gfruleset == NULL)
+      errExit("calloc");  
+    
+    struct json_object* gfruleset = json_object_object_get(gfilter, "ruleset");
+    
+    for (int i = 0; i < branch->num_gfrules; i++) {
+      
+      /* free'd after returning from prepare_flowquery(...) */
+      struct json_gfilter_rule* 
+      gfrule = calloc(1, sizeof(struct json_gfilter_rule));
+      if (gfrule == NULL)
+        errExit("calloc");
+      branch->gfruleset[i] = gfrule;
+      
+      /* free'd after returning from prepare_flowquery(...) */
+      gfrule->off = calloc(1, sizeof(struct json_gfilter_rule_offset));
+      if (gfrule->off == NULL)
+        errExit("calloc");
+      
+      struct json_object* gfrule_json = json_object_array_get_idx(gfruleset, i);
+      
+      /* free'd before returning from this function */   
+      struct json_object* 
+      delta = json_object_object_get(gfrule_json, "delta");
+      struct json_object* 
+      op = json_object_object_get(gfrule_json, "op");
+      struct json_object* 
+      offset = json_object_object_get(gfrule_json, "offset");    
+      struct json_object* 
+      fo_name = json_object_object_get(offset, "name");
+      struct json_object* 
+      fo_val = json_object_object_get(offset, "value");
+      struct json_object* 
+      fo_type = json_object_object_get(offset, "datatype");
+      
+      gfrule->delta = json_object_get_int(delta);  
+      gfrule->op = json_object_get_int(op);
+      gfrule->off->name = strdup(json_object_get_string(fo_name));
+      if (gfrule->off->name == NULL) errExit("strdup");
+      gfrule->off->value = json_object_get_int(fo_val);
+      gfrule->off->datatype = json_object_get_int(fo_type);
+    } 
+
     
     /* -----------------------------------------------------------------------*/
 
@@ -491,18 +544,8 @@ prepare_flowquery(struct ft_data* const trace,
     
     branch->num_filter_rules = json_branch->num_frules;
     branch->num_grouper_rules = json_branch->num_grules;
-    branch->num_aggr_rules = json_branch->num_arules;    
-    
-    /* TODO: hardcoded */
-    switch (i) {
-      case 0:
-        branch->num_gfilter_rules = NUM_GROUP_FILTER_RULES_BRANCH1;
-        break;
-      case 1:  
-        branch->num_gfilter_rules = NUM_GROUP_FILTER_RULES_BRANCH2;
-        break;
-    }
-    
+    branch->num_aggr_rules = json_branch->num_arules;
+    branch->num_gfilter_rules = json_branch->num_gfrules;    
     branch->branch_id = i;
     branch->data = trace;
     
@@ -646,13 +689,18 @@ prepare_flowquery(struct ft_data* const trace,
         errExit("calloc");
       else
         gfrule->op = op; op = NULL;
-
-      gfrule->field                =         trace->offsets.dPkts;
-      gfrule->value                =         200;
-      gfrule->delta                =         0;
       
-      gfrule->op->op               =         RULE_GT;
-      gfrule->op->field_type       =         RULE_S1_32;
+      struct json_gfilter_rule* gfrule_json = json_branch->gfruleset[j];
+      size_t offset = get_offset(gfrule_json->off->name,
+                                 &trace->offsets);
+      if (offset == -1)
+        errExit("get_offset(arule_json->off->name) returned -1");
+
+      gfrule->field                =         offset;
+      gfrule->value                =         gfrule_json->off->value;
+      gfrule->delta                =         gfrule_json->delta;      
+      gfrule->op->op               =         gfrule_json->op;
+      gfrule->op->field_type       =         gfrule_json->off->datatype;
       gfrule->func                 =         NULL;
       
       gfruleset[j] = gfrule; gfrule = NULL;
@@ -889,6 +937,15 @@ main(int argc, char **argv) {
         free(arule); arule = NULL;
       }
       free(json_branch->aruleset); json_branch->aruleset = NULL;
+      
+      /* deallocate the group filter json query buffers */
+      for (int j = 0; j < json_branch->num_gfrules; j++) {
+        struct json_gfilter_rule* gfrule = json_branch->gfruleset[j];
+        free(gfrule->off->name); gfrule->off->name = NULL;
+        free(gfrule->off); gfrule->off = NULL;
+        free(gfrule); gfrule = NULL;
+      }
+      free(json_branch->gfruleset); json_branch->gfruleset = NULL;      
       
       free(json_branch); json_branch = NULL; json_query->branchset[i] = NULL;
     }
