@@ -114,19 +114,23 @@ class MergerRule:
 if __name__ == '__main__':
   
   fruleset = []
-  fruleset.append(vars(FilterRule('dstport', 80, 'RULE_S1_16', 0, 
+  fruleset.append(vars(FilterRule('dstport', 21, 'RULE_S1_16', 0, 
                                                  'RULE_EQ')))
+  fruleset.append(vars(FilterRule('prot', protocol('TCP'), 'RULE_S1_16', 0,
+                                                           'RULE_EQ')))
   filter1 = {'num_rules': len(fruleset), 'ruleset': fruleset}
 
   fruleset = []
-  fruleset.append(vars(FilterRule('srcport', 80, 'RULE_S1_16', 0, 
-                                                 'RULE_EQ')))    
+  fruleset.append(vars(FilterRule('srcport', 21, 'RULE_S1_16', 0, 
+                                                 'RULE_EQ')))
+  fruleset.append(vars(FilterRule('prot', protocol('TCP'), 'RULE_S1_16', 0,
+                                                           'RULE_EQ')))                                                 
   filter2 = {'num_rules': len(fruleset), 'ruleset': fruleset}
   
   gruleset = []
   gruleset.append(vars(GrouperRule('srcaddr', 'RULE_S1_32', 
                                    'srcaddr', 'RULE_S2_32', 0,  
-                                    'RULE_EQ', 'RULE_ABS')))
+                                   'RULE_EQ', 'RULE_ABS')))
   gruleset.append(vars(GrouperRule('dstaddr', 'RULE_S1_32', 
                                    'dstaddr', 'RULE_S2_32', 0,  
                                    'RULE_EQ', 'RULE_ABS')))
@@ -166,13 +170,10 @@ if __name__ == '__main__':
   a2 = {'num_rules' : len(aruleset), 'ruleset' : aruleset}
   
   gfruleset = []
-  gfruleset.append(vars(GroupFilterRule('dPkts', 200, 
-                                        'RULE_S1_32', 0,
-                                        'RULE_GT')))
   gfilter1 = {'num_rules' : len(gfruleset), 'ruleset' : gfruleset}
   
   gfruleset = []
-  gfruleset.append(vars(GroupFilterRule('dPkts', 200, 
+  gfruleset.append(vars(GroupFilterRule('dPkts', 50, 
                                         'RULE_S1_32', 0,
                                         'RULE_GT')))
   gfilter2 = {'num_rules' : len(gfruleset), 'ruleset' : gfruleset}
@@ -192,14 +193,14 @@ if __name__ == '__main__':
   
   mruleset = []
   mruleset.append(vars(MergerRule(0, 1, 'srcaddr', 'RULE_S1_32',
-                                    'dstaddr', 'RULE_S2_32', 0, 
-                                               'RULE_EQ', 
-                                               'RULE_ABS')))
+                                        'dstaddr', 'RULE_S2_32', 0, 
+                                                   'RULE_EQ', 
+                                                   'RULE_ABS')))
   
   mruleset.append(vars(MergerRule(0, 1, 'dstaddr', 'RULE_S1_32',
-                                    'srcaddr', 'RULE_S2_32', 0, 
-                                               'RULE_EQ', 
-                                               'RULE_ABS')))
+                                        'srcaddr', 'RULE_S2_32', 0, 
+                                                   'RULE_EQ', 
+                                                   'RULE_ABS')))
   
   merger = {'num_rules' : len(mruleset), 'ruleset' : mruleset}
   
@@ -208,6 +209,6 @@ if __name__ == '__main__':
            'merger': merger}  
   
   fjson = json.dumps(query, indent=2)
-  fsock = open('query.json', 'w')
+  fsock = open('query-ftp-tcp-session.json', 'w')
   fsock.write(fjson)
   fsock.close
