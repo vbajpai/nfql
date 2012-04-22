@@ -63,10 +63,11 @@ parse_cmdline_args(int argc, char** const argv) {
   }
   
   if (argc != optind + 2)
-    usageErr("%s $TRACE $QUERY\n", argv[0], argv[0]);
+    usageErr("\n\n 1) $ %s $TRACE $QUERY or \n\n 2) $ flow-cat ... | %s $QUERY",
+             argv[0], argv[0]);
   else {
-    param->trace_filename = argv[optind];
-    param->query_filename = argv[optind+1];
+    param->query_filename = argv[optind];
+    param->trace_filename = argv[optind+1];
   }  
   return param;
 }
@@ -88,9 +89,14 @@ read_param_data(const struct parameters* const param) {
   if (param_data == NULL)
     errExit("calloc");
   
-  fsock = open(param->trace_filename, O_RDONLY);
-  if (fsock == -1)
-    errExit("open"); 
+  if(!strcmp(param->trace_filename,"-"))
+    fsock = 0;
+  else {
+    fsock = open(param->trace_filename, O_RDONLY);
+    if (fsock == -1)
+      errExit("open"); 
+  }
+  
   param_data->trace = ft_open(fsock);
   if (close(fsock) == -1)
     errExit("close");
@@ -1068,8 +1074,10 @@ main(int argc, char **argv) {
       /* deallocate the filter json query buffers */
       for (int j = 0; j < json_branch->num_frules; j++) {
         struct json_filter_rule* frule = json_branch->fruleset[j];
+        free(frule->off->datatype); frule->off->datatype = NULL;
         free(frule->off->name); frule->off->name = NULL;
         free(frule->off); frule->off = NULL;
+        free(frule->op); frule->op = NULL;
         free(frule); frule = NULL;
       }
       free(json_branch->fruleset); json_branch->fruleset = NULL;
@@ -1077,10 +1085,14 @@ main(int argc, char **argv) {
       /* deallocate the grouper json query buffers */    
       for (int j = 0; j < json_branch->num_grules; j++) {
         struct json_grouper_rule* grule = json_branch->gruleset[j];
+        free(grule->off->f1_datatype); grule->off->f1_datatype = NULL;
+        free(grule->off->f2_datatype); grule->off->f2_datatype = NULL;
         free(grule->off->f1_name); grule->off->f1_name = NULL;
         free(grule->off->f2_name); grule->off->f2_name = NULL;
         free(grule->off); grule->off = NULL;
-        free(grule->op); grule->op = NULL;      
+        free(grule->op->name); grule->op->name = NULL;
+        free(grule->op->type); grule->op->type = NULL;
+        free(grule->op); grule->op = NULL;
         free(grule); grule = NULL;
       }
       free(json_branch->gruleset); json_branch->gruleset = NULL;
@@ -1088,8 +1100,10 @@ main(int argc, char **argv) {
       /* deallocate the aggr json query buffers */
       for (int j = 0; j < json_branch->num_arules; j++) {
         struct json_aggr_rule* arule = json_branch->aruleset[j];
+        free(arule->off->datatype); arule->off->datatype = NULL;
         free(arule->off->name); arule->off->name = NULL;
         free(arule->off); arule->off = NULL;
+        free(arule->op); arule->op = NULL;
         free(arule); arule = NULL;
       }
       free(json_branch->aruleset); json_branch->aruleset = NULL;
@@ -1097,8 +1111,10 @@ main(int argc, char **argv) {
       /* deallocate the group filter json query buffers */
       for (int j = 0; j < json_branch->num_gfrules; j++) {
         struct json_gfilter_rule* gfrule = json_branch->gfruleset[j];
+        free(gfrule->off->datatype); gfrule->off->datatype = NULL;
         free(gfrule->off->name); gfrule->off->name = NULL;
         free(gfrule->off); gfrule->off = NULL;
+        free(gfrule->op); gfrule->op = NULL;
         free(gfrule); gfrule = NULL;
       }
       free(json_branch->gfruleset); json_branch->gfruleset = NULL;      
@@ -1109,9 +1125,13 @@ main(int argc, char **argv) {
     /* deallocate the grouper json query buffers */    
     for (int i = 0; i < json_query->num_mrules; i++) {
       struct json_merger_rule* mrule = json_query->mruleset[i];
+      free(mrule->off->f1_datatype); mrule->off->f1_datatype = NULL;
+      free(mrule->off->f2_datatype); mrule->off->f2_datatype = NULL;
       free(mrule->off->f1_name); mrule->off->f1_name = NULL;
       free(mrule->off->f2_name); mrule->off->f2_name = NULL;
       free(mrule->off); mrule->off = NULL;
+      free(mrule->op->name); mrule->op->name = NULL;
+      free(mrule->op->type); mrule->op->type = NULL;
       free(mrule->op); mrule->op = NULL;      
       free(mrule); mrule = NULL;
     }
