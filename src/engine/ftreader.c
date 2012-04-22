@@ -39,10 +39,8 @@ ft_open(int fd) {
   data->fd = fd;
   
   ret = ftio_init(&data->io, data->fd, FT_IO_FLAG_READ);
-  if (ret < 0) {
-    perror("ftio_init failed");
-    return NULL;
-  }
+  if (ret < 0)
+    errExit("ftio_init");
   
   if (ftio_check_xfield(&data->io, 
                         FT_XFIELD_DPKTS      |
@@ -120,10 +118,8 @@ ft_write(struct ft_data *data, int outfd) {
   ftset.z_level = 6; // from 0-9 TODO: make configureable
   
   ret = ftio_init(&ftio_out, outfd, FT_IO_FLAG_WRITE | ((ftset.z_level) ? FT_IO_FLAG_ZINIT : 0));
-  if (ret < 0) {
-    perror("ftio_init() failed");
-    return;
-  }
+  if (ret < 0)
+    errExit("ftio_init()");
   
   ftio_set_byte_order(&ftio_out, ftset.byte_order);
   ftio_set_z_level(&ftio_out, ftset.z_level);
