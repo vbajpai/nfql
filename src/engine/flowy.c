@@ -124,8 +124,12 @@ read_param_data(const struct parameters* const param) {
 struct json*
 parse_json_query(const char* const query_mmap) {
   
-  struct json_object* query = json_tokener_parse(query_mmap);  
-  
+  struct json_tokener* tok = json_tokener_new();
+  struct json_object* query = json_tokener_parse_ex(tok, query_mmap, -1);
+  if(tok->err != json_tokener_success)
+    errExit("json_tokener_parse_ex(...)");
+  json_tokener_free(tok);
+
   /* free'd after returning from prepare_flowquery(...) */
   struct json* json = calloc(1, sizeof(struct json));
   if (json == NULL)
