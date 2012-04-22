@@ -53,7 +53,7 @@ outputError(int err, bool flushStdout,
   
   vsnprintf(userMsg, BUF_SIZE, format, ap);  
   snprintf(errText, BUF_SIZE, ":");  
-  snprintf(buf, BUF_SIZE, "ERROR%s %s\n", errText, userMsg);
+  snprintf(buf, BUF_SIZE, "\nERROR%s %s\n", errText, userMsg);
   
   if (flushStdout)
     fflush(stdout); /* Flush any pending stdout */
@@ -62,13 +62,11 @@ outputError(int err, bool flushStdout,
 }
 
 void 
-usageError(char *progName, char *msg, int opt)
-{
+usageError(char *progName, char *msg, int opt) {
   if (msg != NULL && opt != 0)
     fprintf(stderr, "%s (-%c)\n", msg, opt);
   usageErr("%s $TRACE\n", progName, progName);
 }
-
 
 void 
 usageErr(const char *format, ...) {
@@ -76,13 +74,28 @@ usageErr(const char *format, ...) {
   va_list argList;
   fflush(stdout); /* Flush any pending stdout */
   
-  fprintf(stderr, "Usage: "); 
+  fprintf(stderr, "\nUsage: "); 
   va_start(argList, format); 
   vfprintf(stderr, format, argList); 
   va_end(argList);
   
   fflush(stderr); /* In case stderr is not line-buffered */
   exit(EXIT_FAILURE);
+}
+
+void
+print_trace (void)
+{
+#define BUFSIZE 10
+  void *array[BUFSIZE];  
+  size_t size = backtrace (array, BUFSIZE);
+  char ** strings = backtrace_symbols (array, size);
+  
+  puts("\nStack Trace: \n");
+  for (int i = 0; i < size; i++)
+    printf ("%s\n", strings[i]);
+  
+  free (strings);
 }
 
 void
@@ -94,5 +107,7 @@ errExit(const char *format, ...) {
   outputError(errno, true, format, argList); 
   va_end(argList);
   
+  print_trace();  
   terminate();
 }
+

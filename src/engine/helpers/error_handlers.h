@@ -30,6 +30,7 @@
 #include "base.h"
 
 #include <stdarg.h>
+#include <execinfo.h>
 
 /* This macro stops 'gcc -Wall' complaining that "control
  * reaches end of non-void function" if we use the following
@@ -44,5 +45,7 @@
 void usageError(char *progName, char *msg, int opt);
 void usageErr(const char *format, ...) NORETURN;
 void errExit(const char *format, ...) NORETURN;
+void print_trace (void);
+
 
 #endif
