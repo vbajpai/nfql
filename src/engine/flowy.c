@@ -76,8 +76,6 @@ parse_cmdline_args(int argc, char** const argv) {
 struct parameters_data*
 read_param_data(const struct parameters* const param) {
   
-  int                                 fsock;
-  
   /* param_data->query_mmap is free'd after calling parse_json_query(...)
    * param_data->query_mmap_stat is free'd after freeing param_data->query_mmap
    * param_data->trace is free'd in 2 stages:
@@ -90,6 +88,7 @@ read_param_data(const struct parameters* const param) {
   if (param_data == NULL)
     errExit("calloc");
   
+  int fsock;
   if(!strcmp(param->trace_filename,"-"))
     fsock = 0;
   else {
