@@ -47,7 +47,9 @@ merger(
   
   /* initialize the iterator */
   struct permut_iter* iter = iter_init(num_branches, branchset);
-  
+  if (iter == NULL)
+    return mresult;
+
   /* iterate over all permutations */
   unsigned int index = 0;
   while(iter_next(iter)) {
@@ -106,7 +108,7 @@ merger(
       mresult->group_tuples[mresult->num_group_tuples-1] = matched_tuple;
     }  
   };
-  
+
   mresult->total_num_group_tuples = index;
   iter_destroy(iter);
   return mresult;

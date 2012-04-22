@@ -55,7 +55,7 @@ branch_start(void *arg) {
                                 );
   
   if (branch->filter_result == NULL)
-    errExit("filter(...) returned NULL");
+    pthread_exit((void*)EXIT_FAILURE);
   
   /* -----------------------------------------------------------------------*/
   
@@ -90,7 +90,7 @@ branch_start(void *arg) {
                                    branch->data->rec_size
                                   );
   if (branch->grouper_result == NULL)
-    errExit("grouper(...) returned NULL");
+    pthread_exit((void*)EXIT_FAILURE);
   else {
     
     /* free filter rules */
@@ -145,7 +145,7 @@ branch_start(void *arg) {
                                       );
   
   if (branch->gfilter_result == NULL)
-    errExit("groupfilter(...) returned NULL");
+    pthread_exit((void*)EXIT_FAILURE);
   else {
     
     /* free group filter rules */
@@ -170,5 +170,5 @@ branch_start(void *arg) {
   
   
   
-  pthread_exit(NULL);
+  pthread_exit((void*)EXIT_SUCCESS);
 }

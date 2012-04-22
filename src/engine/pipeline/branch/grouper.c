@@ -299,191 +299,193 @@ grouper(
   else
     gresult->groupset = groupset;
   
-  
-  /* club all filtered records into one group, 
-   * if no group modules are defined 
-   */
-  if (num_grouper_rules == 0) {
-    
-    /* groupset with space for 1 group */
-    gresult->num_groups = 1;
-    
-    /* free'd just after returning from ungrouper(...) */
-    struct group* group = (struct group *)calloc(1, sizeof(struct group));      
-    if (group == NULL)
-      errExit("calloc");    
-    
-    groupset[gresult->num_groups - 1] = group;
-    group->num_members = fresult->num_filtered_records;
-    
-    /* free'd after returning from ungrouper(...) */    
-    group->members = (char **)calloc(group->num_members, sizeof(char *));
-    if (group->members == NULL)
-      errExit("calloc");    
-    
-    for (int i = 0; i < fresult->num_filtered_records; i++)
-      group->members[i] = fresult->filtered_recordset[i];    
-  }
-  else {
-    
-    /* get uintX_t specific function pointers, given the type of the 
-     * RHS field of the first grouper rule 
+  /* go ahead if there is something to group */
+  if (fresult->num_filtered_records > 0) {    
+    /* club all filtered records into one group, 
+     * if no group modules are defined 
      */
-    struct grouper_type* gtype = get_gtype(grouper_ruleset[0]->op->field2_type);
-    if (gtype == NULL)
-      errExit("get_type(...) returned NULL");
-    
-    /* unlinked each item from original traces, ie filtered_recordset_copy[i] 
-     * free'd filtered_recordset_copy just before exiting from this function 
-     */
-    char** filtered_recordset_copy = calloc(fresult->num_filtered_records, 
-                                            sizeof(char*));    
-    if (filtered_recordset_copy == NULL)
-      errExit("calloc");
-    
-    for (int i = 0; i < fresult->num_filtered_records; i++)
-      filtered_recordset_copy[i] = fresult->filtered_recordset[i];
-    
-    struct grouper_intermediate_result* intermediate_result = 
-    get_grouper_intermediates(
-                              fresult->num_filtered_records,
-                              filtered_recordset_copy,
-                              
-                              num_grouper_rules,
-                              grouper_ruleset,
-                              
-                              gresult,
-                              gtype
-                              );
-    
-    if (intermediate_result == NULL)
-      errExit("get_grouper_intermediates(...) returned NULL");
-    
-    if(verbose_vv){  
+    if (num_grouper_rules == 0) {
       
-      /* free'd just before calling merger(...) */      
-      gresult->num_unique_records = intermediate_result->
-                                    uniq_result->num_uniq_records;
-      gresult->unique_recordset = (char**) 
-      calloc(gresult->num_unique_records, 
-             sizeof(char*));      
-      if (gresult->unique_recordset == NULL)
-        errExit("calloc");
-    
-      for (int i = 0; i < gresult->num_unique_records; i++) {
-        gresult->unique_recordset[i] = 
-        gtype->get_uniq_record(intermediate_result->uniq_result,i);
-        if (gresult->unique_recordset[i] == NULL)
-          errExit("get_uniq_record(...) returned NULL");      
-      }
-    }
-    
-    for (int i = 0; i < fresult->num_filtered_records; i++) {
-      
-      if (filtered_recordset_copy[i] == NULL)
-        continue;
-      
-      gresult->num_groups += 1;
+      /* groupset with space for 1 group */
+      gresult->num_groups = 1;
       
       /* free'd just after returning from ungrouper(...) */
-      groupset = (struct group **)
-      realloc(groupset, (gresult->num_groups)*sizeof(struct group*));
-      if (groupset == NULL)
-        errExit("realloc");
-      else
-        gresult->groupset = groupset;
-      
-      /* free'd just after returning from ungrouper(...) */ 
-      struct group* group = (struct group *)calloc(1, sizeof(struct group));
+      struct group* group = (struct group *)calloc(1, sizeof(struct group));      
       if (group == NULL)
+        errExit("calloc");    
+      
+      groupset[gresult->num_groups - 1] = group;
+      group->num_members = fresult->num_filtered_records;
+      
+      /* free'd after returning from ungrouper(...) */    
+      group->members = (char **)calloc(group->num_members, sizeof(char *));
+      if (group->members == NULL)
+        errExit("calloc");    
+      
+      for (int i = 0; i < fresult->num_filtered_records; i++)
+        group->members[i] = fresult->filtered_recordset[i];    
+    }
+    else {
+      
+      /* get uintX_t specific function pointers, given the type of the 
+       * RHS field of the first grouper rule 
+       */
+      struct grouper_type* gtype = get_gtype(grouper_ruleset[0]->op->field2_type);
+      if (gtype == NULL)
+        errExit("get_type(...) returned NULL");
+      
+      /* unlinked each item from original traces, ie filtered_recordset_copy[i] 
+       * free'd filtered_recordset_copy just before exiting from this function 
+       */
+      char** filtered_recordset_copy = calloc(fresult->num_filtered_records, 
+                                              sizeof(char*));    
+      if (filtered_recordset_copy == NULL)
         errExit("calloc");
       
-      groupset[gresult->num_groups-1] = group;
-      group->num_members = 1;
+      for (int i = 0; i < fresult->num_filtered_records; i++)
+        filtered_recordset_copy[i] = fresult->filtered_recordset[i];
       
-      /* free'd after returning from ungrouper(...) */   
-      group->members = (char **)calloc(1, sizeof(char *));
-      if (group->members == NULL)
-        errExit("calloc");      
-      group->members[0] = filtered_recordset_copy[i];
+      struct grouper_intermediate_result* intermediate_result = 
+      get_grouper_intermediates(
+                                fresult->num_filtered_records,
+                                filtered_recordset_copy,
+                                
+                                num_grouper_rules,
+                                grouper_ruleset,
+                                
+                                gresult,
+                                gtype
+                                );
       
-      // search for left hand side of comparison in records ordered by right
-      // hand side of comparison
-      char ***record_iter = gtype->bsearch(
-                                           filtered_recordset_copy[i],
-                                           grouper_ruleset,
-                                           intermediate_result
-                                          );
+      if (intermediate_result == NULL)
+        errExit("get_grouper_intermediates(...) returned NULL");
       
-      // iterate until terminating NULL in sorted_records
-      for (int k = 0; *record_iter != NULL; record_iter++) {
+      if(verbose_vv){  
         
-        // already processed record from filtered_records
-        if (**record_iter == NULL)
-          continue;
+        /* free'd just before calling merger(...) */      
+        gresult->num_unique_records = intermediate_result->
+        uniq_result->num_uniq_records;
+        gresult->unique_recordset = (char**) 
+        calloc(gresult->num_unique_records, 
+               sizeof(char*));      
+        if (gresult->unique_recordset == NULL)
+          errExit("calloc");
         
-        // do not group with itself
-        if (**record_iter == filtered_recordset_copy[i])
-          continue;
-        
-        // check all module filter rules for those two records
-        for (k = 0; k < num_grouper_rules; k++) {
-          
-          struct grouper_rule* grule = grouper_ruleset[k];
-          
-          /* assign a uintX_t specific function depending on grule->op */
-          assign_grouper_func(grule);
-          
-          if (
-              !grule->func(
-                           group, 
-                           grule->field_offset1,
-                           **record_iter, 
-                           grule->field_offset2, 
-                           grule->delta
-                          )
-              )
-            break;
+        for (int i = 0; i < gresult->num_unique_records; i++) {
+          gresult->unique_recordset[i] = 
+          gtype->get_uniq_record(intermediate_result->uniq_result,i);
+          if (gresult->unique_recordset[i] == NULL)
+            errExit("get_uniq_record(...) returned NULL");      
         }
-        
-        // first rule didnt match
-        if (k == 0)
-          break;
-        
-        // one of the other rules didnt match
-        if (k < num_grouper_rules)
-          continue;
-        
-        group->num_members += 1;
-        
-        group->members = (char **)
-        realloc(group->members, 
-                sizeof(char *)*group->num_members);
-        
-        // assign entry in filtered_records to group
-        group->members[group->num_members-1] = **record_iter; 
-        
-        // set filtered_recordset_copy[i] to NULL
-        **record_iter = NULL; 
       }
       
-      // unlink all the local filtered recordset copy from the flow data
-      filtered_recordset_copy[i] = NULL;
+      for (int i = 0; i < fresult->num_filtered_records; i++) {
+        
+        if (filtered_recordset_copy[i] == NULL)
+          continue;
+        
+        gresult->num_groups += 1;
+        
+        /* free'd just after returning from ungrouper(...) */
+        groupset = (struct group **)
+        realloc(groupset, (gresult->num_groups)*sizeof(struct group*));
+        if (groupset == NULL)
+          errExit("realloc");
+        else
+          gresult->groupset = groupset;
+        
+        /* free'd just after returning from ungrouper(...) */ 
+        struct group* group = (struct group *)calloc(1, sizeof(struct group));
+        if (group == NULL)
+          errExit("calloc");
+        
+        groupset[gresult->num_groups-1] = group;
+        group->num_members = 1;
+        
+        /* free'd after returning from ungrouper(...) */   
+        group->members = (char **)calloc(1, sizeof(char *));
+        if (group->members == NULL)
+          errExit("calloc");      
+        group->members[0] = filtered_recordset_copy[i];
+        
+        // search for left hand side of comparison in records ordered by right
+        // hand side of comparison
+        char ***record_iter = gtype->bsearch(
+                                             filtered_recordset_copy[i],
+                                             grouper_ruleset,
+                                             intermediate_result
+                                             );
+        
+        // iterate until terminating NULL in sorted_records
+        for (int k = 0; *record_iter != NULL; record_iter++) {
+          
+          // already processed record from filtered_records
+          if (**record_iter == NULL)
+            continue;
+          
+          // do not group with itself
+          if (**record_iter == filtered_recordset_copy[i])
+            continue;
+          
+          // check all module filter rules for those two records
+          for (k = 0; k < num_grouper_rules; k++) {
+            
+            struct grouper_rule* grule = grouper_ruleset[k];
+            
+            /* assign a uintX_t specific function depending on grule->op */
+            assign_grouper_func(grule);
+            
+            if (
+                !grule->func(
+                             group, 
+                             grule->field_offset1,
+                             **record_iter, 
+                             grule->field_offset2, 
+                             grule->delta
+                             )
+                )
+              break;
+          }
+          
+          // first rule didnt match
+          if (k == 0)
+            break;
+          
+          // one of the other rules didnt match
+          if (k < num_grouper_rules)
+            continue;
+          
+          group->num_members += 1;
+          
+          group->members = (char **)
+          realloc(group->members, 
+                  sizeof(char *)*group->num_members);
+          
+          // assign entry in filtered_records to group
+          group->members[group->num_members-1] = **record_iter; 
+          
+          // set filtered_recordset_copy[i] to NULL
+          **record_iter = NULL; 
+        }
+        
+        // unlink all the local filtered recordset copy from the flow data
+        filtered_recordset_copy[i] = NULL;
+      }
+      
+      free(filtered_recordset_copy); filtered_recordset_copy = NULL;    
+      
+      // unlink the sorted records from the flow data
+      for (int i = 0; i < fresult->num_filtered_records; i++)
+        intermediate_result->sorted_recordset_reference[i] = NULL;    
+      free(intermediate_result->sorted_recordset_reference); 
+      intermediate_result->sorted_recordset_reference = NULL;
+      
+      // unlink the uniq records from the flow data
+      gtype->dealloc_uniqresult(intermediate_result->uniq_result);
+      free(intermediate_result); intermediate_result = NULL;    
+      free(gtype);
     }
-    
-    free(filtered_recordset_copy); filtered_recordset_copy = NULL;    
-    
-    // unlink the sorted records from the flow data
-    for (int i = 0; i < fresult->num_filtered_records; i++)
-      intermediate_result->sorted_recordset_reference[i] = NULL;    
-    free(intermediate_result->sorted_recordset_reference); 
-    intermediate_result->sorted_recordset_reference = NULL;
-    
-    // unlink the uniq records from the flow data
-    gtype->dealloc_uniqresult(intermediate_result->uniq_result);
-    free(intermediate_result); intermediate_result = NULL;    
-    free(gtype);
-  }
+  } 
   
   
 #ifdef GROUPERAGGREGATIONS

@@ -1146,10 +1146,13 @@ main(int argc, char **argv) {
      * - save the filtered groups on completion
      */
     for (int i = 0, ret = 0; i < fquery->num_branches; i++) {
+      void* res = NULL;
       pthread_t* thread = &threadset[i];
-      ret = pthread_join(*thread, NULL);
+      ret = pthread_join(*thread, &res);
       if (ret != 0)
         errExit("pthread_join");
+      else if ((int)res != EXIT_SUCCESS) 
+        errExit("branch (%d) prematurely exited", i);
     }    
     free(threadset);
     
@@ -1232,7 +1235,7 @@ main(int argc, char **argv) {
                                  fquery->num_branches,
                                  fquery->branchset
                                 );
-  
+
   if (fquery->merger_result == NULL)
     errExit("merger(...) returned NULL");
   else {

@@ -239,6 +239,12 @@ iter_init(
     iter->filtered_group_tuple[i] = 1;
     iter->num_filtered_groups[i] = 
     branchset[i]->gfilter_result->num_filtered_groups;
+    
+    /* break out if any branch has no filtered groups */
+    if (iter->num_filtered_groups[i] == 0) {
+      iter_destroy(iter);
+      return NULL;
+    }
   }
   
   /* the first call to iter_next will switch it to 1 */

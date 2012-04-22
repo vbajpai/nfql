@@ -89,7 +89,6 @@ filter(
   
   if (fresult->num_filtered_records == 0) {
     free(fresult->filtered_recordset); fresult->filtered_recordset = NULL;
-    free(fresult); fresult = NULL;
   }  
   return fresult;
 }

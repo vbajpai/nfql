@@ -83,5 +83,6 @@ groupfilter(
       [gfilter_result->num_filtered_groups-1] = gresult->groupset[i];
     }
   }
+  
   return gfilter_result;
 }

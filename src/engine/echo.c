@@ -40,21 +40,22 @@ echo_merger(
     struct permut_iter* iter = iter_init(num_branches, branchset);
     printf("\nNo. of (to be) Matched Groups: %zu \n", 
            mresult->total_num_group_tuples);
-    if (mresult->total_num_group_tuples != 0)      
+    if (iter != NULL) {
       puts(FLOWHEADER);      
-    while(iter_next(iter)) {
-      for (int j = 0; j < num_branches; j++) {          
-        flow_print_record(
-                          dataformat, 
-                          branchset[j]->gfilter_result->filtered_groupset
-                          [
-                           iter->filtered_group_tuple[j] - 1                          
-                          ]->aggr_result->aggr_record
-                         );
+      while(iter_next(iter)) {
+        for (int j = 0; j < num_branches; j++) {          
+          flow_print_record(
+                            dataformat, 
+                            branchset[j]->gfilter_result->filtered_groupset
+                            [
+                             iter->filtered_group_tuple[j] - 1                          
+                             ]->aggr_result->aggr_record
+                            );
+        }
+        printf("\n");
       }
-      printf("\n");
+      iter_destroy(iter);    
     }
-    iter_destroy(iter);
   }    
   printf("\nNo. of Merged Groups: %zu (Tuples)\n", mresult->num_group_tuples);      
   if (mresult->num_group_tuples != 0)          
