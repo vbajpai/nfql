@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/usr/bin/env python
 #
 # Copyright 2012 Vaibhav Bajpai <contact@vaibhavbajpai.com>
 # Copyright 2011 Johannes 'josch' Schauer <j.schauer@email.de>
