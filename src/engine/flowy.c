@@ -212,11 +212,15 @@ parse_json_query(const char* const query_mmap) {
       fo_type = json_object_object_get(foffset, "datatype");
       
       frule->delta = json_object_get_int(delta);  
-      frule->op = json_object_get_int(op);
+      frule->op = strdup(json_object_get_string(op));
+      if (frule->op == NULL) errExit("strdup");
+      
       frule->off->name = strdup(json_object_get_string(fo_name));
       if (frule->off->name == NULL) errExit("strdup");
+      
       frule->off->value = json_object_get_int(fo_val);
-      frule->off->datatype = json_object_get_int(fo_type);
+      frule->off->datatype = strdup(json_object_get_string(fo_type));
+      if (frule->off->datatype == NULL) errExit("strdup");      
     } 
     
     /* -----------------------------------------------------------------------*/
@@ -291,15 +295,23 @@ parse_json_query(const char* const query_mmap) {
       
       grule->delta = json_object_get_int(delta);
       
-      grule->op->name = json_object_get_int(op_name);
-      grule->op->type = json_object_get_int(op_type);
+      grule->op->name = strdup(json_object_get_string(op_name));
+      if (grule->op->name == NULL) errExit("strdup");
+      
+      grule->op->type = strdup(json_object_get_string(op_type));
+      if (grule->op->type == NULL) errExit("strdup");
       
       grule->off->f1_name = strdup(json_object_get_string(f1_name));
       if (grule->off->f1_name == NULL) errExit("strdup");
+      
       grule->off->f2_name = strdup(json_object_get_string(f2_name));
-      if (grule->off->f2_name == NULL) errExit("strdup");    
-      grule->off->f1_datatype = json_object_get_int(f1_datatype);
-      grule->off->f2_datatype = json_object_get_int(f2_datatype);
+      if (grule->off->f2_name == NULL) errExit("strdup");
+      
+      grule->off->f1_datatype = strdup(json_object_get_string(f1_datatype));
+      if (grule->off->f1_datatype == NULL) errExit("strdup");
+      
+      grule->off->f2_datatype = strdup(json_object_get_string(f2_datatype));
+      if (grule->off->f2_datatype == NULL) errExit("strdup");
     } 
     
     /* -----------------------------------------------------------------------*/
@@ -365,10 +377,14 @@ parse_json_query(const char* const query_mmap) {
       struct json_object* 
       datatype = json_object_object_get(offset, "datatype");
       
-      arule->op = json_object_get_int(op);
+      arule->op = strdup(json_object_get_string(op));
+      if (arule->op == NULL) errExit("strdup");
+      
       arule->off->name = strdup(json_object_get_string(name));
       if (arule->off->name == NULL) errExit("strdup");
-      arule->off->datatype = json_object_get_int(datatype);
+      
+      arule->off->datatype = strdup(json_object_get_string(datatype));
+      if (arule->off->datatype == NULL) errExit("strdup");      
     }     
     
     
@@ -441,11 +457,13 @@ parse_json_query(const char* const query_mmap) {
       fo_type = json_object_object_get(offset, "datatype");
       
       gfrule->delta = json_object_get_int(delta);  
-      gfrule->op = json_object_get_int(op);
+      gfrule->op = strdup(json_object_get_string(op));
+      if (gfrule->op == NULL) errExit("strdup");      
       gfrule->off->name = strdup(json_object_get_string(fo_name));
-      if (gfrule->off->name == NULL) errExit("strdup");
-      gfrule->off->value = json_object_get_int(fo_val);
-      gfrule->off->datatype = json_object_get_int(fo_type);
+      if (gfrule->off->name == NULL) errExit("strdup");      
+      gfrule->off->value = json_object_get_int(fo_val);      
+      gfrule->off->datatype = strdup(json_object_get_string(fo_type));
+      if (gfrule->off->datatype == NULL) errExit("strdup");
     } 
 
     
@@ -540,15 +558,19 @@ parse_json_query(const char* const query_mmap) {
     mrule->b1_id = json_object_get_int(b1_id);
     mrule->b2_id = json_object_get_int(b2_id);    
     
-    mrule->op->name = json_object_get_int(op_name);
-    mrule->op->type = json_object_get_int(op_type);
+    mrule->op->name = strdup(json_object_get_string(op_name));
+    if (mrule->op->name == NULL) errExit("strdup");    
+    mrule->op->type = strdup(json_object_get_string(op_type));
+    if (mrule->op->type == NULL) errExit("strdup");    
     
     mrule->off->f1_name = strdup(json_object_get_string(f1_name));
     if (mrule->off->f1_name == NULL) errExit("strdup");
     mrule->off->f2_name = strdup(json_object_get_string(f2_name));
     if (mrule->off->f2_name == NULL) errExit("strdup");    
-    mrule->off->f1_datatype = json_object_get_int(f1_datatype);
-    mrule->off->f2_datatype = json_object_get_int(f2_datatype);
+    mrule->off->f1_datatype = strdup(json_object_get_string(f1_datatype));
+    if (mrule->off->f1_datatype == NULL) errExit("strdup");
+    mrule->off->f2_datatype = strdup(json_object_get_string(f2_datatype));
+    if (mrule->off->f2_datatype == NULL) errExit("strdup");    
   } 
   
   /* -----------------------------------------------------------------------*/
@@ -652,11 +674,19 @@ prepare_flowquery(struct ft_data* const trace,
       if (offset == -1)
         errExit("get_offset(frule_json) returned -1");
       
+      uint64_t op_enum = get_enum(frule_json->op);
+      if (op_enum == -1)
+        errExit("get_enum(frule_json->op) returned -1");
+      
+      uint64_t type_enum = get_enum(frule_json->off->datatype);
+      if (type_enum == -1)
+        errExit("get_enum(frule_json->off->datatype) returned -1");
+      
       frule->field_offset          =         offset;
       frule->value                 =         frule_json->off->value;
       frule->delta                 =         frule_json->delta;      
-      frule->op->op                =         frule_json->op;
-      frule->op->field_type        =         frule_json->off->datatype;      
+      frule->op->op                =         op_enum;
+      frule->op->field_type        =         type_enum;      
       frule->func                  =         NULL;      
       
       fruleset[j] = frule; frule = NULL; frule_json = NULL;
@@ -695,14 +725,30 @@ prepare_flowquery(struct ft_data* const trace,
                                     &trace->offsets);
       if (f2_offset == -1)
         errExit("get_offset(grule_json->off->f2_name) returned -1");
+      
+      uint64_t op_name_enum = get_enum(grule_json->op->name);
+      if (op_name_enum == -1)
+        errExit("get_enum(grule_json->op->name) returned -1");
+      
+      uint64_t f1_type_enum = get_enum(grule_json->off->f1_datatype);
+      if (f1_type_enum == -1)
+        errExit("get_enum(grule_json->off->f1_datatype) returned -1");
+      
+      uint64_t f2_type_enum = get_enum(grule_json->off->f2_datatype);
+      if (f1_type_enum == -1)
+        errExit("get_enum(grule_json->off->f2_datatype) returned -1");
+      
+      uint64_t op_type_enum = get_enum(grule_json->op->type);
+      if (op_type_enum == -1)
+        errExit("get_enum(grule_json->op->type) returned -1");
 
       grule->field_offset1         =        f1_offset;
       grule->field_offset2         =        f2_offset;
-      grule->delta                 =        grule_json->delta;      
-      grule->op->op                =        grule_json->op->name;
-      grule->op->field1_type       =        grule_json->off->f1_datatype;
-      grule->op->field2_type       =        grule_json->off->f2_datatype;
-      grule->op->optype            =        grule_json->op->type;      
+      grule->delta                 =        grule_json->delta;
+      grule->op->op                =        op_name_enum;
+      grule->op->field1_type       =        f1_type_enum;
+      grule->op->field2_type       =        f2_type_enum;
+      grule->op->optype            =        op_type_enum;
       grule->func                  =        NULL;
       
       gruleset[j] = grule; grule = NULL; 
@@ -736,9 +782,17 @@ prepare_flowquery(struct ft_data* const trace,
       if (offset == -1)
         errExit("get_offset(arule_json->off->name) returned -1");
       
+      uint64_t op_enum = get_enum(arule_json->op);
+      if (op_enum == -1)
+        errExit("get_enum(arule_json->op) returned -1");
+
+      uint64_t type_enum = get_enum(arule_json->off->datatype);
+      if (type_enum == -1)
+        errExit("get_enum(arule_json->off->datatype) returned -1");
+      
       arule->field_offset        =         offset;
-      arule->op->op              =         arule_json->op;
-      arule->op->field_type      =         arule_json->off->datatype;
+      arule->op->op              =         op_enum;
+      arule->op->field_type      =         type_enum;
       arule->func                =         NULL;
       
       aruleset[j] = arule; arule = NULL;
@@ -769,13 +823,21 @@ prepare_flowquery(struct ft_data* const trace,
       size_t offset = get_offset(gfrule_json->off->name,
                                  &trace->offsets);
       if (offset == -1)
-        errExit("get_offset(arule_json->off->name) returned -1");
+        errExit("get_offset(gfrule_json->off->name) returned -1");
+      
+      uint64_t op_enum = get_enum(gfrule_json->op);
+      if (op_enum == -1)
+        errExit("get_enum(gfrule_json->op) returned -1");
+      
+      uint64_t type_enum = get_enum(gfrule_json->off->datatype);
+      if (type_enum == -1)
+        errExit("get_enum(gfrule_json->off->datatype) returned -1");
 
       gfrule->field                =         offset;
       gfrule->value                =         gfrule_json->off->value;
       gfrule->delta                =         gfrule_json->delta;      
-      gfrule->op->op               =         gfrule_json->op;
-      gfrule->op->field_type       =         gfrule_json->off->datatype;
+      gfrule->op->op               =         op_enum;
+      gfrule->op->field_type       =         type_enum;
       gfrule->func                 =         NULL;
       
       gfruleset[j] = gfrule; gfrule = NULL;
@@ -830,32 +892,28 @@ prepare_flowquery(struct ft_data* const trace,
     if (f2_offset == -1)
       errExit("get_offset(grule_json->off->f2_name) returned -1");
     
-    /* TODO: hardcoded */
-    switch (j) {
-      case 0:
-        mrule->field1            =         trace->offsets.srcaddr;
-        mrule->field2            =         trace->offsets.dstaddr;        
-        break;
-      case 1:
-        mrule->field1            =         trace->offsets.dstaddr;
-        mrule->field2            =         trace->offsets.srcaddr;        
-        break;
-    }
-    mrule->delta                 =         0;
-
-    mrule->op->op                =         RULE_EQ;
-    mrule->op->field1_type       =         RULE_S1_32;
-    mrule->op->field2_type       =         RULE_S2_32;
-    mrule->op->optype            =         RULE_ABS;
+    uint64_t op_name = get_enum(mrule_json->op->name);
+    if (op_name == -1)
+      errExit("get_enum(mrule_json->op->name) returned -1");
     
-
+    uint64_t op_type = get_enum(mrule_json->op->type);
+    if (op_type == -1)
+      errExit("get_enum(mrule_json->op->type) returned -1");
+    
+    uint64_t f1_type = get_enum(mrule_json->off->f1_datatype);
+    if (f1_type == -1)
+      errExit("get_enum(mrule_json->off->f1_datatype) returned -1");
+    
+    uint64_t f2_type = get_enum(mrule_json->off->f2_datatype);
+    if (f2_type == -1)
+      errExit("get_enum(mrule_json->off->f2_datatype) returned -1");
     
     mrule->field1                =         f1_offset;
     mrule->field2                =         f2_offset;
-    mrule->op->op                =         mrule_json->op->name;
-    mrule->op->field1_type       =         mrule_json->off->f1_datatype;
-    mrule->op->field2_type       =         mrule_json->off->f2_datatype;
-    mrule->op->optype            =         mrule_json->op->type;
+    mrule->op->op                =         op_name;
+    mrule->op->field1_type       =         f1_type;
+    mrule->op->field2_type       =         f2_type;
+    mrule->op->optype            =         op_type;
     mrule->branch1               =         fquery->branchset[mrule_json->b1_id];
     mrule->branch2               =         fquery->branchset[mrule_json->b2_id];
     mrule->delta                 =         0;    

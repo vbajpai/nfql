@@ -314,48 +314,5 @@ enum {
   RULE_ALLEN_FI = 17179869184,
   RULE_ALLEN_EQ = 34359738368  
 };
-enum field_length {
-  LEN_UNIX_SECS       = 32,
-  LEN_UNIX_NSECS      = 32,
-  LEN_SYSUPTIME       = 32,
-  LEN_EXADDR          = 32,
-  
-  LEN_DFLOWS          = 32,
-  LEN_DPKTS           = 32,
-  LEN_DOCTETS         = 32,
-  LEN_FIRST           = 32,
-  
-  LEN_LAST            = 32,
-  LEN_ENGINE_TYPE     = 8,
-  LEN_ENGINE_ID       = 8,
-  
-  LEN_SRCADDR         = 32,
-  LEN_DSTADDR         = 32,
-  
-  LEN_NEXTHOP         = 32,
-  LEN_INPUT           = 16,
-  LEN_OUTPUT          = 16,
-  LEN_SRCPORT         = 16,
-  
-  LEN_DSTPORT         = 16,
-  LEN_PROT            = 8,
-  LEN_TOS             = 8,
-  LEN_TCP_FLAGS       = 8,
-  
-  LEN_SRC_MASK        = 8,
-  LEN_DST_MASK        = 8,
-  LEN_SRC_AS          = 16,
-  LEN_DST_AS          = 16,
-  
-  LEN_IN_ENCAPS       = 8,
-  LEN_OUT_ENCAPS      = 8,
-  LEN_PEER_NEXTHOP    = 32,
-  LEN_ROUTER_SC       = 32,
-  
-  LEN_EXTRA_PKTS      = 32,
-  LEN_MARKED_TOS      = 8,
-  LEN_SRC_TAG         = 32,
-  LEN_DST_TAG         = 32,
-};
 
 #endif

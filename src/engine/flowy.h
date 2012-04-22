@@ -73,14 +73,14 @@ struct json_branch_rules {
 };
 
 struct json_filter_rule {
-  uint64_t                        op;
+  char*                           op;
   uint64_t                        delta;
   struct json_filter_rule_offset* off;
 };
 struct json_filter_rule_offset{
   char*                           name;
   uint64_t                        value;
-  uint64_t                        datatype;
+  char*                           datatype;
 };
 
 struct json_grouper_rule {
@@ -94,26 +94,26 @@ struct json_grouper_rule_offset {
   char*                           f1_name;
   char*                           f2_name;
   
-  uint64_t                        f1_datatype;  
-  uint64_t                        f2_datatype;
+  char*                           f1_datatype;  
+  char*                           f2_datatype;
 };
 struct json_grouper_rule_op {
-  uint64_t                        name;
-  uint64_t                        type;
+  char*                           name;
+  char*                           type;
   
 };
 
 struct json_aggr_rule {
-  uint64_t                        op;
-  struct json_aggr_rule_offset* off;
+  char*                           op;
+  struct json_aggr_rule_offset*   off;
 };
 struct json_aggr_rule_offset{
   char*                           name;
-  uint64_t                        datatype;
+  char*                           datatype;
 };
 
 struct json_gfilter_rule {
-  uint64_t                        op;
+  char*                           op;
   uint64_t                        delta;
   struct 
   json_gfilter_rule_offset*       off;
@@ -121,7 +121,7 @@ struct json_gfilter_rule {
 struct json_gfilter_rule_offset{
   char*                           name;
   uint64_t                        value;
-  uint64_t                        datatype;
+  char*                           datatype;
 };
 
 struct json_merger_rule {
@@ -137,15 +137,13 @@ struct json_merger_rule {
 };
 struct json_merger_rule_offset {
   char*                           f1_name;
-  char*                           f2_name;
-  
-  uint64_t                        f1_datatype;  
-  uint64_t                        f2_datatype;
+  char*                           f2_name;  
+  char*                           f1_datatype;  
+  char*                           f2_datatype;
 };
 struct json_merger_rule_op {
-  uint64_t                        name;
-  uint64_t                        type;
-  
+  char*                           name;
+  char*                           type;  
 };
 
 struct parameters*

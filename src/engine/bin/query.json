@@ -7,13 +7,13 @@
         "branch1_id": 0, 
         "delta": 0, 
         "op": {
-          "type": 0, 
-          "name": 0
+          "type": "RULE_ABS", 
+          "name": "RULE_EQ"
         }, 
         "offset": {
-          "f2_datatype": 2, 
+          "f2_datatype": "RULE_S2_32", 
           "f1_name": "srcaddr", 
-          "f1_datatype": 8, 
+          "f1_datatype": "RULE_S1_32", 
           "f2_name": "dstaddr"
         }
       }, 
@@ -22,13 +22,13 @@
         "branch1_id": 0, 
         "delta": 0, 
         "op": {
-          "type": 0, 
-          "name": 0
+          "type": "RULE_ABS", 
+          "name": "RULE_EQ"
         }, 
         "offset": {
-          "f2_datatype": 2, 
+          "f2_datatype": "RULE_S2_32", 
           "f1_name": "dstaddr", 
-          "f1_datatype": 8, 
+          "f1_datatype": "RULE_S1_32", 
           "f2_name": "srcaddr"
         }
       }
@@ -41,9 +41,9 @@
         "ruleset": [
           {
             "delta": 0, 
-            "op": 0, 
+            "op": "RULE_EQ", 
             "offset": {
-              "datatype": 4, 
+              "datatype": "RULE_S1_16", 
               "name": "dstport", 
               "value": 80
             }
@@ -55,9 +55,9 @@
         "ruleset": [
           {
             "delta": 0, 
-            "op": 128, 
+            "op": "RULE_GT", 
             "offset": {
-              "datatype": 8, 
+              "datatype": "RULE_S1_32", 
               "name": "dPkts", 
               "value": 200
             }
@@ -68,30 +68,30 @@
         "num_rules": 4, 
         "ruleset": [
           {
-            "op": 512, 
+            "op": "RULE_STATIC", 
             "offset": {
-              "datatype": 8, 
+              "datatype": "RULE_S1_32", 
               "name": "srcaddr"
             }
           }, 
           {
-            "op": 512, 
+            "op": "RULE_STATIC", 
             "offset": {
-              "datatype": 8, 
+              "datatype": "RULE_S1_32", 
               "name": "dstaddr"
             }
           }, 
           {
-            "op": 262144, 
+            "op": "RULE_SUM", 
             "offset": {
-              "datatype": 8, 
+              "datatype": "RULE_S1_32", 
               "name": "dPkts"
             }
           }, 
           {
-            "op": 262144, 
+            "op": "RULE_SUM", 
             "offset": {
-              "datatype": 8, 
+              "datatype": "RULE_S1_32", 
               "name": "dOctets"
             }
           }
@@ -103,26 +103,26 @@
           {
             "delta": 0, 
             "op": {
-              "type": 0, 
-              "name": 0
+              "type": "RULE_ABS", 
+              "name": "RULE_EQ"
             }, 
             "offset": {
-              "f2_datatype": 2, 
+              "f2_datatype": "RULE_S2_32", 
               "f1_name": "srcaddr", 
-              "f1_datatype": 8, 
+              "f1_datatype": "RULE_S1_32", 
               "f2_name": "srcaddr"
             }
           }, 
           {
             "delta": 0, 
             "op": {
-              "type": 0, 
-              "name": 0
+              "type": "RULE_ABS", 
+              "name": "RULE_EQ"
             }, 
             "offset": {
-              "f2_datatype": 2, 
+              "f2_datatype": "RULE_S2_32", 
               "f1_name": "dstaddr", 
-              "f1_datatype": 8, 
+              "f1_datatype": "RULE_S1_32", 
               "f2_name": "dstaddr"
             }
           }
@@ -135,9 +135,9 @@
         "ruleset": [
           {
             "delta": 0, 
-            "op": 0, 
+            "op": "RULE_EQ", 
             "offset": {
-              "datatype": 4, 
+              "datatype": "RULE_S1_16", 
               "name": "srcport", 
               "value": 80
             }
@@ -149,9 +149,9 @@
         "ruleset": [
           {
             "delta": 0, 
-            "op": 128, 
+            "op": "RULE_GT", 
             "offset": {
-              "datatype": 8, 
+              "datatype": "RULE_S1_32", 
               "name": "dPkts", 
               "value": 200
             }
@@ -162,30 +162,30 @@
         "num_rules": 4, 
         "ruleset": [
           {
-            "op": 512, 
+            "op": "RULE_STATIC", 
             "offset": {
-              "datatype": 8, 
+              "datatype": "RULE_S1_32", 
               "name": "srcaddr"
             }
           }, 
           {
-            "op": 512, 
+            "op": "RULE_STATIC", 
             "offset": {
-              "datatype": 8, 
+              "datatype": "RULE_S1_32", 
               "name": "dstaddr"
             }
           }, 
           {
-            "op": 262144, 
+            "op": "RULE_SUM", 
             "offset": {
-              "datatype": 8, 
+              "datatype": "RULE_S1_32", 
               "name": "dPkts"
             }
           }, 
           {
-            "op": 262144, 
+            "op": "RULE_SUM", 
             "offset": {
-              "datatype": 8, 
+              "datatype": "RULE_S1_32", 
               "name": "dOctets"
             }
           }
@@ -197,26 +197,26 @@
           {
             "delta": 0, 
             "op": {
-              "type": 0, 
-              "name": 0
+              "type": "RULE_ABS", 
+              "name": "RULE_EQ"
             }, 
             "offset": {
-              "f2_datatype": 2, 
+              "f2_datatype": "RULE_S2_32", 
               "f1_name": "srcaddr", 
-              "f1_datatype": 8, 
+              "f1_datatype": "RULE_S1_32", 
               "f2_name": "srcaddr"
             }
           }, 
           {
             "delta": 0, 
             "op": {
-              "type": 0, 
-              "name": 0
+              "type": "RULE_ABS", 
+              "name": "RULE_EQ"
             }, 
             "offset": {
-              "f2_datatype": 2, 
+              "f2_datatype": "RULE_S2_32", 
               "f1_name": "dstaddr", 
-              "f1_datatype": 8, 
+              "f1_datatype": "RULE_S1_32", 
               "f2_name": "dstaddr"
             }
           }

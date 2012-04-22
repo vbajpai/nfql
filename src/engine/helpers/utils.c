@@ -37,47 +37,106 @@ size_t
 get_offset(const char * const name, 
            const struct fts3rec_offsets* const offsets) {
   
-  #define CASE(memb)                          \
+  #define CASEOFF(memb)                       \
   if (strcmp(name, #memb) == 0)               \
     return offsets->memb
   
-  CASE(unix_secs);
-  CASE(unix_nsecs);
-  CASE(sysUpTime);
-  CASE(exaddr);
-  CASE(srcaddr);
-  CASE(dstaddr);
-  CASE(nexthop);
-  CASE(input);
-  CASE(output);
-  CASE(dFlows);
-  CASE(dPkts);
-  CASE(dOctets);
-  CASE(First);
-  CASE(Last);
-  CASE(srcport);
-  CASE(dstport);
-  CASE(prot);
-  CASE(tos);
-  CASE(tcp_flags);
-  CASE(pad);
-  CASE(engine_type);
-  CASE(engine_id);
-  CASE(src_mask);
-  CASE(dst_mask);
-  CASE(src_as);
-  CASE(dst_as);
-  CASE(in_encaps);
-  CASE(out_encaps);
-  CASE(peer_nexthop);
-  CASE(router_sc);
-  CASE(src_tag);
-  CASE(dst_tag);
-  CASE(extra_pkts);
-  CASE(marked_tos);
- 
+	CASEOFF(unix_secs);
+	CASEOFF(unix_nsecs);
+	CASEOFF(sysUpTime);
+	CASEOFF(exaddr);
+	CASEOFF(srcaddr);
+	CASEOFF(dstaddr);
+	CASEOFF(nexthop);
+	CASEOFF(input);
+	CASEOFF(output);
+	CASEOFF(dFlows);
+	CASEOFF(dPkts);
+	CASEOFF(dOctets);
+	CASEOFF(First);
+	CASEOFF(Last);
+	CASEOFF(srcport);
+	CASEOFF(dstport);
+	CASEOFF(prot);
+	CASEOFF(tos);
+	CASEOFF(tcp_flags);
+	CASEOFF(pad);
+	CASEOFF(engine_type);
+	CASEOFF(engine_id);
+	CASEOFF(src_mask);
+	CASEOFF(dst_mask);
+	CASEOFF(src_as);
+	CASEOFF(dst_as);
+	CASEOFF(in_encaps);
+	CASEOFF(out_encaps);
+	CASEOFF(peer_nexthop);
+	CASEOFF(router_sc);
+	CASEOFF(src_tag);
+	CASEOFF(dst_tag);
+	CASEOFF(extra_pkts);
+	CASEOFF(marked_tos);
+  
   return -1;
 }
+
+
+
+uint64_t
+get_enum(const char * const name) {
+  
+  #define CASEENUM(memb)                      \
+  if (strcmp(name, #memb) == 0)               \
+    return memb
+  
+  CASEENUM(RULE_S2_8);
+  CASEENUM(RULE_S2_16);
+  CASEENUM(RULE_S2_32);
+  CASEENUM(RULE_S2_64);
+  CASEENUM(RULE_S1_8);
+  CASEENUM(RULE_S1_16);
+  CASEENUM(RULE_S1_32);
+  CASEENUM(RULE_S1_64);
+  CASEENUM(RULE_ABS);
+  CASEENUM(RULE_REL);
+  CASEENUM(RULE_NO);
+  CASEENUM(RULE_EQ);
+  CASEENUM(RULE_NE); 
+  CASEENUM(RULE_GT);
+  CASEENUM(RULE_LT); 
+  CASEENUM(RULE_LE); 
+  CASEENUM(RULE_GE); 
+  CASEENUM(RULE_STATIC);
+  CASEENUM(RULE_COUNT);
+  CASEENUM(RULE_UNION);
+  CASEENUM(RULE_MIN);
+  CASEENUM(RULE_MAX);
+  CASEENUM(RULE_MEDIAN); 
+  CASEENUM(RULE_MEAN);
+  CASEENUM(RULE_STDDEV); 
+  CASEENUM(RULE_XOR);
+  CASEENUM(RULE_SUM);
+  CASEENUM(RULE_PROD);
+  CASEENUM(RULE_AND);
+  CASEENUM(RULE_OR);
+  CASEENUM(RULE_IN);
+  CASEENUM(RULE_ALLEN_BF);
+  CASEENUM(RULE_ALLEN_AF);
+  CASEENUM(RULE_ALLEN_M); 
+  CASEENUM(RULE_ALLEN_MI);
+  CASEENUM(RULE_ALLEN_O); 
+  CASEENUM(RULE_ALLEN_OI);
+  CASEENUM(RULE_ALLEN_S); 
+  CASEENUM(RULE_ALLEN_SI);
+  CASEENUM(RULE_ALLEN_D); 
+  CASEENUM(RULE_ALLEN_DI);
+  CASEENUM(RULE_ALLEN_F); 
+  CASEENUM(RULE_ALLEN_FI);
+  CASEENUM(RULE_ALLEN_EQ);
+  
+  return -1;
+}
+
+
 
 /* -----------------------------------------------------------------------*/  
 
