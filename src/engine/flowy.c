@@ -63,7 +63,8 @@ parse_cmdline_args(int argc, char** const argv) {
   }
   
   if (argc != optind + 2)
-    usageErr("\n\n 1) $ %s $TRACE $QUERY or \n\n 2) $ flow-cat ... | %s $QUERY",
+    usageErr("\n\n 1) $ %s $QUERY $TRACE or \
+              \n\n 2) $ flow-cat $TRACE | %s $QUERY - \n\n",
              argv[0], argv[0]);
   else {
     param->query_filename = argv[optind];
