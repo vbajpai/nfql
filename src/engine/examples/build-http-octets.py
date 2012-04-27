@@ -114,33 +114,43 @@ class MergerRule:
 if __name__ == '__main__':
   
   fruleset = []
-  fruleset.append(vars(FilterRule('dstport', 80, 'RULE_S1_16', 0, 
+  fruleset.append(vars(FilterRule('srcport', 80, 'RULE_S1_16', 0, 
                                                  'RULE_EQ')))
-  filter1 = {'num_rules': len(fruleset), 'ruleset': fruleset}
+  filter1 = {'num_rules': len(fruleset), 'ruleset': fruleset}  
 
   gruleset = []
-  grouper1 = {'num_rules': len(gruleset), 'ruleset': gruleset} 
+  grouper1 = grouper2 = {'num_rules': len(gruleset), 'ruleset': gruleset} 
   
   aruleset = []
   aruleset.append(vars(AggregationRule('dPkts', 'RULE_S1_32', 
                                                 'RULE_SUM')))
   aruleset.append(vars(AggregationRule('dOctets', 'RULE_S1_32', 
                                                   'RULE_SUM')))
-  a1 = {'num_rules' : len(aruleset), 'ruleset' : aruleset}
+  a1 = a2 = {'num_rules' : len(aruleset), 'ruleset' : aruleset}
 
   gfruleset = []
   gfruleset.append(vars(GroupFilterRule('dPkts', 3000, 
                                         'RULE_S1_32', 0,
                                         'RULE_GT')))
-  gfilter1 = {'num_rules' : len(gfruleset), 'ruleset' : gfruleset}
+  gfilter1 = gfilter2 = {'num_rules' : len(gfruleset), 'ruleset' : gfruleset}
   
+  fruleset = []
+  fruleset.append(vars(FilterRule('dstport', 80, 'RULE_S1_16', 0, 
+                                                 'RULE_EQ')))
+  filter2 = {'num_rules': len(fruleset), 'ruleset': fruleset}  
+
   branchset = []
   branchset.append({'filter': filter1, 
                     'grouper': grouper1, 
                     'aggregation': a1,
                     'gfilter': gfilter1,
                    })
-  
+  branchset.append({'filter': filter2, 
+                    'grouper': grouper2, 
+                    'aggregation' : a2,
+                    'gfilter': gfilter2,
+                   })  
+
   mruleset = []  
   merger = {'num_rules' : len(mruleset), 'ruleset' : mruleset}
   
