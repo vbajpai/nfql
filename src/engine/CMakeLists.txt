@@ -11,6 +11,9 @@ project(engine C)
 # compiler flags passed as arguments 
 add_definitions(-Wall -std=c99)
 
+# Set output directories for libraries and executables
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY  ${CMAKE_SOURCE_DIR}/bin)				 
+
 # specify the header files location
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
@@ -27,13 +30,10 @@ find_library(JSONLIB json)
 
 # specify linked libraries
 target_link_libraries(engine ${MLIB} 
-														 ${CMAKE_THREAD_LIBS_INIT} 
-														 ${FTLIB} 
-														 ${JSONLIB} 
-														 ${ZLIB})
-
-# Set output directories for libraries and executables
-SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)				 
+                             ${CMAKE_THREAD_LIBS_INIT} 
+                             ${FTLIB} 
+                             ${JSONLIB} 
+                             ${ZLIB})
 
 # ---------------------------------------------------------------------------#
 
