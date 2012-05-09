@@ -12,10 +12,10 @@ project(engine C)
 add_definitions(-Wall -std=c99)
 
 # specify the header files location
-INCLUDE_DIRECTORIES(include) 
+include_directories(${CMAKE_SOURCE_DIR}/include)
 
 # specify the TARGET executable
-file(GLOB engine_SOURCES *.c)
+file(GLOB engine_SOURCES ${CMAKE_SOURCE_DIR}/src/*.c)
 add_executable(engine ${engine_SOURCES})
 
 # find linked libraries
@@ -31,6 +31,9 @@ target_link_libraries(engine ${MLIB}
 														 ${FTLIB} 
 														 ${JSONLIB} 
 														 ${ZLIB})
+
+# Set output directories for libraries and executables
+SET(CMAKE_RUNTIME_OUTPUT_DIRECTORY bin)				 
 
 # ---------------------------------------------------------------------------#
 
