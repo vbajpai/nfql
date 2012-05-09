@@ -105,8 +105,8 @@ preamble = """
   
   """%argv[0]
 
-header = open("auto_comps.h", "w")
-source = open("auto_comps.c", "w")
+header = open("auto-comps.h", "w")
+source = open("auto-comps.c", "w")
 
 header.write(preamble)
 source.write(preamble)
@@ -116,12 +116,12 @@ header.write("#define flowy_engine_auto_comps_h\n\n")
 
 header.write('#include <math.h>\n')
 header.write('#include "pipeline.h"\n')
-header.write('#include "error_handlers.h"\n')
+header.write('#include "errorhandlers.h"\n')
 header.write('#include "utils.h"\n')
 header.write('#include "grouper.h"\n')
 header.write('struct grouper_intermediate_result;\n\n')
 
-source.write('#include "auto_comps.h"\n')
+source.write('#include "auto-comps.h"\n')
 
 source.write("""
   int 
@@ -693,8 +693,8 @@ header.write("#endif\n")
 header.close()
 source.close()
 
-header = open("auto_assign.h", 'w')
-source = open("auto_assign.c", 'w')
+header = open("auto-assign.h", 'w')
+source = open("auto-assign.c", 'w')
 
 header.write(preamble)
 source.write(preamble)
@@ -702,7 +702,7 @@ source.write(preamble)
 header.write("#ifndef flowy_engine_auto_assign_h\n")
 header.write("#define flowy_engine_auto_assign_h\n\n")
 
-header.write('#include "auto_comps.h"\n')
+header.write('#include "auto-comps.h"\n')
 header.write('#include "grouper.h"\n\n')
 header.write('struct grouper_intermediate_result;\n\n')
 
@@ -732,7 +732,7 @@ header.write("""struct aggr*
 
 header.write("""struct grouper_type* get_gtype(uint64_t op);\n\n""");
 
-source.write("#include \"auto_assign.h\"\n")
+source.write("#include \"auto-assign.h\"\n")
 
 
 # assign_filter_func(...)

@@ -38,8 +38,8 @@
 #include "merger.h"
 #include "ungrouper.h"
 
-#include "auto_assign.h"
-#include "error_handlers.h"
+#include "auto-assign.h"
+#include "errorhandlers.h"
 #include "ftreader.h"
 #include "echo.h"
 

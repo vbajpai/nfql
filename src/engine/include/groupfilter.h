@@ -28,8 +28,8 @@
 #define flowy_engine_group_filter_h
 
 #include "pipeline.h"
-#include "error_handlers.h"
-#include "auto_assign.h"
+#include "errorhandlers.h"
+#include "auto-assign.h"
 
 struct groupfilter_result*
 groupfilter(

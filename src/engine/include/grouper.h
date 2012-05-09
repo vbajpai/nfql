@@ -29,9 +29,9 @@
 
 #include "pipeline.h"
 #include "utils.h"
-#include "error_handlers.h"
+#include "errorhandlers.h"
 #include "ftreader.h"
-#include "auto_assign.h"
+#include "auto-assign.h"
 
 struct grouper_rule;
 struct grouper_aggr;

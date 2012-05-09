@@ -28,9 +28,9 @@
 #define flowy_engine_merger_fptr_h
 
 #include "pipeline.h"
-#include "error_handlers.h"
+#include "errorhandlers.h"
 
-#include "auto_comps.h"
+#include "auto-comps.h"
 #include "utils.h"
 
 struct merger_rule;

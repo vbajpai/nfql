@@ -16,12 +16,12 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 # add a custom command to prepare auto-generated sources
 add_custom_command (
-  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/auto_assign.h
-         ${CMAKE_CURRENT_BINARY_DIR}/auto_assign.c
-         ${CMAKE_CURRENT_BINARY_DIR}/auto_comps.h
-         ${CMAKE_CURRENT_BINARY_DIR}/auto_comps.c
-  COMMAND python ${CMAKE_SOURCE_DIR}/scripts/fun_gen.py
-  COMMENT "Generating: auto_comps{h,c} and auto_assign.{h,c}"
+  OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/auto-assign.h
+         ${CMAKE_CURRENT_BINARY_DIR}/auto-assign.c
+         ${CMAKE_CURRENT_BINARY_DIR}/auto-comps.h
+         ${CMAKE_CURRENT_BINARY_DIR}/auto-comps.c
+  COMMAND python ${CMAKE_SOURCE_DIR}/scripts/generate-functions.py
+  COMMENT "Generating: auto-comps{h,c} and auto-assign.{h,c}"
 )
 
 # specify the header files location
@@ -31,8 +31,8 @@ include_directories(${CMAKE_SOURCE_DIR}/include
 
 # specify the TARGET executable
 file(GLOB engine_SOURCES ${CMAKE_SOURCE_DIR}/src/*.c)
-add_executable(engine ${CMAKE_CURRENT_BINARY_DIR}/auto_assign.c
-                      ${CMAKE_CURRENT_BINARY_DIR}/auto_comps.c
+add_executable(engine ${CMAKE_CURRENT_BINARY_DIR}/auto-assign.c
+                      ${CMAKE_CURRENT_BINARY_DIR}/auto-comps.c
                       ${engine_SOURCES}
 )
 
