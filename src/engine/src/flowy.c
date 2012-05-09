@@ -1171,7 +1171,7 @@ main(int argc, char **argv) {
       ret = pthread_join(*thread, &res);
       if (ret != 0)
         errExit("pthread_join");
-      else if ((int)res != EXIT_SUCCESS) 
+      else if (res != EXIT_SUCCESS) 
         errExit("branch (%d) prematurely exited", i);
     }    
     free(threadset);
