@@ -151,17 +151,25 @@ grouper(
         );
 
 
+#if defined (__APPLE__) || defined (__FreeBSD__)
 int 
 comp_uint8_t(void *thunk, const void *e1, const void *e2);
-
 int 
 comp_uint16_t(void *thunk, const void *e1, const void *e2);
-
 int 
 comp_uint32_t(void *thunk, const void *e1, const void *e2);
-
 int 
 comp_uint64_t(void *thunk, const void *e1, const void *e2);
+#elif defined(__linux)
+int 
+comp_uint8_t(const void *e1, const void *e2, void* thunk);
+int 
+comp_uint16_t(const void *e1, const void *e2, void* thunk);
+int 
+comp_uint32_t(const void *e1, const void *e2, void* thunk);
+int 
+comp_uint64_t(const void *e1, const void *e2, void* thunk);
+#endif
 
 int 
 comp_uint8_t_p(void *thunk, const void *e1, const void *e2);
