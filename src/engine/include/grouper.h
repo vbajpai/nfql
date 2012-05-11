@@ -68,13 +68,20 @@ struct uniq_recordset_result {
 };
 
 struct grouper_type {
-  
+#if defined (__APPLE__) || defined (__FreeBSD__)
   int (*qsort_comp)(
                     void*                           thunk,
                     const void*                     e1,
                     const void*                     e2
                    );
-  
+#elif defined (__linux)
+  int (*qsort_comp)(
+                    const void*                     e1,
+                    const void*                     e2,
+                    void*                           thunk
+                   );
+#endif
+
   char*** (*bsearch)(
                      const char* const              filtered_record,
                      struct grouper_rule** const    grouper_ruleset,

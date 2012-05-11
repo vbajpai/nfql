@@ -222,7 +222,9 @@ get_grouper_intermediates(
   /* sort the record references according to the right hand side
    * item in the statement of the first grouper rule 
    * and save them in sorted_recordset_reference in place  
-   */  
+   */
+
+#if defined(__APPLE__) || defined(__FreeBSD__)
   qsort_r(
           sorted_recordset_ref, 
           num_filtered_records, 
@@ -230,7 +232,16 @@ get_grouper_intermediates(
           (void*)&grouper_ruleset[0]->field_offset2,
           gtype->qsort_comp
          );
-  
+#elif defined(__linux)
+  qsort_r(
+          sorted_recordset_ref, 
+          num_filtered_records, 
+          sizeof(char **), 
+          gtype->qsort_comp,
+          (void*)&grouper_ruleset[0]->field_offset2
+         );
+#endif
+
   if(verbose_vv){
     
     /* free'd just before calling merger(...) ?*/
@@ -518,15 +529,23 @@ grouper(
 }
 
 
-
-#define comp(size) \
-int comp_##size(void *thunk, const void *e1, const void *e2) \
-{ \
-size x, y; \
-x = *(size *)(**(char ***)e1+*(size_t *)thunk); \
-y = *(size *)(**(char ***)e2+*(size_t *)thunk); \
-return (x > y) - (y > x); \
-}
+#if defined(__APPLE__) || defined(__FreeBSD__)
+  #define comp(size) \
+  int comp_##size(void *thunk, const void *e1, const void *e2) {\
+    size x, y; \
+    x = *(size *)(**(char ***)e1+*(size_t *)thunk); \
+    y = *(size *)(**(char ***)e2+*(size_t *)thunk); \
+    return (x > y) - (y > x); \
+  }
+#elif defined(__linux)
+  #define comp(size) \
+  int comp_##size(const void *e1, const void *e2, void *thunk) {\
+    size x, y; \
+    x = *(size *)(**(char ***)e1+*(size_t *)thunk); \
+    y = *(size *)(**(char ***)e2+*(size_t *)thunk); \
+    return (x > y) - (y > x); \
+  }
+#endif
 
 comp(uint8_t);
 comp(uint16_t);
