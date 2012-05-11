@@ -114,6 +114,7 @@ source.write(preamble)
 header.write("#ifndef flowy_engine_auto_comps_h\n")
 header.write("#define flowy_engine_auto_comps_h\n\n")
 
+header.write('#include "base.h"\n')
 header.write('#include <math.h>\n')
 header.write('#include "pipeline.h"\n')
 header.write('#include "errorhandlers.h"\n')

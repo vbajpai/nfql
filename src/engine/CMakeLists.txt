@@ -9,7 +9,7 @@ cmake_minimum_required(VERSION 2.6)
 project(engine C)
 
 # compiler flags passed as arguments 
-add_definitions(-Wall -Werror -std=gnu99)
+add_definitions(-Wall -Werror -std=c99)
 
 # set output directories for libraries and executables
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)				 
