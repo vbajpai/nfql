@@ -150,7 +150,7 @@ struct groupfilter_result {
 
 struct aggr {
   size_t                                      num_values;
-  uint64_t*                                   values;
+  uint32_t*                                   values;
 };
 
 /* -----------------------------------------------------------------------*/  
