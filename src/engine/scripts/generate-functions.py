@@ -221,9 +221,9 @@ def groupaggr_body(op, atype):
   if op == 'static':
     result += "    if (if_aggr_common) {\n"
     result += "      aggr->num_values = 1;\n"
-    result += "      aggr->values = (uint32_t *)malloc(sizeof(uint32_t));\n"
+    result += "      aggr->values = (uint32_t *)calloc(1, sizeof(uint32_t));\n"
     result += "      if (aggr->values == NULL)\n"
-    result += "        errExit(\"malloc\");\n"
+    result += "        errExit(\"calloc\");\n"
     result += "      aggr->values[0] = *(%s *)(records[0] + field_offset);\n"%atype
     result += "      *(uint32_t*)(group_aggregation + field_offset) = aggr->values[0];\n"
     result += "    } else {\n"
@@ -239,24 +239,24 @@ def groupaggr_body(op, atype):
     result += "}\n"  
   elif op == 'count':
     result += "    aggr->num_values = 1;\n"
-    result += "    aggr->values = (uint32_t *)malloc(sizeof(uint32_t)*aggr->num_values);\n"
+    result += "    aggr->values = (uint32_t *)calloc(aggr->num_values, sizeof(uint32_t));\n"
     result += "    if (aggr->values == NULL)\n"
-    result += "        errExit(\"malloc\");\n"
+    result += "        errExit(\"calloc\");\n"
     result += "    aggr->values[0] = num_records;\n"
     result += "      *(uint32_t*)(group_aggregation + field_offset) = aggr->values[0];\n"
   elif op in ['prod', 'sum', 'and', 'or', 'xor']:
     result += "    aggr->num_values = 1;\n"
-    result += "    aggr->values = (uint32_t *)malloc(sizeof(uint32_t)*aggr->num_values);\n"
+    result += "    aggr->values = (uint32_t *)calloc(aggr->num_values, sizeof(uint32_t));\n"
     result += "    if (aggr->values == NULL)\n"
-    result += "        errExit(\"malloc\");\n"
+    result += "        errExit(\"calloc\");\n"
     result += "    for (int i = 0; i < num_records; i++)\n"
     result += "        aggr->values[0] %s= *(%s *)(records[i] + field_offset);\n"%(operation_map[op], atype)
     result += "    *(uint32_t*)(group_aggregation + field_offset) = aggr->values[0];\n"
   elif op == 'mean':
     result += "    aggr->num_values = 1;\n"
-    result += "    aggr->values = (uint32_t *)malloc(sizeof(uint32_t)*aggr->num_values);\n"
+    result += "    aggr->values = (uint32_t *)calloc(aggr->num_values, sizeof(uint32_t));\n"
     result += "    if (aggr->values == NULL)\n"
-    result += "        errExit(\"malloc\");\n"
+    result += "        errExit(\"calloc\");\n"
     result += "    for (int i = 0; i < num_records; i++)\n"
     result += "        aggr->values[0] += *(%s *)(records[i] + field_offset);\n"%atype
     result += "    aggr->values[0] /= num_records;\n"
@@ -264,9 +264,9 @@ def groupaggr_body(op, atype):
   elif op == 'stddev':
     result += "    uint32_t stddev;\n"
     result += "    aggr->num_values = 1;\n"
-    result += "    aggr->values = (uint32_t *)malloc(sizeof(uint32_t)*aggr->num_values);\n"
+    result += "    aggr->values = (uint32_t *)calloc(aggr->num_values, sizeof(uint32_t));\n"
     result += "    if (aggr->values == NULL)\n"
-    result += "        errExit(\"malloc\");\n"
+    result += "        errExit(\"calloc\");\n"
     result += "    for (int i = 0; i < num_records; i++) {\n"
     result += "        aggr->values[0] += *(%s *)(records[i] + field_offset);\n"%atype
     result += "    }\n"
@@ -288,9 +288,9 @@ def groupaggr_body(op, atype):
     result += "        temp[i] = *(%s *)(records[i] + field_offset);\n"%atype
     result += "    }\n"
     result += "    qsort(temp, num_records, sizeof(uint32_t), compar);\n"
-    result += "    aggr->values = (uint32_t *)malloc(sizeof(uint32_t)*num_records);\n"
+    result += "    aggr->values = (uint32_t *)calloc(num_records, sizeof(uint32_t));\n"
     result += "    if (aggr->values == NULL)\n"
-    result += "        errExit(\"malloc\");\n"
+    result += "        errExit(\"calloc\");\n"
     result += "    aggr->values[0] = temp[0];\n"
     result += "    last = temp[0];\n"
     result += "    aggr->num_values = 1;\n"
@@ -314,17 +314,17 @@ def groupaggr_body(op, atype):
     result += "    }\n"
     result += "    qsort(temp, num_records, sizeof(uint64_t), compar);\n"
     result += "    aggr->num_values = 1;\n"
-    result += "    aggr->values = (uint32_t *)malloc(sizeof(uint32_t)*aggr->num_values);\n"
+    result += "    aggr->values = (uint32_t *)calloc(aggr->num_values, sizeof(uint32_t));\n"
     result += "    if (aggr->values == NULL)\n"
-    result += "        errExit(\"malloc\");\n"
+    result += "        errExit(\"calloc\");\n"
     result += "    aggr->values[0] = temp[num_records/2];"
     result += "    free(temp);\n"
     result += "      *(uint32_t*)(group_aggregation + field_offset) = aggr->values[0];\n"
   elif op == 'min':
     result += "    aggr->num_values = 1;\n"
-    result += "    aggr->values = (uint32_t *)malloc(sizeof(uint32_t)*aggr->num_values);\n"
+    result += "    aggr->values = (uint32_t *)calloc(aggr->num_values, sizeof(uint32_t));\n"
     result += "    if (aggr->values == NULL)\n"
-    result += "        errExit(\"malloc\");\n"
+    result += "        errExit(\"calloc\");\n"
     result += "    aggr->values[0] = *(%s *)(records[0] + field_offset);\n"%atype
     result += "    for (int i = 1; i < num_records; i++) {\n"
     result += "        if (*(%s *)(records[0] + field_offset) < aggr->values[0]) {\n"%atype
@@ -334,9 +334,9 @@ def groupaggr_body(op, atype):
     result += "      *(uint32_t*)(group_aggregation + field_offset) = aggr->values[0];\n"
   elif op == 'max':
     result += "    aggr->num_values = 1;\n"
-    result += "    aggr->values = (uint32_t *)malloc(sizeof(uint32_t)*aggr->num_values);\n"
+    result += "    aggr->values = (uint32_t *)calloc(aggr->num_values, sizeof(uint32_t));\n"
     result += "    if (aggr->values == NULL)\n"
-    result += "        errExit(\"malloc\");\n"
+    result += "        errExit(\"calloc\");\n"
     result += "    aggr->values[0] = *(%s *)(records[0] + field_offset);\n"%atype
     result += "    for (int i = 1; i < num_records; i++) {\n"
     result += "        if (*(%s *)(records[0] + field_offset) > aggr->values[0]) {\n"%atype
