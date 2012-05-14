@@ -22,3 +22,4 @@ clean:
 	rm -f  -r html 
 	rm -f  -r latex
 	rm -f  -r .build
+	rm -f  -r bin
