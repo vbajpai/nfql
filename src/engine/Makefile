@@ -10,7 +10,7 @@ make: build/Makefile
 	(cd .build; make)
 
 build/Makefile: build
-	(cd .build; cmake ..)
+	(cd .build; cmake -D CMAKE_PREFIX_PATH=$(CMAKE_PREFIX_PATH) ..)
 
 build:
 	mkdir -p .build
