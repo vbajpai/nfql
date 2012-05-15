@@ -8,11 +8,11 @@ cmake_minimum_required(VERSION 2.6)
 # identify the project and programming language
 project(engine C)
 
-# compiler flags passed as arguments 
+# compiler flags passed as arguments
 add_definitions(-Wall -Werror -std=c99)
 
 # set output directories for libraries and executables
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)				 
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
 
 # add a custom command to prepare auto-generated sources
 add_custom_command (
@@ -44,10 +44,10 @@ find_library(FTLIB ft)
 find_library(JSONLIB json)
 
 # specify linked libraries
-target_link_libraries(engine ${MLIB} 
-                             ${CMAKE_THREAD_LIBS_INIT} 
-                             ${FTLIB} 
-                             ${JSONLIB} 
+target_link_libraries(engine ${MLIB}
+                             ${CMAKE_THREAD_LIBS_INIT}
+                             ${FTLIB}
+                             ${JSONLIB}
                              ${ZLIB})
 
 # ---------------------------------------------------------------------------#
