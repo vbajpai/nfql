@@ -2,6 +2,12 @@
 # ------------------------------- CMake -------------------------------------#
 # ---------------------------------------------------------------------------#
 
+# extend cmake include and library paths
+set(CMAKE_INCLUDE_PATH ${CMAKE_INCLUDE_PATH}
+                       "/usr/local/flow-tools/include")
+set(CMAKE_LIBRARY_PATH ${CMAKE_LIBRARY_PATH}
+                       "/usr/local/flow-tools/lib")
+
 # minimum supported cmake version
 cmake_minimum_required(VERSION 2.6)
 
@@ -25,7 +31,8 @@ add_custom_command (
 )
 
 # specify the header files location
-include_directories(${CMAKE_SOURCE_DIR}/include
+include_directories(${CMAKE_INCLUDE_PATH}
+                    ${CMAKE_SOURCE_DIR}/include
                     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
