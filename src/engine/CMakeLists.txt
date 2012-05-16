@@ -51,10 +51,10 @@ foreach(pyFILE ${pyFILES})
 endforeach(pyFILE)
 
 # add a custom target for examples
-add_custom_target(pyEXAMPLES DEPENDS ${queryFILES})
+add_custom_target(examples DEPENDS ${queryFILES})
 
 # add dependency
-add_dependencies(engine pyEXAMPLES)
+add_dependencies(engine examples)
 
 # find linked libraries
 find_package(Threads)
