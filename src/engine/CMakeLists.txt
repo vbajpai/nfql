@@ -37,6 +37,24 @@ add_executable(engine ${CMAKE_CURRENT_BINARY_DIR}/auto-assign.c
                       ${engine_SOURCES}
 )
 
+# add a custom command to generate examples
+file(GLOB pyFILES ${CMAKE_SOURCE_DIR}/scripts/queries/*.py)
+foreach(pyFILE ${pyFILES})
+  set(query "${pyFILE}_query")
+  add_custom_command (
+    OUTPUT ${query}
+    COMMAND python ${pyFILE}
+    COMMENT "Generating: JSON example query using ${pyFILE}"
+  )
+  list(APPEND queryFILES ${query})
+endforeach(pyFILE)
+
+# add a custom target for examples
+add_custom_target(pyEXAMPLES DEPENDS ${queryFILES})
+
+# add dependency
+add_dependencies(engine pyEXAMPLES)
+
 # find linked libraries
 find_package(Threads)
 find_library(MLIB m)
