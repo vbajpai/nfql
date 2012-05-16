@@ -43,6 +43,7 @@ foreach(pyFILE ${pyFILES})
   set(query "${pyFILE}_query")
   add_custom_command (
     OUTPUT ${query}
+    WORKING_DIRECTORY ${CMAKE_SOURCE_DIR}/examples/
     COMMAND python ${pyFILE}
     COMMENT "Generating: JSON example query using ${pyFILE}"
   )
