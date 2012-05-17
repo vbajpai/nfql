@@ -60,7 +60,7 @@ add_dependencies(engine examples)
 find_package(Threads)
 find_library(MLIB m)
 find_library(ZLIB z)
-find_library(FTLIB libft.a ft)
+find_library(FTLIB ft)
 find_library(JSONLIB json)
 
 # specify linked libraries
