@@ -16,11 +16,10 @@ build:
 	mkdir -p .build
 
 doc: Doxyfile
-	doxygen Doxyfile
+	(mkdir -p doc; doxygen Doxyfile)
 
 clean:
-	rm -f -r html
-	rm -f -r latex
 	rm -f -r .build
 	rm -f -r bin
+	rm -f -r doc
 	rm -f -r examples/*.json
