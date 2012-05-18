@@ -2,7 +2,13 @@ F (v2)
 --------------------  
 - - -
 
-`F (v2)` is the execution engine of our in-house stream-based flow record query language `NFQL`. The query language allows to describe patterns in `NetFlow v5` records in a declarative and orthogonal fashion, making it easy to read and flexible enough to describe complex relationships among a given set of flows. It can process flow-records, aggregate them into groups, apply absolute (or relative) filters and invoke Allen interval algebra rules. The execution engine is written in `C`.
+`F (v2)` is the execution engine of our in-house stream-based flow record query
+language `NFQL`. The query language allows to describe patterns in `NetFlow v5`
+records in a declarative and orthogonal fashion, making it easy to read and
+flexible enough to describe complex relationships among a given set of flows. It
+can process flow-records, aggregate them into groups, apply absolute (or
+relative) filters and invoke Allen interval algebra rules. The execution engine
+is written in `C`.
 
 
 Installing on Ubuntu
