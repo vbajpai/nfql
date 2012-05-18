@@ -133,34 +133,34 @@ comparison operators
 
 all operators have a third delta or epsilon argument
 
-equal         eq
-not equal     ne
-less than     lt
-greater than  gt
-less equal    le
-greater equal ge
-
-and
-or
-nand
-nor
-xor
+	equal         eq
+	not equal     ne
+	less than     lt
+	greater than  gt
+	less equal    le
+	greater equal ge
+	
+	and
+	or
+	nand
+	nor
+	xor
 
 allen time interval:
 
-before           a_bf
-after            a_af
-meets            a_m
-meets inverse    a_mi
-overlaps         a_o
-overlaps inverse a_oi
-starts           a_s
-starts inverse   a_si
-during           a_d
-during inverse   a_di
-finishes         a_f
-finishes inverse a_fi
-equal            a_eq
+	before           a_bf
+	after            a_af
+	meets            a_m
+	meets inverse    a_mi
+	overlaps         a_o
+	overlaps inverse a_oi
+	starts           a_s
+	starts inverse   a_si
+	during           a_d
+	during inverse   a_di
+	finishes         a_f
+	finishes inverse a_fi
+	equal            a_eq
 
 for merger and gfilter: in
 
