@@ -91,9 +91,9 @@ ft_open(int fd) {
     data->recordset = (struct record **)
                       realloc(data->recordset, 
                               data->num_records * sizeof(struct record*));    
-    data->recordset[data->num_records-1] = malloc(sizeof(struct record));
+    data->recordset[data->num_records-1] = calloc(1, sizeof(struct record));
     data->recordset[data->num_records-1]->record = (char*)
-                                                   malloc(data->rec_size);
+                                                   calloc(1, data->rec_size);
     memcpy(data->recordset[data->num_records-1]->record, 
            record, 
            data->rec_size);
