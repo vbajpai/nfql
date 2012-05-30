@@ -26,7 +26,7 @@ add_custom_command (
 
 # specify the header files location
 include_directories(${CMAKE_PREFIX_PATH}/include
-                    ${CMAKE_SOURCE_DIR}/include
+                    ${CMAKE_SOURCE_DIR}/src
                     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
