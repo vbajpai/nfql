@@ -26,20 +26,34 @@
  */
 
 #define _GNU_SOURCE
+#define STR(x) #x
+#define XSTR(x) STR(x)
+#define VERSION 2.4
 #include "flowy.h"
 
 struct parameters*
 parse_cmdline_args(int argc, char** const argv) {
 
   int                                 opt;
-  char*                               shortopts = "v:d";
+  char*                               shortopts = "v:dhV";
   static struct option                longopts[] = {
     { "debug",      no_argument,        NULL,           'd' },
-    { "verbose",    required_argument,  NULL,           'v' },    
+    { "verbose",    no_argument,        NULL,           'v' },
+    { "help",       no_argument,        NULL,           'h' },
+    { "version",    no_argument,        NULL,           'V' },
     {  NULL,        0,                  NULL,            0  }
   };
   enum verbosity_levels               verbose_level;
-  
+  const char usage_string[] =
+  "%s [OPTIONS] queryfile tracefile\t\t query the specified trace\n"
+  "   or: %s [OPTIONS] queryfile -\t\t\t read the trace from stdin\n\n"
+  "OPTIONS:\n"
+  "-d, --debug\t\t enable debugging mode\n"
+  "-v, --verbose\t\t increase the verbosity level\n"
+  "-h, --help\t\t display this help and exit\n"
+  "-V, --version\t\t output version information and exit\n";
+
+
   /* free'd after calling read_param_data(...) */
   struct parameters* param = calloc(1, sizeof(struct parameters));
   if (param == NULL)
@@ -49,23 +63,24 @@ parse_cmdline_args(int argc, char** const argv) {
     switch (opt) {
       case 'd': debug = TRUE; verbose_level = HIGH;
       case 'v': if (optarg)
-        verbose_level = atoi(optarg); 
+        verbose_level = atoi(optarg);
         switch (verbose_level) {
-          case HIGH: verbose_vvv = TRUE;                       
-          case MEDIUM: verbose_vv = TRUE;                       
+          case HIGH: verbose_vvv = TRUE;
+          case MEDIUM: verbose_vv = TRUE;
           case LOW: verbose_v = TRUE; break;
-          default: errExit("valid verbosity levels: (1-3)");                      
+          default: errExit("valid verbosity levels: (1-3)");
         }
-        break;        
+        break;
+      case 'h': usageErr(usage_string, argv[0], argv[0]);
+      case 'V': fprintf(stdout, "%s version %s", argv[0], XSTR(VERSION));
+                exit(EXIT_SUCCESS);
       case ':': usageError(argv[0], "Missing argument", optopt);
       default: exit(EXIT_FAILURE);
     }
   }
-  
+
   if (argc != optind + 2)
-    usageErr("\n\n 1) $ %s $QUERY $TRACE or \
-              \n\n 2) $ flow-cat $TRACE | %s $QUERY - \n\n",
-             argv[0], argv[0]);
+    usageErr(usage_string, argv[0], argv[0]);
   else {
     param->query_filename = argv[optind];
     param->trace_filename = argv[optind+1];
