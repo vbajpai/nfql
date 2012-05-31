@@ -61,24 +61,24 @@ outputError(int err, bool flushStdout,
   fflush(stderr);
 }
 
-void 
+void
 usageError(char *progName, char *msg, int opt) {
   if (msg != NULL && opt != 0)
     fprintf(stderr, "%s (-%c)\n", msg, opt);
   usageErr("%s $TRACE\n", progName, progName);
 }
 
-void 
+void
 usageErr(const char *format, ...) {
-  
+
   va_list argList;
   fflush(stdout); /* Flush any pending stdout */
-  
-  fprintf(stderr, "\nUsage: "); 
-  va_start(argList, format); 
-  vfprintf(stderr, format, argList); 
+
+  fprintf(stderr, "usage: ");
+  va_start(argList, format);
+  vfprintf(stderr, format, argList);
   va_end(argList);
-  
+
   fflush(stderr); /* In case stderr is not line-buffered */
   exit(EXIT_FAILURE);
 }
