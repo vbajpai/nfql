@@ -62,8 +62,7 @@ parse_cmdline_args(int argc, char** const argv) {
   while ((opt = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
     switch (opt) {
       case 'd': debug = TRUE; verbose_level = HIGH;
-      case 'v': if (optarg)
-        verbose_level = atoi(optarg);
+      case 'v': if (optarg) verbose_level = atoi(optarg);
         switch (verbose_level) {
           case HIGH: verbose_vvv = TRUE;
           case MEDIUM: verbose_vv = TRUE;
@@ -84,40 +83,40 @@ parse_cmdline_args(int argc, char** const argv) {
   else {
     param->query_filename = argv[optind];
     param->trace_filename = argv[optind+1];
-  }  
+  }
   return param;
 }
 
 struct parameters_data*
 read_param_data(const struct parameters* const param) {
-  
+
   /* param_data->query_mmap is free'd after calling parse_json_query(...)
    * param_data->query_mmap_stat is free'd after freeing param_data->query_mmap
    * param_data->trace is free'd in 2 stages:
    *    non-filtered records are free'd just after returning from the branch
    *    filtered records are free'd before exiting from main(...)
    * param_data is free'd before exiting from main(...)
-   */ 
-  struct parameters_data* param_data = calloc(1, 
+   */
+  struct parameters_data* param_data = calloc(1,
                                               sizeof(struct parameters_data));
   if (param_data == NULL)
     errExit("calloc");
-  
+
   int fsock;
   if(!strcmp(param->trace_filename,"-"))
     fsock = 0;
   else {
     fsock = open(param->trace_filename, O_RDONLY);
     if (fsock == -1)
-      errExit("open"); 
+      errExit("open");
   }
-  
+
   param_data->trace = ft_open(fsock);
   if (close(fsock) == -1)
     errExit("close");
 
-  /* param_data->query_mmap_stat is free'd after freeing 
-   * param_data->query_mmap  
+  /* param_data->query_mmap_stat is free'd after freeing
+   * param_data->query_mmap
    */
   param_data->query_mmap_stat = calloc(1, sizeof(struct stat));
   if (param_data->query_mmap_stat == NULL)
@@ -126,19 +125,23 @@ read_param_data(const struct parameters* const param) {
   if (fsock == -1)
     errExit("open");
   if (fstat(fsock, param_data->query_mmap_stat) == -1)
-    errExit("fstat");  
+    errExit("fstat");
 
   /* param_data->query_mmap is free'd after calling parse_json_query(...) */
-  param_data->query_mmap = mmap(NULL, 
-                                param_data->query_mmap_stat->st_size, 
-                                PROT_READ, 
-                                MAP_PRIVATE, 
-                                fsock, 0); 
+  param_data->query_mmap =
+  mmap(
+       NULL,                                   /* starting page address */
+       param_data->query_mmap_stat->st_size,   /* bytes to be mappped */
+       PROT_READ,                              /* region accessibility */
+       MAP_PRIVATE,                            /* flags */
+       fsock,                                  /* file object */
+       0                                       /* offset */
+      );
   if (param_data->query_mmap == MAP_FAILED)
     errExit("mmap");
   if (close(fsock) == -1)
-    errExit("close"); 
-  
+    errExit("close");
+
   return param_data;
 }
 
