@@ -178,323 +178,323 @@ parse_json_query(const char* const query_mmap) {
   /* -----------------------------------------------------------------------*/
 
   for (int i = 0; i < json->num_branches; i++) {
-    
+
     struct json_object* branch_json = json_object_array_get_idx(branchset, i);
-    
+
     /* free'd after returning from prepare_flowquery(...) */
-    struct json_branch_rules* branch = calloc(1, 
+    struct json_branch_rules* branch = calloc(1,
                                               sizeof(struct json_branch_rules));
     if (branch == NULL)
       errExit("calloc");
     json->branchset[i] = branch;
-    
-    
-    
-    
-  /* -----------------------------------------------------------------------*/  
+
+
+
+
+  /* -----------------------------------------------------------------------*/
   /*                         parse filter rules                             */
   /* -----------------------------------------------------------------------*/
-    
-    struct json_object* 
-    filter = json_object_object_get(branch_json, "filter");  
-    struct json_object* 
+
+    struct json_object*
+    filter = json_object_object_get(branch_json, "filter");
+    struct json_object*
     fnum_rules = json_object_object_get(filter, "num_rules");
     branch->num_frules = json_object_get_int(fnum_rules);
-    
+
     /* free'd after returning from prepare_flowquery(...) */
-    branch->fruleset = calloc(branch->num_frules, 
+    branch->fruleset = calloc(branch->num_frules,
                               sizeof(struct json_filter_rule*));
     if (branch->fruleset == NULL)
-      errExit("calloc");  
-    
+      errExit("calloc");
+
     struct json_object* fruleset = json_object_object_get(filter, "ruleset");
-    
+
     for (int i = 0; i < branch->num_frules; i++) {
-      
+
       /* free'd after returning from prepare_flowquery(...) */
-      struct json_filter_rule* 
+      struct json_filter_rule*
       frule = calloc(1, sizeof(struct json_filter_rule));
       if (frule == NULL)
         errExit("calloc");
       branch->fruleset[i] = frule;
-      
+
       /* free'd after returning from prepare_flowquery(...) */
       frule->off = calloc(1, sizeof(struct json_filter_rule_offset));
       if (frule->off == NULL)
         errExit("calloc");
-      
+
       struct json_object* frule_json = json_object_array_get_idx(fruleset, i);
-      
-      /* free'd before returning from this function */   
-      struct json_object* 
+
+      /* free'd before returning from this function */
+      struct json_object*
       delta = json_object_object_get(frule_json, "delta");
-      struct json_object* 
+      struct json_object*
       op = json_object_object_get(frule_json, "op");
-      struct json_object* 
-      foffset = json_object_object_get(frule_json, "offset");    
-      struct json_object* 
+      struct json_object*
+      foffset = json_object_object_get(frule_json, "offset");
+      struct json_object*
       fo_name = json_object_object_get(foffset, "name");
-      struct json_object* 
+      struct json_object*
       fo_val = json_object_object_get(foffset, "value");
-      struct json_object* 
+      struct json_object*
       fo_type = json_object_object_get(foffset, "datatype");
-      
-      frule->delta = json_object_get_int(delta);  
+
+      frule->delta = json_object_get_int(delta);
       frule->op = strdup(json_object_get_string(op));
       if (frule->op == NULL) errExit("strdup");
-      
+
       frule->off->name = strdup(json_object_get_string(fo_name));
       if (frule->off->name == NULL) errExit("strdup");
-      
+
       frule->off->value = json_object_get_int(fo_val);
       frule->off->datatype = strdup(json_object_get_string(fo_type));
-      if (frule->off->datatype == NULL) errExit("strdup");      
-    } 
-    
+      if (frule->off->datatype == NULL) errExit("strdup");
+    }
+
     /* -----------------------------------------------------------------------*/
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    /* -----------------------------------------------------------------------*/  
+
+
+
+
+
+
+
+
+
+    /* -----------------------------------------------------------------------*/
     /*                        parse grouper rules                             */
     /* -----------------------------------------------------------------------*/
-    
-    struct json_object* grouper = 
+
+    struct json_object* grouper =
     json_object_object_get(branch_json, "grouper");
-    struct json_object* 
+    struct json_object*
     gnum_rules = json_object_object_get(grouper, "num_rules");
     branch->num_grules = json_object_get_int(gnum_rules);
-    
+
     /* free'd after returning from prepare_flowquery(...) */
-    branch->gruleset = calloc(branch->num_grules, 
+    branch->gruleset = calloc(branch->num_grules,
                             sizeof(struct json_grouper_rule*));
     if (branch->gruleset == NULL)
-      errExit("calloc");  
+      errExit("calloc");
     struct json_object* gruleset = json_object_object_get(grouper, "ruleset");
-    
+
     for (int i = 0; i < branch->num_grules; i++) {
-      
+
       /* free'd after returning from prepare_flowquery(...) */
-      struct json_grouper_rule* 
+      struct json_grouper_rule*
       grule = calloc(1, sizeof(struct json_grouper_rule));
       if (grule == NULL)
         errExit("calloc");
       branch->gruleset[i] = grule;
-      
+
       /* free'd after returning from prepare_flowquery(...) */
       grule->off = calloc(1, sizeof(struct json_grouper_rule_offset));
       if (grule->off == NULL)
         errExit("calloc");
-      
+
       /* free'd after returning from prepare_flowquery(...) */
       grule->op = calloc(1, sizeof(struct json_grouper_rule_op));
       if (grule->op == NULL)
         errExit("calloc");
-      
+
       struct json_object* grule_json = json_object_array_get_idx(gruleset, i);
-      
-      /* free'd before returning from this function */   
-      struct json_object* 
+
+      /* free'd before returning from this function */
+      struct json_object*
       delta = json_object_object_get(grule_json, "delta");
-      struct json_object* 
+      struct json_object*
       op = json_object_object_get(grule_json, "op");
-      struct json_object* 
+      struct json_object*
       offset = json_object_object_get(grule_json, "offset");
-      
-      struct json_object* 
+
+      struct json_object*
       f1_name = json_object_object_get(offset, "f1_name");
-      struct json_object* 
+      struct json_object*
       f2_name = json_object_object_get(offset, "f2_name");
-      struct json_object* 
+      struct json_object*
       f1_datatype = json_object_object_get(offset, "f1_datatype");
-      struct json_object* 
-      f2_datatype = json_object_object_get(offset, "f2_datatype");    
-      
-      struct json_object* 
+      struct json_object*
+      f2_datatype = json_object_object_get(offset, "f2_datatype");
+
+      struct json_object*
       op_type = json_object_object_get(op, "type");
-      struct json_object* 
+      struct json_object*
       op_name = json_object_object_get(op, "name");
-      
+
       grule->delta = json_object_get_int(delta);
-      
+
       grule->op->name = strdup(json_object_get_string(op_name));
       if (grule->op->name == NULL) errExit("strdup");
-      
+
       grule->op->type = strdup(json_object_get_string(op_type));
       if (grule->op->type == NULL) errExit("strdup");
-      
+
       grule->off->f1_name = strdup(json_object_get_string(f1_name));
       if (grule->off->f1_name == NULL) errExit("strdup");
-      
+
       grule->off->f2_name = strdup(json_object_get_string(f2_name));
       if (grule->off->f2_name == NULL) errExit("strdup");
-      
+
       grule->off->f1_datatype = strdup(json_object_get_string(f1_datatype));
       if (grule->off->f1_datatype == NULL) errExit("strdup");
-      
+
       grule->off->f2_datatype = strdup(json_object_get_string(f2_datatype));
       if (grule->off->f2_datatype == NULL) errExit("strdup");
-    } 
-    
+    }
+
     /* -----------------------------------------------------------------------*/
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    /* -----------------------------------------------------------------------*/  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /* -----------------------------------------------------------------------*/
     /*                        parse aggr rules                                */
     /* -----------------------------------------------------------------------*/
 
-    struct json_object* aggr = 
+    struct json_object* aggr =
     json_object_object_get(branch_json, "aggregation");
-    struct json_object* 
+    struct json_object*
     anum_rules = json_object_object_get(aggr, "num_rules");
     branch->num_arules = json_object_get_int(anum_rules);
-    
+
     /* free'd after returning from prepare_flowquery(...) */
-    branch->aruleset = calloc(branch->num_arules, 
+    branch->aruleset = calloc(branch->num_arules,
                               sizeof(struct json_aggr_rule*));
     if (branch->aruleset == NULL)
-      errExit("calloc");  
+      errExit("calloc");
     struct json_object* aruleset = json_object_object_get(aggr, "ruleset");
-    
+
     for (int i = 0; i < branch->num_arules; i++) {
-      
+
       /* free'd after returning from prepare_flowquery(...) */
       struct json_aggr_rule* 
       arule = calloc(1, sizeof(struct json_aggr_rule));
       if (arule == NULL)
         errExit("calloc");
       branch->aruleset[i] = arule;
-      
+
       /* free'd after returning from prepare_flowquery(...) */
       arule->off = calloc(1, sizeof(struct json_aggr_rule_offset));
       if (arule->off == NULL)
         errExit("calloc");
-      
+
       struct json_object* arule_json = json_object_array_get_idx(aruleset, i);
-      
-      /* free'd before returning from this function */   
-      struct json_object* 
+
+      /* free'd before returning from this function */
+      struct json_object*
       op = json_object_object_get(arule_json, "op");
-      struct json_object* 
+      struct json_object*
       offset = json_object_object_get(arule_json, "offset");
-      
-      struct json_object* 
+
+      struct json_object*
       name = json_object_object_get(offset, "name");
-      struct json_object* 
+      struct json_object*
       datatype = json_object_object_get(offset, "datatype");
-      
+
       arule->op = strdup(json_object_get_string(op));
       if (arule->op == NULL) errExit("strdup");
-      
+
       arule->off->name = strdup(json_object_get_string(name));
       if (arule->off->name == NULL) errExit("strdup");
-      
+
       arule->off->datatype = strdup(json_object_get_string(datatype));
-      if (arule->off->datatype == NULL) errExit("strdup");      
-    }     
-    
-    
+      if (arule->off->datatype == NULL) errExit("strdup");
+    }
+
+
     /* -----------------------------------------------------------------------*/
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    /* -----------------------------------------------------------------------*/  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /* -----------------------------------------------------------------------*/
     /*                        parse gfilter rules                             */
     /* -----------------------------------------------------------------------*/
 
-    struct json_object* 
-    gfilter = json_object_object_get(branch_json, "gfilter");  
-    struct json_object* 
+    struct json_object*
+    gfilter = json_object_object_get(branch_json, "gfilter");
+    struct json_object*
     gfnum_rules = json_object_object_get(gfilter, "num_rules");
     branch->num_gfrules = json_object_get_int(gfnum_rules);
-    
+
     /* free'd after returning from prepare_flowquery(...) */
-    branch->gfruleset = calloc(branch->num_gfrules, 
+    branch->gfruleset = calloc(branch->num_gfrules,
                                sizeof(struct json_gfilter_rule*));
     if (branch->gfruleset == NULL)
-      errExit("calloc");  
-    
+      errExit("calloc");
+
     struct json_object* gfruleset = json_object_object_get(gfilter, "ruleset");
-    
+
     for (int i = 0; i < branch->num_gfrules; i++) {
-      
+
       /* free'd after returning from prepare_flowquery(...) */
-      struct json_gfilter_rule* 
+      struct json_gfilter_rule*
       gfrule = calloc(1, sizeof(struct json_gfilter_rule));
       if (gfrule == NULL)
         errExit("calloc");
       branch->gfruleset[i] = gfrule;
-      
+
       /* free'd after returning from prepare_flowquery(...) */
       gfrule->off = calloc(1, sizeof(struct json_gfilter_rule_offset));
       if (gfrule->off == NULL)
         errExit("calloc");
-      
+
       struct json_object* gfrule_json = json_object_array_get_idx(gfruleset, i);
-      
-      /* free'd before returning from this function */   
-      struct json_object* 
+
+      /* free'd before returning from this function */
+      struct json_object*
       delta = json_object_object_get(gfrule_json, "delta");
-      struct json_object* 
+      struct json_object*
       op = json_object_object_get(gfrule_json, "op");
-      struct json_object* 
-      offset = json_object_object_get(gfrule_json, "offset");    
-      struct json_object* 
+      struct json_object*
+      offset = json_object_object_get(gfrule_json, "offset");
+      struct json_object*
       fo_name = json_object_object_get(offset, "name");
-      struct json_object* 
+      struct json_object*
       fo_val = json_object_object_get(offset, "value");
-      struct json_object* 
+      struct json_object*
       fo_type = json_object_object_get(offset, "datatype");
-      
-      gfrule->delta = json_object_get_int(delta);  
+
+      gfrule->delta = json_object_get_int(delta);
       gfrule->op = strdup(json_object_get_string(op));
-      if (gfrule->op == NULL) errExit("strdup");      
+      if (gfrule->op == NULL) errExit("strdup");
       gfrule->off->name = strdup(json_object_get_string(fo_name));
-      if (gfrule->off->name == NULL) errExit("strdup");      
-      gfrule->off->value = json_object_get_int(fo_val);      
+      if (gfrule->off->name == NULL) errExit("strdup");
+      gfrule->off->value = json_object_get_int(fo_val);
       gfrule->off->datatype = strdup(json_object_get_string(fo_type));
       if (gfrule->off->datatype == NULL) errExit("strdup");
-    } 
+    }
 
-    
+
     /* -----------------------------------------------------------------------*/
 
   }
@@ -1011,51 +1011,51 @@ run_branch_async(const struct flowquery* const fquery){
   return threadset;
 }
 
-int 
+int
 main(int argc, char **argv) {
-  
-  
-  
-  /* -----------------------------------------------------------------------*/  
+
+
+
+  /* -----------------------------------------------------------------------*/
   /*                  parsing the command line arguments                    */
   /* -----------------------------------------------------------------------*/
-  
+
   struct parameters* param = parse_cmdline_args(argc, argv);
   if (param == NULL)
     errExit("parse_cmdline_args(...) returned NULL");
 
-  /* ----------------------------------------------------------------------- */  
-  
-  
-  
-  
-  
-  
-  
-  /* -----------------------------------------------------------------------*/  
+  /* ----------------------------------------------------------------------- */
+
+
+
+
+
+
+
+  /* -----------------------------------------------------------------------*/
   /*                  reading the input trace and query                     */
   /* -----------------------------------------------------------------------*/
-  
+
   struct parameters_data* param_data = read_param_data(param);
   if (param_data == NULL)
     errExit("read_param_data(...) returned NULL");
   else{
     free(param); param = NULL;
   }
-    
-  
-  /* ----------------------------------------------------------------------- */  
-  
-  
-  
-  
-  
-  
-  
-  /* -----------------------------------------------------------------------*/  
+
+
+  /* ----------------------------------------------------------------------- */
+
+
+
+
+
+
+
+  /* -----------------------------------------------------------------------*/
   /*                  parse the query json into struct                      */
   /* -----------------------------------------------------------------------*/
-  
+
   struct json* json_query = parse_json_query(param_data->query_mmap);
   if (json_query == NULL)
     errExit("parse_json_query(...) returned NULL");
@@ -1067,28 +1067,28 @@ main(int argc, char **argv) {
     param_data->query_mmap = NULL;
     free(param_data->query_mmap_stat); param_data->query_mmap_stat = NULL;
   }
-  
- /* ----------------------------------------------------------------------- */  
-  
-  
-  
-  
-  
-  
-  
-  /* -----------------------------------------------------------------------*/  
+
+ /* ----------------------------------------------------------------------- */
+
+
+
+
+
+
+
+  /* -----------------------------------------------------------------------*/
   /*                           prepare flowquery                            */
   /* -----------------------------------------------------------------------*/
-  
-  struct flowquery* fquery = prepare_flowquery(param_data->trace, json_query); 
+
+  struct flowquery* fquery = prepare_flowquery(param_data->trace, json_query);
   if (fquery == NULL)
     errExit("prepare_flowquery(...) returned NULL");
   else {
-    
+
     for (int i = 0; i < json_query->num_branches; i++) {
-      
+
       struct json_branch_rules* json_branch = json_query->branchset[i];
-      
+
       /* deallocate the filter json query buffers */
       for (int j = 0; j < json_branch->num_frules; j++) {
         struct json_filter_rule* frule = json_branch->fruleset[j];
@@ -1099,8 +1099,8 @@ main(int argc, char **argv) {
         free(frule); frule = NULL;
       }
       free(json_branch->fruleset); json_branch->fruleset = NULL;
-      
-      /* deallocate the grouper json query buffers */    
+
+      /* deallocate the grouper json query buffers */
       for (int j = 0; j < json_branch->num_grules; j++) {
         struct json_grouper_rule* grule = json_branch->gruleset[j];
         free(grule->off->f1_datatype); grule->off->f1_datatype = NULL;
@@ -1112,9 +1112,9 @@ main(int argc, char **argv) {
         free(grule->op->type); grule->op->type = NULL;
         free(grule->op); grule->op = NULL;
         free(grule); grule = NULL;
-      }
+      }za
       free(json_branch->gruleset); json_branch->gruleset = NULL;
-      
+
       /* deallocate the aggr json query buffers */
       for (int j = 0; j < json_branch->num_arules; j++) {
         struct json_aggr_rule* arule = json_branch->aruleset[j];
@@ -1125,7 +1125,7 @@ main(int argc, char **argv) {
         free(arule); arule = NULL;
       }
       free(json_branch->aruleset); json_branch->aruleset = NULL;
-      
+
       /* deallocate the group filter json query buffers */
       for (int j = 0; j < json_branch->num_gfrules; j++) {
         struct json_gfilter_rule* gfrule = json_branch->gfruleset[j];
@@ -1135,12 +1135,12 @@ main(int argc, char **argv) {
         free(gfrule->op); gfrule->op = NULL;
         free(gfrule); gfrule = NULL;
       }
-      free(json_branch->gfruleset); json_branch->gfruleset = NULL;      
-      
+      free(json_branch->gfruleset); json_branch->gfruleset = NULL;
+
       free(json_branch); json_branch = NULL; json_query->branchset[i] = NULL;
     }
-    
-    /* deallocate the grouper json query buffers */    
+
+    /* deallocate the grouper json query buffers */
     for (int i = 0; i < json_query->num_mrules; i++) {
       struct json_merger_rule* mrule = json_query->mruleset[i];
       free(mrule->off->f1_datatype); mrule->off->f1_datatype = NULL;
@@ -1150,35 +1150,35 @@ main(int argc, char **argv) {
       free(mrule->off); mrule->off = NULL;
       free(mrule->op->name); mrule->op->name = NULL;
       free(mrule->op->type); mrule->op->type = NULL;
-      free(mrule->op); mrule->op = NULL;      
+      free(mrule->op); mrule->op = NULL;
       free(mrule); mrule = NULL;
     }
-    free(json_query->mruleset); json_query->mruleset = NULL;    
+    free(json_query->mruleset); json_query->mruleset = NULL;
     free(json_query->branchset); json_query->branchset = NULL;
     free(json_query); json_query = NULL;
-  }  
-  
+  }
+
  /* -----------------------------------------------------------------------*/
 
 
-  
-  
-  
-  
-  
-  
-  
-  
-  /* -----------------------------------------------------------------------*/  
-  /*                                branch                                  */  
+
+
+
+
+
+
+
+
+  /* -----------------------------------------------------------------------*/
+  /*                                branch                                  */
   /*               splitter → filter → grouper → group-filter               */
-  /* -----------------------------------------------------------------------*/   
-  
+  /* -----------------------------------------------------------------------*/
+
   pthread_t* threadset = run_branch_async(fquery);
   if (threadset == NULL)
     errExit("run_branch_async(...) returned NULL");
   else {
-    
+
     /* - wait for each thread to complete its branch
      * - save and print the number of filtered groups on completion
      * - save the filtered groups on completion
@@ -1189,87 +1189,87 @@ main(int argc, char **argv) {
       ret = pthread_join(*thread, &res);
       if (ret != 0)
         errExit("pthread_join");
-      else if (res != EXIT_SUCCESS) 
+      else if (res != EXIT_SUCCESS)
         errExit("branch (%d) prematurely exited", i);
-    }    
+    }
     free(threadset);
-    
+
     /* free all the records that were not filtered from the original trace */
-    for (int i = 0; i < param_data->trace->num_records; i++) {      
+    for (int i = 0; i < param_data->trace->num_records; i++) {
       struct record* recordinfo = param_data->trace->recordset[i];
       if (recordinfo->if_filtered == false) {
-        free(recordinfo->record); recordinfo->record = NULL;      
+        free(recordinfo->record); recordinfo->record = NULL;
       }
     }
-    
+
     /* print the filtered records if verbose mode is set */
     if (verbose_v) {
-      
+
       echo_branch(
                   fquery->num_branches,
                   fquery->branchset,
                   param_data->trace
                  );
-    }    
-  }    
-  
-  /* -----------------------------------------------------------------------*/    
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  /* -----------------------------------------------------------------------*/  
+    }
+  }
+
+  /* -----------------------------------------------------------------------*/
+
+
+
+
+
+
+
+
+
+  /* -----------------------------------------------------------------------*/
   /*                              free memory                               */
-  /* -----------------------------------------------------------------------*/  
-  
-  if (verbose_v) {    
+  /* -----------------------------------------------------------------------*/
+
+  if (verbose_v) {
     for (int i = 0; i < fquery->num_branches; i++) {
       struct branch* branch = fquery->branchset[i];
-      
+
       /* free grouper_result */
       if (verbose_vv) {
-        
+
         /* free sorted records */
         for (int j = 0; j < branch->filter_result->num_filtered_records; j++)
           branch->grouper_result->sorted_recordset[j] = NULL;
         free(branch->grouper_result->sorted_recordset);
         branch->grouper_result->sorted_recordset = NULL;
-              
+
         /* free unique records */
         for (int j = 0; j < branch->grouper_result->num_unique_records; j++)
           branch->grouper_result->unique_recordset[j] = NULL;
         free(branch->grouper_result->unique_recordset);
-        branch->grouper_result->unique_recordset = NULL;        
+        branch->grouper_result->unique_recordset = NULL;
       }
     }
   }
-  
+
   /* -----------------------------------------------------------------------*/
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
+
+
 #ifdef MERGER
-  
-  /* -----------------------------------------------------------------------*/  
+
+  /* -----------------------------------------------------------------------*/
   /*                                 merger                                 */
   /* -----------------------------------------------------------------------*/
-  
+
   fquery->merger_result = merger(
                                  fquery->num_merger_rules,
                                  fquery->mruleset,
-                                 
+
                                  fquery->num_branches,
                                  fquery->branchset
                                 );
@@ -1277,84 +1277,84 @@ main(int argc, char **argv) {
   if (fquery->merger_result == NULL)
     errExit("merger(...) returned NULL");
   else {
-    
+
     /* free merger rules */
     for (int i = 0; i < fquery->num_merger_rules; i++) {
       struct merger_rule* mrule = fquery->mruleset[i];
       free(mrule->op); mrule->op = NULL;
-      free(mrule); mrule = NULL; fquery->mruleset[i] = NULL;      
+      free(mrule); mrule = NULL; fquery->mruleset[i] = NULL;
     }
     free(fquery->mruleset); fquery->mruleset = NULL;
-    
+
     /* echo merger results, if verbose mode is SET */
     if (verbose_v)
       echo_merger(
                   fquery->num_branches,
                   fquery->branchset,
-                  
+
                   fquery->merger_result,
                   param_data->trace
                  );
-    
+
     /* free grouper and groupfilter parts */
     for (int i = 0; i < fquery->num_branches; i++) {
-      struct branch* branch = fquery->branchset[i];    
-      
-      /* free grouper aggregations */      
-      for (int j = 0; j < branch->grouper_result->num_groups; j++) {        
-        struct group* group = branch->grouper_result->groupset[j];        
-        
+      struct branch* branch = fquery->branchset[i];
+
+      /* free grouper aggregations */
+      for (int j = 0; j < branch->grouper_result->num_groups; j++) {
+        struct group* group = branch->grouper_result->groupset[j];
+
 #ifdef GROUPERAGGREGATIONS
-        
-        /* free group aggregations */        
+
+        /* free group aggregations */
         for (int x = 0; x < branch->num_aggr_rules; x++){
           struct aggr* aggr = group->aggr_result->aggrset[x];
           free(aggr->values); aggr->values = NULL;
           free(aggr); aggr = NULL; group->aggr_result->aggrset[x] = NULL;
-        }  
-        free(group->aggr_result->aggrset); 
+        }
+        free(group->aggr_result->aggrset);
         group->aggr_result->aggrset = NULL;
-        
-        free(group->aggr_result->aggr_record);         
+
+        free(group->aggr_result->aggr_record);
         group->aggr_result->aggr_record = NULL;
-        
+
         free(group->aggr_result);
         group->aggr_result = NULL;
 #endif
       }
-      
-      /* free groupfilter result */      
-      for (int j = 0; j < branch->gfilter_result->num_filtered_groups; j++) {          
+
+      /* free groupfilter result */
+      for (int j = 0; j < branch->gfilter_result->num_filtered_groups; j++) {
         /* all the groups were already free'd by grouper just above */
         /* unlink the pointers */
         branch->gfilter_result->filtered_groupset[j] = NULL;
-      }  
+      }
       free(branch->gfilter_result->filtered_groupset);
-      branch->gfilter_result->filtered_groupset = NULL;          
+      branch->gfilter_result->filtered_groupset = NULL;
       free(branch->gfilter_result);
       branch->gfilter_result = NULL;
     }
   }
-  
-  /* -----------------------------------------------------------------------*/    
-  
-#endif  
-  
-  
 
-  
-  
-  
-  
-  
-  
-  
-#ifdef UNGROUPER  
-  
-  /* -----------------------------------------------------------------------*/  
+  /* -----------------------------------------------------------------------*/
+
+#endif
+
+
+
+
+
+
+
+
+
+
+#ifdef UNGROUPER
+
+  /* -----------------------------------------------------------------------*/
   /*                                ungrouper                               */
-  /* -----------------------------------------------------------------------*/  
-  
+  /* -----------------------------------------------------------------------*/
+
   fquery->ungrouper_result = ungrouper(
                                        fquery->num_branches,
                                        fquery->merger_result
@@ -1362,46 +1362,46 @@ main(int argc, char **argv) {
   if (fquery->ungrouper_result == NULL)
     errExit("ungrouper(...) returned NULL");
   else {
-    
+
     /* echo ungrouper results */
     echo_results(
                  fquery->ungrouper_result,
                  param_data->trace
                 );
-  }    
-  
+  }
+
   /* -----------------------------------------------------------------------*/
-  
-#endif  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  /* -----------------------------------------------------------------------*/  
+
+#endif
+
+
+
+
+
+
+
+
+
+
+  /* -----------------------------------------------------------------------*/
   /*                              free memory                               */
-  /* -----------------------------------------------------------------------*/  
-  
+  /* -----------------------------------------------------------------------*/
+
   /* free grouper leftovers */
-  for (int i = 0; i < fquery->num_branches; i++) {        
+  for (int i = 0; i < fquery->num_branches; i++) {
     struct branch* branch = fquery->branchset[i];
     for (int j = 0; j < branch->grouper_result->num_groups; j++) {
-      struct group* group = branch->grouper_result->groupset[j];        
+      struct group* group = branch->grouper_result->groupset[j];
       for (int k = 0; k < group->num_members; k++)
-        group->members[k] = NULL;          
-      free(group->members); group->members = NULL;          
+        group->members[k] = NULL;
+      free(group->members); group->members = NULL;
       free(group); group = NULL; branch->grouper_result->groupset[j] = NULL;
     }
-    free(branch->grouper_result->groupset); 
-    branch->grouper_result->groupset = NULL;      
+    free(branch->grouper_result->groupset);
+    branch->grouper_result->groupset = NULL;
     free(branch->grouper_result); branch->grouper_result = NULL;
   }
-  
+
   /* free merger results */
   for (int i = 0; i < fquery->merger_result->num_group_tuples; i++) {
     struct group** matched_tuple = fquery->merger_result->group_tuples[i];
@@ -1409,29 +1409,29 @@ main(int argc, char **argv) {
       /* unlink the groups */
       matched_tuple[j] = NULL;
     }
-    free(matched_tuple); 
-    matched_tuple = NULL; fquery->merger_result->group_tuples[i] = NULL;      
+    free(matched_tuple);
+    matched_tuple = NULL; fquery->merger_result->group_tuples[i] = NULL;
   }
-  free(fquery->merger_result->group_tuples); 
+  free(fquery->merger_result->group_tuples);
   fquery->merger_result->group_tuples = NULL;
   free(fquery->merger_result); fquery->merger_result = NULL;
-  
+
   /* free ungrouper results */
   for (int j = 0; j < fquery->ungrouper_result->num_streams; j++) {
     struct stream* stream = fquery->ungrouper_result->streamset[j];
     for (int i = 0; i < stream->num_records; i++){
       /* unlink the record, */
       /* all filtered records are free'd next at once */
-      stream->recordset[i] = NULL;        
+      stream->recordset[i] = NULL;
     }
     free(stream->recordset); stream->recordset = NULL;
     free(stream); stream = NULL;
   }
-  free(fquery->ungrouper_result->streamset); 
+  free(fquery->ungrouper_result->streamset);
   fquery->ungrouper_result->streamset = NULL;
   free(fquery->ungrouper_result); fquery->ungrouper_result = NULL;
 
-  
+
   /* freee filter_result */
   for (int i = 0; i < fquery->num_branches; i++) {
     struct branch* branch = fquery->branchset[i];
@@ -1439,14 +1439,14 @@ main(int argc, char **argv) {
       /* unlink the records */
       branch->filter_result->filtered_recordset[j] = NULL;
     }
-    
+
     free(branch->filter_result->filtered_recordset);
     branch->filter_result->filtered_recordset = NULL;
-    
-    free(branch->filter_result); 
+
+    free(branch->filter_result);
     branch->filter_result = NULL;
   }
-  
+
   /* free flowquery */
   for (int i = 0; i < fquery->num_branches; i++) {
     struct branch* branch = fquery->branchset[i];
@@ -1454,13 +1454,13 @@ main(int argc, char **argv) {
   }
   free(fquery->branchset); fquery->branchset = NULL;
   free(fquery); fquery = NULL;
-  
+
   /* free param_data */
   ft_close(param_data->trace); param_data->trace = NULL;
   free(param_data); param_data = NULL;
-  
-  /* -----------------------------------------------------------------------*/  
-  
-  
+
+  /* -----------------------------------------------------------------------*/
+
+
   exit(EXIT_SUCCESS);
 }
