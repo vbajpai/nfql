@@ -623,149 +623,149 @@ parse_json_query(const char* const query_mmap) {
 struct flowquery*
 prepare_flowquery(struct ft_data* const trace,
                   const struct json* const json_query) {
-  
-  
-  /* -----------------------------------------------------------------------*/  
+
+
+  /* -----------------------------------------------------------------------*/
   /*                          allocating fquery                             */
   /* -----------------------------------------------------------------------*/
-  
+
   /* free'd just before exiting from main(...) */
   struct flowquery* fquery = (struct flowquery *)
                               calloc(1, sizeof(struct flowquery));
-  if (fquery == NULL) 
+  if (fquery == NULL)
     errExit("calloc");
-  
+
   fquery->num_branches = json_query->num_branches;
-  
+
   /* free'd just before exiting from main(...) */
   fquery->branchset =  (struct branch**)
-                       calloc(fquery->num_branches, 
+                       calloc(fquery->num_branches,
                        sizeof(struct branch*));
   if (fquery->branchset == NULL)
     errExit("calloc");
-  
+
   /* ----------------------------------------------------------------------- */
-  
-  
-  
-  
-  
-  
-  
-  /* -----------------------------------------------------------------------*/  
+
+
+
+
+
+
+
+  /* -----------------------------------------------------------------------*/
   /*                       assigning branch rules                           */
-  /* -----------------------------------------------------------------------*/  
+  /* -----------------------------------------------------------------------*/
 
   for (int i = 0; i < fquery->num_branches; i++) {
-    
+
     /* free'd just before exiting from main(...) */
     struct branch* branch = (struct branch*)
                              calloc(1, sizeof(struct branch));
     if (branch == NULL)
-      errExit("calloc");    
+      errExit("calloc");
     fquery->branchset[i] = branch;
-    
+
     struct json_branch_rules* json_branch = json_query->branchset[i];
-    
+
     branch->num_filter_rules = json_branch->num_frules;
     branch->num_grouper_rules = json_branch->num_grules;
     branch->num_aggr_rules = json_branch->num_arules;
-    branch->num_gfilter_rules = json_branch->num_gfrules;    
+    branch->num_gfilter_rules = json_branch->num_gfrules;
     branch->branch_id = i;
     branch->data = trace;
-    
-    /* filter rules are used in grouper aggregations */    
-    /* therefore, free'd after returning from grouper(...) in branch.c */    
-    struct filter_rule** fruleset = (struct filter_rule**) 
-                                     calloc(branch->num_filter_rules, 
+
+    /* filter rules are used in grouper aggregations */
+    /* therefore, free'd after returning from grouper(...) in branch.c */
+    struct filter_rule** fruleset = (struct filter_rule**)
+                                     calloc(branch->num_filter_rules,
                                             sizeof(struct filter_rule*));
     if (fruleset == NULL)
       errExit("calloc");
-    
+
     for (int j = 0; j < branch->num_filter_rules; j++) {
 
       /* free'd after returning from grouper(...) in branch.c */
       struct filter_rule* frule = calloc(1, sizeof(struct filter_rule));
       if (frule == NULL)
-        errExit("calloc");      
-      
+        errExit("calloc");
+
       /* free'd after returning from grouper(...) in branch.c */
       struct filter_op* op = calloc(1, sizeof(struct filter_op));
       if (op == NULL)
         errExit("calloc");
       else
         frule->op = op; op = NULL;
-      
+
       struct json_filter_rule* frule_json = json_branch->fruleset[j];
-      
+
       size_t offset = get_offset(frule_json->off->name, &trace->offsets);
       if (offset == -1)
         errExit("get_offset(frule_json) returned -1");
-      
+
       uint64_t op_enum = get_enum(frule_json->op);
       if (op_enum == -1)
         errExit("get_enum(frule_json->op) returned -1");
-      
+
       uint64_t type_enum = get_enum(frule_json->off->datatype);
       if (type_enum == -1)
         errExit("get_enum(frule_json->off->datatype) returned -1");
-      
+
       frule->field_offset          =         offset;
       frule->value                 =         frule_json->off->value;
-      frule->delta                 =         frule_json->delta;      
+      frule->delta                 =         frule_json->delta;
       frule->op->op                =         op_enum;
-      frule->op->field_type        =         type_enum;      
-      frule->func                  =         NULL;      
-      
+      frule->op->field_type        =         type_enum;
+      frule->func                  =         NULL;
+
       fruleset[j] = frule; frule = NULL; frule_json = NULL;
     }
     branch->filter_ruleset = fruleset; fruleset = NULL;
-    
+
     /* free'd after returning from grouper(...) in branch.c */
     struct grouper_rule** gruleset = (struct grouper_rule**)
-                                      calloc(branch->num_grouper_rules, 
+                                      calloc(branch->num_grouper_rules,
                                              sizeof(struct grouper_rule*));
     if (gruleset == NULL)
       errExit("calloc");
-    
+
     for (int j = 0; j < branch->num_grouper_rules; j++) {
-      
+
       /* free'd after returning from grouper(...) in branch.c */
       struct grouper_rule* grule = calloc(1, sizeof(struct grouper_rule));
       if (grule == NULL)
         errExit("calloc");
-      
+
       /* free'd after returning from grouper(...) in branch.c */
       struct grouper_op* op = calloc(1, sizeof(struct grouper_op));
       if (op == NULL)
         errExit("calloc");
       else
         grule->op = op; op = NULL;
-      
+
       struct json_grouper_rule* grule_json = json_branch->gruleset[j];
 
       size_t f1_offset = get_offset(grule_json->off->f1_name,
                                     &trace->offsets);
       if (f1_offset == -1)
         errExit("get_offset(grule_json->off->f1_name) returned -1");
-      
+
       size_t f2_offset = get_offset(grule_json->off->f2_name,
                                     &trace->offsets);
       if (f2_offset == -1)
         errExit("get_offset(grule_json->off->f2_name) returned -1");
-      
+
       uint64_t op_name_enum = get_enum(grule_json->op->name);
       if (op_name_enum == -1)
         errExit("get_enum(grule_json->op->name) returned -1");
-      
+
       uint64_t f1_type_enum = get_enum(grule_json->off->f1_datatype);
       if (f1_type_enum == -1)
         errExit("get_enum(grule_json->off->f1_datatype) returned -1");
-      
+
       uint64_t f2_type_enum = get_enum(grule_json->off->f2_datatype);
       if (f1_type_enum == -1)
         errExit("get_enum(grule_json->off->f2_datatype) returned -1");
-      
+
       uint64_t op_type_enum = get_enum(grule_json->op->type);
       if (op_type_enum == -1)
         errExit("get_enum(grule_json->op->type) returned -1");
@@ -778,25 +778,25 @@ prepare_flowquery(struct ft_data* const trace,
       grule->op->field2_type       =        f2_type_enum;
       grule->op->optype            =        op_type_enum;
       grule->func                  =        NULL;
-      
-      gruleset[j] = grule; grule = NULL; 
-      grule_json = NULL;      
+
+      gruleset[j] = grule; grule = NULL;
+      grule_json = NULL;
     }
     branch->grouper_ruleset = gruleset; gruleset = NULL;
-    
+
     /* free'd after returning from grouper(...) */
     struct aggr_rule** aruleset = (struct aggr_rule**)
-                                   calloc(branch->num_aggr_rules, 
+                                   calloc(branch->num_aggr_rules,
                                           sizeof(struct aggr_rule*));
     if (aruleset == NULL)
       errExit("calloc");
     for (int j = 0; j < branch->num_aggr_rules; j++) {
-      
+
       /* free'd after returning from grouper(...) */
       struct aggr_rule* arule = calloc(1, sizeof(struct aggr_rule));
       if (arule == NULL)
         errExit("calloc");
-      
+
       /* free'd after returning from grouper(...) */
       struct aggr_op* op = calloc(1, sizeof(struct aggr_op));
       if (op == NULL)
@@ -809,7 +809,7 @@ prepare_flowquery(struct ft_data* const trace,
                                  &trace->offsets);
       if (offset == -1)
         errExit("get_offset(arule_json->off->name) returned -1");
-      
+
       uint64_t op_enum = get_enum(arule_json->op);
       if (op_enum == -1)
         errExit("get_enum(arule_json->op) returned -1");
@@ -817,90 +817,90 @@ prepare_flowquery(struct ft_data* const trace,
       uint64_t type_enum = get_enum(arule_json->off->datatype);
       if (type_enum == -1)
         errExit("get_enum(arule_json->off->datatype) returned -1");
-      
+
       arule->field_offset        =         offset;
       arule->op->op              =         op_enum;
       arule->op->field_type      =         type_enum;
       arule->func                =         NULL;
-      
+
       aruleset[j] = arule; arule = NULL;
     }
     branch->aggr_ruleset = aruleset; aruleset = NULL;
-   
+
     /* free'd after returning from groupfilter(...) */
     struct gfilter_rule** gfruleset = (struct gfilter_rule**)
-                                      calloc(branch->num_gfilter_rules, 
+                                      calloc(branch->num_gfilter_rules,
                                             sizeof(struct gfilter_rule*));
     if (gfruleset == NULL)
-      errExit("calloc");    
+      errExit("calloc");
     for (int j = 0; j < branch->num_gfilter_rules; j++) {
-      
+
       /* free'd after returning from groupfilter(...) */
       struct gfilter_rule* gfrule = calloc(1, sizeof(struct gfilter_rule));
       if (gfrule == NULL)
         errExit("calloc");
-      
+
       /* free'd after returning from groupfilter(...) */
       struct gfilter_op* op = calloc(1, sizeof(struct gfilter_op));
       if (op == NULL)
         errExit("calloc");
       else
         gfrule->op = op; op = NULL;
-      
+
       struct json_gfilter_rule* gfrule_json = json_branch->gfruleset[j];
       size_t offset = get_offset(gfrule_json->off->name,
                                  &trace->offsets);
       if (offset == -1)
         errExit("get_offset(gfrule_json->off->name) returned -1");
-      
+
       uint64_t op_enum = get_enum(gfrule_json->op);
       if (op_enum == -1)
         errExit("get_enum(gfrule_json->op) returned -1");
-      
+
       uint64_t type_enum = get_enum(gfrule_json->off->datatype);
       if (type_enum == -1)
         errExit("get_enum(gfrule_json->off->datatype) returned -1");
 
       gfrule->field                =         offset;
       gfrule->value                =         gfrule_json->off->value;
-      gfrule->delta                =         gfrule_json->delta;      
+      gfrule->delta                =         gfrule_json->delta;
       gfrule->op->op               =         op_enum;
       gfrule->op->field_type       =         type_enum;
       gfrule->func                 =         NULL;
-      
+
       gfruleset[j] = gfrule; gfrule = NULL;
     }
-    branch->gfilter_ruleset = gfruleset; gfruleset = NULL;    
+    branch->gfilter_ruleset = gfruleset; gfruleset = NULL;
   }
 
   /* ----------------------------------------------------------------------- */
-  
-  
-  
-  
-  
-  
-  
-  /* -----------------------------------------------------------------------*/  
+
+
+
+
+
+
+
+  /* -----------------------------------------------------------------------*/
   /*                       assigning merger rules                           */
-  /* -----------------------------------------------------------------------*/  
+  /* -----------------------------------------------------------------------*/
 
   fquery->num_merger_rules = json_query->num_mrules;
 
   /* free'd after returning from merger(...) */
   struct merger_rule** mruleset = (struct merger_rule**)
-                                   calloc(fquery->num_merger_rules, 
+                                   calloc(fquery->num_merger_rules,
                                           sizeof(struct merger_rule*));
   if (mruleset == NULL)
     errExit("calloc");
-  
+
   for (int j = 0; j < fquery->num_merger_rules; j++) {
 
     /* free'd after returning from merger(...) */
     struct merger_rule* mrule = calloc(1, sizeof(struct merger_rule));
     if (mrule == NULL)
       errExit("calloc");
-    
+
     /* free'd after returning from merger(...) */
     struct merger_op* op = calloc(1, sizeof(struct merger_op));
     if (op == NULL)
@@ -914,28 +914,28 @@ prepare_flowquery(struct ft_data* const trace,
                                   &trace->offsets);
     if (f1_offset == -1)
       errExit("get_offset(grule_json->off->f1_name) returned -1");
-    
+
     size_t f2_offset = get_offset(mrule_json->off->f2_name,
                                   &trace->offsets);
     if (f2_offset == -1)
       errExit("get_offset(grule_json->off->f2_name) returned -1");
-    
+
     uint64_t op_name = get_enum(mrule_json->op->name);
     if (op_name == -1)
       errExit("get_enum(mrule_json->op->name) returned -1");
-    
+
     uint64_t op_type = get_enum(mrule_json->op->type);
     if (op_type == -1)
       errExit("get_enum(mrule_json->op->type) returned -1");
-    
+
     uint64_t f1_type = get_enum(mrule_json->off->f1_datatype);
     if (f1_type == -1)
       errExit("get_enum(mrule_json->off->f1_datatype) returned -1");
-    
+
     uint64_t f2_type = get_enum(mrule_json->off->f2_datatype);
     if (f2_type == -1)
       errExit("get_enum(mrule_json->off->f2_datatype) returned -1");
-    
+
     mrule->field1                =         f1_offset;
     mrule->field2                =         f2_offset;
     mrule->op->op                =         op_name;
@@ -944,23 +944,23 @@ prepare_flowquery(struct ft_data* const trace,
     mrule->op->optype            =         op_type;
     mrule->branch1               =         fquery->branchset[mrule_json->b1_id];
     mrule->branch2               =         fquery->branchset[mrule_json->b2_id];
-    mrule->delta                 =         0;    
+    mrule->delta                 =         0;
     mrule->func                  =         NULL;
-    
+
     mruleset[j] = mrule; mrule = NULL;
   }
   fquery->mruleset = mruleset; mruleset = NULL;
-  
+
   /* ----------------------------------------------------------------------- */
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+
+
+
+
+
+
+
+
   return fquery;
 }
 
