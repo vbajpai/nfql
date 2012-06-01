@@ -966,47 +966,47 @@ prepare_flowquery(struct ft_data* const trace,
 
 pthread_t*
 run_branch_async(const struct flowquery* const fquery){
-  
+
   /* allocate space for a dedicated thread for each branch */
   /* free'd after returning from this function */
-  pthread_t* threadset = (pthread_t *)calloc(fquery->num_branches, 
+  pthread_t* threadset = (pthread_t *)calloc(fquery->num_branches,
                                              sizeof(pthread_t));
   if (threadset == NULL)
     errExit("calloc");
-  
+
   /* free'd before returning from this function */
   pthread_attr_t* thread_attrset = (pthread_attr_t *)
-                                    calloc(fquery->num_branches, 
+                                    calloc(fquery->num_branches,
                                            sizeof(pthread_attr_t));
   if (thread_attrset == NULL)
     errExit("calloc");
-  
+
   for (int i = 0, ret = 0; i < fquery->num_branches; i++) {
-    
+
     pthread_t* thread = &threadset[i];
     pthread_attr_t* thread_attr = &thread_attrset[i];
     struct branch* branch = fquery->branchset[i];
-    
+
     /* initialize each thread attributes */
     ret = pthread_attr_init(thread_attr);
     if (ret != 0)
       errExit("pthread_attr_init");
-    
-    /* start each thread for a dedicated branch */      
-    ret = pthread_create(thread, 
-                         thread_attr, 
-                         &branch_start, 
-                         (void *)(branch));    
+
+    /* start each thread for a dedicated branch */
+    ret = pthread_create(thread,
+                         thread_attr,
+                         &branch_start,
+                         (void *)(branch));
     if (ret != 0)
       errExit("pthread_create");
-    
-    
-    /* destroy the thread attributes once the thread is created */  
+
+
+    /* destroy the thread attributes once the thread is created */
     ret = pthread_attr_destroy(thread_attr);
-    if (ret != 0) 
+    if (ret != 0)
       errExit("pthread_attr_destroy");
   }
-  
+
   free(thread_attrset);
   return threadset;
 }
