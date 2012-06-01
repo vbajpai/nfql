@@ -147,7 +147,7 @@ read_param_data(const struct parameters* const param) {
 
 struct json*
 parse_json_query(const char* const query_mmap) {
-  
+
   struct json_tokener* tok = json_tokener_new();
   struct json_object* query = json_tokener_parse_ex(tok, query_mmap, -1);
   if(tok->err != json_tokener_success)
@@ -158,25 +158,25 @@ parse_json_query(const char* const query_mmap) {
   struct json* json = calloc(1, sizeof(struct json));
   if (json == NULL)
     errExit("calloc");
-  
-  struct json_object* num_brs = json_object_object_get(query, "num_branches");  
+
+  struct json_object* num_brs = json_object_object_get(query, "num_branches");
   struct json_object* branchset = json_object_object_get(query, "branchset");
   json->num_branches = json_object_get_int(num_brs);
-  
+
   /* free'd after returning from prepare_flowquery(...) */
-  json->branchset = calloc(json->num_branches, 
+  json->branchset = calloc(json->num_branches,
                            sizeof(struct json_branch_rules*));
   if (json->branchset == NULL)
     errExit("calloc");
-  
-  
-  
-  
-  
-  /* -----------------------------------------------------------------------*/  
+
+
+
+
+
+  /* -----------------------------------------------------------------------*/
   /*                        parse branch rules                              */
   /* -----------------------------------------------------------------------*/
-  
+
   for (int i = 0; i < json->num_branches; i++) {
     
     struct json_object* branch_json = json_object_array_get_idx(branchset, i);
@@ -499,124 +499,124 @@ parse_json_query(const char* const query_mmap) {
 
   }
 
-  /* -----------------------------------------------------------------------*/  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  /* -----------------------------------------------------------------------*/  
+  /* -----------------------------------------------------------------------*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  /* -----------------------------------------------------------------------*/
   /*                        parse merger rules                              */
   /* -----------------------------------------------------------------------*/
 
-  struct json_object* merger = 
+  struct json_object* merger =
   json_object_object_get(query, "merger");
-  struct json_object* 
+  struct json_object*
   mnum_rules = json_object_object_get(merger, "num_rules");
   json->num_mrules = json_object_get_int(mnum_rules);
-  
+
   /* free'd after returning from prepare_flowquery(...) */
-  json->mruleset = calloc(json->num_mrules, 
+  json->mruleset = calloc(json->num_mrules,
                           sizeof(struct json_merger_rule*));
   if (json->mruleset == NULL)
-    errExit("calloc");  
+    errExit("calloc");
   struct json_object* mruleset = json_object_object_get(merger, "ruleset");
-  
+
   for (int i = 0; i < json->num_mrules; i++) {
-    
+
     /* free'd after returning from prepare_flowquery(...) */
     struct json_merger_rule* 
     mrule = calloc(1, sizeof(struct json_merger_rule));
     if (mrule == NULL)
       errExit("calloc");
     json->mruleset[i] = mrule;
-    
+
     /* free'd after returning from prepare_flowquery(...) */
     mrule->off = calloc(1, sizeof(struct json_merger_rule_offset));
     if (mrule->off == NULL)
       errExit("calloc");
-    
+
     /* free'd after returning from prepare_flowquery(...) */
     mrule->op = calloc(1, sizeof(struct json_merger_rule_op));
     if (mrule->op == NULL)
       errExit("calloc");
-    
+
     struct json_object* mrule_json = json_object_array_get_idx(mruleset, i);
-    
-    /* free'd before returning from this function */   
-    struct json_object* 
+
+    /* free'd before returning from this function */
+    struct json_object*
     delta = json_object_object_get(mrule_json, "delta");
-    struct json_object* 
+    struct json_object*
     op = json_object_object_get(mrule_json, "op");
-    struct json_object* 
+    struct json_object*
     offset = json_object_object_get(mrule_json, "offset");
-    struct json_object* 
+    struct json_object*
     b1_id = json_object_object_get(mrule_json, "branch1_id");
-    struct json_object* 
-    b2_id = json_object_object_get(mrule_json, "branch2_id");    
-    
-    struct json_object* 
+    struct json_object*
+    b2_id = json_object_object_get(mrule_json, "branch2_id");
+
+    struct json_object*
     f1_name = json_object_object_get(offset, "f1_name");
-    struct json_object* 
+    struct json_object*
     f2_name = json_object_object_get(offset, "f2_name");
-    struct json_object* 
+    struct json_object*
     f1_datatype = json_object_object_get(offset, "f1_datatype");
-    struct json_object* 
-    f2_datatype = json_object_object_get(offset, "f2_datatype");    
-    
-    struct json_object* 
+    struct json_object*
+    f2_datatype = json_object_object_get(offset, "f2_datatype");
+
+    struct json_object*
     op_type = json_object_object_get(op, "type");
-    struct json_object* 
+    struct json_object*
     op_name = json_object_object_get(op, "name");
-    
+
     mrule->delta = json_object_get_int(delta);
     mrule->b1_id = json_object_get_int(b1_id);
-    mrule->b2_id = json_object_get_int(b2_id);    
-    
+    mrule->b2_id = json_object_get_int(b2_id);
+
     mrule->op->name = strdup(json_object_get_string(op_name));
-    if (mrule->op->name == NULL) errExit("strdup");    
+    if (mrule->op->name == NULL) errExit("strdup");
     mrule->op->type = strdup(json_object_get_string(op_type));
-    if (mrule->op->type == NULL) errExit("strdup");    
-    
+    if (mrule->op->type == NULL) errExit("strdup");
+
     mrule->off->f1_name = strdup(json_object_get_string(f1_name));
     if (mrule->off->f1_name == NULL) errExit("strdup");
     mrule->off->f2_name = strdup(json_object_get_string(f2_name));
-    if (mrule->off->f2_name == NULL) errExit("strdup");    
+    if (mrule->off->f2_name == NULL) errExit("strdup");
     mrule->off->f1_datatype = strdup(json_object_get_string(f1_datatype));
     if (mrule->off->f1_datatype == NULL) errExit("strdup");
     mrule->off->f2_datatype = strdup(json_object_get_string(f2_datatype));
-    if (mrule->off->f2_datatype == NULL) errExit("strdup");    
-  } 
-  
-  /* -----------------------------------------------------------------------*/
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+    if (mrule->off->f2_datatype == NULL) errExit("strdup");
+  }
 
-  
+  /* -----------------------------------------------------------------------*/
+
+
+
+
+
+
+
+
+
+
+
+
   /* call put(...) only on the root to decremenet the reference count */
-  json_object_put(query); query = NULL;      
-  
+  json_object_put(query); query = NULL;
+
   return json;
 }
 
