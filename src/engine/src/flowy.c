@@ -1112,7 +1112,7 @@ main(int argc, char **argv) {
         free(grule->op->type); grule->op->type = NULL;
         free(grule->op); grule->op = NULL;
         free(grule); grule = NULL;
-      }za
+      }
       free(json_branch->gruleset); json_branch->gruleset = NULL;
 
       /* deallocate the aggr json query buffers */
