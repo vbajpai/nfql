@@ -1235,16 +1235,20 @@ main(int argc, char **argv) {
       if (verbose_vv) {
 
         /* free sorted records */
-        for (int j = 0; j < branch->filter_result->num_filtered_records; j++)
-          branch->grouper_result->sorted_recordset[j] = NULL;
-        free(branch->grouper_result->sorted_recordset);
-        branch->grouper_result->sorted_recordset = NULL;
+        if (branch->grouper_result->sorted_recordset != NULL) {
+          for (int j = 0; j < branch->filter_result->num_filtered_records; j++)
+            branch->grouper_result->sorted_recordset[j] = NULL;
+          free(branch->grouper_result->sorted_recordset);
+          branch->grouper_result->sorted_recordset = NULL;
+        }
 
         /* free unique records */
-        for (int j = 0; j < branch->grouper_result->num_unique_records; j++)
-          branch->grouper_result->unique_recordset[j] = NULL;
-        free(branch->grouper_result->unique_recordset);
-        branch->grouper_result->unique_recordset = NULL;
+        if (branch->grouper_result->unique_recordset != NULL) {
+          for (int j = 0; j < branch->grouper_result->num_unique_records; j++)
+            branch->grouper_result->unique_recordset[j] = NULL;
+          free(branch->grouper_result->unique_recordset);
+          branch->grouper_result->unique_recordset = NULL;
+        }
       }
     }
   }
