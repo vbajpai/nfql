@@ -31,183 +31,179 @@ import socket
 def protocol(name):
   return socket.getprotobyname(name)
 
-class FilterRule: 
-  
+class FilterRule:
+
   def __init__(self, name, value, datatype, delta, op):
-    
+
     self.offset = {
       'name': name,
       'value': value,
       'datatype': datatype
     }
-    
+
     self.delta = delta
     self.op = op
 
-class GrouperRule: 
-  
-  def __init__(self, field1_name, field1_type, field2_name, field2_type, 
+class GrouperRule:
+
+  def __init__(self, field1_name, field1_type, field2_name, field2_type,
                delta, op_name, op_type):
-    
+
     self.offset = {
       'f1_name': field1_name,
       'f1_datatype': field1_type,
       'f2_name': field2_name,
       'f2_datatype': field2_type
     }
-    
+
     self.delta = delta
-        
+
     self.op = {
       'name' : op_name,
       'type' : op_type
     }
 
-class AggregationRule: 
-  
+class AggregationRule:
+
   def __init__(self, name, datatype, op):
-    
+
     self.offset = {
       'name': name,
       'datatype': datatype
     }
-    
+
     self.op = op
 
-class GroupFilterRule: 
-  
+class GroupFilterRule:
+
   def __init__(self, name, value, datatype, delta, op):
-    
+
     self.offset = {
       'name': name,
       'value': value,
       'datatype': datatype
     }
-    
+
     self.delta = delta
     self.op = op
 
-class MergerRule: 
-  
+class MergerRule:
+
   def __init__(self, branch1_id, branch2_id,
-                     field1_name, field1_type, 
-                     field2_name, field2_type, delta, 
+                     field1_name, field1_type,
+                     field2_name, field2_type, delta,
                      op_name, op_type):
-    
+
     self.offset = {
       'f1_name': field1_name,
       'f1_datatype': field1_type,
       'f2_name': field2_name,
       'f2_datatype': field2_type,
     }
-    
+
     self.op = {
       'name' : op_name,
       'type' : op_type,
     }
 
     self.branch1_id = branch1_id;
-    self.branch2_id = branch2_id;  
+    self.branch2_id = branch2_id;
     self.delta = delta
 
-
 if __name__ == '__main__':
-  
+
   fruleset = []
-  fruleset.append(vars(FilterRule('dstport', 21, 'RULE_S1_16', 0, 
+  fruleset.append(vars(FilterRule('dstport', 21, 'RULE_S1_16', 0,
                                                  'RULE_EQ')))
   fruleset.append(vars(FilterRule('prot', protocol('TCP'), 'RULE_S1_16', 0,
                                                            'RULE_EQ')))
-  filter1 = {'num_rules': len(fruleset), 'ruleset': fruleset}
-
+  filter1 = {'ruleset': fruleset}
   fruleset = []
-  fruleset.append(vars(FilterRule('srcport', 21, 'RULE_S1_16', 0, 
+  fruleset.append(vars(FilterRule('srcport', 21, 'RULE_S1_16', 0,
                                                  'RULE_EQ')))
   fruleset.append(vars(FilterRule('prot', protocol('TCP'), 'RULE_S1_16', 0,
-                                                           'RULE_EQ')))                                                 
-  filter2 = {'num_rules': len(fruleset), 'ruleset': fruleset}
-  
+                                                           'RULE_EQ')))
+  filter2 = {'ruleset': fruleset}
+
   gruleset = []
-  gruleset.append(vars(GrouperRule('srcaddr', 'RULE_S1_32', 
-                                   'srcaddr', 'RULE_S2_32', 0,  
+  gruleset.append(vars(GrouperRule('srcaddr', 'RULE_S1_32',
+                                   'srcaddr', 'RULE_S2_32', 0,
                                    'RULE_EQ', 'RULE_ABS')))
-  gruleset.append(vars(GrouperRule('dstaddr', 'RULE_S1_32', 
-                                   'dstaddr', 'RULE_S2_32', 0,  
+  gruleset.append(vars(GrouperRule('dstaddr', 'RULE_S1_32',
+                                   'dstaddr', 'RULE_S2_32', 0,
                                    'RULE_EQ', 'RULE_ABS')))
-  grouper1 = {'num_rules': len(gruleset), 'ruleset': gruleset} 
-  
-  
+  grouper1 = {'ruleset': gruleset}
+
+
   gruleset = []
-  gruleset.append(vars(GrouperRule('srcaddr', 'RULE_S1_32', 
-                                   'srcaddr', 'RULE_S2_32', 0,  
+  gruleset.append(vars(GrouperRule('srcaddr', 'RULE_S1_32',
+                                   'srcaddr', 'RULE_S2_32', 0,
                                    'RULE_EQ', 'RULE_ABS')))
-  gruleset.append(vars(GrouperRule('dstaddr', 'RULE_S1_32', 
-                                   'dstaddr', 'RULE_S2_32', 0,  
+  gruleset.append(vars(GrouperRule('dstaddr', 'RULE_S1_32',
+                                   'dstaddr', 'RULE_S2_32', 0,
                                    'RULE_EQ', 'RULE_ABS')))
-  grouper2 = {'num_rules': len(gruleset), 'ruleset': gruleset}
-  
-  
-  aruleset = []
-  aruleset.append(vars(AggregationRule('srcaddr', 'RULE_S1_32', 
-                                                  'RULE_STATIC')))
-  aruleset.append(vars(AggregationRule('dstaddr', 'RULE_S1_32', 
-                                                  'RULE_STATIC')))
-  aruleset.append(vars(AggregationRule('dPkts', 'RULE_S1_32', 
-                                                'RULE_SUM')))
-  aruleset.append(vars(AggregationRule('dOctets', 'RULE_S1_32', 
-                                                  'RULE_SUM')))
-  a1 = {'num_rules' : len(aruleset), 'ruleset' : aruleset}
+  grouper2 = {'ruleset': gruleset}
+
 
   aruleset = []
-  aruleset.append(vars(AggregationRule('srcaddr', 'RULE_S1_32', 
+  aruleset.append(vars(AggregationRule('srcaddr', 'RULE_S1_32',
                                                   'RULE_STATIC')))
-  aruleset.append(vars(AggregationRule('dstaddr', 'RULE_S1_32', 
+  aruleset.append(vars(AggregationRule('dstaddr', 'RULE_S1_32',
                                                   'RULE_STATIC')))
-  aruleset.append(vars(AggregationRule('dPkts', 'RULE_S1_32', 
+  aruleset.append(vars(AggregationRule('dPkts', 'RULE_S1_32',
                                                 'RULE_SUM')))
-  aruleset.append(vars(AggregationRule('dOctets', 'RULE_S1_32', 
+  aruleset.append(vars(AggregationRule('dOctets', 'RULE_S1_32',
                                                   'RULE_SUM')))
-  a2 = {'num_rules' : len(aruleset), 'ruleset' : aruleset}
-  
+  a1 = {'ruleset' : aruleset}
+
+  aruleset = []
+  aruleset.append(vars(AggregationRule('srcaddr', 'RULE_S1_32',
+                                                  'RULE_STATIC')))
+  aruleset.append(vars(AggregationRule('dstaddr', 'RULE_S1_32',
+                                                  'RULE_STATIC')))
+  aruleset.append(vars(AggregationRule('dPkts', 'RULE_S1_32',
+                                                'RULE_SUM')))
+  aruleset.append(vars(AggregationRule('dOctets', 'RULE_S1_32',
+                                                  'RULE_SUM')))
+  a2 = {'ruleset' : aruleset}
+
   gfruleset = []
-  gfilter1 = {'num_rules' : len(gfruleset), 'ruleset' : gfruleset}
-  
+  gfilter1 = {'ruleset' : gfruleset}
+
   gfruleset = []
-  gfruleset.append(vars(GroupFilterRule('dPkts', 50, 
+  gfruleset.append(vars(GroupFilterRule('dPkts', 50,
                                         'RULE_S1_32', 0,
                                         'RULE_GT')))
-  gfilter2 = {'num_rules' : len(gfruleset), 'ruleset' : gfruleset}
-  
+  gfilter2 = {'ruleset' : gfruleset}
+
   branchset = []
-  branchset.append({'filter': filter1, 
-                    'grouper': grouper1, 
+  branchset.append({'filter': filter1,
+                    'grouper': grouper1,
                     'aggregation': a1,
                     'gfilter': gfilter1,
                    })
-  
-  branchset.append({'filter': filter2, 
-                    'grouper': grouper2, 
+
+  branchset.append({'filter': filter2,
+                    'grouper': grouper2,
                     'aggregation' : a2,
                     'gfilter': gfilter2,
-                   })  
-  
+                   })
+
   mruleset = []
   mruleset.append(vars(MergerRule(0, 1, 'srcaddr', 'RULE_S1_32',
-                                        'dstaddr', 'RULE_S2_32', 0, 
-                                                   'RULE_EQ', 
+                                        'dstaddr', 'RULE_S2_32', 0,
+                                                   'RULE_EQ',
                                                    'RULE_ABS')))
-  
+
   mruleset.append(vars(MergerRule(0, 1, 'dstaddr', 'RULE_S1_32',
-                                        'srcaddr', 'RULE_S2_32', 0, 
-                                                   'RULE_EQ', 
+                                        'srcaddr', 'RULE_S2_32', 0,
+                                                   'RULE_EQ',
                                                    'RULE_ABS')))
-  
-  merger = {'num_rules' : len(mruleset), 'ruleset' : mruleset}
-  
-  query = {'num_branches': len(branchset), 
-           'branchset': branchset,
-           'merger': merger}  
-  
+
+  merger = {'ruleset' : mruleset}
+
+  query = {'branchset': branchset, 'merger': merger}
+
   fjson = json.dumps(query, indent=2)
   fsock = open('query-ftp-tcp-session.json', 'w')
   fsock.write(fjson)

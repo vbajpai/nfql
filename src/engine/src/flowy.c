@@ -159,9 +159,8 @@ parse_json_query(const char* const query_mmap) {
   if (json == NULL)
     errExit("calloc");
 
-  struct json_object* num_brs = json_object_object_get(query, "num_branches");
   struct json_object* branchset = json_object_object_get(query, "branchset");
-  json->num_branches = json_object_get_int(num_brs);
+  json->num_branches = (size_t)json_object_array_length(branchset);
 
   /* free'd after returning from prepare_flowquery(...) */
   json->branchset = calloc(json->num_branches,
@@ -195,11 +194,9 @@ parse_json_query(const char* const query_mmap) {
   /*                         parse filter rules                             */
   /* -----------------------------------------------------------------------*/
 
-    struct json_object*
-    filter = json_object_object_get(branch_json, "filter");
-    struct json_object*
-    fnum_rules = json_object_object_get(filter, "num_rules");
-    branch->num_frules = json_object_get_int(fnum_rules);
+    struct json_object* filter = json_object_object_get(branch_json, "filter");
+    struct json_object* fruleset = json_object_object_get(filter, "ruleset");
+    branch->num_frules = json_object_array_length(fruleset);
 
     /* free'd after returning from prepare_flowquery(...) */
     branch->fruleset = calloc(branch->num_frules,
@@ -207,7 +204,6 @@ parse_json_query(const char* const query_mmap) {
     if (branch->fruleset == NULL)
       errExit("calloc");
 
-    struct json_object* fruleset = json_object_object_get(filter, "ruleset");
 
     for (int i = 0; i < branch->num_frules; i++) {
 
@@ -267,16 +263,15 @@ parse_json_query(const char* const query_mmap) {
 
     struct json_object* grouper =
     json_object_object_get(branch_json, "grouper");
-    struct json_object*
-    gnum_rules = json_object_object_get(grouper, "num_rules");
-    branch->num_grules = json_object_get_int(gnum_rules);
+    struct json_object* gruleset =
+    json_object_object_get(grouper, "ruleset");
+    branch->num_grules = json_object_array_length(gruleset);
 
     /* free'd after returning from prepare_flowquery(...) */
     branch->gruleset = calloc(branch->num_grules,
                             sizeof(struct json_grouper_rule*));
     if (branch->gruleset == NULL)
       errExit("calloc");
-    struct json_object* gruleset = json_object_object_get(grouper, "ruleset");
 
     for (int i = 0; i < branch->num_grules; i++) {
 
@@ -367,16 +362,15 @@ parse_json_query(const char* const query_mmap) {
 
     struct json_object* aggr =
     json_object_object_get(branch_json, "aggregation");
-    struct json_object*
-    anum_rules = json_object_object_get(aggr, "num_rules");
-    branch->num_arules = json_object_get_int(anum_rules);
+    struct json_object* aruleset =
+    json_object_object_get(aggr, "ruleset");
+    branch->num_arules = json_object_array_length(aruleset);
 
     /* free'd after returning from prepare_flowquery(...) */
     branch->aruleset = calloc(branch->num_arules,
                               sizeof(struct json_aggr_rule*));
     if (branch->aruleset == NULL)
       errExit("calloc");
-    struct json_object* aruleset = json_object_object_get(aggr, "ruleset");
 
     for (int i = 0; i < branch->num_arules; i++) {
 
@@ -442,9 +436,9 @@ parse_json_query(const char* const query_mmap) {
 
     struct json_object*
     gfilter = json_object_object_get(branch_json, "gfilter");
-    struct json_object*
-    gfnum_rules = json_object_object_get(gfilter, "num_rules");
-    branch->num_gfrules = json_object_get_int(gfnum_rules);
+    struct json_object* gfruleset =
+    json_object_object_get(gfilter, "ruleset");
+    branch->num_gfrules = json_object_array_length(gfruleset);
 
     /* free'd after returning from prepare_flowquery(...) */
     branch->gfruleset = calloc(branch->num_gfrules,
@@ -452,7 +446,6 @@ parse_json_query(const char* const query_mmap) {
     if (branch->gfruleset == NULL)
       errExit("calloc");
 
-    struct json_object* gfruleset = json_object_object_get(gfilter, "ruleset");
 
     for (int i = 0; i < branch->num_gfrules; i++) {
 
@@ -522,18 +515,14 @@ parse_json_query(const char* const query_mmap) {
   /*                        parse merger rules                              */
   /* -----------------------------------------------------------------------*/
 
-  struct json_object* merger =
-  json_object_object_get(query, "merger");
-  struct json_object*
-  mnum_rules = json_object_object_get(merger, "num_rules");
-  json->num_mrules = json_object_get_int(mnum_rules);
+  struct json_object* merger = json_object_object_get(query, "merger");
+  struct json_object* mruleset = json_object_object_get(merger, "ruleset");
+  json->num_mrules = (size_t)json_object_array_length(mruleset);
 
   /* free'd after returning from prepare_flowquery(...) */
-  json->mruleset = calloc(json->num_mrules,
-                          sizeof(struct json_merger_rule*));
+  json->mruleset = calloc(json->num_mrules, sizeof(struct json_merger_rule*));
   if (json->mruleset == NULL)
     errExit("calloc");
-  struct json_object* mruleset = json_object_object_get(merger, "ruleset");
 
   for (int i = 0; i < json->num_mrules; i++) {
 
