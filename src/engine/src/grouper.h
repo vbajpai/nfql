@@ -49,22 +49,22 @@ tree_item(uint64_t);
 
 typedef enum { UINT8_T, UINT16_T, UINT32_T, UINT64_T } int_sizes;
 
-struct grouper_intermediate_result {    
-  
-  struct uniq_recordset_result*   uniq_result;  
+struct grouper_intermediate_result {
+
+  struct uniq_recordset_result*   uniq_result;
   char***                         sorted_recordset_reference;
 };
 
 struct uniq_recordset_result {
-  
-  size_t                          num_uniq_records;  
+
+  size_t                          num_uniq_records;
   union {
     struct tree_item_uint8_t*     recordset_uint8_t;
     struct tree_item_uint16_t*    recordset_uint16_t;
     struct tree_item_uint32_t*    recordset_uint32_t;
     struct tree_item_uint64_t*    recordset_uint64_t;
   }uniq_recordset;
-  
+
 };
 
 struct grouper_type {
@@ -85,24 +85,24 @@ struct grouper_type {
   char*** (*bsearch)(
                      const char* const              filtered_record,
                      struct grouper_rule** const    grouper_ruleset,
-                     const struct 
-                     grouper_intermediate_result* 
+                     const struct
+                     grouper_intermediate_result*
                      const                          intermediate_result
                     );
-  
+
   struct uniq_recordset_result*
   (*alloc_uniqresult)(
                       size_t                         num_filtered_records,
                       struct grouper_rule** const    grouper_ruleset,
                       char*** const                  sorted_recordset_ref
                      );
-  
+
   char*
   (*get_uniq_record)(
                      const struct uniq_recordset_result* const uniq_result,
                      int index
                     );
-  
+
   void
   (*dealloc_uniqresult)(struct uniq_recordset_result* uniq_result);
 };
@@ -112,13 +112,13 @@ struct aggr_result*
 grouper_aggregations(
                      size_t num_filter_rules,
                      struct filter_rule** const filter_ruleset,
-                     
+
                      size_t num_grouper_rules,
                      struct grouper_rule** const grouper_ruleset,
-                     
+
                      size_t num_aggr_rules,
                      struct aggr_rule** const aggr_ruleset,
-                     
+
                      const struct group* const group,
                      int rec_size
                      );
@@ -127,10 +127,10 @@ struct grouper_intermediate_result *
 get_grouper_intermediates(
                           size_t num_filtered_records,
                           char** const filtered_recordset_copy,
-                          
+
                           size_t num_grouper_rules,
                           struct grouper_rule** const grouper_ruleset,
-                          
+
                           struct grouper_result* const gresult,
                           const struct grouper_type* const gtype
                           );
@@ -139,48 +139,48 @@ struct grouper_result*
 grouper(
         size_t num_filter_rules,
         struct filter_rule** const filter_ruleset,
-        
+
         size_t num_grouper_rules,
         struct grouper_rule** const grouper_ruleset,
-        
+
         size_t num_aggr_rules,
         struct aggr_rule** const aggr_ruleset,
-        
+
         const struct filter_result* const fresult,
-        int rec_size        
+        int rec_size
         );
 
 
 #if defined (__APPLE__) || defined (__FreeBSD__)
-int 
+int
 comp_uint8_t(void *thunk, const void *e1, const void *e2);
-int 
+int
 comp_uint16_t(void *thunk, const void *e1, const void *e2);
-int 
+int
 comp_uint32_t(void *thunk, const void *e1, const void *e2);
-int 
+int
 comp_uint64_t(void *thunk, const void *e1, const void *e2);
 #elif defined(__linux)
-int 
+int
 comp_uint8_t(const void *e1, const void *e2, void* thunk);
-int 
+int
 comp_uint16_t(const void *e1, const void *e2, void* thunk);
-int 
+int
 comp_uint32_t(const void *e1, const void *e2, void* thunk);
-int 
+int
 comp_uint64_t(const void *e1, const void *e2, void* thunk);
 #endif
 
-int 
+int
 comp_uint8_t_p(void *thunk, const void *e1, const void *e2);
 
-int 
+int
 comp_uint16_t_p(void *thunk, const void *e1, const void *e2);
 
-int 
+int
 comp_uint32_t_p(void *thunk, const void *e1, const void *e2);
 
-int 
+int
 comp_uint64_t_p(void *thunk, const void *e1, const void *e2);
 
 #endif

@@ -49,14 +49,14 @@ struct parameters {
 };
 struct parameters_data {
   char*                           query_mmap;
-  struct stat*                    query_mmap_stat;  
-  struct ft_data*                 trace;  
+  struct stat*                    query_mmap_stat;
+  struct ft_data*                 trace;
 };
 
 struct json {
   size_t                          num_branches;
   size_t                          num_mrules;
-  
+
   struct json_branch_rules**      branchset;
   struct json_merger_rule**       mruleset;
 };
@@ -65,11 +65,11 @@ struct json_branch_rules {
   size_t                          num_grules;
   size_t                          num_arules;
   size_t                          num_gfrules;
-  
+
   struct json_filter_rule**       fruleset;
   struct json_grouper_rule**      gruleset;
-  struct json_aggr_rule**         aruleset;  
-  struct json_gfilter_rule**      gfruleset;    
+  struct json_aggr_rule**         aruleset;
+  struct json_gfilter_rule**      gfruleset;
 };
 
 struct json_filter_rule {
@@ -85,22 +85,22 @@ struct json_filter_rule_offset{
 
 struct json_grouper_rule {
   uint64_t                        delta;
-  struct 
+  struct
   json_grouper_rule_offset*       off;
-  struct 
-  json_grouper_rule_op*           op;  
+  struct
+  json_grouper_rule_op*           op;
 };
 struct json_grouper_rule_offset {
   char*                           f1_name;
   char*                           f2_name;
-  
-  char*                           f1_datatype;  
+
+  char*                           f1_datatype;
   char*                           f2_datatype;
 };
 struct json_grouper_rule_op {
   char*                           name;
   char*                           type;
-  
+
 };
 
 struct json_aggr_rule {
@@ -115,7 +115,7 @@ struct json_aggr_rule_offset{
 struct json_gfilter_rule {
   char*                           op;
   uint64_t                        delta;
-  struct 
+  struct
   json_gfilter_rule_offset*       off;
 };
 struct json_gfilter_rule_offset{
@@ -126,24 +126,24 @@ struct json_gfilter_rule_offset{
 
 struct json_merger_rule {
 
-  uint64_t                        b1_id;  
-  uint64_t                        b2_id;  
+  uint64_t                        b1_id;
+  uint64_t                        b2_id;
   uint64_t                        delta;
-  
-  struct 
+
+  struct
   json_grouper_rule_offset*       off;
-  struct 
-  json_grouper_rule_op*           op;  
+  struct
+  json_grouper_rule_op*           op;
 };
 struct json_merger_rule_offset {
   char*                           f1_name;
-  char*                           f2_name;  
-  char*                           f1_datatype;  
+  char*                           f2_name;
+  char*                           f1_datatype;
   char*                           f2_datatype;
 };
 struct json_merger_rule_op {
   char*                           name;
-  char*                           type;  
+  char*                           type;
 };
 
 struct parameters*

@@ -41,12 +41,12 @@
 
 
 
-/* -----------------------------------------------------------------------*/  
+/* -----------------------------------------------------------------------*/
 /*                         query parsing utilities                        */
 /* -----------------------------------------------------------------------*/
 
-size_t 
-get_offset(const char * const name, 
+size_t
+get_offset(const char * const name,
            const struct fts3rec_offsets* const offsets);
 
 uint64_t
@@ -62,7 +62,7 @@ get_enum(const char * const name);
 
 
 
-/* -----------------------------------------------------------------------*/  
+/* -----------------------------------------------------------------------*/
 /*                         grouper utilities                              */
 /* -----------------------------------------------------------------------*/
 
@@ -73,14 +73,14 @@ struct bsearch_handle {
 };
 
 void *
-bsearch_r(const void *key, 
-          const void *base, 
-          size_t nmemb, 
+bsearch_r(const void *key,
+          const void *base,
+          size_t nmemb,
           size_t size,
           void *thunk,
           int (*compar) (void *thunk, const void *, const void *));
 
-/* -----------------------------------------------------------------------*/  
+/* -----------------------------------------------------------------------*/
 
 
 
@@ -90,7 +90,7 @@ bsearch_r(const void *key,
 
 
 
-/* -----------------------------------------------------------------------*/  
+/* -----------------------------------------------------------------------*/
 /*                         merger utilities                               */
 /* -----------------------------------------------------------------------*/
 
@@ -103,14 +103,14 @@ struct permut_iter {
 struct permut_iter*
 iter_init(
           int num_branches,
-          struct branch** const branchset          
+          struct branch** const branchset
           );
-bool 
+bool
 iter_next(const struct permut_iter *iter);
 
-void 
+void
 iter_destroy(struct permut_iter *iter);
 
-/* -----------------------------------------------------------------------*/  
+/* -----------------------------------------------------------------------*/
 
 #endif

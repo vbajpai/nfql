@@ -39,12 +39,12 @@ merger(
        size_t num_branches,
        struct branch** const branchset
       ) {
-  
+
   /* free'd just before calling ungrouper(...) */
   struct merger_result* mresult = calloc(1, sizeof(struct merger_result));
   if (mresult == NULL)
     errExit("calloc");
-  
+
   /* initialize the iterator */
   struct permut_iter* iter = iter_init(num_branches, branchset);
   if (iter == NULL)
@@ -58,14 +58,14 @@ merger(
 
     /* match the groups against each merger rule */
     for (int i = 0; i < num_merger_rules; i++) {
-      
+
       struct merger_rule* rule = mruleset[i];
       size_t group1_id = iter->filtered_group_tuple[rule->branch1->branch_id];
       size_t group2_id = iter->filtered_group_tuple[rule->branch2->branch_id];
-      
+
       /* assign a unitX_t function depending on rule->op */
       assign_merger_func(rule);
-      
+
       if (!rule->
           func(
                rule->branch1->gfilter_result->filtered_groupset[group1_id-1],
@@ -74,18 +74,18 @@ merger(
                rule->field2,
                0
               )
-         ) {        
+         ) {
         if_all_rules_matched = false;
         break;
-      }      
+      }
     }
-    
+
     /* add the groups to the group tuple, if all rules matched */
     if(if_all_rules_matched){
-      
+
       /* free'd just before calling ungrouper(...) */
       struct group **matched_tuple = (struct group **)
-                                     calloc(num_branches, 
+                                     calloc(num_branches,
                                             sizeof(struct group *));
       if (matched_tuple == NULL)
         errExit("calloc");
@@ -93,20 +93,20 @@ merger(
       /* save the groups in the matched tuple */
       for (int j = 0; j < num_branches; j++){
         size_t group_id = iter->filtered_group_tuple[j];
-        matched_tuple[j] = 
+        matched_tuple[j] =
         branchset[j]->gfilter_result->filtered_groupset[group_id-1];
       }
 
       /* free'd just before calling ungrouper(...) */
       mresult->num_group_tuples += 1;
       mresult->group_tuples = (struct group ***)
-      realloc(mresult->group_tuples, 
+      realloc(mresult->group_tuples,
               mresult->num_group_tuples *sizeof(struct group**));
       if (mresult->group_tuples == NULL)
-        errExit("realloc");      
+        errExit("realloc");
 
       mresult->group_tuples[mresult->num_group_tuples-1] = matched_tuple;
-    }  
+    }
   };
 
   mresult->total_num_group_tuples = index;

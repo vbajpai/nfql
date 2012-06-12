@@ -40,7 +40,7 @@ merger(
        size_t num_merger_rules,
        struct merger_rule** const mruleset,
 
-       size_t num_branches,       
+       size_t num_branches,
        struct branch** const branchset
       );
 #endif

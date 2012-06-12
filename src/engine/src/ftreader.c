@@ -29,33 +29,33 @@
 
 struct ft_data *
 ft_open(int fd) {
-  
+
   int ret;
   struct ft_data *data;
   char *record;
-  
+
   data = (struct ft_data *)calloc(1, sizeof(struct ft_data));
-  
+
   data->fd = fd;
-  
+
   ret = ftio_init(&data->io, data->fd, FT_IO_FLAG_READ);
   if (ret < 0)
     errExit("ftio_init");
-  
-  if (ftio_check_xfield(&data->io, 
+
+  if (ftio_check_xfield(&data->io,
                         FT_XFIELD_DPKTS      |
-                        FT_XFIELD_DOCTETS    | 
-                        FT_XFIELD_FIRST      | 
-                        FT_XFIELD_LAST       | 
+                        FT_XFIELD_DOCTETS    |
+                        FT_XFIELD_FIRST      |
+                        FT_XFIELD_LAST       |
                         FT_XFIELD_INPUT      |
-                        FT_XFIELD_OUTPUT     | 
-                        FT_XFIELD_SRCADDR    | 
+                        FT_XFIELD_OUTPUT     |
+                        FT_XFIELD_SRCADDR    |
                         FT_XFIELD_DSTADDR    |
-                        FT_XFIELD_SRCPORT    | 
-                        FT_XFIELD_DSTPORT    | 
+                        FT_XFIELD_SRCPORT    |
+                        FT_XFIELD_DSTPORT    |
                         FT_XFIELD_UNIX_SECS  |
-                        FT_XFIELD_UNIX_NSECS | 
-                        FT_XFIELD_SYSUPTIME  | 
+                        FT_XFIELD_UNIX_NSECS |
+                        FT_XFIELD_SYSUPTIME  |
                         FT_XFIELD_TCP_FLAGS  |
                         FT_XFIELD_PROT)) {
     fterr_warnx("Flow record missing required field for format.");
@@ -63,12 +63,12 @@ ft_open(int fd) {
   }else {
     /* calculate FT_XFIELD */
     data->xfield = ftio_xfield(&data->io);
-  }  
-  
-  ftio_get_ver(&data->io, &data->version);  
-  fts3rec_compute_offsets(&data->offsets, &data->version);  
+  }
+
+  ftio_get_ver(&data->io, &data->version);
+  fts3rec_compute_offsets(&data->offsets, &data->version);
   data->rec_size = ftio_rec_size(&data->io);
-  
+
   /*
    * TODO: optimize the reallocs here (eg by doubling the space every time
    *       one runs out of it)
@@ -76,62 +76,62 @@ ft_open(int fd) {
    * TODO: maybe allocate everything in one big chunk for faster iteration
    *
    */
-  
+
 
   if(verbose_vvv){
-  
+
     /* print flow header */
-    ftio_header_print(&data->io, stdout, '#');  
-    
+    ftio_header_print(&data->io, stdout, '#');
+
     puts(FLOWHEADER);
   }
-  
+
   while ((record = ftio_read(&data->io)) != NULL) {
     data->num_records++;
     data->recordset = (struct record **)
-                      realloc(data->recordset, 
-                              data->num_records * sizeof(struct record*));    
+                      realloc(data->recordset,
+                              data->num_records * sizeof(struct record*));
     data->recordset[data->num_records-1] = calloc(1, sizeof(struct record));
     data->recordset[data->num_records-1]->record = (char*)
                                                    calloc(1, data->rec_size);
-    memcpy(data->recordset[data->num_records-1]->record, 
-           record, 
+    memcpy(data->recordset[data->num_records-1]->record,
+           record,
            data->rec_size);
-    
+
   if(verbose_vvv)
     flow_print_record(data, record);
   }
-  
+
   return data;
 }
 
-void 
+void
 ft_write(struct ft_data *data, int outfd) {
   struct ftset ftset;
   int ret, i;
   struct ftio ftio_out;
-  
+
   ftset_init(&ftset, 0);
-  
+
   ftset.comments = ftio_get_comment(&data->io); // TODO: make configureable
   ftset.byte_order = FT_HEADER_LITTLE_ENDIAN; // TODO: make configureable
   ftset.z_level = 6; // from 0-9 TODO: make configureable
-  
+
   ret = ftio_init(&ftio_out, outfd, FT_IO_FLAG_WRITE | ((ftset.z_level) ? FT_IO_FLAG_ZINIT : 0));
   if (ret < 0)
     errExit("ftio_init()");
-  
+
   ftio_set_byte_order(&ftio_out, ftset.byte_order);
   ftio_set_z_level(&ftio_out, ftset.z_level);
   ftio_set_streaming(&ftio_out, 0);
   ftio_set_debug(&ftio_out, 0); // TODO: make configureable
-  
+
   ftio_set_preloaded(&ftio_out, 1);
   ftio_set_cap_time(&ftio_out, ftio_get_cap_start(&data->io), ftio_get_cap_end(&data->io));
   ftio_set_flows_count(&ftio_out, data->num_records);
   ftio_set_corrupt(&ftio_out, ftio_get_corrupt(&data->io));
   ftio_set_lost(&ftio_out, ftio_get_lost(&data->io));
-  
+
   ret = ftio_set_comment(&ftio_out, ftset.comments);
   if (ret == -1)
     errExit("ftio_set_comment(...) returned -1");
@@ -139,25 +139,25 @@ ft_write(struct ft_data *data, int outfd) {
   ret = ftio_set_ver(&ftio_out, &data->version);
   if (ret == -1)
     errExit("ftio_set_ver(...) returned -1");
-  
+
   ret = ftio_write_header(&ftio_out);
   if (ret == -1)
     errExit("ftio_set_ver(...) returned -1");
-  
+
   for (i = 0; i < data->num_records; i++) {
     ret = ftio_write(&ftio_out, data->recordset[i]->record);
     if (ret == -1)
       errExit("ftio_write(...) returned -1");
   }
-  
+
   ret = ftio_close(&ftio_out);
   if (ret == -1)
     errExit("ftio_close(...) returned -1");
   close(outfd);
 }
 
-void 
-ft_records_get_all(struct ft_data* data, int number, 
+void
+ft_records_get_all(struct ft_data* data, int number,
                    struct fts3rec_all *record) {
   record->unix_secs = ft_records_get_unix_secs(data, number);
   record->unix_nsecs = ft_records_get_unix_nsecs(data, number);
@@ -359,16 +359,16 @@ ft_records_get_marked_tos(struct ft_data* data, int number) {
   return (u_int8_t  *)(data->recordset[number]->record +  data->offsets.marked_tos);
 }
 
-void 
+void
 ft_close(struct ft_data* data) {
-  
-  ftio_close(&data->io);  
+
+  ftio_close(&data->io);
   for (int i=0; i<data->num_records; i++) {
     free(data->recordset[i]->record); data->recordset[i]->record = NULL;
     free(data->recordset[i]); data->recordset[i] = NULL;
-  }  
-  free(data->recordset); data->recordset = NULL;  
-  
+  }
+  free(data->recordset); data->recordset = NULL;
+
   if(data->fd)
     close(data->fd);
   free(data); data = NULL;
@@ -393,39 +393,39 @@ flow_print_record(struct ft_data *data, char *record){
   cur.dstport = ((u_int16_t*)(record+(data->offsets).dstport));
   cur.prot = ((u_int8_t*)(record+(data->offsets).prot));
   cur.tcp_flags = ((u_int8_t*)(record+(data->offsets).tcp_flags));
-  
-  struct fttime 
+
+  struct fttime
   ftt = ftltime(*cur.sysUpTime, *cur.unix_secs, *cur.unix_nsecs, *cur.First);
   struct tm *tm;
   time_t t_first = ftt.secs;
   tm = localtime(&t_first);
-  
+
   printf("%-2.2d%-2.2d.%-2.2d:%-2.2d:%-2.2d.%-3.3lu ",
          (int)tm->tm_mon+1, (int)tm->tm_mday, (int)tm->tm_hour,
          (int)tm->tm_min, (int)tm->tm_sec, (u_long)ftt.msecs);
-  
+
   ftt = ftltime(*cur.sysUpTime, *cur.unix_secs, *cur.unix_nsecs, *cur.Last);
   time_t t_last = ftt.secs;
   tm = localtime(&t_last);
-  
+
   printf("%-2.2d%-2.2d.%-2.2d:%-2.2d:%-2.2d.%-3.3lu ",
          (int)tm->tm_mon+1, (int)tm->tm_mday, (int)tm->tm_hour,
          (int)tm->tm_min, (int)tm->tm_sec, (u_long)ftt.msecs);
-  
+
   /* other info */
   char fmt_buf1[64], fmt_buf2[64];
   fmt_ipv4(fmt_buf1, *cur.srcaddr, FMT_PAD_RIGHT);
   fmt_ipv4(fmt_buf2, *cur.dstaddr, FMT_PAD_RIGHT);
-  
+
   printf("%-5u %-15.15s %-5u %-5u %-15.15s %-5u %-3u %-2d %-10lu %-10lu\n",
-         
-         (u_int)*cur.input, fmt_buf1, (u_int)*cur.srcport, 
+
+         (u_int)*cur.input, fmt_buf1, (u_int)*cur.srcport,
          (u_int)*cur.output, fmt_buf2, (u_int)*cur.dstport,
-         (u_int)*cur.prot, 
+         (u_int)*cur.prot,
          (u_int)*cur.tcp_flags & 0x7,
-         (u_long)*cur.dPkts, 
+         (u_long)*cur.dPkts,
          (u_long)*cur.dOctets);
-  
+
   if (0 & FT_OPT_NOBUF)
-    fflush(stdout);  
+    fflush(stdout);
 }

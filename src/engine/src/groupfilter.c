@@ -30,52 +30,52 @@ struct groupfilter_result*
 groupfilter(
             size_t num_gfilter_rules,
             struct gfilter_rule** const ruleset,
-            
+
             const struct grouper_result* const gresult
             ) {
-  
+
   /* free'd just before calling ungrouper(...) */
-  struct groupfilter_result* 
+  struct groupfilter_result*
   gfilter_result = calloc(1, sizeof(struct groupfilter_result));
   if (gfilter_result == NULL)
     errExit("calloc");
-  
+
   /* iterate over each group */
   for (int i = 0, j = 0; i < gresult->num_groups; i++) {
-    
+
     struct group* group = gresult->groupset[i];
-    
+
     /* iterate over each group filter rule */
     for (j = 0; j < num_gfilter_rules; j++) {
-      
+
       struct gfilter_rule* rule = ruleset[j];
-      
+
       /* assign a specific uintX_t function depending on rule->op */
       assign_gfilter_func(rule);
-      
+
       /* break out if any one of the rules does NOT match */
       if (
           !rule->func(
-                      group, 
-                      rule->field, 
-                      rule->value, 
+                      group,
+                      rule->field,
+                      rule->value,
                       rule->delta
                      )
          )
         break;
     }
-    
+
     /* continue, if it did not pass the filter rules  */
-    if (j < num_gfilter_rules) 
+    if (j < num_gfilter_rules)
       continue;
-    
+
     /* otherwise add the group to the filtered groupset */
-    else {      
+    else {
       gfilter_result->num_filtered_groups += 1;
 
       /* free'd just after returning from ungrouper(...) */
       gfilter_result->filtered_groupset = (struct group**)
-      realloc(gfilter_result->filtered_groupset, 
+      realloc(gfilter_result->filtered_groupset,
              (gfilter_result->num_filtered_groups) * sizeof(struct group*));
       if (gfilter_result->filtered_groupset == NULL)
         errExit("realloc");
@@ -83,6 +83,6 @@ groupfilter(
       [gfilter_result->num_filtered_groups-1] = gresult->groupset[i];
     }
   }
-  
+
   return gfilter_result;
 }

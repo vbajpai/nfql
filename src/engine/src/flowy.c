@@ -375,7 +375,7 @@ parse_json_query(const char* const query_mmap) {
     for (int i = 0; i < branch->num_arules; i++) {
 
       /* free'd after returning from prepare_flowquery(...) */
-      struct json_aggr_rule* 
+      struct json_aggr_rule*
       arule = calloc(1, sizeof(struct json_aggr_rule));
       if (arule == NULL)
         errExit("calloc");
@@ -527,7 +527,7 @@ parse_json_query(const char* const query_mmap) {
   for (int i = 0; i < json->num_mrules; i++) {
 
     /* free'd after returning from prepare_flowquery(...) */
-    struct json_merger_rule* 
+    struct json_merger_rule*
     mrule = calloc(1, sizeof(struct json_merger_rule));
     if (mrule == NULL)
       errExit("calloc");

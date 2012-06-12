@@ -27,7 +27,7 @@
 #include "errorhandlers.h"
 
 #ifdef __GNUC__
-  __attribute__ ((__noreturn__)) 
+  __attribute__ ((__noreturn__))
 #endif
 
 static void
@@ -50,11 +50,11 @@ outputError(int err, bool flushStdout,
 
   #define BUF_SIZE 500
   char buf[BUF_SIZE], userMsg[BUF_SIZE], errText[BUF_SIZE];
-  
-  vsnprintf(userMsg, BUF_SIZE, format, ap);  
-  snprintf(errText, BUF_SIZE, ":");  
+
+  vsnprintf(userMsg, BUF_SIZE, format, ap);
+  snprintf(errText, BUF_SIZE, ":");
   snprintf(buf, BUF_SIZE, "\nERROR%s %s\n", errText, userMsg);
-  
+
   if (flushStdout)
     fflush(stdout); /* Flush any pending stdout */
   fputs(buf, stderr);
@@ -87,27 +87,27 @@ void
 print_trace (void)
 {
 #define BUFSIZE 10
-  void *array[BUFSIZE];  
+  void *array[BUFSIZE];
   size_t size = backtrace (array, BUFSIZE);
   char ** strings = backtrace_symbols (array, size);
-  
+
   puts("\nStack Trace: \n");
   for (int i = 0; i < size; i++)
     printf ("%s\n", strings[i]);
-  
+
   free (strings);
 }
 
 void
 errExit(const char *format, ...) {
-  
+
   va_list argList;
-  
+
   va_start(argList, format);
-  outputError(errno, true, format, argList); 
+  outputError(errno, true, format, argList);
   va_end(argList);
-  
-  print_trace();  
+
+  print_trace();
   terminate();
 }
 

@@ -54,11 +54,11 @@ struct record {
 struct ft_data *
 ft_open(int fd);
 
-void 
+void
 ft_write(struct ft_data *data, int fd);
 
-void 
-ft_records_get_all(struct ft_data* data, int number, 
+void
+ft_records_get_all(struct ft_data* data, int number,
                    struct fts3rec_all *record);
 
 u_int32_t *ft_records_get_unix_secs(struct ft_data* data, int number);

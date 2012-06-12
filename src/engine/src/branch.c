@@ -28,23 +28,23 @@
 
 void *
 branch_start(void *arg) {
-  
-  struct branch* branch = (struct branch *)arg;  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-#ifdef FILTER  
-  
-  /* -----------------------------------------------------------------------*/  
+
+  struct branch* branch = (struct branch *)arg;
+
+
+
+
+
+
+
+
+
+
+#ifdef FILTER
+
+  /* -----------------------------------------------------------------------*/
   /*                                filter                                  */
-  /* -----------------------------------------------------------------------*/  
+  /* -----------------------------------------------------------------------*/
 
   branch->filter_result = filter(
                                  branch->data->num_records,
@@ -53,122 +53,122 @@ branch_start(void *arg) {
                                  branch->num_filter_rules,
                                  branch->filter_ruleset
                                 );
-  
+
   if (branch->filter_result == NULL)
     pthread_exit((void*)EXIT_FAILURE);
-  
+
   /* -----------------------------------------------------------------------*/
-  
-#endif  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-#ifdef GROUPER  
-  
-  /* -----------------------------------------------------------------------*/  
+
+#endif
+
+
+
+
+
+
+
+
+
+
+#ifdef GROUPER
+
+  /* -----------------------------------------------------------------------*/
   /*                               grouper                                  */
-  /* -----------------------------------------------------------------------*/  
-  
+  /* -----------------------------------------------------------------------*/
+
   branch->grouper_result = grouper(
                                    branch->num_filter_rules,
                                    branch->filter_ruleset,
-                                   
+
                                    branch->num_grouper_rules,
                                    branch->grouper_ruleset,
-                                   
+
                                    branch->num_aggr_rules,
                                    branch->aggr_ruleset,
-                                   
+
                                    branch->filter_result,
                                    branch->data->rec_size
                                   );
   if (branch->grouper_result == NULL)
     pthread_exit((void*)EXIT_FAILURE);
   else {
-    
+
     /* free filter rules */
     for (int i = 0; i < branch->num_filter_rules; i++) {
-      struct filter_rule* frule = branch->filter_ruleset[i];      
-      free(frule->op); frule->op = NULL;      
-      free(frule); frule = NULL; branch->filter_ruleset[i] = NULL;      
+      struct filter_rule* frule = branch->filter_ruleset[i];
+      free(frule->op); frule->op = NULL;
+      free(frule); frule = NULL; branch->filter_ruleset[i] = NULL;
     }
     free(branch->filter_ruleset); branch->filter_ruleset = NULL;
 
     /* free grouper rules */
     for (int i = 0; i < branch->num_grouper_rules; i++) {
       struct grouper_rule* grule = branch->grouper_ruleset[i];
-      free(grule->op); grule->op = NULL;            
+      free(grule->op); grule->op = NULL;
       free(grule); grule = NULL; branch->grouper_ruleset[i] = NULL;
     }
     free(branch->grouper_ruleset); branch->grouper_ruleset = NULL;
-    
+
     /* free grouper aggregation rules */
     for (int i = 0; i < branch->num_aggr_rules; i++) {
       struct aggr_rule* arule = branch->aggr_ruleset[i];
-      free(arule->op); arule->op = NULL;                  
+      free(arule->op); arule->op = NULL;
       free(arule); arule = NULL; branch->aggr_ruleset[i] = NULL;
     }
-    free(branch->aggr_ruleset); branch->aggr_ruleset = NULL;    
-  }  
-  
+    free(branch->aggr_ruleset); branch->aggr_ruleset = NULL;
+  }
+
   /* -----------------------------------------------------------------------*/
-  
-#endif  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+#endif
+
+
+
+
+
+
+
+
+
+
 #ifdef GROUPFILTER
-  
-  /* -----------------------------------------------------------------------*/  
+
+  /* -----------------------------------------------------------------------*/
   /*                            grouper-filter                              */
-  /* -----------------------------------------------------------------------*/  
-  
+  /* -----------------------------------------------------------------------*/
+
   branch->gfilter_result = groupfilter(
-                                       branch->num_gfilter_rules,                                       
-                                       branch->gfilter_ruleset, 
-                                       
+                                       branch->num_gfilter_rules,
+                                       branch->gfilter_ruleset,
+
                                        branch->grouper_result
                                       );
-  
+
   if (branch->gfilter_result == NULL)
     pthread_exit((void*)EXIT_FAILURE);
   else {
-    
+
     /* free group filter rules */
     for (int i = 0; i < branch->num_gfilter_rules; i++) {
       struct gfilter_rule* gfrule = branch->gfilter_ruleset[i];
       free(gfrule->op); gfrule->op = NULL;
       free(gfrule); gfrule = NULL; branch->gfilter_ruleset[i] = NULL;
-    }    
-    free(branch->gfilter_ruleset); branch->gfilter_ruleset = NULL;    
+    }
+    free(branch->gfilter_ruleset); branch->gfilter_ruleset = NULL;
   }
-  
+
   /* -----------------------------------------------------------------------*/
-  
-#endif  
-  
-  
-  
-  
-  
-  
-  
-  
-  
-  
+
+#endif
+
+
+
+
+
+
+
+
+
+
   pthread_exit((void*)EXIT_SUCCESS);
 }

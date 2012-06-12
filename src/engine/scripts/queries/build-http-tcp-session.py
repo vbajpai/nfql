@@ -46,7 +46,7 @@ class FilterRule:
 
 class GrouperRule:
 
-  def __init__(self, field1_name, field1_type, field2_name, field2_type, 
+  def __init__(self, field1_name, field1_type, field2_name, field2_type,
                delta, op_name, op_type):
 
     self.offset = {

@@ -33,48 +33,48 @@ ungrouper(
           size_t num_branches,
           const struct merger_result* const mresult
          ) {
-  
+
   /* free'd after returning from ungrouper(...) */
   struct ungrouper_result* uresult = calloc(1, sizeof(struct ungrouper_result));
   if (uresult == NULL)
     errExit("calloc");
-  
+
   if (mresult->num_group_tuples != 0) {
-    
+
     /* free'd after returning from ungrouper(...) */
     struct stream** streamset = (struct stream**)
                                 calloc(mresult->num_group_tuples,
                                        sizeof(struct stream*));
     if (streamset == NULL)
-      errExit("calloc");    
+      errExit("calloc");
     for (int i = 0; i < mresult->num_group_tuples; i++) {
-      
+
       /* free'd after returning from ungrouper(...) */
       struct stream* stream = calloc(1, sizeof(struct stream));
       if (stream == NULL)
         errExit("calloc");
-      
-      struct group** group_tuple = mresult->group_tuples[i];      
+
+      struct group** group_tuple = mresult->group_tuples[i];
       for (int j = 0; j < num_branches; j++) {
-        
+
         struct group* group = group_tuple[j];
-        
+
         /* free'd after returning from ungrouper(...) */
-        stream->recordset = realloc(stream->recordset, 
-                                   (stream->num_records + 
+        stream->recordset = realloc(stream->recordset,
+                                   (stream->num_records +
                                     group->num_members) * sizeof(char*));
         if (stream->recordset == NULL)
-          errExit("realloc");      
-        
-        for (int k = stream->num_records, l = 0; 
-             k < (stream->num_records + group->num_members); 
+          errExit("realloc");
+
+        for (int k = stream->num_records, l = 0;
+             k < (stream->num_records + group->num_members);
              k++, l++)
           stream->recordset[k] = group->members[l];
         stream->num_records += group->num_members;
       }
-      
+
       streamset[i] = stream;
-    }    
+    }
     uresult->streamset = streamset; streamset = NULL;
     uresult->num_streams = mresult->num_group_tuples;
   }

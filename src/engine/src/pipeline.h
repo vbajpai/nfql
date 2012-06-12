@@ -29,9 +29,9 @@
 
 #include "base.h"
 
-/* -----------------------------------------------------------------------*/  
+/* -----------------------------------------------------------------------*/
 /*                              branch                                    */
-/* -----------------------------------------------------------------------*/  
+/* -----------------------------------------------------------------------*/
 
 struct group {
   size_t                                      num_members;
@@ -97,10 +97,10 @@ struct gfilter_rule {
 };
 
 struct branch {
-  
-  /* -----------------------------------------------------------------------*/  
+
+  /* -----------------------------------------------------------------------*/
   /*                              inputs                                    */
-  /* -----------------------------------------------------------------------*/  
+  /* -----------------------------------------------------------------------*/
   int                                         branch_id;
   struct ft_data*                             data;
 
@@ -108,43 +108,43 @@ struct branch {
   size_t                                      num_grouper_rules;
   size_t                                      num_aggr_rules;
   size_t                                      num_gfilter_rules;
-  
-  struct filter_rule**                        filter_ruleset;  
-  struct grouper_rule**                       grouper_ruleset;
-  struct aggr_rule**                          aggr_ruleset;  
-  struct gfilter_rule**                       gfilter_ruleset;  
-  /* -----------------------------------------------------------------------*/  
 
-  
-  
-  /* -----------------------------------------------------------------------*/  
+  struct filter_rule**                        filter_ruleset;
+  struct grouper_rule**                       grouper_ruleset;
+  struct aggr_rule**                          aggr_ruleset;
+  struct gfilter_rule**                       gfilter_ruleset;
+  /* -----------------------------------------------------------------------*/
+
+
+
+  /* -----------------------------------------------------------------------*/
   /*                               output                                   */
-  /* -----------------------------------------------------------------------*/  
-  
+  /* -----------------------------------------------------------------------*/
+
   struct filter_result*                       filter_result;
   struct grouper_result*                      grouper_result;
   struct groupfilter_result*                  gfilter_result;
 
-  /* -----------------------------------------------------------------------*/  
-  
+  /* -----------------------------------------------------------------------*/
+
 };
 
-struct filter_result {  
+struct filter_result {
   size_t                                      num_filtered_records;
-  char**                                      filtered_recordset;  
+  char**                                      filtered_recordset;
 };
 
 struct grouper_result {
-  size_t                                      num_unique_records;  
+  size_t                                      num_unique_records;
   char**                                      sorted_recordset;
   char**                                      unique_recordset;
-  
-  size_t                                      num_groups;  
+
+  size_t                                      num_groups;
   struct group**                              groupset;
 };
 
 struct groupfilter_result {
-  size_t                                      num_filtered_groups;  
+  size_t                                      num_filtered_groups;
   struct group**                              filtered_groupset;
 };
 
@@ -153,16 +153,16 @@ struct aggr {
   uint32_t*                                   values;
 };
 
-/* -----------------------------------------------------------------------*/  
+/* -----------------------------------------------------------------------*/
 
 
-struct flowquery {  
-  size_t                                      num_branches;  
-  size_t                                      num_merger_rules;  
-  
-  struct branch**                             branchset;  
+struct flowquery {
+  size_t                                      num_branches;
+  size_t                                      num_merger_rules;
+
+  struct branch**                             branchset;
   struct merger_rule**                        mruleset;
-  struct merger_result*                       merger_result; 
+  struct merger_result*                       merger_result;
   struct ungrouper_result*                    ungrouper_result;
 };
 
@@ -190,13 +190,13 @@ struct merger_rule {
 };
 
 struct merger_result {
-  size_t                                      num_group_tuples;  
+  size_t                                      num_group_tuples;
   size_t                                      total_num_group_tuples;
   struct group***                             group_tuples;
 };
 
 struct ungrouper_result {
-  size_t                                      num_streams;    
+  size_t                                      num_streams;
   struct stream**                             streamset;
 };
 
@@ -233,7 +233,7 @@ struct merger_op {
   uint64_t                                    op;
   uint64_t                                    field1_type;
   uint64_t                                    field2_type;
-  uint64_t                                    optype;  
+  uint64_t                                    optype;
 };
 
 
@@ -257,24 +257,24 @@ struct merger_op {
  * size2: 8/16/32/64 bits for second argument
  */
 enum {
-  
+
   /* size2 */
   RULE_S2_8 = 0,
   RULE_S2_16 = 1,
   RULE_S2_32 = 2,
   RULE_S2_64 = 3,
-  
+
   /* size1 */
   RULE_S1_8 = 0,
   RULE_S1_16 = 4,
   RULE_S1_32 = 8,
   RULE_S1_64 = 12,
-  
+
   /* D */
   RULE_ABS = 0,
   RULE_REL = 16,
   RULE_NO = 32,
-  
+
   /* comp */
   RULE_EQ = 0,
   RULE_NE = 64,
@@ -282,22 +282,22 @@ enum {
   RULE_LT = 192,
   RULE_LE = 256,
   RULE_GE = 320,
-  
+
   /* aggregation options */
   RULE_STATIC = 512,
   RULE_COUNT = 1024,
-  RULE_UNION = 2048,  
+  RULE_UNION = 2048,
   RULE_MIN = 4096,
-  RULE_MAX = 8192,  
-  RULE_MEDIAN = 16384, 
+  RULE_MAX = 8192,
+  RULE_MEDIAN = 16384,
   RULE_MEAN = 32768,
-  RULE_STDDEV = 65536,    
+  RULE_STDDEV = 65536,
   RULE_XOR = 131072,
   RULE_SUM = 262144,
-  RULE_PROD = 524288,  
+  RULE_PROD = 524288,
   RULE_AND = 1048576,
-  RULE_OR = 2097152,  
-  
+  RULE_OR = 2097152,
+
   /* merger allen operations */
   RULE_IN = 4194304,
   RULE_ALLEN_BF = 8388608,
@@ -312,7 +312,7 @@ enum {
   RULE_ALLEN_DI = 4294967296,
   RULE_ALLEN_F = 8589934592,
   RULE_ALLEN_FI = 17179869184,
-  RULE_ALLEN_EQ = 34359738368  
+  RULE_ALLEN_EQ = 34359738368
 };
 
 #endif

@@ -31,9 +31,9 @@
 #include "base.h"
 #include "ftreader.h"
 
-/* -----------------------------------------------------------------------*/  
+/* -----------------------------------------------------------------------*/
 /*                              branch                                    */
-/* -----------------------------------------------------------------------*/  
+/* -----------------------------------------------------------------------*/
 
 void
 echo_branch(size_t num_branches,
@@ -45,12 +45,12 @@ echo_filter(
             const struct filter_result* const fresult,
             struct ft_data* const dataformat
            );
-  
+
 void
 echo_grouper(
              size_t num_grouper_rules,
              size_t num_sorted_records,
-             
+
              const struct grouper_result* const gresult,
              struct ft_data* const dataformat
             );
@@ -68,23 +68,23 @@ echo_gfilter(
              struct ft_data* const dataformat
              );
 
-/* -----------------------------------------------------------------------*/      
+/* -----------------------------------------------------------------------*/
 
 
 void
 echo_merger(
             size_t num_branches,
             struct branch** const branchset,
-            
+
             const struct merger_result* const mresult,
             struct ft_data* const dataformat
             );
 
 
-void 
+void
 echo_results(
              const struct ungrouper_result* const uresult,
-             struct ft_data* const dataformat             
+             struct ft_data* const dataformat
             );
 
 
