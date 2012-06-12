@@ -33,15 +33,16 @@ from pipeline import protocol
 if __name__ == '__main__':
 
   fruleset = []
-  fruleset.append(vars(FilterRule('dstport', 21, 'RULE_S1_16', 0,
+  fruleset.append(vars(FilterRule('dstport', 53, 'RULE_S1_16', 0,
                                                  'RULE_EQ')))
-  fruleset.append(vars(FilterRule('prot', protocol('TCP'), 'RULE_S1_16', 0,
+  fruleset.append(vars(FilterRule('prot', protocol('UDP'), 'RULE_S1_16', 0,
                                                            'RULE_EQ')))
   filter1 = {'ruleset': fruleset}
+
   fruleset = []
-  fruleset.append(vars(FilterRule('srcport', 21, 'RULE_S1_16', 0,
+  fruleset.append(vars(FilterRule('srcport', 53, 'RULE_S1_16', 0,
                                                  'RULE_EQ')))
-  fruleset.append(vars(FilterRule('prot', protocol('TCP'), 'RULE_S1_16', 0,
+  fruleset.append(vars(FilterRule('prot', protocol('UDP'), 'RULE_S1_16', 0,
                                                            'RULE_EQ')))
   filter2 = {'ruleset': fruleset}
 
@@ -88,10 +89,13 @@ if __name__ == '__main__':
   a2 = {'ruleset' : aruleset}
 
   gfruleset = []
+  gfruleset.append(vars(GroupFilterRule('dPkts', 10,
+                                        'RULE_S1_32', 0,
+                                        'RULE_GT')))
   gfilter1 = {'ruleset' : gfruleset}
 
   gfruleset = []
-  gfruleset.append(vars(GroupFilterRule('dPkts', 50,
+  gfruleset.append(vars(GroupFilterRule('dPkts', 10,
                                         'RULE_S1_32', 0,
                                         'RULE_GT')))
   gfilter2 = {'ruleset' : gfruleset}
@@ -121,10 +125,9 @@ if __name__ == '__main__':
                                                    'RULE_ABS')))
 
   merger = {'ruleset' : mruleset}
-
   query = {'branchset': branchset, 'merger': merger}
 
   fjson = json.dumps(query, indent=2)
-  fsock = open('query-ftp-tcp-session.json', 'w')
+  fsock = open('query-dns-udp.json', 'w')
   fsock.write(fjson)
   fsock.close
