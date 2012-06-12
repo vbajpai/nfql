@@ -26,90 +26,9 @@
 
 
 import json
-import socket
-
-def protocol(name):
-  return socket.getprotobyname(name)
-
-class FilterRule:
-
-  def __init__(self, name, value, datatype, delta, op):
-
-    self.offset = {
-      'name': name,
-      'value': value,
-      'datatype': datatype
-    }
-
-    self.delta = delta
-    self.op = op
-
-class GrouperRule:
-
-  def __init__(self, field1_name, field1_type, field2_name, field2_type,
-               delta, op_name, op_type):
-
-    self.offset = {
-      'f1_name': field1_name,
-      'f1_datatype': field1_type,
-      'f2_name': field2_name,
-      'f2_datatype': field2_type
-    }
-
-    self.delta = delta
-
-    self.op = {
-      'name' : op_name,
-      'type' : op_type
-    }
-
-class AggregationRule:
-
-  def __init__(self, name, datatype, op):
-
-    self.offset = {
-      'name': name,
-      'datatype': datatype
-    }
-
-    self.op = op
-
-class GroupFilterRule:
-
-  def __init__(self, name, value, datatype, delta, op):
-
-    self.offset = {
-      'name': name,
-      'value': value,
-      'datatype': datatype
-    }
-
-    self.delta = delta
-    self.op = op
-
-class MergerRule:
-
-  def __init__(self, branch1_id, branch2_id,
-                     field1_name, field1_type,
-                     field2_name, field2_type, delta,
-                     op_name, op_type):
-
-    self.offset = {
-      'f1_name': field1_name,
-      'f1_datatype': field1_type,
-      'f2_name': field2_name,
-      'f2_datatype': field2_type,
-    }
-
-    self.op = {
-      'name' : op_name,
-      'type' : op_type,
-    }
-
-    self.branch1_id = branch1_id;
-    self.branch2_id = branch2_id;
-    self.delta = delta
-
+from pipeline import FilterRule, GrouperRule, AggregationRule
+from pipeline import GroupFilterRule, MergerRule
+from pipeline import protocol
 
 if __name__ == '__main__':
 
