@@ -16,7 +16,7 @@ build:
 	mkdir -p .build
 
 doc: Doxyfile
-	(mkdir -p doc; doxygen Doxyfile)
+	(mkdir -p docs; doxygen Doxyfile)
 
 clean:
 	rm -f -r .build
