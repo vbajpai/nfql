@@ -2,10 +2,15 @@ Flowy
 --------------------
 - - -
 
-Flowy is the first prototype implementation of our Network Flow Query Language
-(NFQL). The query language allows to describe patterns in flow-records in a 
-declarative and orthogonal fashion, making it easy to read and flexible enough 
-to describe complex relationships among a given set of flows.  
+`Flowy` is the first prototype implementation of our Network Flow Query 
+Language (`NFQL`). It is written in `Python`. The framework is divided into
+two main modules: the validator module (parser) and the execution module. The 
+validator modules is used for query parsing and syntax checking while the 
+execution module is used to perform the actions of each stage of the processing
+pipeline. Since the execution module of the prototype has been completely 
+re-written in `C`, only the validator (parser) module is currently significant
+to `F(v2)`. It is foreseen that the next iteration will strip off the execution
+module and connect the validator module to the `C` execution engine.
 
 
 Installing on Ubuntu
@@ -126,3 +131,11 @@ Deactivate the Virtual Environment
 Destroy the Virtual Environment
 
 	[parser] $ rmvirtualenv parser
+
+
+Contributors
+------------
+- - - 
+
+Packaging and Documentation: Vaibhav Bajpai <contact@vaibhavbajpai.com>, 2012  
+Implementation: Kaloyan Kanev <k.kanev@jacobs-university.de>, 2009  

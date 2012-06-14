@@ -3,12 +3,18 @@ F (v2)
 - - -
 
 `F (v2)` is the execution engine of our in-house stream-based flow record 
-query language `NFQL`. The query language allows to describe patterns in
-`NetFlow v5` records in a declarative and orthogonal fashion, making it easy
-to read and flexible enough to describe complex relationships among a given
-set of flows. It can process flow-records, aggregate them into groups, apply
-absolute (or relative) filters and invoke Allen interval algebra rules. 
-The execution engine is written in `C`.
+query language `NFQL`. The execution engine is written in `C` making it
+relatively faster in order of magniture to the execution module of the 
+first prototype implementation, `Flowy`. `F (v2)` takes the flow-query
+in a `JSON` format and reads in the trace files in memory for efficient
+processing. The `JSON` query itself can be generated using a `Python`
+script. A new query can quickly be prepared by adapting to one of the
+example scripts provided in the package. 
+
+It is foreseen that in the future, the flowy query format previously used
+by `Flowy` will be given to its validator module that will syntactically 
+check and parse it to generate a `JSON` file. This `JSON` file will then
+be piped into `F (v2)` for faster processing. 
 
 
 Installing on Ubuntu
@@ -110,8 +116,16 @@ Running the Engine
 
 Some example queries are provided in `examples/` along with a sample trace.
 
-	[engine] $ bin/engine examples/query-http-tcp-session.json examples/trace.ft 
+	[engine] $ bin/engine examples/query-http-tcp-session.json examples/trace-2009.ft 
 	
 The sample queries can also be run on your own `NetFlow v5` records
 
 	[engine] $ flow-cat $TRACE[s] | bin/engine examples/query-http-tcp-session.json
+
+
+Contributors
+------------
+- - - 
+
+`F (v2)`: Vaibhav Bajpai <contact@vaibhavbajpai.com>, 2012  
+`F (v1)`: Johannes 'josch' Schauer <j.schauer@email.de>, 2011
