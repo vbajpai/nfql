@@ -62,6 +62,8 @@ if __name__ == '__main__':
   a1 = {'ruleset' : aruleset}
 
   gfruleset = []
+  gfruleset.append(vars(GroupFilterRule('dPkts', 500,
+                                        'RULE_S1_32', 0, 'RULE_GT')))
   gfilter1 = {'ruleset' : gfruleset}
 
   branchset = []

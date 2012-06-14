@@ -23,4 +23,5 @@ clean:
 	rm -f -r bin
 	rm -f -r doc
 	rm -f -r examples/*.json
+	rm -f -r tests/*.pyc
 	rm -f -r scripts/queries/*.pyc

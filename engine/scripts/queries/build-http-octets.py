@@ -48,9 +48,9 @@ if __name__ == '__main__':
   a1 = a2 = {'ruleset' : aruleset}
 
   gfruleset = []
-  gfruleset.append(vars(GroupFilterRule('dPkts', 3000,
+  gfruleset.append(vars(GroupFilterRule('dPkts', 0,
                                         'RULE_S1_32', 0,
-                                        'RULE_GT')))
+                                        'RULE_LT')))
   gfilter1 = gfilter2 = {'ruleset' : gfruleset}
 
   fruleset = []
