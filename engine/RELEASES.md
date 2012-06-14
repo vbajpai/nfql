@@ -19,7 +19,7 @@
 
 `F (v2.3):` It is flexible!
   
-  $ git show v0.3
+	$ git show v0.3
 	
 	tag v0.3
 	Tagger: Vaibhav Bajpai <contact@vaibhavbajpai.com>
@@ -62,7 +62,7 @@
 
 `F (v2.1):` It works!
 
-  $ git show v0.1
+	$ git show v0.1
 	
 	tag v0.1		
 	Tagger: Vaibhav Bajpai <contact@vaibhavbajpai.com>
@@ -87,7 +87,7 @@
   
 `F (v2.0)`
 
-  $ git show v0.0 
+	$ git show v0.0
 
 	tag v0.0
 	Tagger: Vaibhav Bajpai <contact@vaibhavbajpai.com>
