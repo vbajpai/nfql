@@ -2,7 +2,10 @@ Flowy
 --------------------
 - - -
 
-Flowy is the first prototype implementation of our Network Flow Query Language (NFQL). The query language allows to describe patterns in flow-records in a declarative and orthogonal fashion, making it easy to read and flexible enough to describe complex relationships among a given set of flows.  
+Flowy is the first prototype implementation of our Network Flow Query Language
+(NFQL). The query language allows to describe patterns in flow-records in a 
+declarative and orthogonal fashion, making it easy to read and flexible enough 
+to describe complex relationships among a given set of flows.  
 
 
 Installing on Ubuntu
