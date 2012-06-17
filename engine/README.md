@@ -8,8 +8,9 @@ relatively faster in order of magniture to the execution module of the
 first prototype implementation, `Flowy`. `F (v2)` takes the flow-query
 in a `JSON` format and reads in the trace files in memory for efficient
 processing. The `JSON` query itself can be generated using a `Python`
-script. A new query can quickly be prepared by adapting to one of the
-example scripts provided in the package. 
+script. A new query and its corresponding unit test can quickly be 
+prepared by adapting to one of the respective `example/` and `tests/` 
+scripts provided in the package.
 
 It is foreseen that in the future, the flowy query format previously used
 by `Flowy` will be given to its validator module that will syntactically 
@@ -121,6 +122,20 @@ Some example queries are provided in `examples/` along with a sample trace.
 The sample queries can also be run on your own `NetFlow v5` records
 
 	[engine] $ flow-cat $TRACE[s] | bin/engine examples/query-http-tcp-session.json
+
+
+Running the Test Suite
+----------------------      
+- - -  
+
+To run the complete regression test-suite:
+
+	[engine] $ tests/regression.py [-v]
+	
+Regression tests can also be run individually on a specific example query type. For instance:
+
+	[engine] $ tests/test-query-http-tcp-session.py [-v]
+
 
 
 Contributors
