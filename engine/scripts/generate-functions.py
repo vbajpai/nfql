@@ -597,7 +597,8 @@ bsearch_proto = """ char***
 def bsearch_body(atype):
   result = " {\n\n"
   result += """
-    char*** record_iter =
+    char*** record_iter = NULL;
+    struct tree_item_%s* tree_item =
     (
     (struct tree_item_%s *)
     bsearch_r(
@@ -608,9 +609,10 @@ def bsearch_body(atype):
     (void *)&grouper_ruleset[0]->field_offset1,
     comp_%s_p
     )
-    )->ptr;
-
+    );
+    if (tree_item != NULL) record_iter = tree_item->ptr;
     """%(enum_map[atype],
+         enum_map[atype],
          enum_map[atype],
          enum_map[atype],
          enum_map[atype])

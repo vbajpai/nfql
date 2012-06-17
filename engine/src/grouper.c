@@ -426,57 +426,58 @@ grouper(
                                              grouper_ruleset,
                                              intermediate_result
                                              );
+        if (record_iter != NULL) {
+          // iterate until terminating NULL in sorted_records
+          for (int k = 0; *record_iter != NULL; record_iter++) {
 
-        // iterate until terminating NULL in sorted_records
-        for (int k = 0; *record_iter != NULL; record_iter++) {
+            // already processed record from filtered_records
+            if (**record_iter == NULL)
+              continue;
 
-          // already processed record from filtered_records
-          if (**record_iter == NULL)
-            continue;
+            // do not group with itself
+            if (**record_iter == filtered_recordset_copy[i])
+              continue;
 
-          // do not group with itself
-          if (**record_iter == filtered_recordset_copy[i])
-            continue;
+            // check all module filter rules for those two records
+            for (k = 0; k < num_grouper_rules; k++) {
 
-          // check all module filter rules for those two records
-          for (k = 0; k < num_grouper_rules; k++) {
+              struct grouper_rule* grule = grouper_ruleset[k];
 
-            struct grouper_rule* grule = grouper_ruleset[k];
+              /* assign a uintX_t specific function depending on grule->op */
+              assign_grouper_func(grule);
 
-            /* assign a uintX_t specific function depending on grule->op */
-            assign_grouper_func(grule);
+              if (
+                  !grule->func(
+                               group,
+                               grule->field_offset1,
+                               **record_iter,
+                               grule->field_offset2,
+                               grule->delta
+                               )
+                  )
+                break;
+            }
 
-            if (
-                !grule->func(
-                             group,
-                             grule->field_offset1,
-                             **record_iter,
-                             grule->field_offset2,
-                             grule->delta
-                             )
-                )
+            // first rule didnt match
+            if (k == 0)
               break;
+
+            // one of the other rules didnt match
+            if (k < num_grouper_rules)
+              continue;
+
+            group->num_members += 1;
+
+            group->members = (char **)
+            realloc(group->members,
+                    sizeof(char *)*group->num_members);
+
+            // assign entry in filtered_records to group
+            group->members[group->num_members-1] = **record_iter;
+
+            // set filtered_recordset_copy[i] to NULL
+            **record_iter = NULL;
           }
-
-          // first rule didnt match
-          if (k == 0)
-            break;
-
-          // one of the other rules didnt match
-          if (k < num_grouper_rules)
-            continue;
-
-          group->num_members += 1;
-
-          group->members = (char **)
-          realloc(group->members,
-                  sizeof(char *)*group->num_members);
-
-          // assign entry in filtered_records to group
-          group->members[group->num_members-1] = **record_iter;
-
-          // set filtered_recordset_copy[i] to NULL
-          **record_iter = NULL;
         }
 
         // unlink all the local filtered recordset copy from the flow data
