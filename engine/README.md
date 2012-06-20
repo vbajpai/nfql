@@ -128,6 +128,8 @@ Running the Test Suite
 ----------------------      
 - - -  
 
+Requirements: Python 2.7+
+
 To run the complete regression test-suite:
 
 	[engine] $ tests/regression.py [-v]
