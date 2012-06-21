@@ -28,8 +28,8 @@ import sys, os, subprocess, time
 
 def do_nfql(nfql, trace_list, query_list):
   """docstring for do_nfql"""
-  resultsdir = '%s/benchmarks/results'%(os.getcwd())
-  st = os.system('mkdir -p %s'%(resultsdir))
+  resdir = '%s/benchmarks/results'%(os.getcwd())
+  st = os.system('mkdir -p %s'%(resdir))
   for query in query_list:
     basequery = os.path.splitext(os.path.basename(query))[0]
     for trace in trace_list:
@@ -39,13 +39,20 @@ def do_nfql(nfql, trace_list, query_list):
         sys.stdout.flush()
         print iter,
         try:
-          time = '/usr/bin/time -f "%e" --append -o '
-          time += '%s/nfql-%s-%s.results'%(resultsdir, basequery, basetrace)
+          time_opts = '-f "%e" --append -o'
+          resfile = '%s/nfql-%s-%s.results'%(resdir, basequery, basetrace)
+          time = '/usr/bin/time %s %s '%(time_opts, resfile)
           stmt = '%s %s %s %s > /dev/null'%(time, nfql, query, trace)
           st = os.system(stmt)
         except OSError as e:
           print e
-      print
+      fsock = open(resfile, 'r')
+      floats = map(float, fsock.readlines())
+      avgtime = reduce(lambda x,y: x+y, floats)/len(floats)
+      print '(%f secs)'%(avgtime)
+      summaryfile = '%s/nfql-summary.results'%(resdir)
+      wsock = open(summaryfile, 'a')
+      wsock.write('nfql-%s-%s: avg=%f secs\n'%(basequery, basetrace, avgtime))
 
 def listdir(directory):
   """docstring for list_dir"""
