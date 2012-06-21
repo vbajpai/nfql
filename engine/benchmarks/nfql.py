@@ -74,7 +74,10 @@ def main(arg):
 
 if __name__ == '__main__':
   if len(sys.argv) != 4:
-    print 'usage: %s engine traces/ query/ '%(sys.argv[0])
+    print """usage: %s
+       bin/engine
+       benchmarks/traces/flow-tools/
+       benchmarks/query/ """%(sys.argv[0])
     exit(1)
   else:
     main(sys.argv[1:])
