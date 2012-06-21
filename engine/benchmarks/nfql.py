@@ -28,7 +28,8 @@ import sys, os, subprocess, time
 
 def do_nfql(nfql, trace_list, query_list):
   """docstring for do_nfql"""
-  st = os.system('mkdir -p results/')
+  resultsdir = '%s/benchmarks/results'%(os.getcwd())
+  st = os.system('mkdir -p %s'%(resultsdir))
   for query in query_list:
     basequery = os.path.splitext(os.path.basename(query))[0]
     for trace in trace_list:
@@ -39,7 +40,7 @@ def do_nfql(nfql, trace_list, query_list):
         print iter,
         try:
           time = '/usr/bin/time -f "%e" --append -o '
-          time += 'results/nfql-%s-%s.results'%(basequery, basetrace)
+          time += '%s/nfql-%s-%s.results'%(resultsdir, basequery, basetrace)
           stmt = '%s %s %s %s > /dev/null'%(time, nfql, query, trace)
           st = os.system(stmt)
         except OSError as e:
