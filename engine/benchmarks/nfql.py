@@ -28,32 +28,22 @@ import sys, os, subprocess, time
 
 def do_nfql(nfql, trace_list, query_list):
   """docstring for do_nfql"""
-  time_avg = 0
+  st = os.system('mkdir -p results/')
   for query in query_list:
+    basequery = os.path.splitext(os.path.basename(query))[0]
     for trace in trace_list:
-      print 'executing: %s %s %s'%(os.path.basename(nfql),
-                                   os.path.basename(query),
-                                   os.path.basename(trace))
+      basetrace = os.path.splitext(os.path.basename(trace))[0]
+      print 'executing: %s %s %s'%(nfql, basequery, basetrace),
       for iter in range(1, 11):
+        print iter,
         try:
-          avg = 0
-          stmt = '%s %s %s'%(nfql, query, trace)
-          start = time.time()
-          result = subprocess.Popen(
-                                    stmt,
-                                    shell=True,
-                                    stdout=open(os.devnull, 'w')
-                                   )
-          elapsed = time.time() - start
-        except subprocess.CalledProcessError as e:
-          print e.output
+          time = '/usr/bin/time -f "%e" --append -o '
+          time += 'results/nfql-%s-%s.results'%(basequery, basetrace)
+          stmt = '%s %s %s %s > /dev/null'%(time, nfql, query, trace)
+          st = os.system(stmt)
         except OSError as e:
           print e
-        else:
-          #print '%s: %s' %(iter, elapsed)
-          avg += elapsed
-      avg /= 10
-      print 'avg: %s' %(avg)
+      print
 
 def listdir(directory):
   """docstring for list_dir"""
