@@ -33,8 +33,9 @@ def do_nfql(nfql, trace_list, query_list):
     basequery = os.path.splitext(os.path.basename(query))[0]
     for trace in trace_list:
       basetrace = os.path.splitext(os.path.basename(trace))[0]
-      print 'executing: %s %s %s'%(nfql, basequery, basetrace),
+      print 'executing: [%s %s %s]: '%(nfql, basequery, basetrace),
       for iter in range(1, 11):
+        sys.stdout.flush()
         print iter,
         try:
           time = '/usr/bin/time -f "%e" --append -o '
