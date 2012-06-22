@@ -24,64 +24,75 @@
 # (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
 # THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-import sys, os, time
+import sys, os, time, subprocess
 
-def do_nfql(nfql, trace_list, query_list):
-  """runs nfql engine on the given tracelist and querylist"""
-  resdir = '%s/benchmarks/results/nfql'%(os.getcwd())
+def do_silk(trace_list, query_list):
+  """runs silk on the given tracelist"""
+  resdir = '%s/benchmarks/results/silk'%(os.getcwd())
   st = os.system('mkdir -p %s'%(resdir))
   for query in query_list:
-    basequery = os.path.splitext(os.path.basename(query))[0]
+    try:
+      basequery = os.path.splitext(os.path.basename(query))[0]
+      querycmd = open(query, 'r').read()
+    except IOError: print 'queryfile not found'
     for trace in trace_list:
+      querycmd = querycmd.replace('%s', trace)
       basetrace = os.path.splitext(os.path.basename(trace))[0]
-      print 'executing: [%s %s %s]: '%(nfql, basequery, basetrace),
+      print 'executing: [silk %s %s]: '%(basequery, basetrace),
       for iter in range(1, 11):
         sys.stdout.flush()
         print iter,
         try:
-          time_opts = '-f "%e" --append -o'
-          resfile = '%s/nfql-%s-%s.results'%(resdir, basequery, basetrace)
-          time = '/usr/bin/time %s %s '%(time_opts, resfile)
-          stmt = '%s %s %s %s > /dev/null'%(time, nfql, query, trace)
-          st = os.system(stmt)
-        except OSError as e:
-          print e
+          resfile = '%s/silk-%s-%s.results'%(resdir, basequery, basetrace)
+          start = time.time()
+          st = os.system(querycmd)
+          elapsed = time.time() - start
+        except OSError as e: print e
+        else:
+          try:
+            wsock = open(resfile, 'a')
+            wsock.write('%f\n'%(elapsed))
+            wsock.close()
+          except: print 'cannot write to file'
       try:
         fsock = open(resfile, 'r')
-        floats = map(float, fsock.readlines())
-        avgtime = reduce(lambda x,y: x+y, floats)/len(floats)
-      except: avgtime = 0
+      except: print 'cannot open results file'
       else:
-        summaryfile = '%s/nfql-summary.results'%(resdir)
         try:
-          wsock = open(summaryfile, 'a')
-          wsock.write('nfql-%s-%s: avg=%f s\n'%(basequery, basetrace, avgtime))
-        except IOError: pass
-      finally: print '(%f secs)'%(avgtime)
+          floats = map(float, fsock.readlines())
+          avgtime = reduce(lambda x,y: x+y, floats)/len(floats)
+        except: avgtime = 0
+        else:
+          summaryfile = '%s/silk-summary.results'%(resdir)
+          try:
+            wsock = open(summaryfile, 'a')
+            wsock.write('silk-%s-%s: avg=%f s\n'%(basequery,
+                                                  basetrace,
+                                                  avgtime))
+          except IOError: pass
+        finally: print '(%f secs)'%(avgtime)
 
 def main(arg):
-  """parses argument list and calls do_nfql(...)"""
+  """parses argument list and calls do_silk(...)"""
 
   def listdir(directory):
     """given a dir path, returns a list of absolute file paths"""
     filelist = os.listdir(directory)
-    absfilelist = [os.path.abspath(os.path.join(directory, f))
+    absfilelist = [os.path.abspath(os.path.join(directory, f)) 
                    for f in filelist]
     return absfilelist
 
-  nfql = os.path.abspath(arg[0])
-  trace_dir = os.path.abspath(arg[1])
-  query_dir = os.path.abspath(arg[2])
-
+  trace_dir = os.path.abspath(arg[0])
+  query_dir = os.path.abspath(arg[1])
   trace_list = listdir(trace_dir)
   query_list = listdir(query_dir)
-  print "benchmarking nfql ..."
-  do_nfql(nfql, trace_list, query_list)
+  print "benchmarking silk ..."
+  do_silk(trace_list, query_list)
 
 if __name__ == '__main__':
   """checks argument list for sanity and calls main(...)"""
-  if len(sys.argv) != 4:
-    print """usage: %s bin/engine trace[s]/ querie[s]/"""%(sys.argv[0])
+  if len(sys.argv) != 3:
+    print """usage: %s trace[s]/ querie[s]/"""%(sys.argv[0])
     exit(1)
   else:
     main(sys.argv[1:])
