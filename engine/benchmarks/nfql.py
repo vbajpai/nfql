@@ -27,7 +27,7 @@
 import sys, os, subprocess, time
 
 def do_nfql(nfql, trace_list, query_list):
-  """docstring for do_nfql"""
+  """runs nfql engine on the given tracelist and querylist"""
   resdir = '%s/benchmarks/results'%(os.getcwd())
   st = os.system('mkdir -p %s'%(resdir))
   for query in query_list:
@@ -55,13 +55,13 @@ def do_nfql(nfql, trace_list, query_list):
       wsock.write('nfql-%s-%s: avg=%f secs\n'%(basequery, basetrace, avgtime))
 
 def listdir(directory):
-  """docstring for list_dir"""
+  """given a dir path, returns a list of absolute file paths"""
   filelist = os.listdir(directory)
   absfilelist = [os.path.abspath(os.path.join(directory, f)) for f in filelist]
   return absfilelist
 
 def main(arg):
-  """docstring for main"""
+  """parses argument list and calls do_nfql(...)"""
   nfql = os.path.abspath(arg[0])
   trace_dir = arg[1]
   query_dir = arg[2]
@@ -72,6 +72,7 @@ def main(arg):
   do_nfql(nfql, trace_list, query_list)
 
 if __name__ == '__main__':
+  """checks argument list for sanity and calls main(...)"""
   if len(sys.argv) != 4:
     print """usage: %s
        bin/engine
