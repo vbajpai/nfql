@@ -1,0 +1,7 @@
+rm -f /tmp/A.raw /tmp/B.raw; \
+rwfilter --sport=80 --pass=stdout %s | \
+rwgroup --summarize | \
+rwfilter --input-pipe=stdin --pass=/tmp/A.raw --packets=0-; \
+rwfilter --dport=80 --pass=stdout %s | \
+rwgroup --summarize | \
+rwfilter --input-pipe=stdin --pass=/tmp/B.raw --packets=0-; \

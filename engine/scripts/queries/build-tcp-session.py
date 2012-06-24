@@ -44,13 +44,19 @@ if __name__ == '__main__':
 
   gruleset = []
   gruleset.append(vars(GrouperRule('srcaddr', 'RULE_S1_32',
+                                   'srcaddr', 'RULE_S2_32', 0,
+                                   'RULE_EQ', 'RULE_ABS')))
+  gruleset.append(vars(GrouperRule('dstaddr', 'RULE_S1_32',
                                    'dstaddr', 'RULE_S2_32', 0,
                                    'RULE_EQ', 'RULE_ABS')))
   grouper1 = {'ruleset': gruleset}
 
   gruleset = []
-  gruleset.append(vars(GrouperRule('dstaddr', 'RULE_S1_32',
+  gruleset.append(vars(GrouperRule('srcaddr', 'RULE_S1_32',
                                    'srcaddr', 'RULE_S2_32', 0,
+                                   'RULE_EQ', 'RULE_ABS')))
+  gruleset.append(vars(GrouperRule('dstaddr', 'RULE_S1_32',
+                                   'dstaddr', 'RULE_S2_32', 0,
                                    'RULE_EQ', 'RULE_ABS')))
   grouper2 = {'ruleset': gruleset}
 
