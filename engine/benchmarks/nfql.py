@@ -34,14 +34,14 @@ def do_nfql(nfql, trace_list, query_list):
     basequery = os.path.splitext(os.path.basename(query))[0]
     for trace in trace_list:
       basetrace = os.path.splitext(os.path.basename(trace))[0]
+      resfile = '%s/nfql-%s-%s.results'%(resdir, basequery, basetrace)
+      stmt = '%s %s %s > /dev/null'%(nfql, query, trace)
       print 'executing: [%s %s %s]: '%(nfql, basequery, basetrace),
       for iter in range(1, 11):
         sys.stdout.flush()
         print iter,
         try:
-          resfile = '%s/nfql-%s-%s.results'%(resdir, basequery, basetrace)
           start = time.time()
-          stmt = '%s %s %s > /dev/null'%(nfql, query, trace)
           st = os.system(stmt)
           elapsed = time.time() - start
         except OSError as e:

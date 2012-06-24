@@ -35,12 +35,12 @@ def do_silk(trace_list, query_list):
     for trace in trace_list:
       querycmd = open(query, 'r').read().replace('%s', trace)
       basetrace = os.path.splitext(os.path.basename(trace))[0]
+      resfile = '%s/silk-%s-%s.results'%(resdir, basequery, basetrace)
       print 'executing: [silk %s %s]: '%(basequery, basetrace),
       for iter in range(1, 11):
         sys.stdout.flush()
         print iter,
         try:
-          resfile = '%s/silk-%s-%s.results'%(resdir, basequery, basetrace)
           start = time.time()
           st = os.system(querycmd)
           elapsed = time.time() - start
