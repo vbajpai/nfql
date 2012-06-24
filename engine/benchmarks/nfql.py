@@ -39,25 +39,36 @@ def do_nfql(nfql, trace_list, query_list):
         sys.stdout.flush()
         print iter,
         try:
-          time_opts = '-f "%e" --append -o'
           resfile = '%s/nfql-%s-%s.results'%(resdir, basequery, basetrace)
-          time = '/usr/bin/time %s %s '%(time_opts, resfile)
-          stmt = '%s %s %s %s > /dev/null'%(time, nfql, query, trace)
+          start = time.time()
+          stmt = '%s %s %s > /dev/null'%(nfql, query, trace)
           st = os.system(stmt)
+          elapsed = time.time() - start
         except OSError as e:
           print e
+        else:
+          try:
+            wsock = open(resfile, 'a')
+            wsock.write('%f\n'%(elapsed))
+            wsock.close()
+          except: print 'cannot write to file'
       try:
         fsock = open(resfile, 'r')
-        floats = map(float, fsock.readlines())
-        avgtime = reduce(lambda x,y: x+y, floats)/len(floats)
-      except: avgtime = 0
+      except: print 'cannot open results file'
       else:
-        summaryfile = '%s/nfql-summary.results'%(resdir)
         try:
-          wsock = open(summaryfile, 'a')
-          wsock.write('nfql-%s-%s: avg=%f s\n'%(basequery, basetrace, avgtime))
-        except IOError: pass
-      finally: print '(%f secs)'%(avgtime)
+          floats = map(float, fsock.readlines())
+          avgtime = reduce(lambda x,y: x+y, floats)/len(floats)
+        except: avgtime = 0
+        else:
+          summaryfile = '%s/nfql-summary.results'%(resdir)
+          try:
+            wsock = open(summaryfile, 'a')
+            wsock.write('nfql-%s-%s: avg=%f s\n'%(basequery,
+                                                  basetrace,
+                                                  avgtime))
+          except IOError: pass
+        finally: print '(%f secs)'%(avgtime)
 
 def main(arg):
   """parses argument list and calls do_nfql(...)"""
