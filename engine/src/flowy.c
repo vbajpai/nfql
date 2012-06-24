@@ -1380,6 +1380,7 @@ main(int argc, char **argv) {
   /*                              free memory                               */
   /* -----------------------------------------------------------------------*/
 
+#ifdef GROUPER
   /* free grouper leftovers */
   for (int i = 0; i < fquery->num_branches; i++) {
     struct branch* branch = fquery->branchset[i];
@@ -1394,7 +1395,9 @@ main(int argc, char **argv) {
     branch->grouper_result->groupset = NULL;
     free(branch->grouper_result); branch->grouper_result = NULL;
   }
+#endif
 
+#ifdef MERGER
   /* free merger results */
   for (int i = 0; i < fquery->merger_result->num_group_tuples; i++) {
     struct group** matched_tuple = fquery->merger_result->group_tuples[i];
@@ -1408,7 +1411,9 @@ main(int argc, char **argv) {
   free(fquery->merger_result->group_tuples);
   fquery->merger_result->group_tuples = NULL;
   free(fquery->merger_result); fquery->merger_result = NULL;
+#endif
 
+#ifdef UNGROUPER
   /* free ungrouper results */
   for (int j = 0; j < fquery->ungrouper_result->num_streams; j++) {
     struct stream* stream = fquery->ungrouper_result->streamset[j];
@@ -1423,9 +1428,10 @@ main(int argc, char **argv) {
   free(fquery->ungrouper_result->streamset);
   fquery->ungrouper_result->streamset = NULL;
   free(fquery->ungrouper_result); fquery->ungrouper_result = NULL;
+#endif
 
-
-  /* freee filter_result */
+#ifdef FILTER
+  /* free filter_result */
   for (int i = 0; i < fquery->num_branches; i++) {
     struct branch* branch = fquery->branchset[i];
     for (int j = 0; j < branch->filter_result->num_filtered_records; j++) {
@@ -1439,6 +1445,7 @@ main(int argc, char **argv) {
     free(branch->filter_result);
     branch->filter_result = NULL;
   }
+#endif
 
   /* free flowquery */
   for (int i = 0; i < fquery->num_branches; i++) {
