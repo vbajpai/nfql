@@ -68,9 +68,9 @@ class Trace2009(Trace, unittest.TestCase):
 
   def testGroupers(self):
     """expected number of groups in each branch
-       - number of groups in branch A should be 173
-       - number of groups in branch B should be 173"""
-    num = [173, 173]
+       - number of groups in branch A should be 68
+       - number of groups in branch B should be 68"""
+    num = [68, 68]
     self.iternum(
                  num,
                  self.__class__.pattern['grouper'],
@@ -125,9 +125,9 @@ class Trace2012(Trace, unittest.TestCase):
 
   def testGroupers(self):
     """expected number of groups in each branch
-       - number of groups in branch A should be 30786
-       - number of groups in branch B should be 30786"""
-    num = [30786, 30786]
+       - number of groups in branch A should be 1681
+       - number of groups in branch B should be 1681"""
+    num = [1681, 1681]
     self.iternum(
                  num,
                  self.__class__.pattern['grouper'],
@@ -136,9 +136,9 @@ class Trace2012(Trace, unittest.TestCase):
 
   def testGroupFilter(self):
     """expected number of group filters in each branch
-       - number of group filters in branch A should be 8
-       - number of group filters in branch B should be 3"""
-    num = [8, 3]
+       - number of group filters in branch A should be 9
+       - number of group filters in branch B should be 9"""
+    num = [9, 9]
     self.iternum(
                  num,
                  self.__class__.pattern['groupfilter'],
@@ -147,8 +147,8 @@ class Trace2012(Trace, unittest.TestCase):
 
   def testMergers(self):
     """expected number of merged groups
-       - number of merged groups should be 5"""
-    num = [5]
+       - number of merged groups should be 6"""
+    num = [6]
     self.iternum(
                  num,
                  self.__class__.pattern['merger'],
@@ -157,20 +157,21 @@ class Trace2012(Trace, unittest.TestCase):
 
   def testUngroupers(self):
     """expected number of streams and records in each stream
-       - number of streams should be 5
-       - number of records in stream 1 should be 2
-       - number of records in stream 2 should be 2
-       - number of records in stream 3 should be 2
-       - number of records in stream 4 should be 2
-       - number of records in stream 5 should be 2"""
-    num = [5]
+       - number of streams should be 6
+       - number of records in stream 1 should be 8955
+       - number of records in stream 2 should be 8955
+       - number of records in stream 3 should be 80
+       - number of records in stream 4 should be 80
+       - number of records in stream 5 should be 48
+       - number of records in stream 6 should be 48"""
+    num = [6]
     self.iternum(
                  num,
                  self.__class__.pattern['ungrouper'][0],
                  stdout[self.tracename]
                 )
 
-    num = [ 2, 2, 2, 2, 2 ]
+    num = [ 8955, 8955, 80, 80, 48, 48 ]
     self.iternum(
                  num,
                  self.__class__.pattern['ungrouper'][1],
