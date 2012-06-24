@@ -31,12 +31,9 @@ def do_silk(trace_list, query_list):
   resdir = '%s/benchmarks/results/silk'%(os.getcwd())
   st = os.system('mkdir -p %s'%(resdir))
   for query in query_list:
-    try:
-      basequery = os.path.splitext(os.path.basename(query))[0]
-      querycmd = open(query, 'r').read()
-    except IOError: print 'queryfile not found'
+    basequery = os.path.splitext(os.path.basename(query))[0]
     for trace in trace_list:
-      querycmd = querycmd.replace('%s', trace)
+      querycmd = open(query, 'r').read().replace('%s', trace)
       basetrace = os.path.splitext(os.path.basename(trace))[0]
       print 'executing: [silk %s %s]: '%(basequery, basetrace),
       for iter in range(1, 11):
