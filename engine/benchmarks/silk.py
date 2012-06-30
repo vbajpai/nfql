@@ -38,8 +38,18 @@ def do_silk(trace_list, query_list):
       resfile = '%s/silk-%s-%s.results'%(resdir, basequery, basetrace)
       print 'executing: [silk %s %s]: '%(basequery, basetrace),
       for iter in range(1, 11):
+        # clear pagecache, dentries and inodes
+        os.system('sync')
+        try: 
+          with open('/proc/sys/vm/drop_caches', 'w') as stream:
+            stream.write('3\n')
+        except IOError as e: 
+          print '\nrun the script with sudo privileges'
+          exit(1)
+        # flush the stdout buffer
         sys.stdout.flush()
         print iter,
+        # time the query execution
         try:
           start = time.time()
           st = os.system(querycmd)
