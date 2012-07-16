@@ -1,0 +1,115 @@
+{
+  "merger": {
+    "ruleset": []
+  }, 
+  "branchset": [
+    {
+      "filter": {
+        "ruleset": [
+          {
+            "delta": 0, 
+            "op": "RULE_EQ", 
+            "offset": {
+              "datatype": "RULE_S1_16", 
+              "name": "dstport", 
+              "value": 5353
+            }
+          }, 
+          {
+            "delta": 0, 
+            "op": "RULE_EQ", 
+            "offset": {
+              "datatype": "RULE_S1_16", 
+              "name": "srcport", 
+              "value": 5353
+            }
+          }, 
+          {
+            "delta": 0, 
+            "op": "RULE_EQ", 
+            "offset": {
+              "datatype": "RULE_S1_16", 
+              "name": "prot", 
+              "value": 17
+            }
+          }
+        ]
+      }, 
+      "gfilter": {
+        "ruleset": [
+          {
+            "delta": 0, 
+            "op": "RULE_GT", 
+            "offset": {
+              "datatype": "RULE_S1_32", 
+              "name": "dPkts", 
+              "value": 500
+            }
+          }
+        ]
+      }, 
+      "aggregation": {
+        "ruleset": [
+          {
+            "op": "RULE_STATIC", 
+            "offset": {
+              "datatype": "RULE_S1_32", 
+              "name": "srcaddr"
+            }
+          }, 
+          {
+            "op": "RULE_STATIC", 
+            "offset": {
+              "datatype": "RULE_S1_32", 
+              "name": "dstaddr"
+            }
+          }, 
+          {
+            "op": "RULE_SUM", 
+            "offset": {
+              "datatype": "RULE_S1_32", 
+              "name": "dPkts"
+            }
+          }, 
+          {
+            "op": "RULE_SUM", 
+            "offset": {
+              "datatype": "RULE_S1_32", 
+              "name": "dOctets"
+            }
+          }
+        ]
+      }, 
+      "grouper": {
+        "ruleset": [
+          {
+            "delta": 0, 
+            "op": {
+              "type": "RULE_ABS", 
+              "name": "RULE_EQ"
+            }, 
+            "offset": {
+              "f2_datatype": "RULE_S2_32", 
+              "f1_name": "srcaddr", 
+              "f1_datatype": "RULE_S1_32", 
+              "f2_name": "srcaddr"
+            }
+          }, 
+          {
+            "delta": 0, 
+            "op": {
+              "type": "RULE_ABS", 
+              "name": "RULE_EQ"
+            }, 
+            "offset": {
+              "f2_datatype": "RULE_S2_32", 
+              "f1_name": "dstaddr", 
+              "f1_datatype": "RULE_S1_32", 
+              "f2_name": "dstaddr"
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

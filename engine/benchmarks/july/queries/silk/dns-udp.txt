@@ -1,0 +1,11 @@
+rm -f /tmp/A.raw /tmp/B.raw /tmp/result.raw; \
+rwfilter --sport=53 --proto=17 --pass=stdout %s | \
+rwsort --fields=sIP,dIP | \
+rwgroup --id-fields=sIP,dIP --summarize | \
+rwfilter --input-pipe=stdin --pass=/tmp/A.raw --packets=10-; \
+rwfilter --dport=53 --proto=6 --pass=stdout %s | \
+rwsort --fields=sIP,dIP | \
+rwgroup --id-fields=sIP,dIP --summarize | \
+rwfilter --input-pipe=stdin --pass=/tmp/B.raw --packets=10-; \
+rwmatch --relate=1,2 --relate=2,1 \
+/tmp/A.raw /tmp/B.raw /tmp/result.raw;

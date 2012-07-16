@@ -1,7 +1,0 @@
-rm -f /tmp/A.raw /tmp/B.raw /tmp/result.raw /tmp/result.txt; \
-rwfilter --sport=80 --pass=stdout %s | \
-rwfilter --input-pipe=stdin --pass=/tmp/A.raw --packets=0-; \
-rwfilter --dport=80 --pass=stdout %s | \
-rwfilter --input-pipe=stdin --pass=/tmp/B.raw --packets=0-; \
-rwcat --output=/tmp/result.raw /tmp/A.raw /tmp/B.raw; \
-rwstats --overall-stats --output-path=/tmp/result.txt /tmp/result.raw
