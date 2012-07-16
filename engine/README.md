@@ -139,6 +139,26 @@ Regression tests can also be run individually on a specific example query type. 
 	[engine] $ tests/test-query-http-tcp-session.py [-v]
 
 
+Running the Benchmarks
+----------------------      
+- - -  
+
+Requirements: Python 2.7+
+
+To run the `NFQL` benchmarks:
+
+	[engine] $ make
+	[engine] $ sudo benchmarks/nfql.py bin/engine trace[s]/ querie[s]/
+	
+Example `NFQL` traces and queries are provided in `examples/` 
+	
+To run the `SiLK` benchmarks:	
+	
+	[engine] $ sudo benchmarks/silk.py trace[s]/ querie[s]/
+	
+Example `SiLK` traces and queries are provided in `examples/silk/`
+
+
 
 Contributors
 ------------
