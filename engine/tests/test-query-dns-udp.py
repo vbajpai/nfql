@@ -27,7 +27,7 @@
 import unittest, subprocess, re, glob, sys, os.path
 from trace import Trace
 
-traces = glob.glob('examples/*.ft')
+traces = glob.glob('examples/*.ftz')
 stdout = {}
 for trace in traces:
   try:
@@ -53,7 +53,7 @@ for trace in traces:
 
 class Trace2009(Trace, unittest.TestCase):
 
-  tracename = 'trace-2009.ft'
+  tracename = 'trace-2009.ftz'
 
   def testFilters(self):
     """expected number of filtered records in each branch
@@ -119,7 +119,7 @@ class Trace2009(Trace, unittest.TestCase):
 
 class Trace2012(Trace, unittest.TestCase):
 
-  tracename = 'trace-2012.ft'
+  tracename = 'trace-2012.ftz'
 
   def testFilters(self):
     """expected number of filtered records in each branch
