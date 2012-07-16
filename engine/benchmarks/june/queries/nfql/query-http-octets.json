@@ -1,0 +1,105 @@
+{
+  "merger": {
+    "ruleset": []
+  }, 
+  "branchset": [
+    {
+      "filter": {
+        "ruleset": [
+          {
+            "delta": 0, 
+            "op": "RULE_EQ", 
+            "offset": {
+              "datatype": "RULE_S1_16", 
+              "name": "srcport", 
+              "value": 80
+            }
+          }
+        ]
+      }, 
+      "gfilter": {
+        "ruleset": [
+          {
+            "delta": 0, 
+            "op": "RULE_LT", 
+            "offset": {
+              "datatype": "RULE_S1_32", 
+              "name": "dPkts", 
+              "value": 0
+            }
+          }
+        ]
+      }, 
+      "aggregation": {
+        "ruleset": [
+          {
+            "op": "RULE_SUM", 
+            "offset": {
+              "datatype": "RULE_S1_32", 
+              "name": "dPkts"
+            }
+          }, 
+          {
+            "op": "RULE_SUM", 
+            "offset": {
+              "datatype": "RULE_S1_32", 
+              "name": "dOctets"
+            }
+          }
+        ]
+      }, 
+      "grouper": {
+        "ruleset": []
+      }
+    }, 
+    {
+      "filter": {
+        "ruleset": [
+          {
+            "delta": 0, 
+            "op": "RULE_EQ", 
+            "offset": {
+              "datatype": "RULE_S1_16", 
+              "name": "dstport", 
+              "value": 80
+            }
+          }
+        ]
+      }, 
+      "gfilter": {
+        "ruleset": [
+          {
+            "delta": 0, 
+            "op": "RULE_LT", 
+            "offset": {
+              "datatype": "RULE_S1_32", 
+              "name": "dPkts", 
+              "value": 0
+            }
+          }
+        ]
+      }, 
+      "aggregation": {
+        "ruleset": [
+          {
+            "op": "RULE_SUM", 
+            "offset": {
+              "datatype": "RULE_S1_32", 
+              "name": "dPkts"
+            }
+          }, 
+          {
+            "op": "RULE_SUM", 
+            "offset": {
+              "datatype": "RULE_S1_32", 
+              "name": "dOctets"
+            }
+          }
+        ]
+      }, 
+      "grouper": {
+        "ruleset": []
+      }
+    }
+  ]
+}
