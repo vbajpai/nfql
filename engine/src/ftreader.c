@@ -78,7 +78,7 @@ ft_open(int fd) {
    */
 
 
-  if(verbose_vvv){
+  if(verbose_vvv && !file){
 
     /* print flow header */
     ftio_header_print(&data->io, stdout, '#');
@@ -98,62 +98,11 @@ ft_open(int fd) {
            record,
            data->rec_size);
 
-  if(verbose_vvv)
+  if(verbose_vvv && !file)
     flow_print_record(data, record);
   }
 
   return data;
-}
-
-void
-ft_write(struct ft_data *data, int outfd) {
-  struct ftset ftset;
-  int ret, i;
-  struct ftio ftio_out;
-
-  ftset_init(&ftset, 0);
-
-  ftset.comments = ftio_get_comment(&data->io); // TODO: make configureable
-  ftset.byte_order = FT_HEADER_LITTLE_ENDIAN; // TODO: make configureable
-  ftset.z_level = 6; // from 0-9 TODO: make configureable
-
-  ret = ftio_init(&ftio_out, outfd, FT_IO_FLAG_WRITE | ((ftset.z_level) ? FT_IO_FLAG_ZINIT : 0));
-  if (ret < 0)
-    errExit("ftio_init()");
-
-  ftio_set_byte_order(&ftio_out, ftset.byte_order);
-  ftio_set_z_level(&ftio_out, ftset.z_level);
-  ftio_set_streaming(&ftio_out, 0);
-  ftio_set_debug(&ftio_out, 0); // TODO: make configureable
-
-  ftio_set_preloaded(&ftio_out, 1);
-  ftio_set_cap_time(&ftio_out, ftio_get_cap_start(&data->io), ftio_get_cap_end(&data->io));
-  ftio_set_flows_count(&ftio_out, data->num_records);
-  ftio_set_corrupt(&ftio_out, ftio_get_corrupt(&data->io));
-  ftio_set_lost(&ftio_out, ftio_get_lost(&data->io));
-
-  ret = ftio_set_comment(&ftio_out, ftset.comments);
-  if (ret == -1)
-    errExit("ftio_set_comment(...) returned -1");
-
-  ret = ftio_set_ver(&ftio_out, &data->version);
-  if (ret == -1)
-    errExit("ftio_set_ver(...) returned -1");
-
-  ret = ftio_write_header(&ftio_out);
-  if (ret == -1)
-    errExit("ftio_set_ver(...) returned -1");
-
-  for (i = 0; i < data->num_records; i++) {
-    ret = ftio_write(&ftio_out, data->recordset[i]->record);
-    if (ret == -1)
-      errExit("ftio_write(...) returned -1");
-  }
-
-  ret = ftio_close(&ftio_out);
-  if (ret == -1)
-    errExit("ftio_close(...) returned -1");
-  close(outfd);
 }
 
 void

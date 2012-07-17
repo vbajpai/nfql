@@ -24,12 +24,20 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#ifndef flowy_engine_ftwriter_h
+#define flowy_engine_ftwriter_h
+
 #include "base.h"
+#include "ftreader.h"
 
-bool debug;
-bool file;
-char* dirpath;
+int
+get_fd(char* filename);
 
-bool verbose_v;
-bool verbose_vv;
-bool verbose_vvv;
+struct ftio*
+get_ftio(
+         struct ft_data* const dataformat,
+         int out_fd,
+         size_t total_flows
+        );
+
+#endif

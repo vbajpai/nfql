@@ -45,6 +45,8 @@
 #define UNGROUPER
 
 extern bool debug;
+extern bool file;
+extern char* dirpath;
 
 /* verbose levels */
 extern bool verbose_v;
