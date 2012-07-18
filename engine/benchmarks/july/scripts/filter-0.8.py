@@ -33,46 +33,24 @@ from pipeline import protocol
 if __name__ == '__main__':
 
   fruleset = []
-  fruleset.append(vars(FilterRule('dstport', 5353, 'RULE_S1_16', 0,
-                                                 'RULE_EQ')))
+  fruleset.append(vars(FilterRule('dPkts', 3, 'RULE_S1_16', 0,
+                                              'RULE_GE')))
   filter1 = {'ruleset': fruleset}
-
-  fruleset = []
-  fruleset.append(vars(FilterRule('srcport', 5353, 'RULE_S1_16', 0,
-                                                 'RULE_EQ')))
-  filter2 = {'ruleset': fruleset}
 
   gruleset = []
   grouper1 = {'ruleset': gruleset}
 
-
-  gruleset = []
-  grouper2 = {'ruleset': gruleset}
-
-
   aruleset = []
   a1 = {'ruleset' : aruleset}
 
-  aruleset = []
-  a2 = {'ruleset' : aruleset}
-
   gfruleset = []
   gfilter1 = {'ruleset' : gfruleset}
-
-  gfruleset = []
-  gfilter2 = {'ruleset' : gfruleset}
 
   branchset = []
   branchset.append({'filter': filter1,
                     'grouper': grouper1,
                     'aggregation': a1,
                     'gfilter': gfilter1,
-                   })
-
-  branchset.append({'filter': filter2,
-                    'grouper': grouper2,
-                    'aggregation' : a2,
-                    'gfilter': gfilter2,
                    })
 
   mruleset = []
