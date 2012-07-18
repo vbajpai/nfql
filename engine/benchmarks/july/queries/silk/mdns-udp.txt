@@ -1,5 +1,0 @@
-rm -f $OUTPUT; \
-rwfilter --sport=5353 --dport=5353 --proto=17 --pass=stdout $INPUT | \
-rwsort --fields=sIP,dIP | \
-rwgroup --id-fields=sIP,dIP --summarize | \
-rwfilter --input-pipe=stdin --pass=$OUTPUT --packets=500-; \
