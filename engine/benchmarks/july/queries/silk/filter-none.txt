@@ -1,0 +1,2 @@
+rm -f $OUTPUT; \
+rwfilter --dport=0- --fail=$OUTPUT $INPUT; \
