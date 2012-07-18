@@ -8,11 +8,11 @@
         "ruleset": [
           {
             "delta": 0, 
-            "op": "RULE_LT", 
+            "op": "RULE_GE", 
             "offset": {
               "datatype": "RULE_S1_16", 
               "name": "dPkts", 
-              "value": 3
+              "value": 2
             }
           }
         ]

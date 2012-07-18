@@ -12,7 +12,7 @@
             "offset": {
               "datatype": "RULE_S1_16", 
               "name": "dPkts", 
-              "value": 3
+              "value": 2
             }
           }
         ]

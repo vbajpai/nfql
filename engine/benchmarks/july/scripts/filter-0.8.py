@@ -34,7 +34,7 @@ if __name__ == '__main__':
 
   fruleset = []
   fruleset.append(vars(FilterRule('dPkts', 3, 'RULE_S1_16', 0,
-                                              'RULE_GE')))
+                                              'RULE_LT')))
   filter1 = {'ruleset': fruleset}
 
   gruleset = []
