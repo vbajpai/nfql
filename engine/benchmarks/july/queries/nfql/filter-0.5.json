@@ -11,7 +11,7 @@
             "op": "RULE_EQ", 
             "offset": {
               "datatype": "RULE_S1_16", 
-              "name": "proto", 
+              "name": "prot", 
               "value": 6
             }
           }
