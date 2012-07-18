@@ -34,8 +34,10 @@ def do_nfql(nfql, trace_list, query_list):
     basequery = os.path.splitext(os.path.basename(query))[0]
     for trace in trace_list:
       basetrace = os.path.splitext(os.path.basename(trace))[0]
+      outdir = '/tmp/%s-%s'%(basequery,basetrace)
+      os.system('mkdir -p %s'%(outdir))
       resfile = '%s/nfql-%s-%s.results'%(resdir, basequery, basetrace)
-      stmt = '%s %s %s > /dev/null'%(nfql, query, trace)
+      stmt = '%s %s %s --dirpath=%s'%(nfql, query, trace, outdir)
       print 'executing: [%s %s %s]: '%(nfql, basequery, basetrace),
       for iter in range(1, 11):
         # clear pagecache, dentries and inodes
@@ -62,6 +64,27 @@ def do_nfql(nfql, trace_list, query_list):
             wsock.write('%f\n'%(elapsed))
             wsock.close()
           except: print 'cannot write to file'
+      # calculate i/o ratio
+      try: input_flows = int(
+                            os.popen('flow-stat < %s | \
+                                      grep "Total Flows" | \
+                                      cut -d ":" -f2'
+                                       %(trace)).read()
+                            )
+      except OSError as e:  e
+
+      if os.listdir(outdir):
+        try: output_flows = int(
+                                os.popen('flow-cat %s/*.ftz | flow-stat | \
+                                          grep "Total Flows" | \
+                                          cut -d ":" -f2'
+                                          %(outdir)).read()
+                               )
+        except Exception as e: output_flows = 0
+      else: output_flows = 0
+      ratio = float(output_flows)/input_flows
+
+      # calculate timing avg
       try:
         fsock = open(resfile, 'r')
       except: print 'cannot open results file'
@@ -74,11 +97,16 @@ def do_nfql(nfql, trace_list, query_list):
           summaryfile = '%s/nfql-summary.results'%(resdir)
           try:
             wsock = open(summaryfile, 'a')
-            wsock.write('nfql-%s-%s: avg=%f s\n'%(basequery,
-                                                  basetrace,
-                                                  avgtime))
+            wsock.write('nfql-%s-%s:%d output:%d ratio:%f avgtime:%f\n'
+                                                               %(basequery,
+                                                                 basetrace,
+                                                                 input_flows,
+                                                                 output_flows,
+                                                                 ratio,
+                                                                 avgtime))
           except IOError: pass
-        finally: print '(%f secs)'%(avgtime)
+        finally:
+          print '(#input:%d #output:%d #output/input:%f time:%f)'%(input_flows, output_flows, ratio, avgtime)
 
 def main(arg):
   """parses argument list and calls do_nfql(...)"""
