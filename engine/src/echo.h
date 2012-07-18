@@ -30,6 +30,7 @@
 #include "pipeline.h"
 #include "base.h"
 #include "ftreader.h"
+#include "ftwriter.h"
 
 /* -----------------------------------------------------------------------*/
 /*                              branch                                    */
@@ -42,12 +43,14 @@ echo_branch(size_t num_branches,
 
 void
 echo_filter(
+            const int const branch_id,
             const struct filter_result* const fresult,
             struct ft_data* const dataformat
            );
 
 void
 echo_grouper(
+             const int const branch_id,
              size_t num_grouper_rules,
              size_t num_sorted_records,
 
@@ -58,15 +61,17 @@ echo_grouper(
 
 void
 echo_group_aggr(
+                const int const branch_id,
                 const struct grouper_result* const gresult,
                 struct ft_data* const dataformat
                );
 
 void
 echo_gfilter(
+             const int const branch_id,
              const struct groupfilter_result* const gfresult,
              struct ft_data* const dataformat
-             );
+            );
 
 /* -----------------------------------------------------------------------*/
 

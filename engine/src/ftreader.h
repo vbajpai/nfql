@@ -55,9 +55,6 @@ struct ft_data *
 ft_open(int fd);
 
 void
-ft_write(struct ft_data *data, int fd);
-
-void
 ft_records_get_all(struct ft_data* data, int number,
                    struct fts3rec_all *record);
 

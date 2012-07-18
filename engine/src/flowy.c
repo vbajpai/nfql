@@ -28,7 +28,7 @@
 #define _GNU_SOURCE
 #define STR(x) #x
 #define XSTR(x) STR(x)
-#define VERSION 2.4
+#define VERSION 2.5
 #include "flowy.h"
 
 struct parameters*
@@ -37,10 +37,11 @@ parse_cmdline_args(int argc, char** const argv) {
   int                                 opt;
   char*                               shortopts = "v:dhV";
   static struct option                longopts[] = {
-    { "debug",      no_argument,        NULL,           'd' },
+    { "debug",      no_argument,        NULL,           'D' },
     { "verbose",    required_argument,  NULL,           'v' },
     { "help",       no_argument,        NULL,           'h' },
     { "version",    no_argument,        NULL,           'V' },
+    { "dirpath",    required_argument,  NULL,           'd' },
     {  NULL,        0,                  NULL,            0  }
   };
   enum verbosity_levels               verbose_level;
@@ -48,7 +49,8 @@ parse_cmdline_args(int argc, char** const argv) {
   "%s [OPTIONS] queryfile tracefile\t\t query the specified trace\n"
   "   or: %s [OPTIONS] queryfile -\t\t\t read the trace from stdin\n\n"
   "OPTIONS:\n"
-  "-d, --debug\t\t enable debugging mode\n"
+  "-d, --dirpath\t\t save the results as flow-tools files in given dirpath\n"
+  "-D, --debug\t\t enable debugging mode\n"
   "-v, --verbose\t\t increase the verbosity level\n"
   "-h, --help\t\t display this help and exit\n"
   "-V, --version\t\t output version information and exit\n";
@@ -61,7 +63,7 @@ parse_cmdline_args(int argc, char** const argv) {
 
   while ((opt = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
     switch (opt) {
-      case 'd': debug = TRUE; verbose_level = HIGH;
+      case 'D': debug = TRUE; verbose_level = HIGH;
       case 'v': if (optarg) verbose_level = atoi(optarg);
         switch (verbose_level) {
           case HIGH: verbose_vvv = TRUE;
@@ -70,6 +72,7 @@ parse_cmdline_args(int argc, char** const argv) {
           default: errExit("valid verbosity levels: (1-3)");
         }
         break;
+      case 'd': file = TRUE; dirpath = optarg; break;
       case 'h': usageErr(usage_string, argv[0], argv[0]);
       case 'V': fprintf(stdout, "%s version %s", argv[0], XSTR(VERSION));
                 exit(EXIT_SUCCESS);
