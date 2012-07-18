@@ -30,7 +30,7 @@ def do_silk(trace_list, query_list):
   """runs silk on the given tracelist"""
   resdir = '%s/benchmarks/results/silk'%(os.getcwd())
   st = os.system('mkdir -p %s'%(resdir))
-  output_trace = '/tmp/result.raw'
+  output_trace = '/tmp/result.rwz'
   for query in query_list:
     basequery = os.path.splitext(os.path.basename(query))[0]
     for trace in trace_list:
