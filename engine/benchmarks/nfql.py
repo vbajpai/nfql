@@ -106,7 +106,10 @@ def do_nfql(nfql, trace_list, query_list):
                                                                  avgtime))
           except IOError: pass
         finally:
-          print '(#input:%d #output:%d #output/input:%f time:%f)'%(input_flows, output_flows, ratio, avgtime)
+          print '(#input:%d #output:%d #output/input:%f time:%f)'%(input_flows,
+                                                                   output_flows,
+                                                                   ratio,
+                                                                   avgtime)
 
 def main(arg):
   """parses argument list and calls do_nfql(...)"""
