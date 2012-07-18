@@ -39,7 +39,7 @@ def do_nfql(nfql, trace_list, query_list):
       resfile = '%s/nfql-%s-%s.results'%(resdir, basequery, basetrace)
       stmt = '%s %s %s --dirpath=%s'%(nfql, query, trace, outdir)
       print 'executing: [%s %s %s]: '%(nfql, basequery, basetrace),
-      for iter in range(1, 11):
+      for iter in range(1, 2):
         # clear pagecache, dentries and inodes
         os.system('sync')
         try:

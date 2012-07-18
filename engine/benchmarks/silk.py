@@ -39,7 +39,7 @@ def do_silk(trace_list, query_list):
       basetrace = os.path.splitext(os.path.basename(trace))[0]
       resfile = '%s/silk-%s-%s.results'%(resdir, basequery, basetrace)
       print 'executing: [silk %s %s]: '%(basequery, basetrace),
-      for iter in range(1, 11):
+      for iter in range(1, 2):
         # clear pagecache, dentries and inodes
         os.system('sync')
         try: 
