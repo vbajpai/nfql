@@ -21,7 +21,15 @@
         "ruleset": []
       }, 
       "aggregation": {
-        "ruleset": []
+        "ruleset": [
+          {
+            "op": "RULE_SUM", 
+            "offset": {
+              "datatype": "RULE_S1_32", 
+              "name": "dPkts"
+            }
+          }
+        ]
       }, 
       "grouper": {
         "ruleset": [

@@ -75,7 +75,7 @@ def do_nfql(nfql, trace_list, query_list):
 
       if os.listdir(outdir):
         try: output_flows = int(
-                                os.popen('flow-cat %s/*.ftz | flow-stat | \
+                                os.popen('flow-cat %s/grouper-*-groups.ftz | flow-stat | \
                                           grep "Total Flows" | \
                                           cut -d ":" -f2'
                                           %(outdir)).read()
@@ -110,7 +110,7 @@ def do_nfql(nfql, trace_list, query_list):
                                                                    output_flows,
                                                                    ratio,
                                                                    avgtime)
-      os.system('rm -rf %s'%(outdir))
+      #os.system('rm -rf %s'%(outdir))
 
 def main(arg):
   """parses argument list and calls do_nfql(...)"""

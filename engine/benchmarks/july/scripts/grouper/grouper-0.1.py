@@ -44,6 +44,7 @@ if __name__ == '__main__':
   grouper1 = {'ruleset': gruleset}
 
   aruleset = []
+  aruleset.append(vars(AggregationRule('dPkts', 'RULE_S1_32', 'RULE_SUM')))
   a1 = {'ruleset' : aruleset}
 
   gfruleset = []
