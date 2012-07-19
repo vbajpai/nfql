@@ -26,19 +26,19 @@
 
 import sys, os, time, subprocess
 
-def do_silk(trace_list, query_list):
-  """runs silk on the given tracelist"""
-  resdir = '%s/results/silk'%(os.getcwd())
+def do_nfdump(trace_list, query_list):
+  """runs nfdump on the given tracelist"""
+  resdir = '%s/results/nfdump'%(os.getcwd())
   st = os.system('mkdir -p %s'%(resdir))
-  output_trace = '/tmp/result.rwz'
+  output_trace = '/tmp/result.ftz'
   for query in query_list:
     basequery = os.path.splitext(os.path.basename(query))[0]
     for trace in trace_list:
       querycmd = open(query, 'r').read().replace('$INPUT', trace)
-      querycmd = querycmd.replace('$OUTPUT', output_trace)
+      querycmd = querycmd.replace('$OUTPUT', trace)
       basetrace = os.path.splitext(os.path.basename(trace))[0]
-      resfile = '%s/silk-%s-%s.results'%(resdir, basequery, basetrace)
-      print 'executing: [silk %s %s]: '%(basequery, basetrace),
+      resfile = '%s/nfdump-%s-%s.results'%(resdir, basequery, basetrace)
+      print 'executing: [nfdump %s %s]: '%(basequery, basetrace),
       for iter in range(1, 2):
         # clear pagecache, dentries and inodes
         os.system('sync')
@@ -63,24 +63,28 @@ def do_silk(trace_list, query_list):
             wsock.write('%f\n'%(elapsed))
             wsock.close()
           except: print 'cannot write to file'
-      # calculate i/o ration
+
+      # calculate i/o ratio
       try: input_flows = int(
                               os.popen(
-                                        'rwstats --overall-stat %s | \
-                                         grep "records" | \
-                                         cut -d " " -f5'%(trace)
+                                        'nfdump -v %s | \
+                                        grep "Records" | \
+                                        cut -d ":" -f2'
+                                        %(trace)
                                       ).read()
                             )
-      except OSError as e: ratio = 0
+      except OSError as e:  e
+
       try: output_flows = int(
-                              os.popen(
-                                        'rwstats --overall-stat %s | \
-                                         grep "records" | \
-                                         cut -d " " -f5'%(output_trace)
-                                      ).read()
-                            )
-      except OSError as e: ratio = 0
-      else: ratio = float(output_flows)/input_flows
+                                os.popen(
+                                          'nfdump -v %s | \
+                                          grep "Records" | \
+                                          cut -d ":" -f2'
+                                          %(output_trace)
+                                        ).read()
+                             )
+      except Exception as e: output_flows = 0
+      ratio = float(output_flows)/input_flows
 
       # calculate timing avg
       try:
@@ -92,10 +96,10 @@ def do_silk(trace_list, query_list):
           avgtime = reduce(lambda x,y: x+y, floats)/len(floats)
         except: avgtime = 0
         else:
-          summaryfile = '%s/silk-summary.results'%(resdir)
+          summaryfile = '%s/nfdump-summary.results'%(resdir)
           try:
             wsock = open(summaryfile, 'a')
-            wsock.write('silk-%s-%s:%d output:%d ratio:%f avgtime:%f\n'
+            wsock.write('nfdump-%s-%s:%d output:%d ratio:%f avgtime:%f\n'
                                                                %(basequery,
                                                                  basetrace,
                                                                  input_flows,
@@ -110,7 +114,7 @@ def do_silk(trace_list, query_list):
                                                                    avgtime)
 
 def main(arg):
-  """parses argument list and calls do_silk(...)"""
+  """parses argument list and calls do_nfdump(...)"""
 
   def listdir(directory):
     """given a dir path, returns a list of absolute file paths"""
@@ -123,8 +127,8 @@ def main(arg):
   query_dir = os.path.abspath(arg[1])
   trace_list = listdir(trace_dir)
   query_list = listdir(query_dir)
-  print "benchmarking silk ..."
-  do_silk(trace_list, query_list)
+  print "benchmarking nfdump ..."
+  do_nfdump(trace_list, query_list)
 
 if __name__ == '__main__':
   """checks argument list for sanity and calls main(...)"""

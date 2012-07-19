@@ -28,7 +28,7 @@ import sys, os, time
 
 def do_nfql(nfql, trace_list, query_list):
   """runs nfql engine on the given tracelist and querylist"""
-  resdir = '%s/benchmarks/results/nfql'%(os.getcwd())
+  resdir = '%s/results/nfql'%(os.getcwd())
   st = os.system('mkdir -p %s'%(resdir))
   for query in query_list:
     basequery = os.path.splitext(os.path.basename(query))[0]
@@ -110,7 +110,7 @@ def do_nfql(nfql, trace_list, query_list):
                                                                    output_flows,
                                                                    ratio,
                                                                    avgtime)
-      #os.system('rm -rf %s'%(outdir))
+      os.system('rm -rf %s'%(outdir))
 
 def main(arg):
   """parses argument list and calls do_nfql(...)"""
