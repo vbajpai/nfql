@@ -30,10 +30,12 @@ def do_silk(trace_list, query_list):
   """runs silk on the given tracelist"""
   resdir = '%s/benchmarks/results/silk'%(os.getcwd())
   st = os.system('mkdir -p %s'%(resdir))
+  output_trace = '/tmp/result.rwz'
   for query in query_list:
     basequery = os.path.splitext(os.path.basename(query))[0]
     for trace in trace_list:
-      querycmd = open(query, 'r').read().replace('%s', trace)
+      querycmd = open(query, 'r').read().replace('$INPUT', trace)
+      querycmd = querycmd.replace('$OUTPUT', output_trace)
       basetrace = os.path.splitext(os.path.basename(trace))[0]
       resfile = '%s/silk-%s-%s.results'%(resdir, basequery, basetrace)
       print 'executing: [silk %s %s]: '%(basequery, basetrace),
@@ -61,6 +63,26 @@ def do_silk(trace_list, query_list):
             wsock.write('%f\n'%(elapsed))
             wsock.close()
           except: print 'cannot write to file'
+      # calculate i/o ration
+      try: input_flows = int(
+                              os.popen(
+                                        'rwstats --overall-stat %s | \
+                                         grep "records" | \
+                                         cut -d " " -f5'%(trace)
+                                      ).read()
+                            )
+      except OSError as e: ratio = 0
+      try: output_flows = int(
+                              os.popen(
+                                        'rwstats --overall-stat %s | \
+                                         grep "records" | \
+                                         cut -d " " -f5'%(output_trace)
+                                      ).read()
+                            )
+      except OSError as e: ratio = 0
+      else: ratio = float(output_flows)/input_flows
+
+      # calculate timing avg
       try:
         fsock = open(resfile, 'r')
       except: print 'cannot open results file'
@@ -73,11 +95,19 @@ def do_silk(trace_list, query_list):
           summaryfile = '%s/silk-summary.results'%(resdir)
           try:
             wsock = open(summaryfile, 'a')
-            wsock.write('silk-%s-%s: avg=%f s\n'%(basequery,
-                                                  basetrace,
-                                                  avgtime))
+            wsock.write('silk-%s-%s:%d output:%d ratio:%f avgtime:%f\n'
+                                                               %(basequery,
+                                                                 basetrace,
+                                                                 input_flows,
+                                                                 output_flows,
+                                                                 ratio,
+                                                                 avgtime))
           except IOError: pass
-        finally: print '(%f secs)'%(avgtime)
+        finally:
+          print '(#input:%d #output:%d #output/input:%f time:%f)'%(input_flows, 
+                                                                   output_flows,
+                                                                   ratio,
+                                                                   avgtime)
 
 def main(arg):
   """parses argument list and calls do_silk(...)"""
