@@ -8,7 +8,7 @@ sudo python flowtools.py /home/vbajpai/traces/ft/ july/queries/flowtools/filter/
 sudo python silk.py /home/vbajpai/traces/silk/ july/queries/silk/filter/
 
 # run nfql
-sudo nfql.py bin/engine /home/vbajpai/traces/ft/ july/queries/nfql/filter/
+sudo python nfql.py bin/engine /home/vbajpai/traces/ft/ july/queries/nfql/filter/
 
 # run nfql-filter
-sudo nfql.py bin/filter /home/vbajpai/traces/ft/ july/queries/nfql/filter/
+sudo python nfql.py bin/filter /home/vbajpai/traces/ft/ july/queries/nfql/filter/
