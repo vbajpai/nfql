@@ -1,0 +1,5 @@
+rm -f /tmp/filter.rwz $OUTPUT; \
+rwfilter --dport=0- --compression-method=zlib --pass=/tmp/filter.rwz $INPUT; \
+rwsort --fields=5-9 /tmp/filter.rwz | \
+rwgroup --id-fields=5-9 --summarize \
+        --compression-method=zlib --output-path=$OUTPUT;
