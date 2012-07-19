@@ -882,9 +882,11 @@ prepare_flowquery(struct ft_data* const trace,
       gfruleset[j] = gfrule; gfrule = NULL;
     }
     branch->gfilter_ruleset = gfruleset; gfruleset = NULL;
-  }
 
 #endif
+
+  }
+
 
   /* ----------------------------------------------------------------------- */
 
