@@ -48,7 +48,7 @@ echo_merger(
       if (file) {
         /* get a file descriptor */
         char* filename = (char*)0L;
-        asprintf(&filename, "%s/to-be-merged-groups.ftz", dirpath);
+        asprintf(&filename, "%s/merger-to-be-merged-groups.ftz", dirpath);
         int out_fd = get_fd(filename);
         if(out_fd == -1) errExit("get_fd(...) returned -1");
         else free(filename);
@@ -107,7 +107,7 @@ echo_merger(
 
     /* get a file descriptor */
     char* filename = (char*)0L;
-    asprintf(&filename, "%s/merged-groups.ftz", dirpath);
+    asprintf(&filename, "%s/merger-merged-groups.ftz", dirpath);
     int out_fd = get_fd(filename);
     if(out_fd == -1) errExit("get_fd(...) returned -1");
     else free(filename);
@@ -225,7 +225,7 @@ echo_filter(
   if(file) {
     /* get a file descriptor */
     char* filename = (char*)0L;
-    asprintf(&filename, "%s/branch-%d-filtered-records.ftz", 
+    asprintf(&filename, "%s/filter-branch-%d-filtered-records.ftz", 
              dirpath, branch_id);
     int out_fd = get_fd(filename);
     if(out_fd == -1) errExit("get_fd(...) returned -1");
@@ -283,7 +283,7 @@ echo_grouper(
     if (file) {
       /* get a file descriptor */
       char* filename = (char*)0L;
-      asprintf(&filename, "%s/branch-%d-sorted-records.ftz", 
+      asprintf(&filename, "%s/grouper-branch-%d-sorted-records.ftz", 
                dirpath, branch_id);
       int out_fd = get_fd(filename);
       if(out_fd == -1) errExit("get_fd(...) returned -1");
@@ -325,7 +325,7 @@ echo_grouper(
     if (file) {
       /* get a file descriptor */
       char* filename = (char*)0L;
-      asprintf(&filename, "%s/branch-%d-unique-records.ftz",
+      asprintf(&filename, "%s/grouper-branch-%d-unique-records.ftz",
                dirpath, branch_id);
       int out_fd = get_fd(filename);
       if(out_fd == -1) errExit("get_fd(...) returned -1");
@@ -378,7 +378,7 @@ echo_grouper(
     if (file) {
       /* get a file descriptor */
       char* filename = (char*)0L;
-      asprintf(&filename, "%s/branch-%d-group-%d-records.ftz",
+      asprintf(&filename, "%s/grouper-branch-%d-group-%d-records.ftz",
                dirpath, branch_id, j);
       int out_fd = get_fd(filename);
       if(out_fd == -1) errExit("get_fd(...) returned -1");
@@ -428,7 +428,7 @@ echo_group_aggr(
   if(file) {
     /* get a file descriptor */
     char* filename = (char*)0L;
-    asprintf(&filename, "%s/branch-%d-groups.ftz",
+    asprintf(&filename, "%s/grouper-branch-%d-groups.ftz",
              dirpath, branch_id);
     int out_fd = get_fd(filename);
     if(out_fd == -1) errExit("get_fd(...) returned -1");
@@ -480,7 +480,7 @@ echo_gfilter(
 
     /* get a file descriptor */
     char* filename = (char*)0L;
-    asprintf(&filename, "%s/branch-%d-filtered-groups.ftz",
+    asprintf(&filename, "%s/groupfilter-branch-%d-filtered-groups.ftz",
              dirpath, branch_id);
     int out_fd = get_fd(filename);
     if(out_fd == -1) errExit("get_fd(...) returned -1");
@@ -550,7 +550,7 @@ echo_results(
 
       /* get a file descriptor */
       char* filename = (char*)0L;
-      asprintf(&filename, "%s/stream-%d.ftz",dirpath,j);
+      asprintf(&filename, "%s/ungrouper-stream-%d.ftz",dirpath,j);
       int out_fd = get_fd(filename);
       if(out_fd == -1) errExit("get_fd(...) returned -1");
       else free(filename);
