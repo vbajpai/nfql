@@ -30,12 +30,12 @@ def do_nfdump(trace_list, query_list):
   """runs nfdump on the given tracelist"""
   resdir = '%s/results/nfdump'%(os.getcwd())
   st = os.system('mkdir -p %s'%(resdir))
-  output_trace = '/tmp/result.ftz'
+  output_trace = '/tmp/result.nfz'
   for query in query_list:
     basequery = os.path.splitext(os.path.basename(query))[0]
     for trace in trace_list:
       querycmd = open(query, 'r').read().replace('$INPUT', trace)
-      querycmd = querycmd.replace('$OUTPUT', trace)
+      querycmd = querycmd.replace('$OUTPUT', output_trace)
       basetrace = os.path.splitext(os.path.basename(trace))[0]
       resfile = '%s/nfdump-%s-%s.results'%(resdir, basequery, basetrace)
       print 'executing: [nfdump %s %s]: '%(basequery, basetrace),
