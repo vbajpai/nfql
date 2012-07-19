@@ -191,7 +191,7 @@ parse_json_query(const char* const query_mmap) {
     json->branchset[i] = branch;
 
 
-
+#ifdef FILTER
 
   /* -----------------------------------------------------------------------*/
   /*                         parse filter rules                             */
@@ -252,13 +252,13 @@ parse_json_query(const char* const query_mmap) {
 
     /* -----------------------------------------------------------------------*/
 
+#endif
 
 
 
 
 
-
-
+#ifdef GROUPER
 
     /* -----------------------------------------------------------------------*/
     /*                        parse grouper rules                             */
@@ -342,6 +342,7 @@ parse_json_query(const char* const query_mmap) {
 
     /* -----------------------------------------------------------------------*/
 
+#endif
 
 
 
@@ -356,8 +357,7 @@ parse_json_query(const char* const query_mmap) {
 
 
 
-
-
+#ifdef GROUPERAGGREGATIONS
 
     /* -----------------------------------------------------------------------*/
     /*                        parse aggr rules                                */
@@ -415,6 +415,7 @@ parse_json_query(const char* const query_mmap) {
 
     /* -----------------------------------------------------------------------*/
 
+#endif
 
 
 
@@ -430,8 +431,7 @@ parse_json_query(const char* const query_mmap) {
 
 
 
-
-
+#ifdef GROUPFILTER
 
     /* -----------------------------------------------------------------------*/
     /*                        parse gfilter rules                             */
@@ -493,6 +493,8 @@ parse_json_query(const char* const query_mmap) {
 
     /* -----------------------------------------------------------------------*/
 
+#endif
+
   }
 
   /* -----------------------------------------------------------------------*/
@@ -511,8 +513,7 @@ parse_json_query(const char* const query_mmap) {
 
 
 
-
-
+#ifdef MERGER
 
   /* -----------------------------------------------------------------------*/
   /*                        parse merger rules                              */
@@ -595,7 +596,7 @@ parse_json_query(const char* const query_mmap) {
 
   /* -----------------------------------------------------------------------*/
 
-
+#endif
 
 
 
@@ -659,12 +660,12 @@ prepare_flowquery(struct ft_data* const trace,
 
     struct json_branch_rules* json_branch = json_query->branchset[i];
 
-    branch->num_filter_rules = json_branch->num_frules;
-    branch->num_grouper_rules = json_branch->num_grules;
-    branch->num_aggr_rules = json_branch->num_arules;
-    branch->num_gfilter_rules = json_branch->num_gfrules;
     branch->branch_id = i;
     branch->data = trace;
+
+#ifdef FILTER
+
+    branch->num_filter_rules = json_branch->num_frules;
 
     /* filter rules are used in grouper aggregations */
     /* therefore, free'd after returning from grouper(...) in branch.c */
@@ -712,6 +713,12 @@ prepare_flowquery(struct ft_data* const trace,
       fruleset[j] = frule; frule = NULL; frule_json = NULL;
     }
     branch->filter_ruleset = fruleset; fruleset = NULL;
+
+#endif
+
+#ifdef GROUPER
+
+    branch->num_grouper_rules = json_branch->num_grules;
 
     /* free'd after returning from grouper(...) in branch.c */
     struct grouper_rule** gruleset = (struct grouper_rule**)
@@ -776,6 +783,12 @@ prepare_flowquery(struct ft_data* const trace,
     }
     branch->grouper_ruleset = gruleset; gruleset = NULL;
 
+#endif
+
+#ifdef GROUPERAGGREGATIONS
+
+    branch->num_aggr_rules = json_branch->num_arules;
+
     /* free'd after returning from grouper(...) */
     struct aggr_rule** aruleset = (struct aggr_rule**)
                                    calloc(branch->num_aggr_rules,
@@ -818,6 +831,12 @@ prepare_flowquery(struct ft_data* const trace,
       aruleset[j] = arule; arule = NULL;
     }
     branch->aggr_ruleset = aruleset; aruleset = NULL;
+
+#endif
+
+#ifdef GROUPFILTER
+
+    branch->num_gfilter_rules = json_branch->num_gfrules;
 
     /* free'd after returning from groupfilter(...) */
     struct gfilter_rule** gfruleset = (struct gfilter_rule**)
@@ -865,13 +884,15 @@ prepare_flowquery(struct ft_data* const trace,
     branch->gfilter_ruleset = gfruleset; gfruleset = NULL;
   }
 
+#endif
+
   /* ----------------------------------------------------------------------- */
 
 
 
 
 
-
+#ifdef MERGER
 
   /* -----------------------------------------------------------------------*/
   /*                       assigning merger rules                           */
@@ -945,7 +966,7 @@ prepare_flowquery(struct ft_data* const trace,
 
   /* ----------------------------------------------------------------------- */
 
-
+#endif
 
 
 
