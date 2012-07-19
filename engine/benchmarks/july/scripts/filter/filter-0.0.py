@@ -33,8 +33,8 @@ from pipeline import protocol
 if __name__ == '__main__':
 
   fruleset = []
-  fruleset.append(vars(FilterRule('dstport', 0, 'RULE_S1_16', 0,
-                                                'RULE_LT')))
+  fruleset.append(vars(FilterRule('dPkts', 0, 'RULE_S1_32', 0,
+                                              'RULE_LT')))
   filter1 = {'ruleset': fruleset}
 
   gruleset = []

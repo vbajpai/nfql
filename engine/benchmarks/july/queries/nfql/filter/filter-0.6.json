@@ -10,7 +10,7 @@
             "delta": 0, 
             "op": "RULE_LT", 
             "offset": {
-              "datatype": "RULE_S1_16", 
+              "datatype": "RULE_S1_32", 
               "name": "dPkts", 
               "value": 2
             }

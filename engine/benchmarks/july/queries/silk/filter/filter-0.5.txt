@@ -1,2 +1,0 @@
-rm -f $OUTPUT; \
-rwfilter --proto=6 --compression-method=zlib --pass=$OUTPUT $INPUT; \

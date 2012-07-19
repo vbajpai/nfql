@@ -10,8 +10,8 @@
             "delta": 0, 
             "op": "RULE_LT", 
             "offset": {
-              "datatype": "RULE_S1_16", 
-              "name": "dstport", 
+              "datatype": "RULE_S1_32", 
+              "name": "dPkts", 
               "value": 0
             }
           }
