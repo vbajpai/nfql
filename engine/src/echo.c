@@ -173,15 +173,6 @@ echo_branch(
   for (int i = 0; i < num_branches; i++) {
     struct branch* branch = branchset[i];
 
-#ifdef FILTER
-    echo_filter(
-                branch->branch_id,
-                branch->filter_result,
-                dataformat
-               );
-#endif
-
-
 #ifdef GROUPER
     if (verbose_vv){
       echo_grouper(

@@ -50,9 +50,14 @@ struct record {
   bool                            if_filtered;
 };
 
+struct ft_data*
+ft_init(int fsock);
 
 struct ft_data *
-ft_open(int fd);
+ft_read(
+         struct ft_data* data,
+         struct flowquery* fquery
+       );
 
 void
 ft_records_get_all(struct ft_data* data, int number,

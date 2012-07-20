@@ -91,7 +91,7 @@ parse_cmdline_args(int argc, char** const argv) {
 }
 
 struct parameters_data*
-read_param_data(const struct parameters* const param) {
+read_query(const struct parameters* const param) {
 
   /* param_data->query_mmap is free'd after calling parse_json_query(...)
    * param_data->query_mmap_stat is free'd after freeing param_data->query_mmap
@@ -114,9 +114,11 @@ read_param_data(const struct parameters* const param) {
       errExit("open");
   }
 
-  param_data->trace = ft_open(fsock);
-  if (close(fsock) == -1)
-    errExit("close");
+  param_data->trace = ft_init(fsock);
+  if (param_data->trace == NULL)
+    errExit("ft_init(...) returned NULL");
+  else
+    param_data->trace_fsock = fsock;
 
   /* param_data->query_mmap_stat is free'd after freeing
    * param_data->query_mmap
@@ -146,6 +148,22 @@ read_param_data(const struct parameters* const param) {
     errExit("close");
 
   return param_data;
+}
+
+struct ft_data*
+read_trace(
+           const struct parameters_data* const param_data,
+           struct flowquery* fquery
+          ) {
+
+  struct ft_data* trace = ft_read(param_data->trace, fquery);
+  if (trace == NULL)
+    errExit("ft_read(...) returned NULL");
+
+  if (close(param_data->trace_fsock) == -1)
+    errExit("close");
+
+  return trace;
 }
 
 struct json*
@@ -1048,16 +1066,12 @@ main(int argc, char **argv) {
 
 
   /* -----------------------------------------------------------------------*/
-  /*                  reading the input trace and query                     */
+  /*                         read the input query                           */
   /* -----------------------------------------------------------------------*/
 
-  struct parameters_data* param_data = read_param_data(param);
+  struct parameters_data* param_data = read_query(param);
   if (param_data == NULL)
     errExit("read_param_data(...) returned NULL");
-  else{
-    free(param); param = NULL;
-  }
-
 
   /* ----------------------------------------------------------------------- */
 
@@ -1182,6 +1196,26 @@ main(int argc, char **argv) {
 
 
 
+  /* -----------------------------------------------------------------------*/
+  /*          read the input trace and prepare filtered recordsets          */
+  /* -----------------------------------------------------------------------*/
+
+  param_data->trace = read_trace(param_data, fquery);
+  if(param_data->trace == NULL)
+    errExit("read_trace(...) returned NULL");
+  else{
+    free(param); param = NULL;
+  }
+
+  /* ----------------------------------------------------------------------- */
+
+
+
+
+
+
+
+
 
 
   /* -----------------------------------------------------------------------*/
@@ -1209,14 +1243,6 @@ main(int argc, char **argv) {
     }
     free(threadset);
 
-    /* free all the records that were not filtered from the original trace */
-    for (int i = 0; i < param_data->trace->num_records; i++) {
-      struct record* recordinfo = param_data->trace->recordset[i];
-      if (recordinfo->if_filtered == false) {
-        free(recordinfo->record); recordinfo->record = NULL;
-      }
-    }
-
     /* print the filtered records if verbose mode is set */
     if (verbose_v) {
 
@@ -1224,7 +1250,7 @@ main(int argc, char **argv) {
                   fquery->num_branches,
                   fquery->branchset,
                   param_data->trace
-                 );
+                  );
     }
   }
 
@@ -1462,7 +1488,7 @@ main(int argc, char **argv) {
   for (int i = 0; i < fquery->num_branches; i++) {
     struct branch* branch = fquery->branchset[i];
     for (int j = 0; j < branch->filter_result->num_filtered_records; j++) {
-      /* unlink the records */
+      free(branch->filter_result->filtered_recordset[j]);
       branch->filter_result->filtered_recordset[j] = NULL;
     }
 

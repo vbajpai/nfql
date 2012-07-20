@@ -51,6 +51,7 @@ struct parameters_data {
   char*                           query_mmap;
   struct stat*                    query_mmap_stat;
   struct ft_data*                 trace;
+  int                             trace_fsock;
 };
 
 struct json {
