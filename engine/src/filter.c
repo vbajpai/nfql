@@ -47,6 +47,17 @@ filter(
   if (fresult->filtered_recordset == NULL)
     errExit("calloc");
 
+
+  /* assign a filter func for each filter rule */
+  for (int j = 0; j < num_filter_rules; j++) {
+
+    struct filter_rule* const frule = filter_ruleset[j];
+
+    /* get a uintX_t specific function depending on frule->op */
+    assign_filter_func(frule);
+    filter_ruleset[j] = frule;
+  }
+
   /* process each record */
   for (int i = 0, j = 0; i < num_records; i++) {
 
@@ -56,9 +67,6 @@ filter(
     for (j = 0; j < num_filter_rules; j++) {
 
       struct filter_rule* const frule = filter_ruleset[j];
-
-      /* get a uintX_t specific function depending on frule->op */
-      assign_filter_func(frule);
 
       /* run the comparator function of the filter rule on the record */
       if (!frule->func(
