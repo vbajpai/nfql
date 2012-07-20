@@ -34,9 +34,9 @@ def do_flowtools(trace_list, query_list):
   for query in query_list:
     basequery = os.path.splitext(os.path.basename(query))[0]
     for trace in trace_list:
-      querycmd = 'flow-cat %s | flow-nfilter -f%s -Ff -z9 > %s'%(trace,
-                                                                 query,
-                                                                 output_trace)
+      querycmd = 'flow-nfilter -f%s -Ff -z5 < %s > %s'%(query,
+                                                        trace,
+                                                        output_trace)
       basetrace = os.path.splitext(os.path.basename(trace))[0]
       resfile = '%s/flowtools-%s-%s.results'%(resdir, basequery, basetrace)
       print 'executing: [flowtools %s %s]: '%(basequery, basetrace),
