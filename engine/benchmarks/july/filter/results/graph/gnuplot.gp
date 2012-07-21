@@ -1,5 +1,5 @@
 set terminal push
-set terminal postscript eps font "Times" mono dashed
+set terminal postscript eps font "Times" color
 
 plot '$0' using 3:4 title "nfql engine" smooth csplines with lines, \
      '$0' using 3:4 with points notitle pointtype 5 pointsize 1, \
@@ -12,7 +12,7 @@ plot '$0' using 3:4 title "nfql engine" smooth csplines with lines, \
      '$4' using 3:4 title "silk" smooth csplines with lines, \
      '$4' using 3:4 with points notitle pointtype 5 pointsize 1
 
-set xlabel "Number of Output Flow Records/Number of Input Flow Records"
+set xlabel "Output Flows/Input Flows"
 set ylabel "Time (secs)"
 set key top left
 set title '$5'
