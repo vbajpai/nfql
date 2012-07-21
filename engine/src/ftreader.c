@@ -28,17 +28,15 @@
 #include "ftreader.h"
 
 struct ft_data *
-ft_open(int fd) {
+ft_init(int fd) {
 
-  int ret;
-  struct ft_data *data;
-  char *record;
-
-  data = (struct ft_data *)calloc(1, sizeof(struct ft_data));
+  struct ft_data* data = (struct ft_data *)calloc(1, sizeof(struct ft_data));
+  if(data == NULL)
+    errExit("calloc");
 
   data->fd = fd;
 
-  ret = ftio_init(&data->io, data->fd, FT_IO_FLAG_READ);
+  int ret = ftio_init(&data->io, data->fd, FT_IO_FLAG_READ);
   if (ret < 0)
     errExit("ftio_init");
 
@@ -68,16 +66,44 @@ ft_open(int fd) {
   ftio_get_ver(&data->io, &data->version);
   fts3rec_compute_offsets(&data->offsets, &data->version);
   data->rec_size = ftio_rec_size(&data->io);
+  return data;
+}
 
-  /*
-   * TODO: optimize the reallocs here (eg by doubling the space every time
-   *       one runs out of it)
-   *
-   * TODO: maybe allocate everything in one big chunk for faster iteration
-   *
-   */
+struct ft_data *
+ft_read(
+         struct ft_data* data,
+         struct flowquery* fquery
+       ) {
 
 
+  /* assign filter func for all the branches */
+  for (int i = 0; i < fquery->num_branches; i++) {
+
+    struct branch* branch = fquery->branchset[i];
+
+    /* free'd before exiting from main(...) */
+    branch->filter_result = calloc(1, sizeof(struct filter_result));
+    if (branch->filter_result == NULL)
+      errExit("calloc");
+
+    /* free'd before exiting from main(...) */
+    branch->filter_result->filtered_recordset = (char **)
+    calloc(branch->filter_result->num_filtered_records, sizeof(char *));
+    if (branch->filter_result->filtered_recordset == NULL)
+      errExit("calloc");
+
+    /* assign a filter func for each filter rule */
+    for (int j = 0; j < branch->num_filter_rules; j++) {
+
+      struct filter_rule* const frule = branch->filter_ruleset[j];
+
+      /* get a uintX_t specific function depending on frule->op */
+      assign_filter_func(frule);
+      branch->filter_ruleset[j] = frule;
+    }
+  }
+
+  /* display the flow-header when --debug/--verbose=3 is SET */
   if(verbose_vvv && !file){
 
     /* print flow header */
@@ -86,21 +112,83 @@ ft_open(int fd) {
     puts(FLOWHEADER);
   }
 
+  char* record = NULL;
+  /* process each flow record */
   while ((record = ftio_read(&data->io)) != NULL) {
-    data->num_records++;
-    data->recordset = (struct record **)
-                      realloc(data->recordset,
-                              data->num_records * sizeof(struct record*));
-    data->recordset[data->num_records-1] = calloc(1, sizeof(struct record));
-    data->recordset[data->num_records-1]->record = (char*)
-                                                   calloc(1, data->rec_size);
-    memcpy(data->recordset[data->num_records-1]->record,
-           record,
-           data->rec_size);
 
-  if(verbose_vvv && !file)
-    flow_print_record(data, record);
+    /* display each record when --debug/--verbose=3 is SET */
+    if(verbose_vvv && !file)
+      flow_print_record(data, record);
+
+    /* process each branch */
+    for (int i = 0, j; i < fquery->num_branches; i++) {
+
+      struct branch* branch = fquery->branchset[i];
+
+      /* process each filter rule */
+      for (j = 0; j < branch->num_filter_rules; j++) {
+
+        struct filter_rule* const frule = branch->filter_ruleset[j];
+
+        /* run the comparator function of the filter rule on the record */
+        if (!frule->func(
+                         record,
+                         frule->field_offset,
+                         frule->value,
+                         frule->delta
+                        ))
+          break;
+      }
+
+      /* if any rule is not satisfied */
+      if (j < branch->num_filter_rules)
+        continue;
+      /* else, increment the filter counter, and save this record */
+      else {
+
+        /* increase the recordset size */
+        branch->filter_result->num_filtered_records += 1;
+        branch->filter_result->filtered_recordset = (char **)
+                         realloc(branch->filter_result->filtered_recordset,
+                                (branch->filter_result->num_filtered_records)
+                                 *sizeof(char *));
+        if (branch->filter_result->filtered_recordset == NULL)
+          errExit("realloc");
+
+
+        /* allocate memory for the record */
+        char* target = (char*) calloc(1, data->rec_size);
+        if (target == NULL)
+          errExit("calloc(...)");
+
+        /* copy the record */
+        memcpy(target, record, data->rec_size);
+
+        /* get the target index in the recordset */
+        branch->filter_result->
+        filtered_recordset[branch->filter_result->
+                           num_filtered_records - 1] = target;
+      }
+    }
   }
+
+  /* print the filtered records if verbose mode is set */
+  if (verbose_v) {
+
+    /* process each branch */
+    for (int i = 0; i < fquery->num_branches; i++) {
+      struct branch* branch = fquery->branchset[i];
+
+#ifdef FILTER
+      echo_filter(
+                   branch->branch_id,
+                   branch->filter_result,
+                   data
+                 );
+#endif
+    }
+  }
+
 
   return data;
 }

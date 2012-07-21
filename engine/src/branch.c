@@ -46,14 +46,7 @@ branch_start(void *arg) {
   /*                                filter                                  */
   /* -----------------------------------------------------------------------*/
 
-  branch->filter_result = filter(
-                                 branch->data->num_records,
-                                 branch->data->recordset,
-
-                                 branch->num_filter_rules,
-                                 branch->filter_ruleset
-                                );
-
+  /* records are filtered as soon as the trace is read */
   if (branch->filter_result == NULL)
     pthread_exit((void*)EXIT_FAILURE);
 
