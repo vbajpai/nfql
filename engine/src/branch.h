@@ -27,7 +27,6 @@
 #ifndef flowy_engine_branch_h
 #define flowy_engine_branch_h
 
-#include "filter.h"
 #include "grouper.h"
 #include "groupfilter.h"
 
