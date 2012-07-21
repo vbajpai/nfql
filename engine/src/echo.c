@@ -171,9 +171,9 @@ echo_branch(
 
   /* process each branch */
   for (int i = 0; i < num_branches; i++) {
-    struct branch* branch = branchset[i];
 
 #ifdef GROUPER
+    struct branch* branch = branchset[i];
     if (verbose_vv){
       echo_grouper(
                    branch->branch_id,
