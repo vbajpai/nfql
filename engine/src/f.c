@@ -103,9 +103,7 @@ open_trace_read_query(const struct parameters* const param) {
 
   /* param_data->query_mmap is free'd after calling parse_json_query(...)
    * param_data->query_mmap_stat is free'd after freeing param_data->query_mmap
-   * param_data->trace is free'd in 2 stages:
-   *    non-filtered records are free'd just after returning from the branch
-   *    filtered records are free'd before exiting from main(...)
+   * param_data->trace is free'd before exiting from main(...)
    * param_data is free'd before exiting from main(...)
    */
   struct parameters_data* param_data = calloc(1,
@@ -115,7 +113,7 @@ open_trace_read_query(const struct parameters* const param) {
 
   int fsock;
   if(!strcmp(param->trace_filename,"-"))
-    fsock = 0;
+    fsock = STDIN_FILENO;
   else {
     fsock = open(param->trace_filename, O_RDONLY);
     if (fsock == -1)
