@@ -111,8 +111,8 @@ source = open("auto-comps.c", "w")
 header.write(preamble)
 source.write(preamble)
 
-header.write("#ifndef flowy_engine_auto_comps_h\n")
-header.write("#define flowy_engine_auto_comps_h\n\n")
+header.write("#ifndef f_engine_auto_comps_h\n")
+header.write("#define f_engine_auto_comps_h\n\n")
 
 header.write('#include "base.h"\n')
 header.write('#include <math.h>\n')
@@ -702,8 +702,8 @@ source = open("auto-assign.c", 'w')
 header.write(preamble)
 source.write(preamble)
 
-header.write("#ifndef flowy_engine_auto_assign_h\n")
-header.write("#define flowy_engine_auto_assign_h\n\n")
+header.write("#ifndef f_engine_auto_assign_h\n")
+header.write("#define f_engine_auto_assign_h\n\n")
 
 header.write('#include "auto-comps.h"\n')
 header.write('#include "grouper.h"\n\n')

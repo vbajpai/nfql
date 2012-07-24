@@ -24,8 +24,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef flowy_engine_merger_fptr_h
-#define flowy_engine_merger_fptr_h
+#ifndef f_engine_merger_h
+#define f_engine_merger_h
 
 #include "pipeline.h"
 #include "errorhandlers.h"

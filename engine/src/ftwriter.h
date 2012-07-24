@@ -24,8 +24,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef flowy_engine_ftwriter_h
-#define flowy_engine_ftwriter_h
+#ifndef f_engine_ftwriter_h
+#define f_engine_ftwriter_h
 
 #include "base.h"
 #include "ftreader.h"
