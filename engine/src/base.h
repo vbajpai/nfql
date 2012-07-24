@@ -26,8 +26,8 @@
 
 #define _GNU_SOURCE
 
-#ifndef flowy_engine_base_h
-#define flowy_engine_base_h
+#ifndef f_engine_base_h
+#define f_engine_base_h
 
 #include <sys/types.h> /* Type definitions used by many programs */
 #include <stdio.h> /* Standard I/O functions */

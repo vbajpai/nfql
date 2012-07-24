@@ -24,8 +24,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef flowy_engine_error_functions_h
-#define flowy_engine_error_functions_h
+#ifndef f_engine_error_functions_h
+#define f_engine_error_functions_h
 
 #include "base.h"
 

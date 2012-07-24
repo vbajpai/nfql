@@ -29,7 +29,7 @@
 #define STR(x) #x
 #define XSTR(x) STR(x)
 #define VERSION 2.5
-#include "flowy.h"
+#include "f.h"
 
 struct parameters*
 parse_cmdline_args(int argc, char** const argv) {

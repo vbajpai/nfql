@@ -25,8 +25,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef flowy_engine_flowy_h
-#define flowy_engine_flowy_h
+#ifndef f_engine_f_h
+#define f_engine_f_h
 
 #include <pthread.h>
 #include <getopt.h>

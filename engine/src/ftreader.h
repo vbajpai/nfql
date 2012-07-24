@@ -25,11 +25,11 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef flowy_engine_ftreader_h
-#define flowy_engine_ftreader_h
+#ifndef f_engine_ftreader_h
+#define f_engine_ftreader_h
 
 #include "base.h"
-#include "flowy.h"
+#include "f.h"
 
 #include <fcntl.h>
 #include <ftlib.h>

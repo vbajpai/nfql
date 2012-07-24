@@ -24,8 +24,8 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef flowy_engine_echo_h
-#define flowy_engine_echo_h
+#ifndef f_engine_echo_h
+#define f_engine_echo_h
 
 #include "pipeline.h"
 #include "base.h"
