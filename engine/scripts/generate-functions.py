@@ -262,7 +262,7 @@ def groupaggr_body(op, atype):
     result += "    aggr->values[0] /= num_records;\n"
     result += "      *(uint32_t*)(group_aggregation + field_offset) = aggr->values[0];\n"
   elif op == 'stddev':
-    result += "    uint32_t stddev;\n"
+    result += "    uint32_t stddev = 0;\n"
     result += "    aggr->num_values = 1;\n"
     result += "    aggr->values = (uint32_t *)calloc(aggr->num_values, sizeof(uint32_t));\n"
     result += "    if (aggr->values == NULL)\n"
