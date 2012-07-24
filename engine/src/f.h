@@ -151,7 +151,7 @@ struct parameters*
 parse_cmdline_args(int argc, char** const argv);
 
 struct parameters_data*
-read_param_data(const struct parameters* const param);
+open_trace_read_query(const struct parameters* const param);
 
 struct json*
 parse_json_query(const char* const query_mmap);
@@ -159,6 +159,10 @@ parse_json_query(const char* const query_mmap);
 struct flowquery*
 prepare_flowquery(struct ft_data* const trace,
                   const struct json* const json_query);
+
+struct ft_data*
+read_trace(const struct parameters_data* const param_data,
+           struct flowquery* fquery);
 
 pthread_t*
 run_branch_async(const struct flowquery* const fquery);
