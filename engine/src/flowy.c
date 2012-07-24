@@ -35,13 +35,14 @@ struct parameters*
 parse_cmdline_args(int argc, char** const argv) {
 
   int                                 opt;
-  char*                               shortopts = "v:dhV";
+  char*                               shortopts = "z:d:v:DhV";
   static struct option                longopts[] = {
+    { "zlevel",     required_argument,  NULL,           'z' },
+    { "dirpath",    required_argument,  NULL,           'd' },
     { "debug",      no_argument,        NULL,           'D' },
     { "verbose",    required_argument,  NULL,           'v' },
-    { "help",       no_argument,        NULL,           'h' },
     { "version",    no_argument,        NULL,           'V' },
-    { "dirpath",    required_argument,  NULL,           'd' },
+    { "help",       no_argument,        NULL,           'h' },
     {  NULL,        0,                  NULL,            0  }
   };
   enum verbosity_levels               verbose_level;
@@ -49,11 +50,12 @@ parse_cmdline_args(int argc, char** const argv) {
   "%s [OPTIONS] queryfile tracefile\t\t query the specified trace\n"
   "   or: %s [OPTIONS] queryfile -\t\t\t read the trace from stdin\n\n"
   "OPTIONS:\n"
+  "-z, --zlevel\t\t change the compression level (default:5)\n"
   "-d, --dirpath\t\t save the results as flow-tools files in given dirpath\n"
   "-D, --debug\t\t enable debugging mode\n"
   "-v, --verbose\t\t increase the verbosity level\n"
-  "-h, --help\t\t display this help and exit\n"
-  "-V, --version\t\t output version information and exit\n";
+  "-V, --version\t\t output version information and exit\n"
+  "-h, --help\t\t display this help and exit\n";
 
 
   /* free'd after calling read_param_data(...) */
@@ -71,6 +73,12 @@ parse_cmdline_args(int argc, char** const argv) {
           case LOW: verbose_v = TRUE; break;
           default: errExit("valid verbosity levels: (1-3)");
         }
+        break;
+      case 'z':
+        errno = 0;
+        zlevel = (int) strtol(optarg, (char**) NULL, 10);
+        if(errno != 0) errExit("invalid zlevel");
+        else if(zlevel < 0 || zlevel > 9) errExit("valid zlevels: (0-9)");
         break;
       case 'd': file = TRUE; dirpath = optarg; break;
       case 'h': usageErr(usage_string, argv[0], argv[0]);

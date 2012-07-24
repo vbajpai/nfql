@@ -30,8 +30,6 @@
 #include "base.h"
 #include "ftreader.h"
 
-#define ZLIB_LEVEL 5
-
 int
 get_fd(char* filename);
 
