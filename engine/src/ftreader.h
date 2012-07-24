@@ -41,13 +41,8 @@ struct ft_data {
   struct ftver                    version;
   u_int64_t                       xfield;
   int                             rec_size;
-  struct record**                 recordset;
+  char**                          recordset;
   size_t                          num_records;
-};
-
-struct record {
-  char*                           record;
-  bool                            if_filtered;
 };
 
 struct ft_data*
