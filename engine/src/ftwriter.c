@@ -58,7 +58,8 @@ get_ftio(
     errExit("calloc");
 
   struct ftset ftset; ftset_init(&ftset, 0);
-  ftset.z_level = ZLIB_LEVEL;
+  /* defaults to 5 */
+  ftset.z_level = zlevel;
   if (ftio_init(ftio_out, out_fd, FT_IO_FLAG_WRITE |
     ((ftset.z_level) ? FT_IO_FLAG_ZINIT : 0) ) < 0)
     fterr_errx(1, "ftio_init(): failed");

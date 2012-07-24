@@ -29,6 +29,7 @@
 bool debug;
 bool file;
 char* dirpath;
+uint8_t zlevel = 5;
 
 bool verbose_v;
 bool verbose_vv;

@@ -47,6 +47,7 @@
 extern bool debug;
 extern bool file;
 extern char* dirpath;
+extern uint8_t zlevel;
 
 /* verbose levels */
 extern bool verbose_v;
