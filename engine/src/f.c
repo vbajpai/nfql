@@ -99,13 +99,11 @@ parse_cmdline_args(int argc, char** const argv) {
 }
 
 struct parameters_data*
-read_query(const struct parameters* const param) {
+open_trace_read_query(const struct parameters* const param) {
 
   /* param_data->query_mmap is free'd after calling parse_json_query(...)
    * param_data->query_mmap_stat is free'd after freeing param_data->query_mmap
-   * param_data->trace is free'd in 2 stages:
-   *    non-filtered records are free'd just after returning from the branch
-   *    filtered records are free'd before exiting from main(...)
+   * param_data->trace is free'd before exiting from main(...)
    * param_data is free'd before exiting from main(...)
    */
   struct parameters_data* param_data = calloc(1,
@@ -115,7 +113,7 @@ read_query(const struct parameters* const param) {
 
   int fsock;
   if(!strcmp(param->trace_filename,"-"))
-    fsock = 0;
+    fsock = STDIN_FILENO;
   else {
     fsock = open(param->trace_filename, O_RDONLY);
     if (fsock == -1)
@@ -156,22 +154,6 @@ read_query(const struct parameters* const param) {
     errExit("close");
 
   return param_data;
-}
-
-struct ft_data*
-read_trace(
-           const struct parameters_data* const param_data,
-           struct flowquery* fquery
-          ) {
-
-  struct ft_data* trace = ft_read(param_data->trace, fquery);
-  if (trace == NULL)
-    errExit("ft_read(...) returned NULL");
-
-  if (close(param_data->trace_fsock) == -1)
-    errExit("close");
-
-  return trace;
 }
 
 struct json*
@@ -1005,6 +987,22 @@ prepare_flowquery(struct ft_data* const trace,
   return fquery;
 }
 
+struct ft_data*
+read_trace(
+           const struct parameters_data* const param_data,
+           struct flowquery* fquery
+          ) {
+
+  struct ft_data* trace = ft_read(param_data->trace, fquery);
+  if (trace == NULL)
+    errExit("ft_read(...) returned NULL");
+
+  if (close(param_data->trace_fsock) == -1)
+    errExit("close");
+
+  return trace;
+}
+
 pthread_t*
 run_branch_async(const struct flowquery* const fquery){
 
@@ -1077,9 +1075,12 @@ main(int argc, char **argv) {
   /*                         read the input query                           */
   /* -----------------------------------------------------------------------*/
 
-  struct parameters_data* param_data = read_query(param);
+  struct parameters_data* param_data = open_trace_read_query(param);
   if (param_data == NULL)
     errExit("read_param_data(...) returned NULL");
+  else{
+    free(param); param = NULL;
+  }
 
   /* ----------------------------------------------------------------------- */
 
@@ -1211,9 +1212,6 @@ main(int argc, char **argv) {
   param_data->trace = read_trace(param_data, fquery);
   if(param_data->trace == NULL)
     errExit("read_trace(...) returned NULL");
-  else{
-    free(param); param = NULL;
-  }
 
   /* ----------------------------------------------------------------------- */
 
