@@ -45,7 +45,7 @@ parse_cmdline_args(int argc, char** const argv) {
     { "help",       no_argument,        NULL,           'h' },
     {  NULL,        0,                  NULL,            0  }
   };
-  enum verbosity_levels               verbose_level;
+  enum verbosity_levels               verbose_level = -1;
   const char usage_string[] =
   "%s [OPTIONS] queryfile tracefile\t\t query the specified trace\n"
   "   or: %s [OPTIONS] queryfile -\t\t\t read the trace from stdin\n\n"
@@ -66,7 +66,8 @@ parse_cmdline_args(int argc, char** const argv) {
   while ((opt = getopt_long(argc, argv, shortopts, longopts, NULL)) != -1) {
     switch (opt) {
       case 'D': debug = TRUE; verbose_level = HIGH;
-      case 'v': if (optarg) verbose_level = atoi(optarg);
+      case 'v':
+        if(optarg) verbose_level = atoi(optarg);
         switch (verbose_level) {
           case HIGH: verbose_vvv = TRUE;
           case MEDIUM: verbose_vv = TRUE;
