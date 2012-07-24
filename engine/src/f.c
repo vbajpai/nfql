@@ -1495,7 +1495,7 @@ main(int argc, char **argv) {
   for (int i = 0; i < fquery->num_branches; i++) {
     struct branch* branch = fquery->branchset[i];
     for (int j = 0; j < branch->filter_result->num_filtered_records; j++) {
-      free(branch->filter_result->filtered_recordset[j]);
+      /* unlink the records */
       branch->filter_result->filtered_recordset[j] = NULL;
     }
 
