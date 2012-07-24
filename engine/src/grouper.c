@@ -338,6 +338,13 @@ grouper(
     }
     else {
 
+      for (int k = 0; k < num_grouper_rules; k++) {
+
+        /* assign a uintX_t specific function depending on grule->op */
+        struct grouper_rule* grule = grouper_ruleset[k];
+        assign_grouper_func(grule);
+      }
+
       /* get uintX_t specific function pointers, given the type of the
        * RHS field of the first grouper rule
        */
@@ -443,17 +450,14 @@ grouper(
 
               struct grouper_rule* grule = grouper_ruleset[k];
 
-              /* assign a uintX_t specific function depending on grule->op */
-              assign_grouper_func(grule);
-
               if (
                   !grule->func(
-                               group,
-                               grule->field_offset1,
-                               **record_iter,
-                               grule->field_offset2,
-                               grule->delta
-                               )
+                                group,
+                                grule->field_offset1,
+                                **record_iter,
+                                grule->field_offset2,
+                                grule->delta
+                              )
                   )
                 break;
             }
