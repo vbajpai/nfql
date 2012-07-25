@@ -32,14 +32,14 @@
 
 struct aggr_result*
 grouper_aggregations(
-                     size_t num_filter_rules,
-                     struct filter_rule** const filter_ruleset,
+                     size_t num_filter_clauses,
+                     struct filter_clause** const filter_clauseset,
 
-                     size_t num_grouper_rules,
-                     struct grouper_rule** const grouper_ruleset,
+                     size_t num_grouper_clauses,
+                     struct grouper_clause** const grouper_clauseset,
 
-                     size_t num_aggr_rules,
-                     struct aggr_rule** const aggr_ruleset,
+                     size_t num_aggr_clause_terms,
+                     struct aggr_term** const aggr_clause_termset,
 
                      const struct group* const group,
                      int rec_size
@@ -58,7 +58,7 @@ grouper_aggregations(
 
   /* free'd just after returning from merger(...) */
   struct aggr** aggrset = (struct aggr**)
-  calloc(num_aggr_rules,
+  calloc(num_aggr_clause_terms,
          sizeof(struct aggr*));
   if (aggrset == NULL)
     errExit("calloc");
@@ -75,116 +75,135 @@ grouper_aggregations(
    * currently assumes that the filter rule was `eq`, such that each record
    * member has the same value for that field in the group, still need
    * to investigate how it might affect other filter operations */
-  bool ifgrouper = false;
-  for (int j = 0; j < num_filter_rules; j++) {
+  for (int i = 0; i < num_filter_clauses; i++) {
 
-    size_t field_offset = filter_ruleset[j]->field_offset;
-    aggr_function = get_aggr_fptr(ifgrouper,
-                                  filter_ruleset[j]->op->field_type);
-    if(aggr_function == NULL)
-      errExit("get_aggr_fptr(...) returned NULL");
+    struct filter_clause* fclause = filter_clauseset[i];
 
-    struct aggr* aggr = (*aggr_function)(group->members,
-                                         aggr_record,
-                                         group->num_members,
-                                         field_offset,
-                                         TRUE);
-    if (aggr == NULL)
-      errExit("aggr_function(...) returned NULL");
-    else {
-      free(aggr->values); aggr->values = NULL;
-      free(aggr); aggr = NULL;
-    }
-  }
+    for (int j = 0; j < fclause->num_terms; j++) {
 
-
-  /* save common fields (coming from the grouper rule) in aggregation record
-   * currently assumes that the grouper rule was `eq`, such that each record
-   * member has the same value for that field in the group, still need
-   * to investigate how it might affect other grouper operations */
-  ifgrouper = true;
-  for (int j = 0; j < num_grouper_rules; j++) {
-
-    size_t goffset_1 = grouper_ruleset[j]->field_offset1;
-    size_t goffset_2 = grouper_ruleset[j]->field_offset2;
-
-    aggr_function = get_aggr_fptr(ifgrouper,
-                                  grouper_ruleset[j]->op->field1_type);
-
-    if(aggr_function == NULL)
-      errExit("get_aggr_fptr(...) returned NULL");
-
-    if(goffset_1 != goffset_2){
+      size_t field_offset = fclause->termset[j]->field_offset;
+      aggr_function = get_aggr_fptr(false,
+                                    fclause->termset[j]->op->field_type);
+      if(aggr_function == NULL)
+        errExit("get_aggr_fptr(...) returned NULL");
 
       struct aggr* aggr = (*aggr_function)(group->members,
                                            aggr_record,
                                            group->num_members,
-                                           goffset_1,
+                                           field_offset,
                                            TRUE);
       if (aggr == NULL)
         errExit("aggr_function(...) returned NULL");
       else {
         free(aggr->values); aggr->values = NULL;
-        free(aggr); aggr =  NULL;
+        free(aggr); aggr = NULL;
       }
-    }
-
-    struct aggr* aggr = (*aggr_function)(group->members,
-                                         aggr_record,
-                                         group->num_members,
-                                         goffset_2,
-                                         TRUE);
-    if (aggr == NULL)
-      errExit("aggr_function(...) returned NULL");
-    else {
-      free(aggr->values); aggr->values = NULL;
-      free(aggr); aggr = NULL;
     }
   }
 
+  /* save common fields (coming from the grouper rule) in aggregation record
+   * currently assumes that the grouper rule was `eq`, such that each record
+   * member has the same value for that field in the group, still need
+   * to investigate how it might affect other grouper operations */
+  for (int i = 0; i < num_grouper_clauses; i++) {
+
+    struct grouper_clause* gclause = grouper_clauseset[i];
+
+    for (int j = 0; j < gclause->num_terms; j++) {
+
+      struct grouper_term* term = gclause->termset[j];
+
+      size_t goffset_1 = term->field_offset1;
+      size_t goffset_2 = term->field_offset2;
+
+      aggr_function = get_aggr_fptr(true,
+                                    term->op->field1_type);
+
+      if(aggr_function == NULL)
+        errExit("get_aggr_fptr(...) returned NULL");
+
+      if(goffset_1 != goffset_2) {
+
+        struct aggr* aggr = (*aggr_function)(group->members,
+                                             aggr_record,
+                                             group->num_members,
+                                             goffset_1,
+                                             TRUE);
+        if (aggr == NULL)
+          errExit("aggr_function(...) returned NULL");
+        else {
+          free(aggr->values); aggr->values = NULL;
+          free(aggr); aggr =  NULL;
+        }
+      }
+
+      struct aggr* aggr = (*aggr_function)(group->members,
+                                           aggr_record,
+                                           group->num_members,
+                                           goffset_2,
+                                           TRUE);
+      if (aggr == NULL)
+        errExit("aggr_function(...) returned NULL");
+      else {
+        free(aggr->values); aggr->values = NULL;
+        free(aggr); aggr = NULL;
+      }
+    }
+  }
 
   /* aggregate the fields, but ignore fields used in grouper and filter
    * module. Again it assume that the operation is `eq`. Need to investigate
    * more on how it might affect for other type of operations */
-  for (int j = 0; j < num_aggr_rules; j++){
+  for (int j = 0; j < num_aggr_clause_terms; j++){
 
-    bool if_ignore_aggr_rule = false;
-    struct aggr_rule* arule = aggr_ruleset[j];
-    size_t aggr_offset = arule->field_offset;
+    bool if_ignore_aggr_term = false;
+    struct aggr_term* term = aggr_clause_termset[j];
+    size_t aggr_offset = term->field_offset;
 
 
     /* if aggr rule is same as any filter rule, just ignore it */
-    for (int k = 0; k < num_filter_rules; k++) {
+    for (int i = 0; i < num_filter_clauses; i++) {
 
-      size_t filter_offset = filter_ruleset[k]->field_offset;
-      if (aggr_offset == filter_offset){
-        if_ignore_aggr_rule = true;
-        break;
+      struct filter_clause* fclause = filter_clauseset[i];
+      for (int k = 0; k < fclause->num_terms; k++) {
+
+        size_t filter_offset = fclause->termset[k]->field_offset;
+        if (aggr_offset == filter_offset){
+          if_ignore_aggr_term = true;
+          break;
+        }
       }
     }
 
     /* if aggr rule is same as any grouper rule, just ignore it */
-    for (int k = 0; k < num_grouper_rules; k++) {
+    for (int i = 0; i < num_grouper_clauses; i++) {
 
-      size_t goffset_1 = grouper_ruleset[k]->field_offset1;
-      size_t goffset_2 = grouper_ruleset[k]->field_offset2;
+      struct grouper_clause* gclause = grouper_clauseset[i];
 
-      if (aggr_offset == goffset_1 || aggr_offset == goffset_2){
-        if_ignore_aggr_rule = true;
-        break;
+      for (int k = 0; k < gclause->num_terms; k++) {
+
+        struct grouper_term* term = gclause->termset[k];
+
+        size_t goffset_1 = term->field_offset1;
+        size_t goffset_2 = term->field_offset2;
+
+        if (aggr_offset == goffset_1 || aggr_offset == goffset_2){
+          if_ignore_aggr_term = true;
+          break;
+        }
       }
     }
 
     /* assign a specific uintX_t function depending on aggrule->op */
-    assign_aggr_func(arule);
+    assign_aggr_func(term);
 
     /* free'd just after returning from merger(...) */
-    aggrset[j] = arule->func(
+    aggrset[j] = term->func(
                              group->members,
                              aggr_record,
                              group->num_members,
                              aggr_offset,
-                             if_ignore_aggr_rule
+                             if_ignore_aggr_term
                             );
   }
 
@@ -195,16 +214,17 @@ grouper_aggregations(
 
 
 struct grouper_intermediate_result *
-get_grouper_intermediates(
-                          size_t num_filtered_records,
-                          char** const filtered_recordset_copy,
+get_grouper_intermediates
+                (
+                  size_t num_filtered_records,
+                  char** const filtered_recordset_copy,
 
-                          size_t num_grouper_rules,
-                          struct grouper_rule** const grouper_ruleset,
+                  size_t num_grouper_terms_in_first_clause,
+                  struct grouper_term** const grouper_termset_of_first_clause,
 
-                          struct grouper_result* const gresult,
-                          const struct grouper_type* const gtype
-                          ) {
+                  struct grouper_result* const gresult,
+                  const struct grouper_type* const gtype
+                ) {
 
   /* last record in sorted_records is NULL
    * unlinked sorted_recordset_ref[i], and free'd sorted_recordset_ref
@@ -220,7 +240,7 @@ get_grouper_intermediates(
     sorted_recordset_ref[i] = &filtered_recordset_copy[i];
 
   /* sort the record references according to the right hand side
-   * item in the statement of the first grouper rule
+   * item in the statement of the first grouper term of the first clause
    * and save them in sorted_recordset_reference in place
    */
 
@@ -229,7 +249,7 @@ get_grouper_intermediates(
           sorted_recordset_ref,
           num_filtered_records,
           sizeof(char **),
-          (void*)&grouper_ruleset[0]->field_offset2,
+          (void*)&grouper_termset_of_first_clause[0]->field_offset2,
           gtype->qsort_comp
          );
 #elif defined(__linux)
@@ -238,7 +258,7 @@ get_grouper_intermediates(
           num_filtered_records,
           sizeof(char **),
           gtype->qsort_comp,
-          (void*)&grouper_ruleset[0]->field_offset2
+          (void*)&grouper_termset_of_first_clause[0]->field_offset2
          );
 #endif
 
@@ -269,7 +289,7 @@ get_grouper_intermediates(
   struct uniq_recordset_result*
   uresult = gtype->alloc_uniqresult(
                                     num_filtered_records,
-                                    grouper_ruleset,
+                                    grouper_termset_of_first_clause,
                                     sorted_recordset_ref
                                    );
 
@@ -285,18 +305,18 @@ get_grouper_intermediates(
 
 struct grouper_result*
 grouper(
-        size_t num_filter_rules,
-        struct filter_rule** const filter_ruleset,
+        size_t num_filter_clauses,
+        struct filter_clause** const filter_clauseset,
 
-        size_t num_grouper_rules,
-        struct grouper_rule** const grouper_ruleset,
+        size_t num_grouper_clauses,
+        struct grouper_clause** const grouper_clauseset,
 
-        size_t num_aggr_rules,
-        struct aggr_rule** const aggr_ruleset,
+        size_t num_aggr_clause_terms,
+        struct aggr_term** const aggr_clause_termset,
 
         const struct filter_result* const fresult,
         int rec_size
-        ) {
+       ) {
 
   /* free'd just after returning from ungrouper(...) */
   struct grouper_result* gresult = calloc(1, sizeof(struct grouper_result));
@@ -315,7 +335,7 @@ grouper(
     /* club all filtered records into one group,
      * if no group modules are defined
      */
-    if (num_grouper_rules == 0) {
+    if (num_grouper_clauses == 0) {
 
       /* groupset with space for 1 group */
       gresult->num_groups = 1;
@@ -338,168 +358,181 @@ grouper(
     }
     else {
 
-      for (int k = 0; k < num_grouper_rules; k++) {
+      /* assign grouper func for each term */
+      for (int k = 0; k < num_grouper_clauses; k++) {
 
-        /* assign a uintX_t specific function depending on grule->op */
-        struct grouper_rule* grule = grouper_ruleset[k];
-        assign_grouper_func(grule);
-      }
+        struct grouper_clause* gclause = grouper_clauseset[k];
 
-      /* get uintX_t specific function pointers, given the type of the
-       * RHS field of the first grouper rule
-       */
-      struct grouper_type* gtype = get_gtype(grouper_ruleset[0]->op->field2_type);
-      if (gtype == NULL)
-        errExit("get_type(...) returned NULL");
+        for (int j = 0; j < gclause->num_terms; j++) {
 
-      /* unlinked each item from original traces, ie filtered_recordset_copy[i]
-       * free'd filtered_recordset_copy just before exiting from this function
-       */
-      char** filtered_recordset_copy = calloc(fresult->num_filtered_records,
-                                              sizeof(char*));
-      if (filtered_recordset_copy == NULL)
-        errExit("calloc");
-
-      for (int i = 0; i < fresult->num_filtered_records; i++)
-        filtered_recordset_copy[i] = fresult->filtered_recordset[i];
-
-      struct grouper_intermediate_result* intermediate_result =
-      get_grouper_intermediates(
-                                fresult->num_filtered_records,
-                                filtered_recordset_copy,
-
-                                num_grouper_rules,
-                                grouper_ruleset,
-
-                                gresult,
-                                gtype
-                                );
-
-      if (intermediate_result == NULL)
-        errExit("get_grouper_intermediates(...) returned NULL");
-
-      if(verbose_vv){
-
-        /* free'd just before calling merger(...) */
-        gresult->num_unique_records = intermediate_result->
-        uniq_result->num_uniq_records;
-        gresult->unique_recordset = (char**)
-        calloc(gresult->num_unique_records,
-               sizeof(char*));
-        if (gresult->unique_recordset == NULL)
-          errExit("calloc");
-
-        for (int i = 0; i < gresult->num_unique_records; i++) {
-          gresult->unique_recordset[i] =
-          gtype->get_uniq_record(intermediate_result->uniq_result,i);
-          if (gresult->unique_recordset[i] == NULL)
-            errExit("get_uniq_record(...) returned NULL");
+          /* assign a uintX_t specific function depending on grule->op */
+          struct grouper_term* term = gclause->termset[j];
+          assign_grouper_func(term);
         }
       }
 
-      for (int i = 0; i < fresult->num_filtered_records; i++) {
+      for (int l = 0; l < num_grouper_clauses; l++) {
 
-        if (filtered_recordset_copy[i] == NULL)
-          continue;
+        struct grouper_clause* gclause = grouper_clauseset[l];
 
-        gresult->num_groups += 1;
-
-        /* free'd just after returning from ungrouper(...) */
-        groupset = (struct group **)
-        realloc(groupset, (gresult->num_groups)*sizeof(struct group*));
-        if (groupset == NULL)
-          errExit("realloc");
-        else
-          gresult->groupset = groupset;
-
-        /* free'd just after returning from ungrouper(...) */
-        struct group* group = (struct group *)calloc(1, sizeof(struct group));
-        if (group == NULL)
+        /* unlinked each item from original traces, ie
+         * filtered_recordset_copy[i]; free'd filtered_recordset_copy just
+         * before exiting from this function
+         */
+        char** filtered_recordset_copy = calloc(fresult->num_filtered_records,
+                                                sizeof(char*));
+        if (filtered_recordset_copy == NULL)
           errExit("calloc");
 
-        groupset[gresult->num_groups-1] = group;
-        group->num_members = 1;
+        for (int i = 0; i < fresult->num_filtered_records; i++)
+          filtered_recordset_copy[i] = fresult->filtered_recordset[i];
 
-        /* free'd after returning from ungrouper(...) */
-        group->members = (char **)calloc(1, sizeof(char *));
-        if (group->members == NULL)
-          errExit("calloc");
-        group->members[0] = filtered_recordset_copy[i];
+        /* get uintX_t specific function pointers, given the type of the
+         * RHS field of the first term of the first clause
+         */
+        struct grouper_type* gtype =
+        get_gtype(gclause->termset[0]->op->field2_type);
+        if (gtype == NULL)
+          errExit("get_type(...) returned NULL");
 
-        // search for left hand side of comparison in records ordered by right
-        // hand side of comparison
-        char ***record_iter = gtype->bsearch(
-                                             filtered_recordset_copy[i],
-                                             grouper_ruleset,
-                                             intermediate_result
-                                             );
-        if (record_iter != NULL) {
-          // iterate until terminating NULL in sorted_records
-          for (int k = 0; *record_iter != NULL; record_iter++) {
+        struct grouper_intermediate_result* intermediate_result =
+        get_grouper_intermediates(
+                                   fresult->num_filtered_records,
+                                   filtered_recordset_copy,
 
-            // already processed record from filtered_records
-            if (**record_iter == NULL)
-              continue;
+                                   gclause->num_terms,
+                                   gclause->termset,
 
-            // do not group with itself
-            if (**record_iter == filtered_recordset_copy[i])
-              continue;
+                                   gresult,
+                                   gtype
+                                 );
 
-            // check all module filter rules for those two records
-            for (k = 0; k < num_grouper_rules; k++) {
+        if (intermediate_result == NULL)
+          errExit("get_grouper_intermediates(...) returned NULL");
 
-              struct grouper_rule* grule = grouper_ruleset[k];
+        if(verbose_vv){
 
-              if (
-                  !grule->func(
-                                group,
-                                grule->field_offset1,
-                                **record_iter,
-                                grule->field_offset2,
-                                grule->delta
-                              )
-                  )
-                break;
-            }
+          /* free'd just before calling merger(...) */
+          gresult->num_unique_records = intermediate_result->
+          uniq_result->num_uniq_records;
+          gresult->unique_recordset = (char**)
+          calloc(gresult->num_unique_records,
+                 sizeof(char*));
+          if (gresult->unique_recordset == NULL)
+            errExit("calloc");
 
-            // first rule didnt match
-            if (k == 0)
-              break;
-
-            // one of the other rules didnt match
-            if (k < num_grouper_rules)
-              continue;
-
-            group->num_members += 1;
-
-            group->members = (char **)
-            realloc(group->members,
-                    sizeof(char *)*group->num_members);
-
-            // assign entry in filtered_records to group
-            group->members[group->num_members-1] = **record_iter;
-
-            // set filtered_recordset_copy[i] to NULL
-            **record_iter = NULL;
+          for (int i = 0; i < gresult->num_unique_records; i++) {
+            gresult->unique_recordset[i] =
+            gtype->get_uniq_record(intermediate_result->uniq_result,i);
+            if (gresult->unique_recordset[i] == NULL)
+              errExit("get_uniq_record(...) returned NULL");
           }
         }
 
-        // unlink all the local filtered recordset copy from the flow data
-        filtered_recordset_copy[i] = NULL;
+        for (int i = 0; i < fresult->num_filtered_records; i++) {
+
+          if (filtered_recordset_copy[i] == NULL)
+            continue;
+
+          gresult->num_groups += 1;
+
+          /* free'd just after returning from ungrouper(...) */
+          groupset = (struct group **)
+          realloc(groupset, (gresult->num_groups)*sizeof(struct group*));
+          if (groupset == NULL)
+            errExit("realloc");
+          else
+            gresult->groupset = groupset;
+
+          /* free'd just after returning from ungrouper(...) */
+          struct group* group = (struct group *)calloc(1, sizeof(struct group));
+          if (group == NULL)
+            errExit("calloc");
+
+          groupset[gresult->num_groups-1] = group;
+          group->num_members = 1;
+
+          /* free'd after returning from ungrouper(...) */
+          group->members = (char **)calloc(1, sizeof(char *));
+          if (group->members == NULL)
+            errExit("calloc");
+          group->members[0] = filtered_recordset_copy[i];
+
+          // search for left hand side of comparison in records ordered by right
+          // hand side of comparison
+          char ***record_iter = gtype->bsearch(
+                                               filtered_recordset_copy[i],
+                                               gclause->termset,
+                                               intermediate_result
+                                               );
+          if (record_iter != NULL) {
+            // iterate until terminating NULL in sorted_records
+            for (int k = 0; *record_iter != NULL; record_iter++) {
+
+              // already processed record from filtered_records
+              if (**record_iter == NULL)
+                continue;
+
+              // do not group with itself
+              if (**record_iter == filtered_recordset_copy[i])
+                continue;
+
+              // check all terms for this grouper clause for those two records
+              for (k = 0; k < gclause->num_terms; k++) {
+
+                struct grouper_term* term = gclause->termset[k];
+
+                if (
+                    !term->func(
+                                  group,
+                                  term->field_offset1,
+                                  **record_iter,
+                                  term->field_offset2,
+                                  term->delta
+                                )
+                    )
+                  break;
+              }
+
+              // first term didnt match
+              if (k == 0)
+                break;
+
+              // one of the other terms didnt match
+              if (k < gclause->num_terms)
+                continue;
+
+              group->num_members += 1;
+
+              group->members = (char **)
+              realloc(group->members,
+                      sizeof(char *)*group->num_members);
+
+              // assign entry in filtered_records to group
+              group->members[group->num_members-1] = **record_iter;
+
+              // set filtered_recordset_copy[i] to NULL
+              **record_iter = NULL;
+            }
+          }
+
+          // unlink all the local filtered recordset copy from the flow data
+          filtered_recordset_copy[i] = NULL;
+        }
+
+        free(filtered_recordset_copy); filtered_recordset_copy = NULL;
+
+        // unlink the sorted records from the flow data
+        for (int i = 0; i < fresult->num_filtered_records; i++)
+          intermediate_result->sorted_recordset_reference[i] = NULL;
+        free(intermediate_result->sorted_recordset_reference);
+        intermediate_result->sorted_recordset_reference = NULL;
+
+        // unlink the uniq records from the flow data
+        gtype->dealloc_uniqresult(intermediate_result->uniq_result);
+        free(intermediate_result); intermediate_result = NULL;
+        free(gtype);
       }
-
-      free(filtered_recordset_copy); filtered_recordset_copy = NULL;
-
-      // unlink the sorted records from the flow data
-      for (int i = 0; i < fresult->num_filtered_records; i++)
-        intermediate_result->sorted_recordset_reference[i] = NULL;
-      free(intermediate_result->sorted_recordset_reference);
-      intermediate_result->sorted_recordset_reference = NULL;
-
-      // unlink the uniq records from the flow data
-      gtype->dealloc_uniqresult(intermediate_result->uniq_result);
-      free(intermediate_result); intermediate_result = NULL;
-      free(gtype);
     }
   }
 
@@ -511,14 +544,14 @@ grouper(
     struct group* group = gresult->groupset[i];
 
     group->aggr_result = grouper_aggregations(
-                                              num_filter_rules,
-                                              filter_ruleset,
+                                              num_filter_clauses,
+                                              filter_clauseset,
 
-                                              num_grouper_rules,
-                                              grouper_ruleset,
+                                              num_grouper_clauses,
+                                              grouper_clauseset,
 
-                                              num_aggr_rules,
-                                              aggr_ruleset,
+                                              num_aggr_clause_terms,
+                                              aggr_clause_termset,
 
                                               group,
                                               rec_size

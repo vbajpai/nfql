@@ -93,13 +93,18 @@ ft_read(
       errExit("calloc");
 
     /* assign a filter func for each filter rule */
-    for (int j = 0; j < branch->num_filter_rules; j++) {
+    for (int k = 0; k < branch->num_filter_clauses; k++) {
 
-      struct filter_rule* const frule = branch->filter_ruleset[j];
+      struct filter_clause* const fclause = branch->filter_clauseset[k];
 
-      /* get a uintX_t specific function depending on frule->op */
-      assign_filter_func(frule);
-      branch->filter_ruleset[j] = frule;
+      for (int j = 0; j < fclause->num_terms; j++) {
+
+        struct filter_term* const term = fclause->termset[j];
+
+        /* get a uintX_t specific function depending on frule->op */
+        assign_filter_func(term);
+        fclause->termset[j] = term;
+      }
     }
   }
 
@@ -124,28 +129,39 @@ ft_read(
     char* target = NULL; bool first_time = true;
     for (int i = 0, j; i < fquery->num_branches; i++) {
 
-      struct branch* branch = fquery->branchset[i];
+      struct branch* branch = fquery->branchset[i]; bool satisfied = false;
 
-      /* process each filter rule of the branch */
-      for (j = 0; j < branch->num_filter_rules; j++) {
+      /* process each filter clause (clauses are OR'd) */
+      for (int k = 0; k < branch->num_filter_clauses; k++) {
 
-        struct filter_rule* const frule = branch->filter_ruleset[j];
+        struct filter_clause* const fclause = branch->filter_clauseset[k];
 
-        /* run the comparator function of the filter rule on the record */
-        if (!frule->func(
-                         record,
-                         frule->field_offset,
-                         frule->value,
-                         frule->delta
-                        ))
-          break;
+        /* process each filter term (terms within a clause are AND'd) */
+        for (j = 0; j < fclause->num_terms; j++) {
+
+          struct filter_term* const term = fclause->termset[j];
+
+          /* run the comparator function of the filter rule on the record */
+          if (!term->func(
+                          record,
+                          term->field_offset,
+                          term->value,
+                          term->delta
+                         ))
+            break;
+        }
+
+        /* if any rule is not satisfied, move to the next module */
+        if (j < fclause->num_terms)
+          continue;
+        /* else this module is TRUE; so everything is TRUE; break out */
+        else {
+          satisfied = true; break;
+        }
       }
 
-      /* if any rule is not satisfied, move to the next branch */
-      if (j < branch->num_filter_rules)
-        continue;
-      /* else, increment the filter counter, and save this record */
-      else {
+      /* if rules are satisfied then save this record */
+      if (satisfied) {
 
         /* save this record in the trace data only once for all the
          * branches to refer to */

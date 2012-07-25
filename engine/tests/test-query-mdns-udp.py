@@ -111,8 +111,8 @@ class Trace2012(Trace, unittest.TestCase):
 
   def testFilters(self):
     """expected number of filtered records in each branch
-       - number of filtered records in branch A should be 15271"""
-    num = [15271]
+       - number of filtered records in branch A should be 15386"""
+    num = [15386]
     self.iternum(
                  num,
                  self.__class__.pattern['filter'],
@@ -121,8 +121,8 @@ class Trace2012(Trace, unittest.TestCase):
 
   def testGroupers(self):
     """expected number of groups in each branch
-       - number of groups in branch A should be 156"""
-    num = [156]
+       - number of groups in branch A should be 158"""
+    num = [158]
     self.iternum(
                  num,
                  self.__class__.pattern['grouper'],

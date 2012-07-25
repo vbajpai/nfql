@@ -33,8 +33,8 @@
 
 struct merger_result*
 merger(
-       size_t num_merger_rules,
-       struct merger_rule** const mruleset,
+       size_t num_merger_clauses,
+       struct merger_clause** const merger_clauseset,
 
        size_t num_branches,
        struct branch** const branchset
@@ -50,38 +50,62 @@ merger(
   if (iter == NULL)
     return mresult;
 
+  /* assign merger func for each term */
+  for (int k = 0; k < num_merger_clauses; k++) {
+
+    struct merger_clause* mclause = merger_clauseset[k];
+
+    for (int j = 0; j < mclause->num_terms; j++) {
+
+      /* assign a uintX_t specific function depending on grule->op */
+      struct merger_term* term = mclause->termset[j];
+      assign_merger_func(term);
+    }
+  }
+
   /* iterate over all permutations */
   unsigned int index = 0;
   while(iter_next(iter)) {
-    bool if_all_rules_matched = true;
+    bool clause = true;
     index += 1;
 
-    /* match the groups against each merger rule */
-    for (int i = 0; i < num_merger_rules; i++) {
+    /* process each merger clause (clauses are OR'd) */
+    for (int k = 0; k < num_merger_clauses; k++) {
 
-      struct merger_rule* rule = mruleset[i];
-      size_t group1_id = iter->filtered_group_tuple[rule->branch1->branch_id];
-      size_t group2_id = iter->filtered_group_tuple[rule->branch2->branch_id];
+      struct merger_clause* const mclause = merger_clauseset[k];
 
-      /* assign a unitX_t function depending on rule->op */
-      assign_merger_func(rule);
+      /* process each merger term (terms within a clause are AND'd) */
+      for (int j = 0; j < mclause->num_terms; j++) {
 
-      if (!rule->
-          func(
-               rule->branch1->gfilter_result->filtered_groupset[group1_id-1],
-               rule->field1,
-               rule->branch2->gfilter_result->filtered_groupset[group2_id-1],
-               rule->field2,
-               0
-              )
-         ) {
-        if_all_rules_matched = false;
+        struct merger_term* const term = mclause->termset[j];
+        size_t group1_id = iter->filtered_group_tuple[term->branch1->branch_id];
+        size_t group2_id = iter->filtered_group_tuple[term->branch2->branch_id];
+
+        if (!term->
+            func(
+                 term->branch1->gfilter_result->filtered_groupset[group1_id-1],
+                 term->field1,
+                 term->branch2->gfilter_result->filtered_groupset[group2_id-1],
+                 term->field2,
+                 0
+                )
+           ) {
+          clause = false;
+          break;
+        }
+      }
+
+      /* if any term is not satisfied, move to the next clause */
+      if (!clause)
+        continue;
+      /* else this clause is TRUE; so everything is TRUE; break out */
+      else {
         break;
       }
     }
 
-    /* add the groups to the group tuple, if all rules matched */
-    if(if_all_rules_matched){
+    /* add the groups to the group tuple, if on of the clause matched */
+    if(clause){
 
       /* free'd just before calling ungrouper(...) */
       struct group **matched_tuple = (struct group **)

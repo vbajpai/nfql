@@ -44,7 +44,11 @@ struct aggr_result {
   struct aggr**                               aggrset;
 };
 
-struct filter_rule {
+struct filter_clause {
+  size_t                                      num_terms;
+  struct filter_term**                        termset;
+};
+struct filter_term {
   size_t                                      field_offset;
   uint64_t                                    value;
   uint64_t                                    delta;
@@ -57,7 +61,11 @@ struct filter_rule {
                );
 };
 
-struct grouper_rule {
+struct grouper_clause {
+  size_t                                      num_terms;
+  struct grouper_term**                       termset;
+};
+struct grouper_term {
   size_t                                      field_offset1;
   size_t                                      field_offset2;
   uint64_t                                    delta;
@@ -70,8 +78,7 @@ struct grouper_rule {
                uint64_t                       delta
                );
 };
-
-struct aggr_rule {
+struct aggr_term {
   size_t                                      field_offset;
   struct aggr_op*                             op;
   struct aggr* (*func)(
@@ -83,11 +90,15 @@ struct aggr_rule {
                        );
 };
 
-struct gfilter_rule {
+struct groupfilter_clause {
+  size_t                                      num_terms;
+  struct groupfilter_term**                       termset;
+};
+struct groupfilter_term {
   size_t                                      field;
   uint64_t                                    value;
   uint64_t                                    delta;
-  struct gfilter_op*                          op;
+  struct groupfilter_op*                      op;
   bool (*func)(
                const struct group* const      group,
                size_t                         field,
@@ -104,15 +115,15 @@ struct branch {
   int                                         branch_id;
   struct ft_data*                             data;
 
-  size_t                                      num_filter_rules;
-  size_t                                      num_grouper_rules;
-  size_t                                      num_aggr_rules;
-  size_t                                      num_gfilter_rules;
+  size_t                                      num_filter_clauses;
+  size_t                                      num_grouper_clauses;
+  size_t                                      num_aggr_clause_terms;
+  size_t                                      num_groupfilter_clauses;
 
-  struct filter_rule**                        filter_ruleset;
-  struct grouper_rule**                       grouper_ruleset;
-  struct aggr_rule**                          aggr_ruleset;
-  struct gfilter_rule**                       gfilter_ruleset;
+  struct filter_clause**                      filter_clauseset;
+  struct grouper_clause**                     grouper_clauseset;
+  struct aggr_term**                          aggr_clause_termset;
+  struct groupfilter_clause**                 groupfilter_clauseset;
   /* -----------------------------------------------------------------------*/
 
 
@@ -126,14 +137,12 @@ struct branch {
   struct groupfilter_result*                  gfilter_result;
 
   /* -----------------------------------------------------------------------*/
-
 };
 
 struct filter_result {
   size_t                                      num_filtered_records;
   char**                                      filtered_recordset;
 };
-
 struct grouper_result {
   size_t                                      num_unique_records;
   char**                                      sorted_recordset;
@@ -142,12 +151,10 @@ struct grouper_result {
   size_t                                      num_groups;
   struct group**                              groupset;
 };
-
 struct groupfilter_result {
   size_t                                      num_filtered_groups;
   struct group**                              filtered_groupset;
 };
-
 struct aggr {
   size_t                                      num_values;
   uint32_t*                                   values;
@@ -158,22 +165,26 @@ struct aggr {
 
 struct flowquery {
   size_t                                      num_branches;
-  size_t                                      num_merger_rules;
+  size_t                                      num_merger_clauses;
 
   struct branch**                             branchset;
-  struct merger_rule**                        mruleset;
+  struct merger_clause**                      merger_clauseset;
   struct merger_result*                       merger_result;
   struct ungrouper_result*                    ungrouper_result;
 };
 
+struct merger_clause {
+  size_t                                     num_terms;
+  struct merger_term**                       termset;
+};
 /*
- * merger rules
- * a single rule will always compare two branches
+ * merger term
+ * a single term will always compare two branches
  * A.dstip = B.dstip = C.dstip should be broken down to
  * A.dstip = B.dstip
  * B.dstip = C.dstip
  */
-struct merger_rule {
+struct merger_term {
   struct branch*                              branch1;
   size_t                                      field1;
   struct branch*                              branch2;
@@ -194,48 +205,39 @@ struct merger_result {
   size_t                                      total_num_group_tuples;
   struct group***                             group_tuples;
 };
-
 struct ungrouper_result {
   size_t                                      num_streams;
   struct stream**                             streamset;
 };
-
 struct stream {
   size_t                                      num_records;
   char**                                      recordset;
 };
 
-
-
 struct filter_op {
   uint64_t                                    op;
   uint64_t                                    field_type;
 };
-
 struct grouper_op {
   uint64_t                                    op;
   uint64_t                                    field1_type;
   uint64_t                                    field2_type;
   uint64_t                                    optype;
 };
-
 struct aggr_op {
   uint64_t                                    op;
   uint64_t                                    field_type;
 };
-
-struct gfilter_op {
+struct groupfilter_op {
   uint64_t                                    op;
   uint64_t                                    field_type;
 };
-
 struct merger_op {
   uint64_t                                    op;
   uint64_t                                    field1_type;
   uint64_t                                    field2_type;
   uint64_t                                    optype;
 };
-
 
 /*
  * struct grouper_rule.op is a uint16_t with the options ORed together so that

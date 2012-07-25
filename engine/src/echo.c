@@ -177,7 +177,7 @@ echo_branch(
     if (verbose_vv){
       echo_grouper(
                    branch->branch_id,
-                   branch->num_grouper_rules,
+                   branch->num_grouper_clauses,
                    branch->filter_result->num_filtered_records,
 
                    branch->grouper_result,
@@ -262,14 +262,14 @@ echo_filter(
 void
 echo_grouper(
              int branch_id,
-             size_t num_grouper_rules,
+             size_t num_grouper_clauses,
              size_t num_sorted_records,
 
              const struct grouper_result* const gresult,
              struct ft_data* const dataformat
             ) {
 
-  if(num_grouper_rules > 0) {
+  if(num_grouper_clauses > 0) {
 
     if (file) {
       /* get a file descriptor */
