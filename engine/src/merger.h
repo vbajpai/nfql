@@ -37,8 +37,8 @@ struct merger_rule;
 
 struct merger_result*
 merger(
-       size_t num_merger_rules,
-       struct merger_rule** const mruleset,
+       size_t num_merger_clauses,
+       struct merger_clause** const merger_clauseset,
 
        size_t num_branches,
        struct branch** const branchset

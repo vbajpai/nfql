@@ -32,46 +32,70 @@ from pipeline import protocol
 
 if __name__ == '__main__':
 
-  fruleset = []
-  fruleset.append(vars(FilterRule('srcport', 80, 'RULE_S1_16', 0,
-                                                 'RULE_EQ')))
-  filter1 = {'ruleset': fruleset}
 
-  gruleset = []
-  grouper1 = grouper2 = {'ruleset': gruleset}
 
-  aruleset = []
-  aruleset.append(vars(AggregationRule('dPkts', 'RULE_S1_32',
-                                                'RULE_SUM')))
-  aruleset.append(vars(AggregationRule('dOctets', 'RULE_S1_32',
-                                                  'RULE_SUM')))
-  a1 = a2 = {'ruleset' : aruleset}
+  term1 = {'term': vars(FilterRule('srcport', 80,
+                                   'RULE_S1_16', 0, 'RULE_EQ'))}
+  clause1 = {'clause': [term1]}
 
-  gfruleset = []
-  gfruleset.append(vars(GroupFilterRule('dPkts', 0,
+  term1 = {'term': vars(FilterRule('dstport', 80,
+                                   'RULE_S1_16', 0, 'RULE_EQ'))}
+  clause2 = {'clause': [term1]}
+
+  filter1 = {'dnf-expr': [clause1] + [clause2]}
+
+
+
+
+
+  term1 = {'term': vars(AggregationRule('dPkts', 'RULE_S1_32',
+                                        'RULE_SUM'))}
+  term2 = {'term': vars(AggregationRule('dOctets', 'RULE_S1_32',
+                                        'RULE_SUM'))}
+  a1 = {'clause': [term1] + [term2]}
+
+  grouper1 = {'dnf-expr': [], 'aggregation': a1}
+
+
+
+
+
+
+  term1 = {'term': vars(GroupFilterRule('dPkts', 0,
                                         'RULE_S1_32', 0,
-                                        'RULE_LT')))
-  gfilter1 = gfilter2 = {'ruleset' : gfruleset}
+                                        'RULE_LT'))}
+  clause1 = {'clause': [term1]}
+  gfilter1 = {'dnf-expr': [clause1]}
 
-  fruleset = []
-  fruleset.append(vars(FilterRule('dstport', 80, 'RULE_S1_16', 0,
-                                                 'RULE_EQ')))
-  filter2 = {'ruleset': fruleset}
+
+
+
+
+
 
   branchset = []
   branchset.append({'filter': filter1,
                     'grouper': grouper1,
                     'aggregation': a1,
-                    'gfilter': gfilter1,
-                   })
-  branchset.append({'filter': filter2,
-                    'grouper': grouper2,
-                    'aggregation' : a2,
-                    'gfilter': gfilter2,
+                    'groupfilter': gfilter1,
                    })
 
-  mruleset = []
-  merger = {'ruleset' : mruleset}
+
+
+
+
+
+
+
+  merger = {'dnf-expr': []}
+
+
+
+
+
+
+
+
 
   query = {'branchset': branchset, 'merger': merger}
 

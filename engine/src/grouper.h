@@ -33,7 +33,7 @@
 #include "ftreader.h"
 #include "auto-assign.h"
 
-struct grouper_rule;
+struct grouper_term;
 struct grouper_aggr;
 
 #define tree_item(size) \
@@ -84,18 +84,19 @@ struct grouper_type {
 
   char*** (*bsearch)(
                      const char* const              filtered_record,
-                     struct grouper_rule** const    grouper_ruleset,
+                     struct grouper_term** const    grouper_termset,
                      const struct
                      grouper_intermediate_result*
                      const                          intermediate_result
                     );
 
   struct uniq_recordset_result*
-  (*alloc_uniqresult)(
-                      size_t                         num_filtered_records,
-                      struct grouper_rule** const    grouper_ruleset,
-                      char*** const                  sorted_recordset_ref
-                     );
+  (*alloc_uniqresult)
+            (
+              size_t                         num_filtered_records,
+              struct grouper_term** const    grouper_termset_of_first_clause,
+              char*** const                  sorted_recordset_ref
+            );
 
   char*
   (*get_uniq_record)(
@@ -110,41 +111,42 @@ struct grouper_type {
 
 struct aggr_result*
 grouper_aggregations(
-                     size_t num_filter_rules,
-                     struct filter_rule** const filter_ruleset,
+                     size_t num_filter_clauses,
+                     struct filter_clause** const filter_clauseset,
 
-                     size_t num_grouper_rules,
-                     struct grouper_rule** const grouper_ruleset,
+                     size_t num_grouper_clauses,
+                     struct grouper_clause** const grouper_clauseset,
 
-                     size_t num_aggr_rules,
-                     struct aggr_rule** const aggr_ruleset,
+                     size_t num_aggr_clause_terms,
+                     struct aggr_term** const aggr_clause_termset,
 
                      const struct group* const group,
                      int rec_size
                      );
 
 struct grouper_intermediate_result *
-get_grouper_intermediates(
-                          size_t num_filtered_records,
-                          char** const filtered_recordset_copy,
+get_grouper_intermediates
+                (
+                  size_t num_filtered_records,
+                  char** const filtered_recordset_copy,
 
-                          size_t num_grouper_rules,
-                          struct grouper_rule** const grouper_ruleset,
+                  size_t num_grouper_terms_in_first_clause,
+                  struct grouper_term** const grouper_termset_of_first_clause,
 
-                          struct grouper_result* const gresult,
-                          const struct grouper_type* const gtype
-                          );
+                  struct grouper_result* const gresult,
+                  const struct grouper_type* const gtype
+                );
 
 struct grouper_result*
 grouper(
-        size_t num_filter_rules,
-        struct filter_rule** const filter_ruleset,
+        size_t num_filter_clauses,
+        struct filter_clause** const filter_clauseset,
 
-        size_t num_grouper_rules,
-        struct grouper_rule** const grouper_ruleset,
+        size_t num_grouper_clauses,
+        struct grouper_clause** const grouper_clauseset,
 
-        size_t num_aggr_rules,
-        struct aggr_rule** const aggr_ruleset,
+        size_t num_aggr_clause_terms,
+        struct aggr_term** const aggr_clause_termset,
 
         const struct filter_result* const fresult,
         int rec_size

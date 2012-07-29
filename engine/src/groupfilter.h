@@ -33,8 +33,8 @@
 
 struct groupfilter_result*
 groupfilter(
-            size_t num_gfilter_rules,
-            struct gfilter_rule** const ruleset,
+            size_t num_groupfilter_clauses,
+            struct groupfilter_clause** const groupfilter_clauseset,
 
             const struct grouper_result* const gresult
            );

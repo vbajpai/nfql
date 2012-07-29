@@ -28,8 +28,8 @@
 
 struct groupfilter_result*
 groupfilter(
-            size_t num_gfilter_rules,
-            struct gfilter_rule** const ruleset,
+            size_t num_groupfilter_clauses,
+            struct groupfilter_clause** const groupfilter_clauseset,
 
             const struct grouper_result* const gresult
             ) {
@@ -40,37 +40,58 @@ groupfilter(
   if (gfilter_result == NULL)
     errExit("calloc");
 
+  /* assign group filter func for each term */
+  for (int k = 0; k < num_groupfilter_clauses; k++) {
+
+    struct groupfilter_clause* gclause = groupfilter_clauseset[k];
+
+    for (int j = 0; j < gclause->num_terms; j++) {
+
+      /* assign a uintX_t specific function depending on grule->op */
+      struct groupfilter_term* term = gclause->termset[j];
+      assign_groupfilter_func(term);
+    }
+  }
+
   /* iterate over each group */
   for (int i = 0, j = 0; i < gresult->num_groups; i++) {
 
     struct group* group = gresult->groupset[i];
+    bool satisfied = false;
 
-    /* iterate over each group filter rule */
-    for (j = 0; j < num_gfilter_rules; j++) {
+    /* process each group filter clause (clauses are OR'd) */
+    for (int k = 0; k < num_groupfilter_clauses; k++) {
 
-      struct gfilter_rule* rule = ruleset[j];
+      struct groupfilter_clause* const gfclause = groupfilter_clauseset[k];
 
-      /* assign a specific uintX_t function depending on rule->op */
-      assign_gfilter_func(rule);
+      /* process each group filter term (terms within a clause are AND'd) */
+      for (j = 0; j < gfclause->num_terms; j++) {
 
-      /* break out if any one of the rules does NOT match */
-      if (
-          !rule->func(
-                      group,
-                      rule->field,
-                      rule->value,
-                      rule->delta
-                     )
-         )
-        break;
+        struct groupfilter_term* const term = gfclause->termset[j];
+
+        /* run the comparator function of the filter term on the record */
+        if (
+            !term->func(
+                        group,
+                        term->field,
+                        term->value,
+                        term->delta
+                       )
+           )
+          break;
+      }
+
+      /* if any term is not satisfied, move to the next clause */
+      if (j < gfclause->num_terms)
+        continue;
+      /* else this clause is TRUE; so everything is TRUE; break out */
+      else {
+        satisfied = true; break;
+      }
     }
 
-    /* continue, if it did not pass the filter rules  */
-    if (j < num_gfilter_rules)
-      continue;
-
-    /* otherwise add the group to the filtered groupset */
-    else {
+    /* if rules are satisfied then save this record */
+    if (satisfied) {
       gfilter_result->num_filtered_groups += 1;
 
       /* free'd just after returning from ungrouper(...) */
