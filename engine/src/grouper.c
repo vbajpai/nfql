@@ -539,6 +539,13 @@ grouper(
 
 #ifdef GROUPERAGGREGATIONS
 
+  /* assign a specific uintX_t function depending on aggrule->op */
+  for (int j = 0; j < num_aggr_clause_terms; j++){
+
+    struct aggr_term* term = aggr_clause_termset[j];
+    assign_aggr_func(term);
+  }
+
   for (int i = 0; i < gresult->num_groups; i++) {
 
     struct group* group = gresult->groupset[i];
@@ -561,6 +568,7 @@ grouper(
     else
       group = NULL;
   }
+
 #endif
 
   return gresult;
