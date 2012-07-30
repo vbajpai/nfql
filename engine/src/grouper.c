@@ -194,9 +194,6 @@ grouper_aggregations(
       }
     }
 
-    /* assign a specific uintX_t function depending on aggrule->op */
-    assign_aggr_func(term);
-
     /* free'd just after returning from merger(...) */
     aggrset[j] = term->func(
                              group->members,
