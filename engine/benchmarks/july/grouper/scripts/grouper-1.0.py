@@ -40,7 +40,33 @@ if __name__ == '__main__':
   term1 = {'term': vars(GrouperRule('srcaddr', 'RULE_S1_32',
                                     'srcaddr', 'RULE_S2_32', 0,
                                     'RULE_EQ', 'RULE_ABS'))}
-  clause1 = {'clause': [term1]}
+  term2 = {'term': vars(GrouperRule('dstaddr', 'RULE_S1_32',
+                                    'dstaddr', 'RULE_S2_32', 0,
+                                    'RULE_EQ', 'RULE_ABS'))}
+  term3 = {'term': vars(GrouperRule('srcport', 'RULE_S1_16',
+                                    'srcport', 'RULE_S2_16', 0,
+                                    'RULE_EQ', 'RULE_ABS'))}
+  term4 = {'term': vars(GrouperRule('dstport', 'RULE_S1_16',
+                                    'dstport', 'RULE_S2_16', 0,
+                                    'RULE_EQ', 'RULE_ABS'))}
+  term5 = {'term': vars(GrouperRule('prot', 'RULE_S1_8',
+                                    'prot', 'RULE_S2_8', 0,
+                                    'RULE_EQ', 'RULE_ABS'))}
+  term6 = {'term': vars(GrouperRule('dPkts', 'RULE_S1_32',
+                                    'dPkts', 'RULE_S2_32', 0,
+                                    'RULE_EQ', 'RULE_ABS'))}
+  term7 = {'term': vars(GrouperRule('dOctets', 'RULE_S1_32',
+                                    'dOctets', 'RULE_S2_32', 0,
+                                    'RULE_EQ', 'RULE_ABS'))}
+  term8 = {'term': vars(GrouperRule('tcp_flags', 'RULE_S1_8',
+                                    'tcp_flags', 'RULE_S2_8', 0,
+                                    'RULE_EQ', 'RULE_ABS'))}
+  term9 = {'term': vars(GrouperRule('First', 'RULE_S1_32',
+                                    'First', 'RULE_S2_32', 0,
+                                    'RULE_EQ', 'RULE_ABS'))}
+  clause1 = {'clause': [term1] + [term2] + [term3] + [term4] + [term5] +
+                       [term6] + [term7] + [term8] + [term9]
+            }
   term1 = {'term': vars(AggregationRule('dPkts', 'RULE_S1_32', 'RULE_SUM'))}
   term2 = {'term': vars(AggregationRule('dOctets', 'RULE_S1_32', 'RULE_SUM'))}
   a1 = {'clause': [term1] + [term2]}

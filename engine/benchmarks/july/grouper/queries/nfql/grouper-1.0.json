@@ -1,0 +1,196 @@
+{
+  "merger": {
+    "dnf-expr": []
+  }, 
+  "branchset": [
+    {
+      "filter": {
+        "dnf-expr": [
+          {
+            "clause": [
+              {
+                "term": {
+                  "delta": 0, 
+                  "op": "RULE_GE", 
+                  "offset": {
+                    "datatype": "RULE_S1_16", 
+                    "name": "dstport", 
+                    "value": 0
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }, 
+      "groupfilter": {
+        "dnf-expr": []
+      }, 
+      "grouper": {
+        "dnf-expr": [
+          {
+            "clause": [
+              {
+                "term": {
+                  "delta": 0, 
+                  "op": {
+                    "type": "RULE_ABS", 
+                    "name": "RULE_EQ"
+                  }, 
+                  "offset": {
+                    "f2_datatype": "RULE_S2_32", 
+                    "f1_name": "srcaddr", 
+                    "f1_datatype": "RULE_S1_32", 
+                    "f2_name": "srcaddr"
+                  }
+                }
+              }, 
+              {
+                "term": {
+                  "delta": 0, 
+                  "op": {
+                    "type": "RULE_ABS", 
+                    "name": "RULE_EQ"
+                  }, 
+                  "offset": {
+                    "f2_datatype": "RULE_S2_32", 
+                    "f1_name": "dstaddr", 
+                    "f1_datatype": "RULE_S1_32", 
+                    "f2_name": "dstaddr"
+                  }
+                }
+              }, 
+              {
+                "term": {
+                  "delta": 0, 
+                  "op": {
+                    "type": "RULE_ABS", 
+                    "name": "RULE_EQ"
+                  }, 
+                  "offset": {
+                    "f2_datatype": "RULE_S2_16", 
+                    "f1_name": "srcport", 
+                    "f1_datatype": "RULE_S1_16", 
+                    "f2_name": "srcport"
+                  }
+                }
+              }, 
+              {
+                "term": {
+                  "delta": 0, 
+                  "op": {
+                    "type": "RULE_ABS", 
+                    "name": "RULE_EQ"
+                  }, 
+                  "offset": {
+                    "f2_datatype": "RULE_S2_16", 
+                    "f1_name": "dstport", 
+                    "f1_datatype": "RULE_S1_16", 
+                    "f2_name": "dstport"
+                  }
+                }
+              }, 
+              {
+                "term": {
+                  "delta": 0, 
+                  "op": {
+                    "type": "RULE_ABS", 
+                    "name": "RULE_EQ"
+                  }, 
+                  "offset": {
+                    "f2_datatype": "RULE_S2_8", 
+                    "f1_name": "prot", 
+                    "f1_datatype": "RULE_S1_8", 
+                    "f2_name": "prot"
+                  }
+                }
+              }, 
+              {
+                "term": {
+                  "delta": 0, 
+                  "op": {
+                    "type": "RULE_ABS", 
+                    "name": "RULE_EQ"
+                  }, 
+                  "offset": {
+                    "f2_datatype": "RULE_S2_32", 
+                    "f1_name": "dPkts", 
+                    "f1_datatype": "RULE_S1_32", 
+                    "f2_name": "dPkts"
+                  }
+                }
+              }, 
+              {
+                "term": {
+                  "delta": 0, 
+                  "op": {
+                    "type": "RULE_ABS", 
+                    "name": "RULE_EQ"
+                  }, 
+                  "offset": {
+                    "f2_datatype": "RULE_S2_32", 
+                    "f1_name": "dOctets", 
+                    "f1_datatype": "RULE_S1_32", 
+                    "f2_name": "dOctets"
+                  }
+                }
+              }, 
+              {
+                "term": {
+                  "delta": 0, 
+                  "op": {
+                    "type": "RULE_ABS", 
+                    "name": "RULE_EQ"
+                  }, 
+                  "offset": {
+                    "f2_datatype": "RULE_S2_8", 
+                    "f1_name": "tcp_flags", 
+                    "f1_datatype": "RULE_S1_8", 
+                    "f2_name": "tcp_flags"
+                  }
+                }
+              }, 
+              {
+                "term": {
+                  "delta": 0, 
+                  "op": {
+                    "type": "RULE_ABS", 
+                    "name": "RULE_EQ"
+                  }, 
+                  "offset": {
+                    "f2_datatype": "RULE_S2_32", 
+                    "f1_name": "First", 
+                    "f1_datatype": "RULE_S1_32", 
+                    "f2_name": "First"
+                  }
+                }
+              }
+            ]
+          }
+        ], 
+        "aggregation": {
+          "clause": [
+            {
+              "term": {
+                "op": "RULE_SUM", 
+                "offset": {
+                  "datatype": "RULE_S1_32", 
+                  "name": "dPkts"
+                }
+              }
+            }, 
+            {
+              "term": {
+                "op": "RULE_SUM", 
+                "offset": {
+                  "datatype": "RULE_S1_32", 
+                  "name": "dOctets"
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}
