@@ -88,7 +88,7 @@ print_trace (void)
 {
 #define BUFSIZE 10
   void *array[BUFSIZE];
-  size_t size = backtrace (array, BUFSIZE);
+  int size = backtrace (array, BUFSIZE);
   char ** strings = backtrace_symbols (array, size);
 
   puts("\nStack Trace: \n");

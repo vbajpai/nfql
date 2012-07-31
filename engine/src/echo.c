@@ -52,13 +52,15 @@ echo_merger(
         int out_fd = get_fd(filename);
         if(out_fd == -1) errExit("get_fd(...) returned -1");
         else free(filename);
-
+        
+        uint32_t num_flows =
+        (uint32_t) (mresult->total_num_group_tuples * num_branches);
+        
         /* get the output stream */
         struct ftio* ftio_out = get_ftio(
                                          dataformat,
                                          out_fd,
-                                         mresult->total_num_group_tuples *
-                                         num_branches
+                                         num_flows
                                         );
 
         /* write the header to the output stream */
@@ -111,12 +113,14 @@ echo_merger(
     int out_fd = get_fd(filename);
     if(out_fd == -1) errExit("get_fd(...) returned -1");
     else free(filename);
+    
+    uint32_t num_flows = (uint32_t) (mresult->num_group_tuples * num_branches);
 
     /* get the output stream */
     struct ftio* ftio_out = get_ftio(
                                      dataformat,
                                      out_fd,
-                                     mresult->num_group_tuples * num_branches
+                                     num_flows
                                     );
 
     /* write the header to the output stream */
@@ -141,7 +145,7 @@ echo_merger(
     free(ftio_out);
   } else {
 
-    printf("\nNo. of Merged Groups: %zu (Tuples)\n", mresult->num_group_tuples);
+    printf("\nNo. of Merged Groups: %u (Tuples)\n", mresult->num_group_tuples);
     if (mresult->num_group_tuples != 0)
       puts(FLOWHEADER);
 
@@ -248,7 +252,7 @@ echo_filter(
     free(ftio_out);
 
   } else {
-    printf("\nNo. of Filtered Records: %zd\n", fresult->num_filtered_records);
+    printf("\nNo. of Filtered Records: %u\n", fresult->num_filtered_records);
     if (fresult->num_filtered_records != 0)
       puts(FLOWHEADER);
 
@@ -263,7 +267,7 @@ void
 echo_grouper(
              int branch_id,
              size_t num_grouper_clauses,
-             size_t num_sorted_records,
+             uint32_t num_sorted_records,
 
              const struct grouper_result* const gresult,
              struct ft_data* const dataformat
@@ -305,7 +309,7 @@ echo_grouper(
 
     } else {
 
-      printf("\nNo. of Sorted Records: %zd\n", num_sorted_records);
+      printf("\nNo. of Sorted Records: %u\n", num_sorted_records);
       if (num_sorted_records != 0)
         puts(FLOWHEADER);
 
@@ -346,7 +350,7 @@ echo_grouper(
       free(ftio_out);
 
     } else {
-      printf("\nNo. of Unique Records: %zd\n", gresult->num_unique_records);
+      printf("\nNo. of Unique Records: %u\n", gresult->num_unique_records);
       if (gresult->num_unique_records != 0)
         puts(FLOWHEADER);
 
@@ -356,7 +360,7 @@ echo_grouper(
   }
 
   if(!file) {
-    printf("\nNo. of Groups: %zu (Verbose Output)\n", gresult->num_groups);
+    printf("\nNo. of Groups: %u (Verbose Output)\n", gresult->num_groups);
 
     if (gresult->num_groups > 0)
       puts(FLOWHEADER);
@@ -450,7 +454,7 @@ echo_group_aggr(
     free(ftio_out);
   } else{
 
-    printf("\nNo. of Groups: %zu (Aggregations)\n", gresult->num_groups);
+    printf("\nNo. of Groups: %u (Aggregations)\n", gresult->num_groups);
     if (gresult->num_groups != 0)
       puts(FLOWHEADER);
     for (int j = 0; j < gresult->num_groups; j++) {
@@ -503,7 +507,7 @@ echo_gfilter(
     free(ftio_out);
   } else {
 
-    printf("\nNo. of Filtered Groups: %zu (Aggregations)\n",
+    printf("\nNo. of Filtered Groups: %u (Aggregations)\n",
            gfresult->num_filtered_groups);
     if (gfresult->num_filtered_groups != 0)
       puts(FLOWHEADER);
@@ -573,7 +577,7 @@ echo_results(
 
     } else {
 
-      printf("\nNo. of Records in Stream (%d): %zu \n",j+1,
+      printf("\nNo. of Records in Stream (%d): %u \n",j+1,
              stream->num_records);
       if (stream->num_records != 0)
         puts(FLOWHEADER);

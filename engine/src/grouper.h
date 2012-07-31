@@ -36,19 +36,6 @@
 struct grouper_term;
 struct grouper_aggr;
 
-#define tree_item(size) \
-struct tree_item_##size { \
-size                            value; \
-char***                         ptr; \
-};
-
-tree_item(uint8_t);
-tree_item(uint16_t);
-tree_item(uint32_t);
-tree_item(uint64_t);
-
-typedef enum { UINT8_T, UINT16_T, UINT32_T, UINT64_T } int_sizes;
-
 struct grouper_intermediate_result {
 
   struct uniq_recordset_result*   uniq_result;
@@ -57,37 +44,43 @@ struct grouper_intermediate_result {
 
 struct uniq_recordset_result {
 
-  size_t                          num_uniq_records;
-  union {
-    struct tree_item_uint8_t*     recordset_uint8_t;
-    struct tree_item_uint16_t*    recordset_uint16_t;
-    struct tree_item_uint32_t*    recordset_uint32_t;
-    struct tree_item_uint64_t*    recordset_uint64_t;
-  }uniq_recordset;
-
+  uint32_t                        num_uniq_records;
+  char****                        uniq_recordset;
 };
 
-struct grouper_type {
-#if defined (__APPLE__) || defined (__FreeBSD__)
-  int (*qsort_comp)(
-                    void*                           thunk,
-                    const void*                     e1,
-                    const void*                     e2
-                   );
-#elif defined (__linux)
-  int (*qsort_comp)(
-                    const void*                     e1,
-                    const void*                     e2,
-                    void*                           thunk
-                   );
+
+/* quick sort comparator */
+#if defined(__APPLE__) || defined(__FreeBSD__)
+  int qsort_comp(void *thunk, const void *e1, const void *e2);
+#elif defined(__linux)
+  int qsort_comp(const void *e1, const void *e2, void *thunk);
 #endif
 
-  char*** (*bsearch)(
-                     const char* const              filtered_record,
-                     struct grouper_term** const    grouper_termset,
-                     const struct
-                     grouper_intermediate_result*
-                     const                          intermediate_result
+
+struct grouper_type {
+  
+  #if defined (__APPLE__) || defined (__FreeBSD__)
+  int (*qsort_comp)(
+                      void*                           thunk,
+                      const void*                     e1,
+                      const void*                     e2
+                   );
+  #elif defined (__linux)
+  int (*qsort_comp)(
+                      const void*                     e1,
+                      const void*                     e2,
+                      void*                           thunk
+                   );
+  #endif
+
+  struct search_result*
+          (*bsearch)(
+                      const char* const              key,
+                      const void* const              base,
+                      
+                      size_t                         num_filtered_records,
+                      size_t                         field_offset,
+                      int                            type
                     );
 
   struct uniq_recordset_result*
@@ -107,6 +100,20 @@ struct grouper_type {
   void
   (*dealloc_uniqresult)(struct uniq_recordset_result* uniq_result);
 };
+
+struct search_result {
+  char***                         record_iter;
+  size_t                          num_items;
+};
+
+
+char***
+grouper_bsearch (
+                 const char* filtered_record,
+                 struct grouper_clause* clause,
+                 const struct grouper_intermediate_result* const uniq_result,
+                 size_t num_filtered_records
+                );
 
 
 struct aggr_result*
@@ -129,12 +136,9 @@ get_grouper_intermediates
                 (
                   size_t num_filtered_records,
                   char** const filtered_recordset_copy,
-
-                  size_t num_grouper_terms_in_first_clause,
-                  struct grouper_term** const grouper_termset_of_first_clause,
-
-                  struct grouper_result* const gresult,
-                  const struct grouper_type* const gtype
+                 
+                  struct grouper_clause* clause,
+                  struct grouper_result* const gresult
                 );
 
 struct grouper_result*
@@ -150,39 +154,6 @@ grouper(
 
         const struct filter_result* const fresult,
         int rec_size
-        );
-
-
-#if defined (__APPLE__) || defined (__FreeBSD__)
-int
-comp_uint8_t(void *thunk, const void *e1, const void *e2);
-int
-comp_uint16_t(void *thunk, const void *e1, const void *e2);
-int
-comp_uint32_t(void *thunk, const void *e1, const void *e2);
-int
-comp_uint64_t(void *thunk, const void *e1, const void *e2);
-#elif defined(__linux)
-int
-comp_uint8_t(const void *e1, const void *e2, void* thunk);
-int
-comp_uint16_t(const void *e1, const void *e2, void* thunk);
-int
-comp_uint32_t(const void *e1, const void *e2, void* thunk);
-int
-comp_uint64_t(const void *e1, const void *e2, void* thunk);
-#endif
-
-int
-comp_uint8_t_p(void *thunk, const void *e1, const void *e2);
-
-int
-comp_uint16_t_p(void *thunk, const void *e1, const void *e2);
-
-int
-comp_uint32_t_p(void *thunk, const void *e1, const void *e2);
-
-int
-comp_uint64_t_p(void *thunk, const void *e1, const void *e2);
+       );
 
 #endif
