@@ -32,6 +32,7 @@
 #include "pipeline.h"
 #include "errorhandlers.h"
 #include "ftlib.h"
+#include <math.h>
 
 
 
@@ -66,19 +67,49 @@ get_enum(const char * const name);
 /*                         grouper utilities                              */
 /* -----------------------------------------------------------------------*/
 
-struct bsearch_handle {
-  char **ordered_records;
-  char ***uniq_records;
-  size_t num_uniq_records;
+
+
+/* quick sort comparator */
+#if defined (__APPLE__) || defined (__FreeBSD__)
+  int comp_uint8_t(void *thunk, const void *e1, const void *e2);
+  int comp_uint16_t(void *thunk, const void *e1, const void *e2);
+  int comp_uint32_t(void *thunk, const void *e1, const void *e2);
+  int comp_uint64_t(void *thunk, const void *e1, const void *e2);
+#elif defined(__linux)
+  int comp_uint8_t(const void *e1, const void *e2, void* thunk);
+  int comp_uint16_t(const void *e1, const void *e2, void* thunk);
+  int comp_uint32_t(const void *e1, const void *e2, void* thunk);
+  int comp_uint64_t(const void *e1, const void *e2, void* thunk);
+#endif
+
+
+
+
+/* binary search flags */
+enum bsearch_item {
+  FIRST_ITEM       =     3,
+  RANDOM_ITEM      =     2,
+  LAST_ITEM        =     1
 };
 
+/* returns a random/first/last found item depending on the bsearch_item set */
 void *
-bsearch_r(const void *key,
-          const void *base,
-          size_t nmemb,
-          size_t size,
-          void *thunk,
-          int (*compar) (void *thunk, const void *, const void *));
+bsearch_r (
+            const void *key,
+            const void *base,
+            size_t nmemb,
+            size_t size,
+            void *thunk,
+            int (*compar) (void *thunk, const void *, const void *),
+            enum bsearch_item item
+          );
+
+/* binary search comparators */
+int comp_uint8_t_pp(void *thunk, const void *e1, const void *e2);
+int comp_uint16_t_pp(void *thunk, const void *e1, const void *e2);
+int comp_uint32_t_pp(void *thunk, const void *e1, const void *e2);
+int comp_uint64_t_pp(void *thunk, const void *e1, const void *e2);
+
 
 /* -----------------------------------------------------------------------*/
 
@@ -102,7 +133,7 @@ struct permut_iter {
 
 struct permut_iter*
 iter_init(
-          int num_branches,
+          size_t num_branches,
           struct branch** const branchset
           );
 bool

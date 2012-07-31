@@ -52,7 +52,7 @@ void
 echo_grouper(
              const int const branch_id,
              size_t num_grouper_rules,
-             size_t num_sorted_records,
+             uint32_t num_sorted_records,
 
              const struct grouper_result* const gresult,
              struct ft_data* const dataformat
