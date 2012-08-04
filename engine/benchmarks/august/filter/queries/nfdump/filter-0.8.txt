@@ -1,0 +1,1 @@
+nfdump -r $INPUT 'packets < 3' -zw $OUTPUT

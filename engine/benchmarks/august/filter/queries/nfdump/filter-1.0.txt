@@ -1,0 +1,1 @@
+nfdump -r $INPUT 'packets > 0 or packets = 0' -zw $OUTPUT

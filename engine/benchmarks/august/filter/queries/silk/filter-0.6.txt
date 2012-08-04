@@ -1,0 +1,2 @@
+rm -f $OUTPUT; \
+rwfilter --packets=2- --compression-method=zlib --fail=$OUTPUT $INPUT; \

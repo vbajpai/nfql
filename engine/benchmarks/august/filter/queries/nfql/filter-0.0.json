@@ -1,0 +1,31 @@
+{
+  "merger": {
+    "ruleset": []
+  }, 
+  "branchset": [
+    {
+      "filter": {
+        "ruleset": [
+          {
+            "delta": 0, 
+            "op": "RULE_LT", 
+            "offset": {
+              "datatype": "RULE_S1_32", 
+              "name": "dPkts", 
+              "value": 0
+            }
+          }
+        ]
+      }, 
+      "gfilter": {
+        "ruleset": []
+      }, 
+      "aggregation": {
+        "ruleset": []
+      }, 
+      "grouper": {
+        "ruleset": []
+      }
+    }
+  ]
+}

@@ -1,0 +1,6 @@
+filter-primitive p
+  type counter
+  permit ge 3
+
+filter-definition f
+  match packets p
