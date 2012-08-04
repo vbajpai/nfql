@@ -58,7 +58,7 @@ struct uniq_recordset_result {
 
 
 struct grouper_type {
-  
+
   #if defined (__APPLE__) || defined (__FreeBSD__)
   int (*qsort_comp)(
                       void*                           thunk,
@@ -77,7 +77,7 @@ struct grouper_type {
           (*bsearch)(
                       const char* const              key,
                       const void* const              base,
-                      
+
                       size_t                         num_filtered_records,
                       size_t                         field_offset,
                       int                            type
@@ -136,7 +136,7 @@ get_grouper_intermediates
                 (
                   size_t num_filtered_records,
                   char** const filtered_recordset_copy,
-                 
+
                   struct grouper_clause* clause,
                   struct grouper_result* const gresult
                 );

@@ -574,7 +574,7 @@ grouper(
 
                                                 num_grouper_clauses,
                                                 grouper_clauseset,
-  
+
                                                 num_aggr_clause_terms,
                                                 aggr_clause_termset,
 
@@ -607,13 +607,13 @@ int qsort_comp(const void *e1, const void *e2, void *thunk) {
 
     struct grouper_type* gtype = gtypeset[i];
     struct grouper_term* term = termset[i];
-    
+
 #if defined(__APPLE__) || defined(__FreeBSD__)
     result = gtype->qsort_comp((void*)term->field_offset2, e1, e2);
 #elif defined(__linux)
     result = gtype->qsort_comp(e1, e2, (void*)term->field_offset2);
 #endif
-    
+
     if (result != 0) break;
   }
 

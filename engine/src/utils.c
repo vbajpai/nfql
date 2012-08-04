@@ -195,16 +195,16 @@ bsearch_r (
            int (*compar) (void *thunk, const void *, const void *),
            enum bsearch_item get_item
           ) {
-  
+
   size_t l, u, idx;
   const void *p;
   void* item;
   int comparison;
-  
+
   l = 0;
   u = nmemb - 1;
   while (l <= u) {
-    
+
     if (get_item == LAST_ITEM)
       idx = (size_t) ceil((l + u) / 2.0);
     else
@@ -224,7 +224,7 @@ bsearch_r (
       /* the record was seen before is now NULL, must be less than this one */
       comparison = 1;
     }
-    
+
     if (comparison < 0)
       u = idx - 1;
     else if (comparison > 0)

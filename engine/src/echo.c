@@ -52,10 +52,10 @@ echo_merger(
         int out_fd = get_fd(filename);
         if(out_fd == -1) errExit("get_fd(...) returned -1");
         else free(filename);
-        
+
         uint32_t num_flows =
         (uint32_t) (mresult->total_num_group_tuples * num_branches);
-        
+
         /* get the output stream */
         struct ftio* ftio_out = get_ftio(
                                          dataformat,
@@ -113,7 +113,7 @@ echo_merger(
     int out_fd = get_fd(filename);
     if(out_fd == -1) errExit("get_fd(...) returned -1");
     else free(filename);
-    
+
     uint32_t num_flows = (uint32_t) (mresult->num_group_tuples * num_branches);
 
     /* get the output stream */
@@ -220,7 +220,7 @@ echo_filter(
   if(file) {
     /* get a file descriptor */
     char* filename = (char*)0L;
-    asprintf(&filename, "%s/filter-branch-%d-filtered-records.ftz", 
+    asprintf(&filename, "%s/filter-branch-%d-filtered-records.ftz",
              dirpath, branch_id);
     int out_fd = get_fd(filename);
     if(out_fd == -1) errExit("get_fd(...) returned -1");
@@ -278,7 +278,7 @@ echo_grouper(
     if (file) {
       /* get a file descriptor */
       char* filename = (char*)0L;
-      asprintf(&filename, "%s/grouper-branch-%d-sorted-records.ftz", 
+      asprintf(&filename, "%s/grouper-branch-%d-sorted-records.ftz",
                dirpath, branch_id);
       int out_fd = get_fd(filename);
       if(out_fd == -1) errExit("get_fd(...) returned -1");

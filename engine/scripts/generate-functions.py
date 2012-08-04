@@ -513,19 +513,19 @@ def alloc_uniqresult_body(atype):
     (*(%s *)(*sorted_recordset_ref[i] + offset)) !=
     (*(%s *)(**uniq_recordset[num_uniq_records-1] + offset))
     ) {
-    
+
     uniq_recordset[num_uniq_records] = &sorted_recordset_ref[i];
     num_uniq_records++;
     }
     }
-    
+
     uniq_recordset = (char ****) realloc(
     uniq_recordset,
     num_uniq_records * sizeof(char***)
     );
     if (uniq_recordset == NULL)
     errExit("realloc");
-    
+
     uresult->num_uniq_records = num_uniq_records;
     uresult->uniq_recordset = uniq_recordset;
 
@@ -667,7 +667,7 @@ def bsearch_body(atype):
     1,
     (void *)&field_offset,
     comp_%s_pp,
-    LAST_ITEM    
+    LAST_ITEM
     );
 
     /* calculate the number of such items */
