@@ -1,5 +1,5 @@
 rm -f /tmp/filter.rwz $OUTPUT; \
-rwfilter --dport=0- --compression-method=zlib --pass=/tmp/filter.rwz $INPUT; \
+rwfilter --packets=0- --compression-method=zlib --pass=/tmp/filter.rwz $INPUT; \
 rwsort --fields=sIP,dIP,sPort,dPort /tmp/filter.rwz | \
 rwgroup --id-fields=sIP,dIP,sPort,dPort --summarize \
         --compression-method=zlib --output-path=$OUTPUT;
