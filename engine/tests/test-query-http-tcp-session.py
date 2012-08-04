@@ -136,9 +136,9 @@ class Trace2012(Trace, unittest.TestCase):
 
   def testGroupers(self):
     """expected number of groups in each branch
-       - number of groups in branch A should be 1013
+       - number of groups in branch A should be 284
        - number of groups in branch B should be 1013"""
-    num = [1013, 1013]
+    num = [284, 1013]
     self.iternum(
                  num,
                  self.__class__.pattern['grouper'],

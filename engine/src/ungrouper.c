@@ -66,7 +66,7 @@ ungrouper(
         if (stream->recordset == NULL)
           errExit("realloc");
 
-        for (int k = stream->num_records, l = 0;
+        for (size_t k = stream->num_records, l = 0;
              k < (stream->num_records + group->num_members);
              k++, l++)
           stream->recordset[k] = group->members[l];

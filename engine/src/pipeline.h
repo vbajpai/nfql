@@ -34,7 +34,7 @@
 /* -----------------------------------------------------------------------*/
 
 struct group {
-  size_t                                      num_members;
+  uint32_t                                    num_members;
   char**                                      members;
   struct aggr_result*                         aggr_result;
 };
@@ -64,6 +64,7 @@ struct filter_term {
 struct grouper_clause {
   size_t                                      num_terms;
   struct grouper_term**                       termset;
+  struct grouper_type**                       gtypeset;
 };
 struct grouper_term {
   size_t                                      field_offset1;
@@ -140,24 +141,24 @@ struct branch {
 };
 
 struct filter_result {
-  size_t                                      num_filtered_records;
+  uint32_t                                    num_filtered_records;
   char**                                      filtered_recordset;
 };
 struct grouper_result {
-  size_t                                      num_unique_records;
+  uint32_t                                    num_unique_records;
   char**                                      sorted_recordset;
   char**                                      unique_recordset;
 
-  size_t                                      num_groups;
+  uint32_t                                    num_groups;
   struct group**                              groupset;
 };
 struct groupfilter_result {
-  size_t                                      num_filtered_groups;
+  uint32_t                                    num_filtered_groups;
   struct group**                              filtered_groupset;
 };
 struct aggr {
   size_t                                      num_values;
-  uint32_t*                                   values;
+  uint64_t*                                   values;
 };
 
 /* -----------------------------------------------------------------------*/
@@ -201,7 +202,7 @@ struct merger_term {
 };
 
 struct merger_result {
-  size_t                                      num_group_tuples;
+  uint32_t                                    num_group_tuples;
   size_t                                      total_num_group_tuples;
   struct group***                             group_tuples;
 };
@@ -210,7 +211,7 @@ struct ungrouper_result {
   struct stream**                             streamset;
 };
 struct stream {
-  size_t                                      num_records;
+  uint32_t                                    num_records;
   char**                                      recordset;
 };
 

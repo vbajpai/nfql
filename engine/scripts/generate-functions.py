@@ -221,50 +221,50 @@ def groupaggr_body(op, atype):
   if op == 'static':
     result += "    if (if_aggr_common) {\n"
     result += "      aggr->num_values = 1;\n"
-    result += "      aggr->values = (uint32_t *)calloc(1, sizeof(uint32_t));\n"
+    result += "      aggr->values = calloc(1, sizeof(uint64_t));\n"
     result += "      if (aggr->values == NULL)\n"
     result += "        errExit(\"calloc\");\n"
     result += "      aggr->values[0] = *(%s *)(records[0] + field_offset);\n"%atype
-    result += "      *(uint32_t*)(group_aggregation + field_offset) = aggr->values[0];\n"
+    result += "      *(%s*)(group_aggregation + field_offset) = (%s)aggr->values[0];\n"%(atype, atype)
     result += "    } else {\n"
     result += "    free(aggr);\n"
-    result += """ aggr = aggr_union_uint32_t(records,
-      group_aggregation,
-      num_records,
-      field_offset,
-      if_aggr_common);
-      /* this is a SET */
-      *(uint32_t*)(group_aggregation + field_offset) = 0;
-      """
+    result += """ aggr = aggr_union_%s(records,
+                                       group_aggregation,
+                                       num_records,
+                                       field_offset,
+                                       if_aggr_common);
+                  /* this is a SET */
+                  *(%s*)(group_aggregation + field_offset) = 0;
+      """%(atype, atype)
     result += "}\n"
   elif op == 'count':
     result += "    aggr->num_values = 1;\n"
-    result += "    aggr->values = (uint32_t *)calloc(aggr->num_values, sizeof(uint32_t));\n"
+    result += "    aggr->values = calloc(aggr->num_values, sizeof(uint64_t));\n"
     result += "    if (aggr->values == NULL)\n"
     result += "        errExit(\"calloc\");\n"
     result += "    aggr->values[0] = num_records;\n"
-    result += "      *(uint32_t*)(group_aggregation + field_offset) = aggr->values[0];\n"
+    result += "      *(%s*)(group_aggregation + field_offset) = (%s)aggr->values[0];\n"%(atype, atype)
   elif op in ['prod', 'sum', 'and', 'or', 'xor']:
     result += "    aggr->num_values = 1;\n"
-    result += "    aggr->values = (uint32_t *)calloc(aggr->num_values, sizeof(uint32_t));\n"
+    result += "    aggr->values = calloc(aggr->num_values, sizeof(uint64_t));\n"
     result += "    if (aggr->values == NULL)\n"
     result += "        errExit(\"calloc\");\n"
     result += "    for (int i = 0; i < num_records; i++)\n"
     result += "        aggr->values[0] %s= *(%s *)(records[i] + field_offset);\n"%(operation_map[op], atype)
-    result += "    *(uint32_t*)(group_aggregation + field_offset) = aggr->values[0];\n"
+    result += "    *(%s*)(group_aggregation + field_offset) = (%s) aggr->values[0];\n"%(atype, atype)
   elif op == 'mean':
     result += "    aggr->num_values = 1;\n"
-    result += "    aggr->values = (uint32_t *)calloc(aggr->num_values, sizeof(uint32_t));\n"
+    result += "    aggr->values = calloc(aggr->num_values, sizeof(uint64_t));\n"
     result += "    if (aggr->values == NULL)\n"
     result += "        errExit(\"calloc\");\n"
     result += "    for (int i = 0; i < num_records; i++)\n"
     result += "        aggr->values[0] += *(%s *)(records[i] + field_offset);\n"%atype
     result += "    aggr->values[0] /= num_records;\n"
-    result += "      *(uint32_t*)(group_aggregation + field_offset) = aggr->values[0];\n"
+    result += "      *(%s*)(group_aggregation + field_offset) = (%s)aggr->values[0];\n"%(atype, atype)
   elif op == 'stddev':
     result += "    uint32_t stddev = 0;\n"
     result += "    aggr->num_values = 1;\n"
-    result += "    aggr->values = (uint32_t *)calloc(aggr->num_values, sizeof(uint32_t));\n"
+    result += "    aggr->values = calloc(aggr->num_values, sizeof(uint64_t));\n"
     result += "    if (aggr->values == NULL)\n"
     result += "        errExit(\"calloc\");\n"
     result += "    for (int i = 0; i < num_records; i++) {\n"
@@ -277,18 +277,18 @@ def groupaggr_body(op, atype):
     result += "    stddev /= num_records;\n"
     result += "    stddev = sqrt(stddev);\n"
     result += "    aggr->values[0] = stddev;\n"
-    result += "      *(uint32_t*)(group_aggregation + field_offset) = aggr->values[0];\n"
+    result += "      *(%s*)(group_aggregation + field_offset) = (%s)aggr->values[0];\n"%(atype, atype)
   elif op == 'union':
-    result += "    uint32_t *temp;\n"
-    result += "    uint32_t last;\n"
-    result += "    temp = (uint32_t *)malloc(sizeof(uint32_t)*num_records);\n"
+    result += "    uint64_t *temp;\n"
+    result += "    uint64_t last;\n"
+    result += "    temp = (uint64_t *)malloc(sizeof(uint64_t)*num_records);\n"
     result += "    if (temp == NULL)\n"
     result += "        errExit(\"malloc\");\n"
     result += "    for (int i=0; i < num_records; i++) {\n"
     result += "        temp[i] = *(%s *)(records[i] + field_offset);\n"%atype
     result += "    }\n"
-    result += "    qsort(temp, num_records, sizeof(uint32_t), compar);\n"
-    result += "    aggr->values = (uint32_t *)calloc(num_records, sizeof(uint32_t));\n"
+    result += "    qsort(temp, num_records, sizeof(uint64_t), compar);\n"
+    result += "    aggr->values = calloc(num_records, sizeof(uint64_t));\n"
     result += "    if (aggr->values == NULL)\n"
     result += "        errExit(\"calloc\");\n"
     result += "    aggr->values[0] = temp[0];\n"
@@ -300,13 +300,13 @@ def groupaggr_body(op, atype):
     result += "            last = temp[i];\n"
     result += "        }\n"
     result += "    }\n"
-    result += "    aggr->values = (uint32_t *)realloc(aggr->values, sizeof(uint64_t)*aggr->num_values);\n"
+    result += " aggr->values = realloc(aggr->values, sizeof(uint64_t)*aggr->num_values);\n"
     result += "    if (aggr->values == NULL)\n"
     result += "        errExit(\"malloc\");\n"
     result += "    free(temp);\n"
   elif op == 'median':
-    result += "    uint32_t *temp;\n"
-    result += "    temp = (uint32_t *)malloc(sizeof(uint32_t)*num_records);\n"
+    result += "    uint64_t *temp;\n"
+    result += "    temp = malloc(sizeof(uint64_t)*num_records);\n"
     result += "    if (temp == NULL)\n"
     result += "        errExit(\"malloc\");\n"
     result += "    for (int i=0; i < num_records; i++) {\n"
@@ -314,15 +314,15 @@ def groupaggr_body(op, atype):
     result += "    }\n"
     result += "    qsort(temp, num_records, sizeof(uint64_t), compar);\n"
     result += "    aggr->num_values = 1;\n"
-    result += "    aggr->values = (uint32_t *)calloc(aggr->num_values, sizeof(uint32_t));\n"
+    result += "    aggr->values = calloc(aggr->num_values, sizeof(uint64_t));\n"
     result += "    if (aggr->values == NULL)\n"
     result += "        errExit(\"calloc\");\n"
     result += "    aggr->values[0] = temp[num_records/2];"
     result += "    free(temp);\n"
-    result += "      *(uint32_t*)(group_aggregation + field_offset) = aggr->values[0];\n"
+    result += "    *(%s*)(group_aggregation + field_offset) = (%s)aggr->values[0];\n"%(atype, atype)
   elif op == 'min':
     result += "    aggr->num_values = 1;\n"
-    result += "    aggr->values = (uint32_t *)calloc(aggr->num_values, sizeof(uint32_t));\n"
+    result += "    aggr->values = calloc(aggr->num_values, sizeof(uint64_t));\n"
     result += "    if (aggr->values == NULL)\n"
     result += "        errExit(\"calloc\");\n"
     result += "    aggr->values[0] = *(%s *)(records[0] + field_offset);\n"%atype
@@ -331,10 +331,10 @@ def groupaggr_body(op, atype):
     result += "            aggr->values[0] = *(%s *)(records[0] + field_offset);\n"%atype
     result += "        }\n"
     result += "    }\n"
-    result += "      *(uint32_t*)(group_aggregation + field_offset) = aggr->values[0];\n"
+    result += "      *(%s*)(group_aggregation + field_offset) = (%s) aggr->values[0];\n"%(atype, atype)
   elif op == 'max':
     result += "    aggr->num_values = 1;\n"
-    result += "    aggr->values = (uint32_t *)calloc(aggr->num_values, sizeof(uint32_t));\n"
+    result += "    aggr->values = calloc(aggr->num_values, sizeof(uint64_t));\n"
     result += "    if (aggr->values == NULL)\n"
     result += "        errExit(\"calloc\");\n"
     result += "    aggr->values[0] = *(%s *)(records[0] + field_offset);\n"%atype
@@ -343,7 +343,7 @@ def groupaggr_body(op, atype):
     result += "            aggr->values[0] = *(%s *)(records[0] + field_offset);\n"%atype
     result += "        }\n"
     result += "    }\n"
-    result += "      *(uint32_t*)(group_aggregation + field_offset) = aggr->values[0];\n"
+    result += "      *(%s*)(group_aggregation + field_offset) = (%s)aggr->values[0];\n"%(atype, atype)
   else:
     raise ValueError(op)
   result += "}\n"
@@ -494,52 +494,42 @@ def alloc_uniqresult_body(atype):
   result += """
 
     /* free'd just before returning from grouper(...) */
-    struct tree_item_%s* uniq_recordset = (struct tree_item_%s*)
-    calloc(num_filtered_records,
-    sizeof(struct tree_item_%s));
+    char**** uniq_recordset = (char ****) calloc(
+                                                  num_filtered_records,
+                                                  sizeof(char***)
+                                                );
     if (uniq_recordset == NULL)
     errExit("calloc");
 
     /* unlinked uniq_recordset[0].ptr and free'd uniq_recordset
     * just before calling grouper_aggregations(...)
     */
-    uniq_recordset[0].value = *(%s *)(*sorted_recordset_ref[0] +
-    grouper_termset_of_first_clause[0]->field_offset2);
-    uniq_recordset[0].ptr = &sorted_recordset_ref[0];
-    size_t num_uniq_records = 1;
+    uniq_recordset[0] = &sorted_recordset_ref[0];
+    uint32_t num_uniq_records = 1;
+    size_t offset = grouper_termset_of_first_clause[0]->field_offset2;
 
     for (int i = 0; i < num_filtered_records; i++) {
     if (
-    *(%s *)(*sorted_recordset_ref[i] +
-    grouper_termset_of_first_clause[0]->field_offset2) !=
-    uniq_recordset[num_uniq_records-1].value
+    (*(%s *)(*sorted_recordset_ref[i] + offset)) !=
+    (*(%s *)(**uniq_recordset[num_uniq_records-1] + offset))
     ) {
-
-    uniq_recordset[num_uniq_records].value =
-    *(%s *)(*sorted_recordset_ref[i] +
-    grouper_termset_of_first_clause[0]->field_offset2);
-    uniq_recordset[num_uniq_records].ptr = &sorted_recordset_ref[i];
+    
+    uniq_recordset[num_uniq_records] = &sorted_recordset_ref[i];
     num_uniq_records++;
     }
     }
-
-    uniq_recordset = (struct tree_item_%s *)
-    realloc(uniq_recordset,
-    num_uniq_records*sizeof(struct tree_item_%s));
+    
+    uniq_recordset = (char ****) realloc(
+    uniq_recordset,
+    num_uniq_records * sizeof(char***)
+    );
     if (uniq_recordset == NULL)
     errExit("realloc");
-
+    
     uresult->num_uniq_records = num_uniq_records;
-    uresult->uniq_recordset.recordset_%s = uniq_recordset;
+    uresult->uniq_recordset = uniq_recordset;
 
             """%(enum_map[atype],
-                 enum_map[atype],
-                 enum_map[atype],
-                 enum_map[atype],
-                 enum_map[atype],
-                 enum_map[atype],
-                 enum_map[atype],
-                 enum_map[atype],
                  enum_map[atype])
 
   result += "return uresult;\n}\n\n"
@@ -555,17 +545,11 @@ dealloc_uniqresult_proto = """
 def dealloc_uniqresult_body(atype):
   result = " {\n\n"
   result += """
-
     // unlink the uniq records from the flow data
     for (int i = 0; i < uniq_result->num_uniq_records; i++)
-    uniq_result->uniq_recordset.recordset_%s[i].ptr = NULL;
-    free(uniq_result->uniq_recordset.recordset_%s);
-    uniq_result->uniq_recordset.recordset_%s = NULL;
-
-    """%(enum_map[atype],
-         enum_map[atype],
-         enum_map[atype])
-
+    uniq_result->uniq_recordset[i] = NULL;
+    free(uniq_result->uniq_recordset); uniq_result->uniq_recordset = NULL;
+    """
   result += "free(uniq_result);\n";
   result += "uniq_result = NULL;\n}\n\n"
   return result;
@@ -580,44 +564,124 @@ get_uniq_record_proto = """
 
 def get_uniq_record_body(atype):
   result = " {\n\n"
-  result += """
-  return **uniq_result->uniq_recordset.recordset_%s[index].ptr;\n}\n\n
-    """%(enum_map[atype])
+  result += "return **uniq_result->uniq_recordset[index];}"
   return result;
 
 
 #bsearch_r_uintX_t wrappers
 
-bsearch_proto = """ char***
-  bsearch_%s(
-  const char* const filtered_record,
-  struct grouper_term** const grouper_termset,
-  const struct grouper_intermediate_result* const intermediate_result
-  )"""
+bsearch_proto = """
+struct search_result*
+bsearch_%s (
+             const char* key,
+             const void* const base,
+
+             size_t num_items,
+             size_t field_offset,
+             int term_id
+           )
+"""
 
 def bsearch_body(atype):
   result = " {\n\n"
   result += """
-    char*** record_iter = NULL;
-    struct tree_item_%s* tree_item =
-    (
-    (struct tree_item_%s *)
-    bsearch_r(
-    filtered_record,
-    (void *)intermediate_result[0].uniq_result->uniq_recordset.recordset_%s,
-    intermediate_result[0].uniq_result->num_uniq_records,
-    sizeof(struct tree_item_%s),
-    (void *)&grouper_termset[0]->field_offset1,
-    comp_%s_p
-    )
+
+    /* free'd in grouper_bsearch(...) */
+    struct search_result* result = calloc(1, sizeof(struct search_result));
+    if (result == NULL)
+    errExit("calloc");
+
+    /* first term is searched diferently than the rest of the terms */
+    if (term_id == 0) {
+
+    const struct grouper_intermediate_result* const intermediate_result =
+    (const struct grouper_intermediate_result* const) base;
+
+    /* perform a binary search on the first term using the unique recordset */
+    char**** rand_item =
+    (char ****)
+    bsearch_r (
+    key,
+    (void *)intermediate_result->uniq_result->uniq_recordset,
+    intermediate_result->uniq_result->num_uniq_records,
+    1,
+    (void *)&field_offset,
+    comp_%s_pp,
+    RANDOM_ITEM
     );
-    if (tree_item != NULL) record_iter = tree_item->ptr;
-    """%(enum_map[atype],
-         enum_map[atype],
-         enum_map[atype],
-         enum_map[atype],
-         enum_map[atype])
-  result += "return record_iter;\n}\n\n"
+
+    /* go ahead if an item satisfying the first term was found */
+    if (rand_item != NULL) {
+
+    /* set record_iter to point to this first item */
+    result->record_iter = *rand_item;
+    size_t num_uniq_records = intermediate_result[0].uniq_result->num_uniq_records;
+
+    /* if record_iter is NOT the last item in the unique resultset,
+    * then, there are more item following that satisfy the first term */
+    if (
+    result->record_iter != intermediate_result[0].uniq_result->
+    uniq_recordset[num_uniq_records - 1]
+    ) {
+
+    /* calculate the number of such items */
+    result->num_items = *(rand_item + 1) - *(rand_item);
+    }
+
+    /* record_iter is the last item in the unique resultset */
+    /* if it is also the only item in the unique resultset, then all the
+    * records in the sorted recordset satisfy the first term */
+    else if (intermediate_result[0].uniq_result->num_uniq_records == 1) {
+    result->num_items = num_items;
+    }
+    /* otherwise there is only on item that satisfied the first termm */
+    else {
+    result->num_items = 1;
+    }
+    }
+    }
+    else {
+
+    /* perform a binary search on the second term of the termset */
+    /* get the first matched item */
+    char*** first_item =
+    (char***)
+    bsearch_r (
+    key,
+    base,
+    num_items,
+    1,
+    (void *)&field_offset,
+    comp_%s_pp,
+    FIRST_ITEM
+    );
+
+    /* perform a binary search on the second term of the termset */
+    /* get the last matched item */
+    char*** last_item =
+    (char***)
+    bsearch_r (
+    key,
+    base,
+    num_items,
+    1,
+    (void *)&field_offset,
+    comp_%s_pp,
+    LAST_ITEM    
+    );
+
+    /* calculate the number of such items */
+    result->num_items = (last_item - first_item) + 1;
+
+    /* set current pointer to first_item */
+    result->record_iter = first_item;
+    }
+    """%(
+          enum_map[atype],
+          enum_map[atype],
+          enum_map[atype]
+        )
+  result += "return result;\n}\n\n"
   return result;
 
 

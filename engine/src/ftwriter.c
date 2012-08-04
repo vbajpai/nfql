@@ -49,7 +49,7 @@ struct ftio*
 get_ftio(
          struct ft_data* const dataformat,
          int out_fd,
-         size_t total_flows
+         uint32_t total_flows
         ) {
 
   /* initialize output ftio structure */
