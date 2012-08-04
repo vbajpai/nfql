@@ -1,30 +1,36 @@
 {
   "merger": {
-    "ruleset": []
+    "dnf-expr": []
   }, 
   "branchset": [
     {
       "filter": {
-        "ruleset": [
+        "dnf-expr": [
           {
-            "delta": 0, 
-            "op": "RULE_GE", 
-            "offset": {
-              "datatype": "RULE_S1_32", 
-              "name": "dPkts", 
-              "value": 2
-            }
+            "clause": [
+              {
+                "term": {
+                  "delta": 0, 
+                  "op": "RULE_GE", 
+                  "offset": {
+                    "datatype": "RULE_S1_32", 
+                    "name": "dPkts", 
+                    "value": 2
+                  }
+                }
+              }
+            ]
           }
         ]
       }, 
-      "gfilter": {
-        "ruleset": []
-      }, 
-      "aggregation": {
-        "ruleset": []
+      "groupfilter": {
+        "dnf-expr": []
       }, 
       "grouper": {
-        "ruleset": []
+        "dnf-expr": [], 
+        "aggregation": {
+          "clause": []
+        }
       }
     }
   ]

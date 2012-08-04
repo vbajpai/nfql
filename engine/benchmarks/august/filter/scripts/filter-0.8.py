@@ -37,7 +37,8 @@ if __name__ == '__main__':
   clause1 = {'clause': [term1]}
   filter1 = {'dnf-expr': [clause1]}
 
-  grouper1 = {'dnf-expr': [], 'aggregation': []}
+  a1= {'clause': []}
+  grouper1 = {'dnf-expr': [], 'aggregation': a1}
   gfilter1 = {'dnf-expr': []}
 
   branchset = []
