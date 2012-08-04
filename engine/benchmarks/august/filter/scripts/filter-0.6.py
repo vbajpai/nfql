@@ -32,30 +32,21 @@ from pipeline import protocol
 
 if __name__ == '__main__':
 
-  fruleset = []
-  fruleset.append(vars(FilterRule('dPkts', 2, 'RULE_S1_32', 0,
-                                              'RULE_LT')))
-  filter1 = {'ruleset': fruleset}
+  term1 = {'term': vars(FilterRule('dPkts', 2, 'RULE_S1_32', 0,
+                                              'RULE_LT'))}
+  clause1 = {'clause': [term1]}
+  filter1 = {'dnf-expr': [clause1]}
 
-  gruleset = []
-  grouper1 = {'ruleset': gruleset}
-
-  aruleset = []
-  a1 = {'ruleset' : aruleset}
-
-  gfruleset = []
-  gfilter1 = {'ruleset' : gfruleset}
+  grouper1 = {'dnf-expr': [], 'aggregation': []}
+  gfilter1 = {'dnf-expr': []}
 
   branchset = []
   branchset.append({'filter': filter1,
                     'grouper': grouper1,
-                    'aggregation': a1,
-                    'gfilter': gfilter1,
+                    'groupfilter': gfilter1,
                    })
 
-  mruleset = []
-
-  merger = {'ruleset' : mruleset}
+  merger = {'dnf-expr' : []}
   query = {'branchset': branchset, 'merger': merger}
 
   fjson = json.dumps(query, indent=2)
