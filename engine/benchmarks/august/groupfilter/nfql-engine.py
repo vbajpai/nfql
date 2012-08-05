@@ -75,7 +75,7 @@ def do_nfql(nfql, trace_list, query_list):
 
       if os.listdir(outdir):
         try: output_flows = int(
-                                os.popen('flow-cat %s/filter-*.ftz | flow-stat | \
+                                os.popen('flow-cat %s/groupfilter-*.ftz | flow-stat | \
                                           grep "Total Flows" | \
                                           cut -d ":" -f2'
                                           %(outdir)).read()
