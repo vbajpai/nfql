@@ -1,0 +1,7 @@
+rm -f /tmp/filter.rwz /tmp/grouper.rwz $OUTPUT; \
+rwfilter --packets=0- --compression-method=zlib --pass=/tmp/filter.rwz $INPUT; \
+rwsort --fields=1-10 /tmp/filter.rwz | \
+rwgroup --id-fields=1-10 --summarize \
+        --compression-method=zlib --output-path=/tmp/grouper.rwz; \
+rwfilter --packets=3- --compression-method=zlib /tmp/grouper.rwz \
+         --fail=$OUTPUT;

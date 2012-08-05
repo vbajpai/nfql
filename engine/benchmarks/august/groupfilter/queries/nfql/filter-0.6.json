@@ -1,0 +1,37 @@
+{
+  "merger": {
+    "dnf-expr": []
+  }, 
+  "branchset": [
+    {
+      "filter": {
+        "dnf-expr": [
+          {
+            "clause": [
+              {
+                "term": {
+                  "delta": 0, 
+                  "op": "RULE_LT", 
+                  "offset": {
+                    "datatype": "RULE_S1_32", 
+                    "name": "dPkts", 
+                    "value": 2
+                  }
+                }
+              }
+            ]
+          }
+        ]
+      }, 
+      "groupfilter": {
+        "dnf-expr": []
+      }, 
+      "grouper": {
+        "dnf-expr": [], 
+        "aggregation": {
+          "clause": []
+        }
+      }
+    }
+  ]
+}
