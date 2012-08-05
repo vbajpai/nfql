@@ -32,24 +32,13 @@ from pipeline import protocol
 
 if __name__ == '__main__':
 
-  term1 = {'term': vars(FilterRule('dPkts', 0, 'RULE_S1_32', 0,
-                                               'RULE_LT'))}
+  term1 = {'term': vars(FilterRule('dPkts', 0, 'RULE_S1_32', 0, 'RULE_LT'))}
   clause1 = {'clause': [term1]}
   filter1 = {'dnf-expr': [clause1]}
 
-  a1= {'clause': []}
-
-  grouper1 = {'dnf-expr': [], 'aggregation': a1}
-  gfilter1 = {'dnf-expr': []}
-
   branchset = []
-  branchset.append({'filter': filter1,
-                    'grouper': grouper1,
-                    'groupfilter': gfilter1,
-                   })
-
-  merger = {'dnf-expr' : []}
-  query = {'branchset': branchset, 'merger': merger}
+  branchset.append({'filter': filter1})
+  query = {'branchset': branchset}
 
   fjson = json.dumps(query, indent=2)
   filename = os.path.splitext(sys.argv[0])[0]

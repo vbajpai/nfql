@@ -1,7 +1,4 @@
 {
-  "merger": {
-    "dnf-expr": []
-  }, 
   "branchset": [
     {
       "filter": {

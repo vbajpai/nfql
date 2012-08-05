@@ -1,7 +1,4 @@
 {
-  "merger": {
-    "dnf-expr": []
-  }, 
   "branchset": [
     {
       "filter": {
@@ -22,9 +19,6 @@
             ]
           }
         ]
-      }, 
-      "groupfilter": {
-        "dnf-expr": []
       }, 
       "grouper": {
         "dnf-expr": [

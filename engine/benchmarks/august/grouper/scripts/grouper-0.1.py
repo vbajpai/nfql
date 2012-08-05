@@ -32,8 +32,7 @@ from pipeline import protocol
 
 if __name__ == '__main__':
 
-  term1 = {'term': vars(FilterRule('dPkts', 0, 'RULE_S1_32', 0,
-                                   'RULE_GE'))}
+  term1 = {'term': vars(FilterRule('dPkts', 0, 'RULE_S1_32', 0, 'RULE_GE'))}
   clause1 = {'clause': [term1]}
   filter1 = {'dnf-expr': [clause1]}
 
@@ -46,16 +45,12 @@ if __name__ == '__main__':
   a1 = {'clause': [term1] + [term2]}
   grouper1 = {'dnf-expr': [clause1], 'aggregation': a1}
 
-  gfilter1 = {'dnf-expr' : []}
-
   branchset = []
   branchset.append({'filter': filter1,
-                    'grouper': grouper1,
-                    'groupfilter': gfilter1,
+                    'grouper': grouper1
                    })
 
-  merger = {'dnf-expr' : []}
-  query = {'branchset': branchset, 'merger': merger}
+  query = {'branchset': branchset}
 
   fjson = json.dumps(query, indent=2)
   filename = os.path.splitext(sys.argv[0])[0]
