@@ -26,11 +26,20 @@
 
 #include "base.h"
 
-bool debug;
 bool file;
 char* dirpath;
 uint8_t zlevel = 5;
 
+/* verbosity flags */
 bool verbose_v;
 bool verbose_vv;
 bool verbose_vvv;
+bool debug;
+
+/* engine stage flags */
+bool filter_enabled;
+bool grouper_enabled;
+bool groupaggregations_enabled;
+bool groupfilter_enabled;
+bool merger_enabled;
+bool ungrouper_enabled;

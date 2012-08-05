@@ -49,16 +49,23 @@ extern bool file;
 extern char* dirpath;
 extern uint8_t zlevel;
 
-/* verbose levels */
+/* verbosity level flags */
 extern bool verbose_v;
 extern bool verbose_vv;
 extern bool verbose_vvv;
-
 enum verbosity_levels {
   HIGH      =     3,
   MEDIUM    =     2,
   LOW       =     1
 };
+
+/* engine stage flags */
+extern bool filter_enabled;
+extern bool grouper_enabled;
+extern bool groupaggregations_enabled;
+extern bool groupfilter_enabled;
+extern bool merger_enabled;
+extern bool ungrouper_enabled;
 
 #define FLOWHEADER "\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n"
 

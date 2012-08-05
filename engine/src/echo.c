@@ -176,36 +176,45 @@ echo_branch(
   /* process each branch */
   for (int i = 0; i < num_branches; i++) {
 
-#ifdef GROUPER
     struct branch* branch = branchset[i];
-    if (verbose_vv){
-      echo_grouper(
-                   branch->branch_id,
-                   branch->num_grouper_clauses,
-                   branch->filter_result->num_filtered_records,
+#ifdef GROUPER
+    if (grouper_enabled){
+      if (verbose_vv) {
 
-                   branch->grouper_result,
-                   branch->data
-                  );
+        echo_grouper(
+                      branch->branch_id,
+                      branch->num_grouper_clauses,
+                      branch->filter_result->num_filtered_records,
+
+                      branch->grouper_result,
+                      branch->data
+                    );
+      }
     }
 #endif
 
 
 #ifdef GROUPERAGGREGATIONS
-    echo_group_aggr(
-                    branch->branch_id,
-                    branch->grouper_result,
-                    branch->data
-                   );
+    if (grouper_enabled) {
+
+      echo_group_aggr(
+                      branch->branch_id,
+                      branch->grouper_result,
+                      branch->data
+                      );
+    }
 #endif
 
 
 #ifdef GROUPFILTER
-    echo_gfilter(
-                 branch->branch_id,
-                 branch->gfilter_result,
-                 branch->data
-                );
+    if (groupfilter_enabled) {
+
+      echo_gfilter(
+                    branch->branch_id,
+                    branch->gfilter_result,
+                    branch->data
+                  );
+    }
 #endif
   }
 }
