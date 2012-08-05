@@ -77,33 +77,35 @@ ft_read(
 
 
   /* assign filter func for all the branches */
-  for (int i = 0; i < fquery->num_branches; i++) {
+  if (filter_enabled) {
+    for (int i = 0; i < fquery->num_branches; i++) {
 
-    struct branch* branch = fquery->branchset[i];
+      struct branch* branch = fquery->branchset[i];
 
-    /* free'd before exiting from main(...) */
-    branch->filter_result = calloc(1, sizeof(struct filter_result));
-    if (branch->filter_result == NULL)
-      errExit("calloc");
+      /* free'd before exiting from main(...) */
+      branch->filter_result = calloc(1, sizeof(struct filter_result));
+      if (branch->filter_result == NULL)
+        errExit("calloc");
 
-    /* free'd before exiting from main(...) */
-    branch->filter_result->filtered_recordset = (char **)
-    calloc(branch->filter_result->num_filtered_records, sizeof(char *));
-    if (branch->filter_result->filtered_recordset == NULL)
-      errExit("calloc");
+      /* free'd before exiting from main(...) */
+      branch->filter_result->filtered_recordset = (char **)
+      calloc(branch->filter_result->num_filtered_records, sizeof(char *));
+      if (branch->filter_result->filtered_recordset == NULL)
+        errExit("calloc");
 
-    /* assign a filter func for each filter rule */
-    for (int k = 0; k < branch->num_filter_clauses; k++) {
+      /* assign a filter func for each filter rule */
+      for (int k = 0; k < branch->num_filter_clauses; k++) {
 
-      struct filter_clause* const fclause = branch->filter_clauseset[k];
+        struct filter_clause* const fclause = branch->filter_clauseset[k];
 
-      for (int j = 0; j < fclause->num_terms; j++) {
+        for (int j = 0; j < fclause->num_terms; j++) {
 
-        struct filter_term* const term = fclause->termset[j];
+          struct filter_term* const term = fclause->termset[j];
 
-        /* get a uintX_t specific function depending on frule->op */
-        assign_filter_func(term);
-        fclause->termset[j] = term;
+          /* get a uintX_t specific function depending on frule->op */
+          assign_filter_func(term);
+          fclause->termset[j] = term;
+        }
       }
     }
   }
@@ -204,23 +206,22 @@ ft_read(
   }
 
   /* print the filtered records if verbose mode is set */
-  if (verbose_v) {
-
-    /* process each branch */
-    for (int i = 0; i < fquery->num_branches; i++) {
-      struct branch* branch = fquery->branchset[i];
+  if (filter_enabled) {
+    if (verbose_v) {
+      /* process each branch */
+      for (int i = 0; i < fquery->num_branches; i++) {
+        struct branch* branch = fquery->branchset[i];
 
 #ifdef FILTER
-      echo_filter(
-                   branch->branch_id,
-                   branch->filter_result,
-                   data
-                 );
+        echo_filter(
+                    branch->branch_id,
+                    branch->filter_result,
+                    data
+                    );
 #endif
+      }
     }
   }
-
-
   return data;
 }
 

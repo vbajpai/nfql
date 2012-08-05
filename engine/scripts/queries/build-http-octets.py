@@ -76,7 +76,6 @@ if __name__ == '__main__':
   branchset = []
   branchset.append({'filter': filter1,
                     'grouper': grouper1,
-                    'aggregation': a1,
                     'groupfilter': gfilter1,
                    })
 

@@ -47,8 +47,10 @@ branch_start(void *arg) {
   /* -----------------------------------------------------------------------*/
 
   /* records are filtered as soon as the trace is read */
-  if (branch->filter_result == NULL)
-    pthread_exit((void*)EXIT_FAILURE);
+  if (filter_enabled) {
+    if (branch->filter_result == NULL)
+      pthread_exit((void*)EXIT_FAILURE);
+  }
 
   /* -----------------------------------------------------------------------*/
 
@@ -69,24 +71,55 @@ branch_start(void *arg) {
   /*                               grouper                                  */
   /* -----------------------------------------------------------------------*/
 
-  branch->grouper_result = grouper(
-                                   branch->num_filter_clauses,
-                                   branch->filter_clauseset,
+  if (grouper_enabled) {
 
-                                   branch->num_grouper_clauses,
-                                   branch->grouper_clauseset,
+    branch->grouper_result = grouper(
+                                     branch->num_filter_clauses,
+                                     branch->filter_clauseset,
 
-                                   branch->num_aggr_clause_terms,
-                                   branch->aggr_clause_termset,
+                                     branch->num_grouper_clauses,
+                                     branch->grouper_clauseset,
 
-                                   branch->filter_result,
-                                   branch->data->rec_size
-                                  );
-  if (branch->grouper_result == NULL)
-    pthread_exit((void*)EXIT_FAILURE);
-  else {
+                                     branch->num_aggr_clause_terms,
+                                     branch->aggr_clause_termset,
 
-    /* free filter rules */
+                                     branch->filter_result,
+                                     branch->data->rec_size
+                                     );
+    if (branch->grouper_result == NULL)
+      pthread_exit((void*)EXIT_FAILURE);
+    else {
+
+      /* free grouper rules */
+      for (int j = 0; j < branch->num_grouper_clauses; j++) {
+
+        struct grouper_clause* gclause = branch->grouper_clauseset[j];
+
+        for (int i = 0; i < gclause->num_terms; i++) {
+          struct grouper_term* gterm = gclause->termset[i];
+          free(gterm->op); gterm->op = NULL;
+          free(gterm); gterm = NULL; gclause->termset[i] = NULL;
+        }
+        free(gclause->termset); gclause->termset = NULL;
+        free(gclause); gclause = NULL; branch->grouper_clauseset[j] = NULL;
+      }
+      free(branch->grouper_clauseset); branch->grouper_clauseset = NULL;
+
+      /* free grouper aggregation rules */
+      if (groupaggregations_enabled) {
+        for (int i = 0; i < branch->num_aggr_clause_terms; i++) {
+          struct aggr_term* term = branch->aggr_clause_termset[i];
+          free(term->op); term->op = NULL;
+          free(term); term = NULL; branch->aggr_clause_termset[i] = NULL;
+        }
+        free(branch->aggr_clause_termset); branch->aggr_clause_termset = NULL;
+      }
+    }
+  }
+
+#ifdef FILTER
+  /* free filter rules */
+  if (filter_enabled) {
     for (int j = 0; j < branch->num_filter_clauses; j++) {
 
       struct filter_clause* fclause = branch->filter_clauseset[j];
@@ -100,30 +133,8 @@ branch_start(void *arg) {
       free(fclause); fclause = NULL; branch->filter_clauseset[j] = NULL;
     }
     free(branch->filter_clauseset); branch->filter_clauseset = NULL;
-
-    /* free grouper rules */
-    for (int j = 0; j < branch->num_grouper_clauses; j++) {
-
-      struct grouper_clause* gclause = branch->grouper_clauseset[j];
-
-      for (int i = 0; i < gclause->num_terms; i++) {
-        struct grouper_term* gterm = gclause->termset[i];
-        free(gterm->op); gterm->op = NULL;
-        free(gterm); gterm = NULL; gclause->termset[i] = NULL;
-      }
-      free(gclause->termset); gclause->termset = NULL;
-      free(gclause); gclause = NULL; branch->grouper_clauseset[j] = NULL;
-    }
-    free(branch->grouper_clauseset); branch->grouper_clauseset = NULL;
-
-    /* free grouper aggregation rules */
-    for (int i = 0; i < branch->num_aggr_clause_terms; i++) {
-      struct aggr_term* term = branch->aggr_clause_termset[i];
-      free(term->op); term->op = NULL;
-      free(term); term = NULL; branch->aggr_clause_termset[i] = NULL;
-    }
-    free(branch->aggr_clause_termset); branch->aggr_clause_termset = NULL;
   }
+#endif
 
   /* -----------------------------------------------------------------------*/
 
@@ -144,31 +155,34 @@ branch_start(void *arg) {
   /*                            grouper-filter                              */
   /* -----------------------------------------------------------------------*/
 
-  branch->gfilter_result = groupfilter(
-                                       branch->num_groupfilter_clauses,
-                                       branch->groupfilter_clauseset,
+  if (groupfilter_enabled) {
 
-                                       branch->grouper_result
-                                      );
+    branch->gfilter_result = groupfilter(
+                                         branch->num_groupfilter_clauses,
+                                         branch->groupfilter_clauseset,
 
-  if (branch->gfilter_result == NULL)
-    pthread_exit((void*)EXIT_FAILURE);
-  else {
+                                         branch->grouper_result
+                                         );
 
-    /* free group filter rules */
-    for (int j = 0; j < branch->num_groupfilter_clauses; j++) {
+    if (branch->gfilter_result == NULL)
+      pthread_exit((void*)EXIT_FAILURE);
+    else {
 
-      struct groupfilter_clause* gfclause = branch->groupfilter_clauseset[j];
+      /* free group filter rules */
+      for (int j = 0; j < branch->num_groupfilter_clauses; j++) {
 
-      for (int i = 0; i < gfclause->num_terms; i++) {
-        struct groupfilter_term* term = gfclause->termset[i];
-        free(term->op); term->op = NULL;
-        free(term); term = NULL; gfclause->termset[i] = NULL;
+        struct groupfilter_clause* gfclause = branch->groupfilter_clauseset[j];
+
+        for (int i = 0; i < gfclause->num_terms; i++) {
+          struct groupfilter_term* term = gfclause->termset[i];
+          free(term->op); term->op = NULL;
+          free(term); term = NULL; gfclause->termset[i] = NULL;
+        }
+        free(gfclause->termset); gfclause->termset = NULL;
+        free(gfclause); gfclause = NULL; branch->groupfilter_clauseset[j] = NULL;
       }
-      free(gfclause->termset); gfclause->termset = NULL;
-      free(gfclause); gfclause = NULL; branch->groupfilter_clauseset[j] = NULL;
+      free(branch->groupfilter_clauseset); branch->groupfilter_clauseset = NULL;
     }
-    free(branch->groupfilter_clauseset); branch->groupfilter_clauseset = NULL;
   }
 
   /* -----------------------------------------------------------------------*/

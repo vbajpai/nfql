@@ -42,19 +42,8 @@ grouper_aggregations(
                      struct aggr_term** const aggr_clause_termset,
 
                      const struct group* const group,
-                     int rec_size
+                     struct aggr_result* aresult
                      ) {
-
-  /* free'd just after returning from merger(...) */
-  struct aggr_result* aresult = calloc(1, sizeof(struct aggr_result));
-  if (aresult == NULL)
-    errExit("calloc");
-
-  struct aggr* (*aggr_function)(char **records,
-                                char *group_aggregation,
-                                size_t num_records,
-                                size_t field_offset,
-                                bool if_aggr_common) = NULL;
 
   /* free'd just after returning from merger(...) */
   struct aggr** aggrset = (struct aggr**)
@@ -63,93 +52,6 @@ grouper_aggregations(
   if (aggrset == NULL)
     errExit("calloc");
   aresult->aggrset = aggrset;
-
-  /* free'd just after returning from merger(...) */
-  char* aggr_record = (char *)calloc(1, rec_size);
-  if (aggr_record == NULL)
-    errExit("calloc");
-  aresult->aggr_record = aggr_record;
-
-
-  /* save common fields (coming from the filter rule) in aggregation record
-   * currently assumes that the filter rule was `eq`, such that each record
-   * member has the same value for that field in the group, still need
-   * to investigate how it might affect other filter operations */
-  for (int i = 0; i < num_filter_clauses; i++) {
-
-    struct filter_clause* fclause = filter_clauseset[i];
-
-    for (int j = 0; j < fclause->num_terms; j++) {
-
-      size_t field_offset = fclause->termset[j]->field_offset;
-      aggr_function = get_aggr_fptr(false,
-                                    fclause->termset[j]->op->field_type);
-      if(aggr_function == NULL)
-        errExit("get_aggr_fptr(...) returned NULL");
-
-      struct aggr* aggr = (*aggr_function)(group->members,
-                                           aggr_record,
-                                           group->num_members,
-                                           field_offset,
-                                           TRUE);
-      if (aggr == NULL)
-        errExit("aggr_function(...) returned NULL");
-      else {
-        free(aggr->values); aggr->values = NULL;
-        free(aggr); aggr = NULL;
-      }
-    }
-  }
-
-  /* save common fields (coming from the grouper rule) in aggregation record
-   * currently assumes that the grouper rule was `eq`, such that each record
-   * member has the same value for that field in the group, still need
-   * to investigate how it might affect other grouper operations */
-  for (int i = 0; i < num_grouper_clauses; i++) {
-
-    struct grouper_clause* gclause = grouper_clauseset[i];
-
-    for (int j = 0; j < gclause->num_terms; j++) {
-
-      struct grouper_term* term = gclause->termset[j];
-
-      size_t goffset_1 = term->field_offset1;
-      size_t goffset_2 = term->field_offset2;
-
-      aggr_function = get_aggr_fptr(true,
-                                    term->op->field1_type);
-
-      if(aggr_function == NULL)
-        errExit("get_aggr_fptr(...) returned NULL");
-
-      if(goffset_1 != goffset_2) {
-
-        struct aggr* aggr = (*aggr_function)(group->members,
-                                             aggr_record,
-                                             group->num_members,
-                                             goffset_1,
-                                             TRUE);
-        if (aggr == NULL)
-          errExit("aggr_function(...) returned NULL");
-        else {
-          free(aggr->values); aggr->values = NULL;
-          free(aggr); aggr =  NULL;
-        }
-      }
-
-      struct aggr* aggr = (*aggr_function)(group->members,
-                                           aggr_record,
-                                           group->num_members,
-                                           goffset_2,
-                                           TRUE);
-      if (aggr == NULL)
-        errExit("aggr_function(...) returned NULL");
-      else {
-        free(aggr->values); aggr->values = NULL;
-        free(aggr); aggr = NULL;
-      }
-    }
-  }
 
   /* aggregate the fields, but ignore fields used in grouper and filter
    * module. Again it assume that the operation is `eq`. Need to investigate
@@ -197,18 +99,14 @@ grouper_aggregations(
     /* free'd just after returning from merger(...) */
     aggrset[j] = term->func(
                              group->members,
-                             aggr_record,
+                             aresult->aggr_record,
                              group->num_members,
                              aggr_offset,
                              if_ignore_aggr_term
-                            );
+                           );
   }
-
-  aggrset = NULL; aggr_record = NULL;
-
   return aresult;
 }
-
 
 struct grouper_intermediate_result *
 get_grouper_intermediates
@@ -325,6 +223,15 @@ grouper(
   /* go ahead if there is something to group */
   if (fresult->num_filtered_records > 0) {
 
+    /* assign a specific uintX_t function depending on aggrule->op */
+    if (groupaggregations_enabled) {
+      for (int j = 0; j < num_aggr_clause_terms; j++){
+
+        struct aggr_term* term = aggr_clause_termset[j];
+        assign_aggr_func(term);
+      }
+    }
+
     /* club all filtered records into one group,
      * if no group modules are defined */
     if (num_grouper_clauses == 0) {
@@ -347,6 +254,89 @@ grouper(
 
       for (int i = 0; i < fresult->num_filtered_records; i++)
         group->members[i] = fresult->filtered_recordset[i];
+
+
+      /* ----------------------------------------------------------------- */
+      /*            create a cooked netflow v5 group record                */
+      /* ----------------------------------------------------------------- */
+
+      /* free'd just after returning from merger(...) */
+      struct aggr_result* aresult = calloc(1, sizeof(struct aggr_result));
+      if (aresult == NULL)
+        errExit("calloc");
+
+      /* free'd just after returning from merger(...) */
+      char* aggr_record = (char *)calloc(1, rec_size);
+      if (aggr_record == NULL)
+        errExit("calloc");
+      aresult->aggr_record = aggr_record;
+
+      group->aggr_result = aresult;
+      if (group->aggr_result == NULL)
+        errExit("grouper_aggregations(...) returned NULL");
+
+      struct aggr* (*aggr_function)(char **records,
+                                    char *group_aggregation,
+                                    size_t num_records,
+                                    size_t field_offset,
+                                    bool if_aggr_common) = NULL;
+
+      /* save common fields (coming from the filter rule) in aggregation
+       * record currently assumes that the filter rule was `eq`, such that
+       * each record member has the same value for that field in the group,
+       * still need to investigate how it might affect filter operations */
+      for (int i = 0; i < num_filter_clauses; i++) {
+
+        struct filter_clause* fclause = filter_clauseset[i];
+
+        for (int j = 0; j < fclause->num_terms; j++) {
+
+          size_t field_offset = fclause->termset[j]->field_offset;
+          aggr_function = get_aggr_fptr(false,
+                                        fclause->termset[j]->op->field_type);
+          if(aggr_function == NULL)
+            errExit("get_aggr_fptr(...) returned NULL");
+
+          struct aggr* aggr = (*aggr_function)(group->members,
+                                               aggr_record,
+                                               group->num_members,
+                                               field_offset,
+                                               TRUE);
+          if (aggr == NULL)
+            errExit("aggr_function(...) returned NULL");
+          else {
+            free(aggr->values); aggr->values = NULL;
+            free(aggr); aggr = NULL;
+          }
+        }
+      }
+
+      /* ----------------------------------------------------------------- */
+
+      /* ----------------------------------------------------------------- */
+      /*                    create group aggregations                      */
+      /* ----------------------------------------------------------------- */
+
+      if (groupaggregations_enabled) {
+
+        group->aggr_result = grouper_aggregations(
+                                                    num_filter_clauses,
+                                                    filter_clauseset,
+
+                                                    num_grouper_clauses,
+                                                    grouper_clauseset,
+
+                                                    num_aggr_clause_terms,
+                                                    aggr_clause_termset,
+
+                                                    group,
+                                                    aresult
+                                                  );
+        if (group->aggr_result == NULL)
+          errExit("grouper_aggregations(...) returned NULL");
+      }
+
+      /* ----------------------------------------------------------------- */
     }
 
     else {
@@ -525,6 +515,154 @@ grouper(
             }
           }
 
+        /* ----------------------------------------------------------------- */
+        /*            create a cooked netflow v5 group record                */
+        /* ----------------------------------------------------------------- */
+
+          /* free'd just after returning from merger(...) */
+          struct aggr_result* aresult = calloc(1, sizeof(struct aggr_result));
+          if (aresult == NULL)
+            errExit("calloc");
+
+          /* free'd just after returning from merger(...) */
+          char* aggr_record = (char *)calloc(1, rec_size);
+          if (aggr_record == NULL)
+            errExit("calloc");
+          aresult->aggr_record = aggr_record;
+
+          group->aggr_result = aresult;
+          if (group->aggr_result == NULL)
+            errExit("grouper_aggregations(...) returned NULL");
+
+          struct aggr* (*aggr_function)(char **records,
+                                        char *group_aggregation,
+                                        size_t num_records,
+                                        size_t field_offset,
+                                        bool if_aggr_common) = NULL;
+
+          /* save common fields (coming from the filter rule) in aggregation
+           * record currently assumes that the filter rule was `eq`, such that
+           * each record member has the same value for that field in the group,
+           * still need to investigate how it might affect filter operations */
+          for (int i = 0; i < num_filter_clauses; i++) {
+
+            struct filter_clause* fclause = filter_clauseset[i];
+
+            for (int j = 0; j < fclause->num_terms; j++) {
+
+              size_t field_offset = fclause->termset[j]->field_offset;
+              aggr_function = get_aggr_fptr(false,
+                                            fclause->termset[j]->op->field_type);
+              if(aggr_function == NULL)
+                errExit("get_aggr_fptr(...) returned NULL");
+
+              struct aggr* aggr = (*aggr_function)(group->members,
+                                                   aggr_record,
+                                                   group->num_members,
+                                                   field_offset,
+                                                   TRUE);
+              if (aggr == NULL)
+                errExit("aggr_function(...) returned NULL");
+              else {
+                free(aggr->values); aggr->values = NULL;
+                free(aggr); aggr = NULL;
+              }
+            }
+          }
+
+          /* save common fields (coming from the grouper rule) in aggregation
+           * record; currently assumes that the grouper rule was `eq`, such
+           * that each record member has the same value for that field in the
+           * group, still need to investigate how it might affect other
+           * grouper operations */
+          for (int i = 0; i < num_grouper_clauses; i++) {
+
+            struct grouper_clause* gclause = grouper_clauseset[i];
+
+            for (int j = 0; j < gclause->num_terms; j++) {
+
+              struct grouper_term* term = gclause->termset[j];
+
+              size_t goffset_1 = term->field_offset1;
+              size_t goffset_2 = term->field_offset2;
+
+              aggr_function = get_aggr_fptr(true,
+                                            term->op->field1_type);
+
+              if(aggr_function == NULL)
+                errExit("get_aggr_fptr(...) returned NULL");
+
+              if(goffset_1 != goffset_2) {
+
+                struct aggr* aggr = (*aggr_function)(group->members,
+                                                     aggr_record,
+                                                     group->num_members,
+                                                     goffset_1,
+                                                     TRUE);
+                if (aggr == NULL)
+                  errExit("aggr_function(...) returned NULL");
+                else {
+                  free(aggr->values); aggr->values = NULL;
+                  free(aggr); aggr =  NULL;
+                }
+              }
+
+              struct aggr* aggr = (*aggr_function)(group->members,
+                                                   aggr_record,
+                                                   group->num_members,
+                                                   goffset_2,
+                                                   TRUE);
+              if (aggr == NULL)
+                errExit("aggr_function(...) returned NULL");
+              else {
+                free(aggr->values); aggr->values = NULL;
+                free(aggr); aggr = NULL;
+              }
+            }
+          }
+
+        /* ----------------------------------------------------------------- */
+
+
+
+
+
+
+
+
+
+        /* ----------------------------------------------------------------- */
+        /*                    create group aggregations                      */
+        /* ----------------------------------------------------------------- */
+
+          if (groupaggregations_enabled) {
+
+            group->aggr_result = grouper_aggregations(
+                                                       num_filter_clauses,
+                                                       filter_clauseset,
+
+                                                       num_grouper_clauses,
+                                                       grouper_clauseset,
+
+                                                       num_aggr_clause_terms,
+                                                       aggr_clause_termset,
+
+                                                       group,
+                                                       aresult
+                                                     );
+            if (group->aggr_result == NULL)
+              errExit("grouper_aggregations(...) returned NULL");
+          }
+
+        /* ----------------------------------------------------------------- */
+
+
+
+
+
+
+
+
           /* this item has been checked for group membership, set to NULL */
           item = NULL;
 
@@ -552,42 +690,6 @@ grouper(
       }
     }
   }
-
-
-#ifdef GROUPERAGGREGATIONS
-
-  /* assign a specific uintX_t function depending on aggrule->op */
-  for (int j = 0; j < num_aggr_clause_terms; j++){
-
-    struct aggr_term* term = aggr_clause_termset[j];
-    assign_aggr_func(term);
-  }
-
-  /* process each group */
-  for (int i = 0; i < gresult->num_groups; i++) {
-
-    struct group* group = gresult->groupset[i];
-
-    group->aggr_result = grouper_aggregations(
-                                                num_filter_clauses,
-                                                filter_clauseset,
-
-                                                num_grouper_clauses,
-                                                grouper_clauseset,
-
-                                                num_aggr_clause_terms,
-                                                aggr_clause_termset,
-
-                                                group,
-                                                rec_size
-                                             );
-    if (group->aggr_result == NULL)
-      errExit("grouper_aggregations(...) returned NULL");
-    else
-      group = NULL;
-  }
-
-#endif
 
   return gresult;
 }

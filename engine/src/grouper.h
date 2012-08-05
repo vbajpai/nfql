@@ -128,7 +128,7 @@ grouper_aggregations(
                      struct aggr_term** const aggr_clause_termset,
 
                      const struct group* const group,
-                     int rec_size
+                     struct aggr_result*
                      );
 
 struct grouper_intermediate_result *
