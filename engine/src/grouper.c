@@ -353,10 +353,10 @@ grouper(
 
         if (sorted_recordset_reference == NULL)
           errExit("get_grouper_intermediates(...) returned NULL");
-        
+
         /* an item from the sorted filtered recordset */
         char** current_item = sorted_recordset_reference;
-        
+
         char** last_item =
         sorted_recordset_reference + (fresult->num_filtered_records - 1);
 
@@ -387,16 +387,16 @@ grouper(
           if (group->members == NULL)
             errExit("calloc");
           group->members[0] = *current_item;
-          
+
           while (current_item != last_item) {
-            
+
             current_item++;
-            
+
             // check all terms for this grouper clause for those two records
             for (k = 0; k < gclause->num_terms; k++) {
-              
+
               struct grouper_term* term = gclause->termset[k];
-              
+
               if (
                   !term->func(
                               group,
@@ -408,18 +408,18 @@ grouper(
                   )
                 break;
             }
-            
+
             // break out, if one of the terms didnt match
             if (k < gclause->num_terms) {
-              
+
               // go back to the last item that matched
               current_item--;
               break;
             }
-            
+
             // all the terms matched!
             else {
-              
+
               // add this member to the group
               group->num_members += 1;
               group->members = (char **)
@@ -430,7 +430,7 @@ grouper(
               group->members[group->num_members-1] = *current_item;
             }
           }
-          
+
         /* ----------------------------------------------------------------- */
         /*            create a cooked netflow v5 group record                */
         /* ----------------------------------------------------------------- */

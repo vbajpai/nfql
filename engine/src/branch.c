@@ -85,7 +85,7 @@ branch_start(void *arg) {
 
                                      branch->filter_result,
                                      branch->data->rec_size,
-                                     branch->data                                     
+                                     branch->data
                                      );
     if (branch->grouper_result == NULL)
       pthread_exit((void*)EXIT_FAILURE);
