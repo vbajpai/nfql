@@ -1521,18 +1521,8 @@ main(int argc, char **argv) {
 
           /* free sorted records */
           if (branch->grouper_result->sorted_recordset != NULL) {
-            for (int j = 0; j < branch->filter_result->num_filtered_records; j++)
-              branch->grouper_result->sorted_recordset[j] = NULL;
             free(branch->grouper_result->sorted_recordset);
             branch->grouper_result->sorted_recordset = NULL;
-          }
-
-          /* free unique records */
-          if (branch->grouper_result->unique_recordset != NULL) {
-            for (int j = 0; j < branch->grouper_result->num_unique_records; j++)
-              branch->grouper_result->unique_recordset[j] = NULL;
-            free(branch->grouper_result->unique_recordset);
-            branch->grouper_result->unique_recordset = NULL;
           }
         }
       }
@@ -1757,11 +1747,6 @@ main(int argc, char **argv) {
   if (filter_enabled) {
     for (int i = 0; i < fquery->num_branches; i++) {
       struct branch* branch = fquery->branchset[i];
-      for (int j = 0; j < branch->filter_result->num_filtered_records; j++) {
-        /* unlink the records */
-        branch->filter_result->filtered_recordset[j] = NULL;
-      }
-
       free(branch->filter_result->filtered_recordset);
       branch->filter_result->filtered_recordset = NULL;
 

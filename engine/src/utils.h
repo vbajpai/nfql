@@ -82,35 +82,6 @@ get_enum(const char * const name);
   int comp_uint64_t(const void *e1, const void *e2, void* thunk);
 #endif
 
-
-
-
-/* binary search flags */
-enum bsearch_item {
-  FIRST_ITEM       =     3,
-  RANDOM_ITEM      =     2,
-  LAST_ITEM        =     1
-};
-
-/* returns a random/first/last found item depending on the bsearch_item set */
-void *
-bsearch_r (
-            const void *key,
-            const void *base,
-            size_t nmemb,
-            size_t size,
-            void *thunk,
-            int (*compar) (void *thunk, const void *, const void *),
-            enum bsearch_item item
-          );
-
-/* binary search comparators */
-int comp_uint8_t_pp(void *thunk, const void *e1, const void *e2);
-int comp_uint16_t_pp(void *thunk, const void *e1, const void *e2);
-int comp_uint32_t_pp(void *thunk, const void *e1, const void *e2);
-int comp_uint64_t_pp(void *thunk, const void *e1, const void *e2);
-
-
 /* -----------------------------------------------------------------------*/
 
 

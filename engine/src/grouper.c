@@ -108,34 +108,22 @@ grouper_aggregations(
   return aresult;
 }
 
-struct grouper_intermediate_result *
+char**
 get_grouper_intermediates
                 (
                   size_t num_filtered_records,
-                  char** const filtered_recordset_copy,
+                  char** const filtered_recordset,
 
                   struct grouper_clause* clause,
                   struct grouper_result* const gresult
                 ) {
-
-  /* last record in sorted_records is NULL
-   * unlinked sorted_recordset_ref[i], and free'd sorted_recordset_ref
-   * just before calling grouper_aggregations(...) */
-  char*** sorted_recordset_ref = (char ***)
-  calloc(num_filtered_records+1,
-         sizeof(char **));
-  if (sorted_recordset_ref == NULL)
-    errExit("calloc");
-
-  for (int i = 0; i < num_filtered_records; i++)
-    sorted_recordset_ref[i] = &filtered_recordset_copy[i];
 
   /* sort the record references according to the right hand side
    * item in the statement of the first grouper term of the first clause
    * and save them in sorted_recordset_reference in place */
   #if defined(__APPLE__) || defined(__FreeBSD__)
     qsort_r(
-             sorted_recordset_ref,
+             filtered_recordset,
              num_filtered_records,
              sizeof(char **),
              clause,
@@ -143,7 +131,7 @@ get_grouper_intermediates
            );
   #elif defined(__linux)
     qsort_r(
-             sorted_recordset_ref,
+             filtered_recordset,
              num_filtered_records,
              sizeof(char **),
              qsort_comp,
@@ -160,36 +148,13 @@ get_grouper_intermediates
       errExit("calloc");
 
     for (int i = 0; i < num_filtered_records; i++)
-      gresult->sorted_recordset[i] = *sorted_recordset_ref[i];
+      gresult->sorted_recordset[i] = filtered_recordset[i];
   }
 
   // mark the end of sorted records
-  sorted_recordset_ref[num_filtered_records] = NULL;
+  filtered_recordset[num_filtered_records] = NULL;
 
-  /* free'd just before calling grouper_aggregations(...) */
-  struct grouper_intermediate_result*
-  intermediate_result = (struct grouper_intermediate_result *)
-  calloc(1 , sizeof(struct grouper_intermediate_result));
-  if (intermediate_result == NULL)
-    errExit("calloc");
-
-  intermediate_result->sorted_recordset_reference = sorted_recordset_ref;
-
-  /* unique results are only allocated for the first clause term*/
-  struct uniq_recordset_result*
-  uresult = clause->gtypeset[0]->alloc_uniqresult(
-                                                    num_filtered_records,
-                                                    clause->termset,
-                                                    sorted_recordset_ref
-                                                  );
-
-  if (uresult == NULL)
-    errExit("get_uniqrecordset(...) returned NULL");
-
-  intermediate_result->uniq_result = uresult; uresult = NULL;
-  sorted_recordset_ref = NULL;
-
-  return intermediate_result;
+  return filtered_recordset;
 }
 
 
@@ -205,7 +170,8 @@ grouper(
         struct aggr_term** const aggr_clause_termset,
 
         const struct filter_result* const fresult,
-        int rec_size
+        int rec_size,
+        struct ft_data* data
        ) {
 
   /* free'd just after returning from ungrouper(...) */
@@ -223,7 +189,7 @@ grouper(
   /* go ahead if there is something to group */
   if (fresult->num_filtered_records > 0) {
 
-    /* assign a specific uintX_t function depending on aggrule->op */
+    /* assign a aggr func for each term */
     if (groupaggregations_enabled) {
       for (int j = 0; j < num_aggr_clause_terms; j++){
 
@@ -338,7 +304,6 @@ grouper(
 
       /* ----------------------------------------------------------------- */
     }
-
     else {
 
       /* assign grouper func for each term */
@@ -359,21 +324,6 @@ grouper(
 
         struct grouper_clause* gclause = grouper_clauseset[l];
 
-        /* unlinked each item from original traces, ie
-         * filtered_recordset_copy[i]; free'd filtered_recordset_copy just
-         * before exiting from this function */
-        char** filtered_recordset_copy = calloc(fresult->num_filtered_records,
-                                                sizeof(char*));
-        if (filtered_recordset_copy == NULL)
-          errExit("calloc");
-
-        for (int i = 0; i < fresult->num_filtered_records; i++)
-          filtered_recordset_copy[i] = fresult->filtered_recordset[i];
-
-        /* get uintX_t specific function pointers, given the type of the
-         * RHS field of the each term of the clause; assuming the type of LHS
-         * and RHS are the same */
-
         /* free'd at the end of this clause loop */
         struct grouper_type** gtypeset =
         calloc(gclause->num_terms, sizeof(struct grouper_type*));
@@ -392,48 +342,26 @@ grouper(
         }
         gclause->gtypeset = gtypeset;
 
-        struct grouper_intermediate_result* intermediate_result =
+        char** sorted_recordset_reference =
         get_grouper_intermediates(
                                    fresult->num_filtered_records,
-                                   filtered_recordset_copy,
+                                   fresult->filtered_recordset,
 
                                    gclause,
                                    gresult
                                  );
 
-        if (intermediate_result == NULL)
+        if (sorted_recordset_reference == NULL)
           errExit("get_grouper_intermediates(...) returned NULL");
-
-        if(verbose_vv){
-
-          /* free'd just before calling merger(...) */
-          gresult->num_unique_records = intermediate_result->
-          uniq_result->num_uniq_records;
-          gresult->unique_recordset = (char**)
-          calloc(gresult->num_unique_records,
-                 sizeof(char*));
-          if (gresult->unique_recordset == NULL)
-            errExit("calloc");
-
-          for (int i = 0; i < gresult->num_unique_records; i++) {
-            gresult->unique_recordset[i] =
-            gclause->gtypeset[0]->
-            get_uniq_record(intermediate_result->uniq_result,i);
-
-            if (gresult->unique_recordset[i] == NULL)
-              errExit("get_uniq_record(...) returned NULL");
-          }
-        }
+        
+        /* an item from the sorted filtered recordset */
+        char** current_item = sorted_recordset_reference;
+        
+        char** last_item =
+        sorted_recordset_reference + (fresult->num_filtered_records - 1);
 
         /* process each filtered record for grouping */
-        for (int i = 0; i < fresult->num_filtered_records; i++) {
-
-          /* an item from the sorted filtered recordset */
-          char* item = *(intermediate_result->sorted_recordset_reference[i]);
-
-          /* continue ahead if this item has already been checked (grouped) */
-          if (item == NULL)
-            continue;
+        for (int k = 0; *current_item != NULL; current_item++) {
 
           /* create a new group out of this item */
           gresult->num_groups += 1;
@@ -458,63 +386,51 @@ grouper(
           group->members = (char **)calloc(1, sizeof(char *));
           if (group->members == NULL)
             errExit("calloc");
-          group->members[0] = item;
-
-          /* jump to the first item in the sorted recordset that matches
-           * all the terms of the grouper clause */
-          char ***record_iter = grouper_bsearch(
-                                                 item,
-                                                 gclause,
-                                                 intermediate_result,
-                                                 fresult->num_filtered_records
-                                               );
-          if (record_iter != NULL) {
-
-            // iterate until terminating NULL in sorted_recordset
-            for (int k = 0; *record_iter != NULL; record_iter++) {
-
-              // do not group with itself
-              if (**record_iter == item) continue;
-
-              // check all terms for this grouper clause for those two records
-              for (k = 0; k < gclause->num_terms; k++) {
-
-                struct grouper_term* term = gclause->termset[k];
-
-                if (
-                    !term->func(
-                                  group,
-                                  term->field_offset1,
-                                  **record_iter,
-                                  term->field_offset2,
-                                  term->delta
-                                )
-                    )
-                  break;
-              }
-
-              // break out, if one of the terms didnt match
-              if (k < gclause->num_terms)
+          group->members[0] = *current_item;
+          
+          while (current_item != last_item) {
+            
+            current_item++;
+            
+            // check all terms for this grouper clause for those two records
+            for (k = 0; k < gclause->num_terms; k++) {
+              
+              struct grouper_term* term = gclause->termset[k];
+              
+              if (
+                  !term->func(
+                              group,
+                              term->field_offset1,
+                              *current_item,
+                              term->field_offset2,
+                              term->delta
+                              )
+                  )
                 break;
-
-              // all the terms matched!
-              else {
-
-                // add this member to the group
-                group->num_members += 1;
-                group->members = (char **)
-                realloc(group->members,
-                        sizeof(char *)*group->num_members);
-                if (group->members == NULL)
-                  errExit("realloc");
-                group->members[group->num_members-1] = **record_iter;
-
-                // this item has been check for good, set it to NULL
-                **record_iter = NULL;
-              }
+            }
+            
+            // break out, if one of the terms didnt match
+            if (k < gclause->num_terms) {
+              
+              // go back to the last item that matched
+              current_item--;
+              break;
+            }
+            
+            // all the terms matched!
+            else {
+              
+              // add this member to the group
+              group->num_members += 1;
+              group->members = (char **)
+              realloc(group->members,
+                      sizeof(char *)*group->num_members);
+              if (group->members == NULL)
+                errExit("realloc");
+              group->members[group->num_members-1] = *current_item;
             }
           }
-
+          
         /* ----------------------------------------------------------------- */
         /*            create a cooked netflow v5 group record                */
         /* ----------------------------------------------------------------- */
@@ -656,30 +572,10 @@ grouper(
 
         /* ----------------------------------------------------------------- */
 
-
-
-
-
-
-
-
-          /* this item has been checked for group membership, set to NULL */
-          item = NULL;
-
         }
 
-        free(filtered_recordset_copy); filtered_recordset_copy = NULL;
-
         // unlink the sorted records from the flow data
-        for (int i = 0; i < fresult->num_filtered_records; i++)
-          intermediate_result->sorted_recordset_reference[i] = NULL;
-        free(intermediate_result->sorted_recordset_reference);
-        intermediate_result->sorted_recordset_reference = NULL;
-
-        // unlink the uniq records from the flow data
-        gclause->gtypeset[0]->
-        dealloc_uniqresult(intermediate_result->uniq_result);
-        free(intermediate_result); intermediate_result = NULL;
+        sorted_recordset_reference = NULL;
 
         /* free the grouper types for each term of this clause  */
         for (int i = 0; i < gclause->num_terms; i++) {
@@ -720,57 +616,4 @@ int qsort_comp(const void *e1, const void *e2, void *thunk) {
   }
 
   return result;
-}
-
-
-
-
-
-char***
-grouper_bsearch (
-                  const char* filtered_record,
-                  struct grouper_clause* clause,
-                  const struct grouper_intermediate_result* const uniqset,
-                  size_t num_filtered_records
-                ) {
-
-  /* the bsearch for the first column is performed differently */
-  struct search_result* res =
-  clause->gtypeset[0]->bsearch (
-                                 filtered_record,
-                                 (void*) uniqset,
-                                 num_filtered_records,
-                                 clause->termset[0]->field_offset2,
-                                 0
-                               );
-
-  if (res->record_iter != NULL) {
-
-    /* for rest of the grouper terms */
-    for (int i = 1; i < clause->num_terms; i++) {
-
-      struct grouper_term* term = clause->termset[i];
-      struct grouper_type* type = clause->gtypeset[i];
-
-      if (res->record_iter != NULL) {
-        struct search_result* prevres = res;
-        res = type->bsearch (
-                              filtered_record,
-                              (void*)res->record_iter,
-                              res->num_items,
-                              term->field_offset2,
-                              i
-                            );
-        prevres->record_iter = NULL;
-        free(prevres); prevres = NULL;
-      }
-    }
-  }
-
-  char*** record_iter = res->record_iter;
-
-  res->record_iter = NULL;
-  free(res); res = NULL;
-
-  return record_iter;
 }

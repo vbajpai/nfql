@@ -204,6 +204,25 @@ ft_read(
       }
     }
   }
+  
+  if (filter_enabled) {
+    
+    for (int i = 0; i < fquery->num_branches; i++) {
+      
+      struct branch* branch = fquery->branchset[i];
+  
+      /* add one more member and assign it to NULL */
+      branch->filter_result->filtered_recordset = (char **)
+      realloc( branch->filter_result->filtered_recordset,
+               (branch->filter_result->num_filtered_records + 1) * sizeof(char*)
+             );
+      if (branch->filter_result->filtered_recordset == NULL)
+        errExit("realloc");
+      
+      branch->filter_result->filtered_recordset
+      [branch->filter_result->num_filtered_records] = NULL;
+    }
+  }
 
   /* print the filtered records if verbose mode is set */
   if (filter_enabled) {
