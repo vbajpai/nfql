@@ -174,19 +174,7 @@ get_grouper_intermediates
     errExit("calloc");
 
   intermediate_result->sorted_recordset_reference = sorted_recordset_ref;
-
-  /* unique results are only allocated for the first clause term*/
-  struct uniq_recordset_result*
-  uresult = clause->gtypeset[0]->alloc_uniqresult(
-                                                    num_filtered_records,
-                                                    clause->termset,
-                                                    sorted_recordset_ref
-                                                  );
-
-  if (uresult == NULL)
-    errExit("get_uniqrecordset(...) returned NULL");
-
-  intermediate_result->uniq_result = uresult; uresult = NULL;
+  intermediate_result->uniq_result = NULL;
   sorted_recordset_ref = NULL;
 
   return intermediate_result;
@@ -223,7 +211,7 @@ grouper(
   /* go ahead if there is something to group */
   if (fresult->num_filtered_records > 0) {
 
-    /* assign a specific uintX_t function depending on aggrule->op */
+    /* assign a aggr func for each term */
     if (groupaggregations_enabled) {
       for (int j = 0; j < num_aggr_clause_terms; j++){
 
@@ -338,7 +326,6 @@ grouper(
 
       /* ----------------------------------------------------------------- */
     }
-
     else {
 
       /* assign grouper func for each term */
@@ -404,27 +391,6 @@ grouper(
         if (intermediate_result == NULL)
           errExit("get_grouper_intermediates(...) returned NULL");
 
-        if(verbose_vv){
-
-          /* free'd just before calling merger(...) */
-          gresult->num_unique_records = intermediate_result->
-          uniq_result->num_uniq_records;
-          gresult->unique_recordset = (char**)
-          calloc(gresult->num_unique_records,
-                 sizeof(char*));
-          if (gresult->unique_recordset == NULL)
-            errExit("calloc");
-
-          for (int i = 0; i < gresult->num_unique_records; i++) {
-            gresult->unique_recordset[i] =
-            gclause->gtypeset[0]->
-            get_uniq_record(intermediate_result->uniq_result,i);
-
-            if (gresult->unique_recordset[i] == NULL)
-              errExit("get_uniq_record(...) returned NULL");
-          }
-        }
-
         /* process each filtered record for grouping */
         for (int i = 0; i < fresult->num_filtered_records; i++) {
 
@@ -460,14 +426,9 @@ grouper(
             errExit("calloc");
           group->members[0] = item;
 
-          /* jump to the first item in the sorted recordset that matches
-           * all the terms of the grouper clause */
-          char ***record_iter = grouper_bsearch(
-                                                 item,
-                                                 gclause,
-                                                 intermediate_result,
-                                                 fresult->num_filtered_records
-                                               );
+          char*** record_iter =
+          &(intermediate_result->sorted_recordset_reference[i]);
+
           if (record_iter != NULL) {
 
             // iterate until terminating NULL in sorted_recordset
@@ -675,10 +636,6 @@ grouper(
           intermediate_result->sorted_recordset_reference[i] = NULL;
         free(intermediate_result->sorted_recordset_reference);
         intermediate_result->sorted_recordset_reference = NULL;
-
-        // unlink the uniq records from the flow data
-        gclause->gtypeset[0]->
-        dealloc_uniqresult(intermediate_result->uniq_result);
         free(intermediate_result); intermediate_result = NULL;
 
         /* free the grouper types for each term of this clause  */
