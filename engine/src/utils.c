@@ -161,8 +161,8 @@ get_enum(const char * const name) {
     int \
     comp_##size(void *thunk, const void *e1, const void *e2) {\
       size x, y; \
-      x = *(size *)(**(char ***)e1 + (size_t)thunk); \
-      y = *(size *)(**(char ***)e2 + (size_t)thunk); \
+      x = *(size *)(*(char **)e1 + (size_t)thunk); \
+      y = *(size *)(*(char **)e2 + (size_t)thunk); \
       return ((x > y) - (y > x)); \
     }
 #elif defined(__linux)
@@ -170,8 +170,8 @@ get_enum(const char * const name) {
     int \
     comp_##size(const void *e1, const void *e2, void *thunk) {\
       size x, y; \
-      x = *(size *)(**(char ***)e1 + (size_t)thunk); \
-      y = *(size *)(**(char ***)e2 + (size_t)thunk); \
+      x = *(size *)(*(char **)e1 + (size_t)thunk); \
+      y = *(size *)(*(char **)e2 + (size_t)thunk); \
       return ((x > y) - (y > x)); \
     }
 #endif
@@ -179,82 +179,6 @@ comp(uint8_t);
 comp(uint16_t);
 comp(uint32_t);
 comp(uint64_t);
-
-
-/*
- * adapted from ./stdlib/bsearch.c from the GNU C Library
- * pass additional argument thunk to compar to allow it access additional data
- * without global variables - in our case, we need to pass the data offset */
-void *
-bsearch_r (
-           const void *key,
-           const void *base,
-           size_t nmemb,
-           size_t size,
-           void *thunk,
-           int (*compar) (void *thunk, const void *, const void *),
-           enum bsearch_item get_item
-          ) {
-
-  size_t l, u, idx;
-  const void *p;
-  void* item;
-  int comparison;
-
-  l = 0;
-  u = nmemb - 1;
-  while (l <= u) {
-
-    if (get_item == LAST_ITEM)
-      idx = (size_t) ceil((l + u) / 2.0);
-    else
-      idx = (size_t) floor((l + u) / 2.0);
-
-    if (get_item == RANDOM_ITEM) {
-      item = (((char ****) base) + (idx * size));
-      p = (void *) ***(char ****)(item);
-    }
-    else {
-      item = (((char ***) base) + (idx * size));
-      p = (void *) **(char ***)(item);
-    }
-    if (p != NULL) {
-      comparison = (*compar) (thunk, key, p);
-    }else {
-      /* the record was seen before is now NULL, must be less than this one */
-      comparison = 1;
-    }
-
-    if (comparison < 0)
-      u = idx - 1;
-    else if (comparison > 0)
-      l = idx + 1;
-    else if (get_item == FIRST_ITEM && l!= idx)
-      u = idx;
-    else if (get_item == LAST_ITEM && u!= idx)
-      l = idx;
-    else {
-      return (void *) item;
-    }
-  }
-  return NULL;
-}
-
-
-
-#define comp_pp(size) \
-int comp_##size##_pp(void *thunk, const void *e1, const void *e2) {\
-size x, y; \
-x = *(size *)((char *)e1 + *(size_t *)thunk); \
-y = *(size *)((char *)e2 + *(size_t *)thunk); \
-return (x > y) - (y > x); \
-}
-
-comp_pp(uint8_t);
-comp_pp(uint16_t);
-comp_pp(uint32_t);
-comp_pp(uint64_t);
-
 
 /* -----------------------------------------------------------------------*/
 

@@ -36,19 +36,6 @@
 struct grouper_term;
 struct grouper_aggr;
 
-struct grouper_intermediate_result {
-
-  struct uniq_recordset_result*   uniq_result;
-  char***                         sorted_recordset_reference;
-};
-
-struct uniq_recordset_result {
-
-  uint32_t                        num_uniq_records;
-  char****                        uniq_recordset;
-};
-
-
 /* quick sort comparator */
 #if defined(__APPLE__) || defined(__FreeBSD__)
   int qsort_comp(void *thunk, const void *e1, const void *e2);
@@ -72,49 +59,7 @@ struct grouper_type {
                       void*                           thunk
                    );
   #endif
-
-  struct search_result*
-          (*bsearch)(
-                      const char* const              key,
-                      const void* const              base,
-
-                      size_t                         num_filtered_records,
-                      size_t                         field_offset,
-                      int                            type
-                    );
-
-  struct uniq_recordset_result*
-  (*alloc_uniqresult)
-            (
-              size_t                         num_filtered_records,
-              struct grouper_term** const    grouper_termset_of_first_clause,
-              char*** const                  sorted_recordset_ref
-            );
-
-  char*
-  (*get_uniq_record)(
-                     const struct uniq_recordset_result* const uniq_result,
-                     int index
-                    );
-
-  void
-  (*dealloc_uniqresult)(struct uniq_recordset_result* uniq_result);
 };
-
-struct search_result {
-  char***                         record_iter;
-  size_t                          num_items;
-};
-
-
-char***
-grouper_bsearch (
-                 const char* filtered_record,
-                 struct grouper_clause* clause,
-                 const struct grouper_intermediate_result* const uniq_result,
-                 size_t num_filtered_records
-                );
-
 
 struct aggr_result*
 grouper_aggregations(
@@ -131,7 +76,7 @@ grouper_aggregations(
                      struct aggr_result*
                      );
 
-struct grouper_intermediate_result *
+char**
 get_grouper_intermediates
                 (
                   size_t num_filtered_records,
