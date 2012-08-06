@@ -153,7 +153,8 @@ grouper(
         struct aggr_term** const aggr_clause_termset,
 
         const struct filter_result* const fresult,
-        int rec_size
+        int rec_size,
+        struct ft_data* data
        );
 
 #endif
