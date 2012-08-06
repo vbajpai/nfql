@@ -284,6 +284,7 @@ echo_grouper(
 
   if(num_grouper_clauses > 0) {
 
+    /* sorted records */
     if (file) {
       /* get a file descriptor */
       char* filename = (char*)0L;
@@ -316,7 +317,8 @@ echo_grouper(
         fterr_errx(1, "ftio_close(): failed");
       free(ftio_out);
 
-    } else {
+    }
+    else {
 
       printf("\nNo. of Sorted Records: %u\n", num_sorted_records);
       if (num_sorted_records != 0)
@@ -325,56 +327,15 @@ echo_grouper(
       for (int j = 0; j < num_sorted_records; j++)
         flow_print_record(dataformat, gresult->sorted_recordset[j]);
     }
-
-    if (file) {
-      /* get a file descriptor */
-      char* filename = (char*)0L;
-      asprintf(&filename, "%s/grouper-branch-%d-unique-records.ftz",
-               dirpath, branch_id);
-      int out_fd = get_fd(filename);
-      if(out_fd == -1) errExit("get_fd(...) returned -1");
-      else free(filename);
-
-      /* get the output stream */
-      struct ftio* ftio_out = get_ftio(
-                                        dataformat,
-                                        out_fd,
-                                        gresult->num_unique_records
-                                      );
-
-      /* write the header to the output stream */
-      int n = -1;
-      if ((n = ftio_write_header(ftio_out)) < 0)
-        fterr_errx(1, "ftio_write_header(): failed");
-
-      for (int j = 0; j < gresult->num_unique_records; j++) {
-        /* write the record to the output stream */
-        if ((n = ftio_write(ftio_out, gresult->unique_recordset[j])) < 0)
-          fterr_errx(1, "ftio_write(): failed");
-      }
-
-      /* close the output stream */
-      if ((n = ftio_close(ftio_out)) < 0)
-        fterr_errx(1, "ftio_close(): failed");
-      free(ftio_out);
-
-    } else {
-      printf("\nNo. of Unique Records: %u\n", gresult->num_unique_records);
-      if (gresult->num_unique_records != 0)
-        puts(FLOWHEADER);
-
-      for (int j = 0; j < gresult->num_unique_records; j++)
-        flow_print_record(dataformat, gresult->unique_recordset[j]);
-    }
   }
 
+  /* group members */
   if(!file) {
     printf("\nNo. of Groups: %u (Verbose Output)\n", gresult->num_groups);
 
     if (gresult->num_groups > 0)
       puts(FLOWHEADER);
   }
-
   for (int j = 0; j < gresult->num_groups; j++) {
 
     struct group* group = gresult->groupset[j];

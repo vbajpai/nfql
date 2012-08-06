@@ -145,10 +145,7 @@ struct filter_result {
   char**                                      filtered_recordset;
 };
 struct grouper_result {
-  uint32_t                                    num_unique_records;
   char**                                      sorted_recordset;
-  char**                                      unique_recordset;
-
   uint32_t                                    num_groups;
   struct group**                              groupset;
 };
