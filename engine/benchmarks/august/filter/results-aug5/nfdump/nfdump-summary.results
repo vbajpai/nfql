@@ -1,0 +1,6 @@
+nfdump-filter-0.0-twente:20148632 output:1 ratio:0.000000 avgtime:4.536579
+nfdump-filter-1.0-twente:20148632 output:20148632 ratio:1.000000 avgtime:12.603428
+nfdump-filter-0.6-twente:20148632 output:12726955 ratio:0.631654 avgtime:8.687106
+nfdump-filter-0.2-twente:20148632 output:4773247 ratio:0.236902 avgtime:7.954553
+nfdump-filter-0.4-twente:20148632 output:7421678 ratio:0.368346 avgtime:8.090482
+nfdump-filter-0.8-twente:20148632 output:15375386 ratio:0.763098 avgtime:10.424142
