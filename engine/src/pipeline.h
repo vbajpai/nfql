@@ -59,6 +59,13 @@ struct filter_term {
                uint64_t                       value,
                uint64_t                       delta
                );
+  struct aggr* (*aggr_function)(
+                                 char **records,
+                                 char *group_aggregation,
+                                 size_t num_records,
+                                 size_t field_offset,
+                                 bool if_aggr_common
+                               );
 };
 
 struct grouper_clause {
@@ -78,6 +85,13 @@ struct grouper_term {
                size_t                         field_offset2,
                uint64_t                       delta
                );
+  struct aggr* (*aggr_function)(
+                                char **records,
+                                char *group_aggregation,
+                                size_t num_records,
+                                size_t field_offset,
+                                bool if_aggr_common
+                               );
 };
 struct aggr_term {
   size_t                                      field_offset;
