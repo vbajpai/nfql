@@ -74,19 +74,21 @@ branch_start(void *arg) {
   if (grouper_enabled) {
 
     branch->grouper_result = grouper(
-                                     branch->num_filter_clauses,
-                                     branch->filter_clauseset,
+                                      branch->num_filter_clauses,
+                                      branch->filter_clauseset,
 
-                                     branch->num_grouper_clauses,
-                                     branch->grouper_clauseset,
+                                      branch->num_grouper_clauses,
+                                      branch->grouper_clauseset,
 
-                                     branch->num_aggr_clause_terms,
-                                     branch->aggr_clause_termset,
+                                      branch->num_aggr_clause_terms,
+                                      branch->aggr_clause_termset,
 
-                                     branch->filter_result,
-                                     branch->data->rec_size,
-                                     branch->data
-                                     );
+                                      branch->filter_result,
+                                      branch->data->rec_size,
+
+                                      branch->data,
+                                      branch->branch_id
+                                    );
     if (branch->grouper_result == NULL)
       pthread_exit((void*)EXIT_FAILURE);
     else {
@@ -159,11 +161,14 @@ branch_start(void *arg) {
   if (groupfilter_enabled) {
 
     branch->gfilter_result = groupfilter(
-                                         branch->num_groupfilter_clauses,
-                                         branch->groupfilter_clauseset,
+                                          branch->num_groupfilter_clauses,
+                                          branch->groupfilter_clauseset,
 
-                                         branch->grouper_result
-                                         );
+                                          branch->grouper_result,
+
+                                          branch->data,
+                                          branch->branch_id
+                                        );
 
     if (branch->gfilter_result == NULL)
       pthread_exit((void*)EXIT_FAILURE);

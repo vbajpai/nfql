@@ -31,8 +31,11 @@ groupfilter(
             size_t num_groupfilter_clauses,
             struct groupfilter_clause** const groupfilter_clauseset,
 
-            const struct grouper_result* const gresult
-            ) {
+            const struct grouper_result* const gresult,
+
+            struct ft_data* data,
+            int branch_id
+           ) {
 
   /* free'd just before calling ungrouper(...) */
   struct groupfilter_result*
@@ -51,6 +54,30 @@ groupfilter(
       struct groupfilter_term* term = gclause->termset[j];
       assign_groupfilter_func(term);
     }
+  }
+
+  /* initialize an output stream if file write is requested */
+  struct ftio* ftio_out = NULL; int n = -1;
+  if (verbose_v && file) {
+
+    /* get a file descriptor */
+    char* filename = (char*)0L;
+    asprintf(&filename, "%s/groupfilter-branch-%d-filtered-groups.ftz",
+             dirpath, branch_id);
+    int out_fd = get_fd(filename);
+    if(out_fd == -1) errExit("get_fd(...) returned -1");
+    else free(filename);
+
+    /* get the output stream */
+    ftio_out = get_ftio(
+                         data,
+                         out_fd,
+                         gfilter_result->num_filtered_groups
+                       );
+
+    /* write the header to the output stream */
+    if ((n = ftio_write_header(ftio_out)) < 0)
+      fterr_errx(1, "ftio_write_header(): failed");
   }
 
   /* iterate over each group */
@@ -102,7 +129,21 @@ groupfilter(
         errExit("realloc");
       gfilter_result->filtered_groupset
       [gfilter_result->num_filtered_groups-1] = gresult->groupset[i];
+
+      /* write the record to the output stream */
+      if (verbose_v && file) {
+        struct group* fgroup = gresult->groupset[i];
+        if ((n = ftio_write(ftio_out, fgroup->aggr_result->aggr_record)) < 0)
+          fterr_errx(1, "ftio_write(): failed");
+      }
     }
+  }
+
+  /* close the output stream */
+  if (verbose_v && file) {
+    if ((n = ftio_close(ftio_out)) < 0)
+      fterr_errx(1, "ftio_close(): failed");
+    free(ftio_out);
   }
 
   return gfilter_result;

@@ -75,7 +75,6 @@ ft_read(
          struct flowquery* fquery
        ) {
 
-
   /* assign filter func for all the branches */
   if (filter_enabled) {
     for (int i = 0; i < fquery->num_branches; i++) {
@@ -107,6 +106,33 @@ ft_read(
           fclause->termset[j] = term;
         }
       }
+    }
+  }
+
+  /* initialize the output stream if file write is requested */
+  if (verbose_v && file) {
+
+    for (int i = 0; i < fquery->num_branches; i++) {
+
+      struct branch* branch = fquery->branchset[i];
+
+      /* get a file descriptor */
+      char* filename = (char*)0L;
+      asprintf(&filename, "%s/filter-branch-%d-filtered-records.ftz",
+               dirpath, branch->branch_id);
+      int out_fd = get_fd(filename);
+      if(out_fd == -1) errExit("get_fd(...) returned -1");
+      else free(filename);
+
+      /* get the output stream */
+      branch->ftio_out = get_ftio(
+                                  data,
+                                  out_fd,
+                                  branch->filter_result->num_filtered_records
+                                 );
+      /* write the header to the output stream */
+      if (ftio_write_header(branch->ftio_out) < 0)
+        fterr_errx(1, "ftio_write_header(): failed");
     }
   }
 
@@ -201,6 +227,12 @@ ft_read(
         branch->filter_result->
         filtered_recordset[branch->filter_result->
                            num_filtered_records - 1] = target;
+
+        /* write to the output stream, if requested */
+        if (verbose_v && file) {
+          if ((ftio_write(branch->ftio_out, record)) < 0)
+            fterr_errx(1, "ftio_write(): failed");
+        }
       }
     }
   }
@@ -224,6 +256,19 @@ ft_read(
     }
   }
 
+  /* close the output stream */
+  if (verbose_v && file) {
+    for (int i = 0; i < fquery->num_branches; i++) {
+
+      struct branch* branch = fquery->branchset[i];
+
+      if ((ftio_close(branch->ftio_out)) < 0)
+        fterr_errx(1, "ftio_close(): failed");
+      free(branch->ftio_out);
+    }
+  }
+
+  /* set the last item in filtered_recordset to NULL */
   if (filter_enabled) {
 
     for (int i = 0; i < fquery->num_branches; i++) {

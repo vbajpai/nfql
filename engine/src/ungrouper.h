@@ -30,11 +30,13 @@
 
 #include "pipeline.h"
 #include "errorhandlers.h"
+#include "ftreader.h"
 
 struct ungrouper_result*
 ungrouper(
           size_t num_branches,
-          const struct merger_result* const mresult
-          );
+          const struct merger_result* const mresult,
+          struct ft_data* dataformat
+         );
 
 #endif

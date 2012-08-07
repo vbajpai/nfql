@@ -41,6 +41,7 @@ merger(
        struct merger_clause** const merger_clauseset,
 
        size_t num_branches,
-       struct branch** const branchset
+       struct branch** const branchset,
+       struct ft_data* data
       );
 #endif
