@@ -111,11 +111,14 @@ grouper_aggregations(
 char**
 get_grouper_intermediates
                 (
-                  size_t num_filtered_records,
+                  uint32_t num_filtered_records,
                   char** const filtered_recordset,
 
                   struct grouper_clause* clause,
-                  struct grouper_result* const gresult
+                  struct grouper_result* const gresult,
+
+                  struct ft_data* dataformat,
+                  int branch_id
                 ) {
 
   /* sort the record references according to the right hand side
@@ -139,7 +142,32 @@ get_grouper_intermediates
            );
   #endif
 
+
   if(verbose_vv){
+
+    /* initialize the output stream, if write to file is requested */
+    struct ftio* ftio_out = NULL; int n = -1;
+    if(file) {
+
+      /* get a file descriptor */
+      char* filename = (char*)0L;
+      asprintf(&filename, "%s/grouper-branch-%d-sorted-records.ftz",
+               dirpath, branch_id);
+      int out_fd = get_fd(filename);
+      if(out_fd == -1) errExit("get_fd(...) returned -1");
+      else free(filename);
+
+      /* get the output stream */
+      ftio_out = get_ftio(
+                           dataformat,
+                           out_fd,
+                           num_filtered_records
+                         );
+
+      /* write the header to the output stream */
+      if ((n = ftio_write_header(ftio_out)) < 0)
+        fterr_errx(1, "ftio_write_header(): failed");
+    }
 
     /* free'd just before calling merger(...) ?*/
     gresult->sorted_recordset = (char**) calloc(num_filtered_records,
@@ -147,8 +175,24 @@ get_grouper_intermediates
     if (gresult->sorted_recordset == NULL)
       errExit("calloc");
 
-    for (int i = 0; i < num_filtered_records; i++)
+    /* process each sorted record */
+    for (int i = 0; i < num_filtered_records; i++) {
+
       gresult->sorted_recordset[i] = filtered_recordset[i];
+
+      /* write the record to the output stream */
+      if(file) {
+        if ((n = ftio_write(ftio_out, gresult->sorted_recordset[i])) < 0)
+          fterr_errx(1, "ftio_write(): failed");
+      }
+    }
+
+    /* close the output stream */
+    if(file) {
+      if ((n = ftio_close(ftio_out)) < 0)
+        fterr_errx(1, "ftio_close(): failed");
+      free(ftio_out);
+    }
   }
 
   // mark the end of sorted records
@@ -171,7 +215,9 @@ grouper(
 
         const struct filter_result* const fresult,
         int rec_size,
-        struct ft_data* data
+
+        struct ft_data* dataformat,
+        int branch_id
        ) {
 
   /* free'd just after returning from ungrouper(...) */
@@ -224,6 +270,30 @@ grouper(
         if(term->aggr_function == NULL)
           errExit("get_aggr_fptr(...) returned NULL");
       }
+    }
+
+    /* open a output stream, if a file write is requested */
+    struct ftio* ftio_groups_out = NULL; int n_groups = -1;
+    if (verbose_v && file) {
+
+      /* get a file descriptor */
+      char* filename = (char*)0L;
+      asprintf(&filename, "%s/grouper-branch-%d-groups.ftz",
+               dirpath, branch_id);
+      int out_fd = get_fd(filename);
+      if(out_fd == -1) errExit("get_fd(...) returned -1");
+      else free(filename);
+
+      /* get the output stream */
+      ftio_groups_out = get_ftio(
+                                  dataformat,
+                                  out_fd,
+                                  gresult->num_groups
+                                );
+
+      /* write the header to the output stream */
+      if ((n_groups = ftio_write_header(ftio_groups_out)) < 0)
+      fterr_errx(1, "ftio_write_header(): failed");
     }
 
     /* club all filtered records into one group,
@@ -298,6 +368,10 @@ grouper(
 
       /* ----------------------------------------------------------------- */
 
+
+
+
+
       /* ----------------------------------------------------------------- */
       /*                    create group aggregations                      */
       /* ----------------------------------------------------------------- */
@@ -319,6 +393,53 @@ grouper(
                                                   );
         if (group->aggr_result == NULL)
           errExit("grouper_aggregations(...) returned NULL");
+      }
+
+      /* ----------------------------------------------------------------- */
+
+
+
+      /* ----------------------------------------------------------------- */
+      /*                    write the record to file                       */
+      /* ----------------------------------------------------------------- */
+
+      if (verbose_v && file) {
+
+        /* write the record to the output stream */
+        if ((n_groups =
+             ftio_write(ftio_groups_out, group->aggr_result->aggr_record)) < 0)
+          fterr_errx(1, "ftio_write(): failed");
+      }
+
+      /* open a output stream for group members, if a file write is requested */
+      struct ftio* ftio_members_out = NULL; int n_members = -1;
+      if (verbose_vv && file) {
+
+        /* get a file descriptor */
+        char* filename = (char*)0L;
+        asprintf(&filename, "%s/grouper-branch-%d-group-%d-records.ftz",
+                 dirpath, branch_id, 0);
+        int out_fd = get_fd(filename);
+        if(out_fd == -1) errExit("get_fd(...) returned -1");
+        else free(filename);
+
+        /* get the output stream */
+        ftio_members_out = get_ftio(
+                                     dataformat,
+                                     out_fd,
+                                     group->num_members
+                                   );
+
+        /* write the header to the output stream */
+        if ((n_members = ftio_write_header(ftio_members_out)) < 0)
+          fterr_errx(1, "ftio_write_header(): failed");
+      }
+
+      /* close the output stream */
+      if (verbose_vv && file) {
+        if ((n_members = ftio_close(ftio_members_out)) < 0)
+          fterr_errx(1, "ftio_close(): failed");
+        free(ftio_members_out);
       }
 
       /* ----------------------------------------------------------------- */
@@ -367,7 +488,10 @@ grouper(
                                    fresult->filtered_recordset,
 
                                    gclause,
-                                   gresult
+                                   gresult,
+
+                                   dataformat,
+                                   branch_id
                                  );
 
         if (sorted_recordset_reference == NULL)
@@ -406,6 +530,30 @@ grouper(
           if (group->members == NULL)
             errExit("calloc");
           group->members[0] = *current_item;
+
+          /* initialize an output stream, if file write is requested */
+          struct ftio* ftio_members_out = NULL; int n_members = -1;
+          if(verbose_vv && file) {
+
+            /* get a file descriptor */
+            char* filename = (char*)0L;
+            asprintf(&filename, "%s/grouper-branch-%d-group-%d-records.ftz",
+                     dirpath, branch_id, gresult->num_groups - 1);
+            int out_fd = get_fd(filename);
+            if(out_fd == -1) errExit("get_fd(...) returned -1");
+            else free(filename);
+
+            /* get the output stream */
+            ftio_members_out = get_ftio(
+                                         dataformat,
+                                         out_fd,
+                                         group->num_members
+                                       );
+
+            /* write the header to the output stream */
+            if ((n_members = ftio_write_header(ftio_members_out)) < 0)
+              fterr_errx(1, "ftio_write_header(): failed");
+          }
 
           while (current_item != last_item) {
 
@@ -447,7 +595,23 @@ grouper(
               if (group->members == NULL)
                 errExit("realloc");
               group->members[group->num_members-1] = *current_item;
+
+              // write this member to the file (if requested)
+              if (verbose_vv && file) {
+
+                /* write the record to the output stream */
+                if ((n_members =
+                     ftio_write(ftio_members_out, *current_item) < 0))
+                  fterr_errx(1, "ftio_write(): failed");
+              }
             }
+          }
+
+          /* close the output stream */
+          if (verbose_vv && file) {
+            if ((n_members = ftio_close(ftio_members_out)) < 0)
+              fterr_errx(1, "ftio_close(): failed");
+            free(ftio_members_out);
           }
 
         /* ----------------------------------------------------------------- */
@@ -548,13 +712,6 @@ grouper(
         /* ----------------------------------------------------------------- */
 
 
-
-
-
-
-
-
-
         /* ----------------------------------------------------------------- */
         /*                    create group aggregations                      */
         /* ----------------------------------------------------------------- */
@@ -580,6 +737,26 @@ grouper(
 
         /* ----------------------------------------------------------------- */
 
+
+        /* ----------------------------------------------------------------- */
+        /*                    write to the output stream                     */
+        /* ----------------------------------------------------------------- */
+
+          if (verbose_v && file) {
+
+            if (
+                 ( n_groups =
+                   ftio_write(
+                              ftio_groups_out,
+                              group->aggr_result->aggr_record)
+                             ) < 0
+               )
+              fterr_errx(1, "ftio_write(): failed");
+          }
+
+        /* ----------------------------------------------------------------- */
+
+
         }
 
         // unlink the sorted records from the flow data
@@ -592,6 +769,13 @@ grouper(
         }
         free(gclause->gtypeset); gclause->gtypeset = NULL;
       }
+    }
+
+    /* close the output stream */
+    if (verbose_v && file) {
+      if ((n_groups = ftio_close(ftio_groups_out)) < 0)
+        fterr_errx(1, "ftio_close(): failed");
+      free(ftio_groups_out);
     }
   }
 

@@ -36,7 +36,10 @@ groupfilter(
             size_t num_groupfilter_clauses,
             struct groupfilter_clause** const groupfilter_clauseset,
 
-            const struct grouper_result* const gresult
+            const struct grouper_result* const gresult,
+
+            struct ft_data* data,
+            int branch_id
            );
 
 #endif

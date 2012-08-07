@@ -1484,7 +1484,7 @@ main(int argc, char **argv) {
     }
     free(threadset);
 
-    /* print the filtered records if verbose mode is set */
+    /* print the branch results if verbose mode is set */
     if (verbose_v) {
 
       echo_branch(
@@ -1552,7 +1552,8 @@ main(int argc, char **argv) {
                                    fquery->merger_clauseset,
 
                                    fquery->num_branches,
-                                   fquery->branchset
+                                   fquery->branchset,
+                                   param_data->trace
                                    );
 
     if (fquery->merger_result == NULL)
@@ -1654,7 +1655,8 @@ main(int argc, char **argv) {
   if (ungrouper_enabled) {
     fquery->ungrouper_result = ungrouper(
                                          fquery->num_branches,
-                                         fquery->merger_result
+                                         fquery->merger_result,
+                                         param_data->trace
                                          );
     if (fquery->ungrouper_result == NULL)
       errExit("ungrouper(...) returned NULL");

@@ -79,11 +79,14 @@ grouper_aggregations(
 char**
 get_grouper_intermediates
                 (
-                  size_t num_filtered_records,
+                  uint32_t num_filtered_records,
                   char** const filtered_recordset_copy,
 
                   struct grouper_clause* clause,
-                  struct grouper_result* const gresult
+                  struct grouper_result* const gresult,
+
+                  struct ft_data* dataformat,
+                  int branch_id
                 );
 
 struct grouper_result*
@@ -99,7 +102,9 @@ grouper(
 
         const struct filter_result* const fresult,
         int rec_size,
-        struct ft_data* data
+
+        struct ft_data* dataformat,
+        int branch_id
        );
 
 #endif

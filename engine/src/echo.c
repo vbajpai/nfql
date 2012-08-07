@@ -37,58 +37,13 @@ echo_merger(
 
   if (verbose_vv) {
 
-    struct permut_iter* iter = iter_init(num_branches, branchset);
-
     if(!file) {
+
+      struct permut_iter* iter = iter_init(num_branches, branchset);
+
       printf("\nNo. of (to be) Matched Groups: %zu \n",
              mresult->total_num_group_tuples);
-    }
-
-    if (iter != NULL) {
-      if (file) {
-        /* get a file descriptor */
-        char* filename = (char*)0L;
-        asprintf(&filename, "%s/merger-to-be-merged-groups.ftz", dirpath);
-        int out_fd = get_fd(filename);
-        if(out_fd == -1) errExit("get_fd(...) returned -1");
-        else free(filename);
-
-        uint32_t num_flows =
-        (uint32_t) (mresult->total_num_group_tuples * num_branches);
-
-        /* get the output stream */
-        struct ftio* ftio_out = get_ftio(
-                                         dataformat,
-                                         out_fd,
-                                         num_flows
-                                        );
-
-        /* write the header to the output stream */
-        int n = -1;
-        if ((n = ftio_write_header(ftio_out)) < 0)
-          fterr_errx(1, "ftio_write_header(): failed");
-
-        while(iter_next(iter)) {
-          for (int j = 0; j < num_branches; j++) {
-            /* write the record to the output stream */
-            char* record = branchset[j]->gfilter_result->filtered_groupset
-                              [
-                               iter->filtered_group_tuple[j] - 1
-                              ]->aggr_result->aggr_record;
-            if ((n = ftio_write(ftio_out, record) < 0))
-              fterr_errx(1, "ftio_write(): failed");
-          }
-        }
-
-        iter_destroy(iter);
-
-        /* close the output stream */
-        if ((n = ftio_close(ftio_out)) < 0)
-          fterr_errx(1, "ftio_close(): failed");
-        free(ftio_out);
-
-      } else {
-
+      if (iter != NULL) {
         puts(FLOWHEADER);
         while(iter_next(iter)) {
           for (int j = 0; j < num_branches; j++) {
@@ -104,46 +59,7 @@ echo_merger(
       }
     }
   }
-
-  if(file) {
-
-    /* get a file descriptor */
-    char* filename = (char*)0L;
-    asprintf(&filename, "%s/merger-merged-groups.ftz", dirpath);
-    int out_fd = get_fd(filename);
-    if(out_fd == -1) errExit("get_fd(...) returned -1");
-    else free(filename);
-
-    uint32_t num_flows = (uint32_t) (mresult->num_group_tuples * num_branches);
-
-    /* get the output stream */
-    struct ftio* ftio_out = get_ftio(
-                                     dataformat,
-                                     out_fd,
-                                     num_flows
-                                    );
-
-    /* write the header to the output stream */
-    int n = -1;
-    if ((n = ftio_write_header(ftio_out)) < 0)
-      fterr_errx(1, "ftio_write_header(): failed");
-
-
-    for (int j = 0; j < mresult->num_group_tuples; j++) {
-      /* write the record to the output stream */
-      struct group** group_tuple = mresult->group_tuples[j];
-      for (int i = 0; i < num_branches; i++) {
-        struct group* group = group_tuple[i];
-        if ((n = ftio_write(ftio_out, group->aggr_result->aggr_record) < 0))
-          fterr_errx(1, "ftio_write(): failed");
-      }
-    }
-
-    /* close the output stream */
-    if ((n = ftio_close(ftio_out)) < 0)
-      fterr_errx(1, "ftio_close(): failed");
-    free(ftio_out);
-  } else {
+  if(!file) {
 
     printf("\nNo. of Merged Groups: %u (Tuples)\n", mresult->num_group_tuples);
     if (mresult->num_group_tuples != 0)
@@ -226,41 +142,8 @@ echo_filter(
             struct ft_data* const dataformat
            ) {
 
-  if(file) {
-    /* get a file descriptor */
-    char* filename = (char*)0L;
-    asprintf(&filename, "%s/filter-branch-%d-filtered-records.ftz",
-             dirpath, branch_id);
-    int out_fd = get_fd(filename);
-    if(out_fd == -1) errExit("get_fd(...) returned -1");
-    else free(filename);
+  if(!file) {
 
-    /* get the output stream */
-    struct ftio* ftio_out = get_ftio(
-                                     dataformat,
-                                     out_fd,
-                                     fresult->num_filtered_records
-                                    );
-    /* write the header to the output stream */
-    int n = -1;
-    if ((n = ftio_write_header(ftio_out)) < 0)
-      fterr_errx(1, "ftio_write_header(): failed");
-
-
-    for (int j = 0; j < fresult->num_filtered_records; j++) {
-
-      char* record = fresult->filtered_recordset[j];
-      /* write the record to the output stream */
-      if ((n = ftio_write(ftio_out, record)) < 0)
-        fterr_errx(1, "ftio_write(): failed");
-    }
-
-    /* close the output stream */
-    if ((n = ftio_close(ftio_out)) < 0)
-      fterr_errx(1, "ftio_close(): failed");
-    free(ftio_out);
-
-  } else {
     printf("\nNo. of Filtered Records: %u\n", fresult->num_filtered_records);
     if (fresult->num_filtered_records != 0)
       puts(FLOWHEADER);
@@ -285,40 +168,7 @@ echo_grouper(
   if(num_grouper_clauses > 0) {
 
     /* sorted records */
-    if (file) {
-      /* get a file descriptor */
-      char* filename = (char*)0L;
-      asprintf(&filename, "%s/grouper-branch-%d-sorted-records.ftz",
-               dirpath, branch_id);
-      int out_fd = get_fd(filename);
-      if(out_fd == -1) errExit("get_fd(...) returned -1");
-      else free(filename);
-
-      /* get the output stream */
-      struct ftio* ftio_out = get_ftio(
-                                       dataformat,
-                                       out_fd,
-                                       num_sorted_records
-                                      );
-
-      /* write the header to the output stream */
-      int n = -1;
-      if ((n = ftio_write_header(ftio_out)) < 0)
-        fterr_errx(1, "ftio_write_header(): failed");
-
-      for (int j = 0; j < num_sorted_records; j++) {
-        /* write the record to the output stream */
-        if ((n = ftio_write(ftio_out, gresult->sorted_recordset[j])) < 0)
-          fterr_errx(1, "ftio_write(): failed");
-      }
-
-      /* close the output stream */
-      if ((n = ftio_close(ftio_out)) < 0)
-        fterr_errx(1, "ftio_close(): failed");
-      free(ftio_out);
-
-    }
-    else {
+    if (!file) {
 
       printf("\nNo. of Sorted Records: %u\n", num_sorted_records);
       if (num_sorted_records != 0)
@@ -340,41 +190,7 @@ echo_grouper(
 
     struct group* group = gresult->groupset[j];
 
-    if (file) {
-      /* get a file descriptor */
-      char* filename = (char*)0L;
-      asprintf(&filename, "%s/grouper-branch-%d-group-%d-records.ftz",
-               dirpath, branch_id, j);
-      int out_fd = get_fd(filename);
-      if(out_fd == -1) errExit("get_fd(...) returned -1");
-      else free(filename);
-
-      /* get the output stream */
-      struct ftio* ftio_out = get_ftio(
-                                       dataformat,
-                                       out_fd,
-                                       group->num_members
-                                      );
-
-      /* write the header to the output stream */
-      int n = -1;
-      if ((n = ftio_write_header(ftio_out)) < 0)
-        fterr_errx(1, "ftio_write_header(): failed");
-
-      /* print group members */
-      for (int k = 0; k < group->num_members; k++) {
-
-        /* write the record to the output stream */
-        if ((n = ftio_write(ftio_out, group->members[k]) < 0))
-          fterr_errx(1, "ftio_write(): failed");
-      }
-
-      /* close the output stream */
-      if ((n = ftio_close(ftio_out)) < 0)
-        fterr_errx(1, "ftio_close(): failed");
-      free(ftio_out);
-
-    } else {
+    if (!file) {
       printf("\n");
       /* print group members */
       for (int k = 0; k < group->num_members; k++)
@@ -390,39 +206,8 @@ echo_group_aggr(
                 struct ft_data* const dataformat
                ) {
 
-  if(file) {
-    /* get a file descriptor */
-    char* filename = (char*)0L;
-    asprintf(&filename, "%s/grouper-branch-%d-groups.ftz",
-             dirpath, branch_id);
-    int out_fd = get_fd(filename);
-    if(out_fd == -1) errExit("get_fd(...) returned -1");
-    else free(filename);
-
-    /* get the output stream */
-    struct ftio* ftio_out = get_ftio(
-                                     dataformat,
-                                     out_fd,
-                                     gresult->num_groups
-                                    );
-
-    /* write the header to the output stream */
-    int n = -1;
-    if ((n = ftio_write_header(ftio_out)) < 0)
-      fterr_errx(1, "ftio_write_header(): failed");
-
-    for (int j = 0; j < gresult->num_groups; j++) {
-      /* write the record to the output stream */
-      struct group* group = gresult->groupset[j];
-      if ((n = ftio_write(ftio_out, group->aggr_result->aggr_record)) < 0)
-        fterr_errx(1, "ftio_write(): failed");
-    }
-
-    /* close the output stream */
-    if ((n = ftio_close(ftio_out)) < 0)
-      fterr_errx(1, "ftio_close(): failed");
-    free(ftio_out);
-  } else{
+  /* write to the file is directly done by the thread */
+  if(!file) {
 
     printf("\nNo. of Groups: %u (Aggregations)\n", gresult->num_groups);
     if (gresult->num_groups != 0)
@@ -441,41 +226,7 @@ echo_gfilter(
              struct ft_data* const dataformat
             ) {
 
-  if(file) {
-
-    /* get a file descriptor */
-    char* filename = (char*)0L;
-    asprintf(&filename, "%s/groupfilter-branch-%d-filtered-groups.ftz",
-             dirpath, branch_id);
-    int out_fd = get_fd(filename);
-    if(out_fd == -1) errExit("get_fd(...) returned -1");
-    else free(filename);
-
-    /* get the output stream */
-    struct ftio* ftio_out = get_ftio(
-                                     dataformat,
-                                     out_fd,
-                                     gfresult->num_filtered_groups
-                                    );
-
-    /* write the header to the output stream */
-    int n = -1;
-    if ((n = ftio_write_header(ftio_out)) < 0)
-      fterr_errx(1, "ftio_write_header(): failed");
-
-    for (int j = 0; j < gfresult->num_filtered_groups; j++) {
-
-      /* write the record to the output stream */
-      struct group* fgroup = gfresult->filtered_groupset[j];
-      if ((n = ftio_write(ftio_out, fgroup->aggr_result->aggr_record)) < 0)
-        fterr_errx(1, "ftio_write(): failed");
-    }
-
-    /* close the output stream */
-    if ((n = ftio_close(ftio_out)) < 0)
-      fterr_errx(1, "ftio_close(): failed");
-    free(ftio_out);
-  } else {
+  if(!file) {
 
     printf("\nNo. of Filtered Groups: %u (Aggregations)\n",
            gfresult->num_filtered_groups);
@@ -505,59 +256,25 @@ echo_results(
   if(!file) {
     printf("\nNo. of Streams: %zu \n", uresult->num_streams);
     printf("----------------- \n");
-  }
 
-  for (int j = 0; j < uresult->num_streams; j++) {
+    for (int j = 0; j < uresult->num_streams; j++) {
 
-    struct stream* stream = uresult->streamset[j];
+      struct stream* stream = uresult->streamset[j];
 
-    if(file) {
+      if(!file) {
 
-      /* get a file descriptor */
-      char* filename = (char*)0L;
-      asprintf(&filename, "%s/ungrouper-stream-%d.ftz",dirpath,j);
-      int out_fd = get_fd(filename);
-      if(out_fd == -1) errExit("get_fd(...) returned -1");
-      else free(filename);
+        printf("\nNo. of Records in Stream (%d): %u \n",j+1,
+               stream->num_records);
+        if (stream->num_records != 0)
+          puts(FLOWHEADER);
 
-      /* get the output stream */
-      struct ftio* ftio_out = get_ftio(
-                                       dataformat,
-                                       out_fd,
-                                       stream->num_records
-                                      );
+        for (int i = 0; i < stream->num_records; i++) {
+          char* record = stream->recordset[i];
+          flow_print_record(dataformat, record);
+        }
 
-      /* write the header to the output stream */
-      int n = -1;
-      if ((n = ftio_write_header(ftio_out)) < 0)
-        fterr_errx(1, "ftio_write_header(): failed");
-
-      for (int i = 0; i < stream->num_records; i++) {
-
-        /* write the record to the output stream */
-        char* record = stream->recordset[i];
-        if ((n = ftio_write(ftio_out, record)) < 0)
-          fterr_errx(1, "ftio_write(): failed");
+        printf("\n");
       }
-
-      /* close the output stream */
-      if ((n = ftio_close(ftio_out)) < 0)
-        fterr_errx(1, "ftio_close(): failed");
-      free(ftio_out);
-
-    } else {
-
-      printf("\nNo. of Records in Stream (%d): %u \n",j+1,
-             stream->num_records);
-      if (stream->num_records != 0)
-        puts(FLOWHEADER);
-
-      for (int i = 0; i < stream->num_records; i++) {
-        char* record = stream->recordset[i];
-        flow_print_record(dataformat, record);
-      }
-
-      printf("\n");
     }
   }
 

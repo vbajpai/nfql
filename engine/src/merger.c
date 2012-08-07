@@ -37,7 +37,8 @@ merger(
        struct merger_clause** const merger_clauseset,
 
        size_t num_branches,
-       struct branch** const branchset
+       struct branch** const branchset,
+       struct ft_data* dataformat
       ) {
 
   /* free'd just before calling ungrouper(...) */
@@ -63,11 +64,76 @@ merger(
     }
   }
 
+  /* initialze an output stream, if file write is requested */
+  struct ftio* ftio_out = NULL; int n = -1;
+  if (verbose_v && file) {
+
+    /* get a file descriptor */
+    char* filename = (char*)0L;
+    asprintf(&filename, "%s/merger-merged-groups.ftz", dirpath);
+    int out_fd = get_fd(filename);
+    if(out_fd == -1) errExit("get_fd(...) returned -1");
+    else free(filename);
+
+    uint32_t num_flows = (uint32_t) (mresult->num_group_tuples * num_branches);
+
+    /* get the output stream */
+    ftio_out = get_ftio(
+                         dataformat,
+                         out_fd,
+                         num_flows
+                       );
+
+    /* write the header to the output stream */
+    if ((n = ftio_write_header(ftio_out)) < 0)
+      fterr_errx(1, "ftio_write_header(): failed");
+
+  }
+
+  /* initialze an output stream, if file write is requested */
+  struct ftio* ftio_tobe_out = NULL; int n_tobe = -1;
+  if (verbose_vv && file) {
+
+    /* get a file descriptor */
+    char* filename = (char*)0L;
+    asprintf(&filename, "%s/merger-to-be-merged-groups.ftz", dirpath);
+    int out_fd = get_fd(filename);
+    if(out_fd == -1) errExit("get_fd(...) returned -1");
+    else free(filename);
+
+    uint32_t num_flows =
+    (uint32_t) (mresult->total_num_group_tuples * num_branches);
+
+    /* get the output stream */
+    ftio_tobe_out = get_ftio(
+                              dataformat,
+                              out_fd,
+                              num_flows
+                            );
+
+    /* write the header to the output stream */
+    if ((n_tobe = ftio_write_header(ftio_tobe_out)) < 0)
+      fterr_errx(1, "ftio_write_header(): failed");
+  }
+
   /* iterate over all permutations */
   unsigned int index = 0;
   while(iter_next(iter)) {
     bool clause = true;
     index += 1;
+
+    /* write to-be matched tuple to file if requested */
+    if (verbose_vv && file) {
+      for (int j = 0; j < num_branches; j++) {
+        /* write the record to the output stream */
+        char* record = branchset[j]->gfilter_result->filtered_groupset
+                          [
+                           iter->filtered_group_tuple[j] - 1
+                          ]->aggr_result->aggr_record;
+        if ((n_tobe = ftio_write(ftio_tobe_out, record) < 0))
+          fterr_errx(1, "ftio_write(): failed");
+      }
+    }
 
     /* process each merger clause (clauses are OR'd) */
     for (int k = 0; k < num_merger_clauses; k++) {
@@ -104,7 +170,7 @@ merger(
       }
     }
 
-    /* add the groups to the group tuple, if on of the clause matched */
+    /* add the groups to the group tuple, if one of the clause matched */
     if(clause){
 
       /* free'd just before calling ungrouper(...) */
@@ -119,6 +185,13 @@ merger(
         size_t group_id = iter->filtered_group_tuple[j];
         matched_tuple[j] =
         branchset[j]->gfilter_result->filtered_groupset[group_id-1];
+
+        /* write to the output stream */
+        if (verbose_v && file) {
+          if ((n = ftio_write(ftio_out,
+                              matched_tuple[j]->aggr_result->aggr_record) < 0))
+            fterr_errx(1, "ftio_write(): failed");
+        }
       }
 
       /* free'd just before calling ungrouper(...) */
@@ -132,6 +205,20 @@ merger(
       mresult->group_tuples[mresult->num_group_tuples-1] = matched_tuple;
     }
   };
+
+  /* close the output stream */
+  if (verbose_vv && file) {
+    if ((n_tobe = ftio_close(ftio_tobe_out)) < 0)
+      fterr_errx(1, "ftio_close(): failed");
+    free(ftio_tobe_out);
+  }
+
+  /* close the output stream */
+  if (verbose_v && file) {
+    if ((n = ftio_close(ftio_out)) < 0)
+      fterr_errx(1, "ftio_close(): failed");
+    free(ftio_out);
+  }
 
   mresult->total_num_group_tuples = index;
   iter_destroy(iter);

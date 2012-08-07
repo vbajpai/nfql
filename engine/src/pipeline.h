@@ -128,6 +128,7 @@ struct branch {
   /*                              inputs                                    */
   /* -----------------------------------------------------------------------*/
   int                                         branch_id;
+  struct ftio*                                ftio_out;
   struct ft_data*                             data;
 
   size_t                                      num_filter_clauses;
@@ -222,6 +223,7 @@ struct ungrouper_result {
   struct stream**                             streamset;
 };
 struct stream {
+  struct ftio*                                ftio_out;
   uint32_t                                    num_records;
   char**                                      recordset;
 };

@@ -31,7 +31,8 @@
 struct ungrouper_result*
 ungrouper(
           size_t num_branches,
-          const struct merger_result* const mresult
+          const struct merger_result* const mresult,
+          struct ft_data* dataformat
          ) {
 
   /* free'd after returning from ungrouper(...) */
@@ -48,12 +49,35 @@ ungrouper(
              sizeof(struct stream*));
       if (streamset == NULL)
         errExit("calloc");
+
       for (int i = 0; i < mresult->num_group_tuples; i++) {
 
         /* free'd after returning from ungrouper(...) */
         struct stream* stream = calloc(1, sizeof(struct stream));
         if (stream == NULL)
           errExit("calloc");
+
+        /* initialize an output stream, if file write is requested */
+        if (file) {
+
+          /* get a file descriptor */
+          char* filename = (char*)0L;
+          asprintf(&filename, "%s/ungrouper-stream-%d.ftz",dirpath,i);
+          int out_fd = get_fd(filename);
+          if(out_fd == -1) errExit("get_fd(...) returned -1");
+          else free(filename);
+
+          /* get the output stream */
+          stream->ftio_out = get_ftio(
+                                       dataformat,
+                                       out_fd,
+                                       stream->num_records
+                                     );
+
+          /* write the header to the output stream */
+          if ((ftio_write_header(stream->ftio_out)) < 0)
+            fterr_errx(1, "ftio_write_header(): failed");
+        }
 
         struct group** group_tuple = mresult->group_tuples[i];
         for (int j = 0; j < num_branches; j++) {
@@ -69,12 +93,26 @@ ungrouper(
 
           for (size_t k = stream->num_records, l = 0;
                k < (stream->num_records + group->num_members);
-               k++, l++)
+               k++, l++) {
             stream->recordset[k] = group->members[l];
+
+            /* write the record to the output stream */
+            if (file) {
+              if ((ftio_write(stream->ftio_out, stream->recordset[k])) < 0)
+                fterr_errx(1, "ftio_write(): failed");
+            }
+          }
           stream->num_records += group->num_members;
         }
 
         streamset[i] = stream;
+
+        /* close the output stream */
+        if (file) {
+          if ((ftio_close(stream->ftio_out)) < 0)
+            fterr_errx(1, "ftio_close(): failed");
+          free(stream->ftio_out);
+        }
       }
       uresult->streamset = streamset; streamset = NULL;
       uresult->num_streams = mresult->num_group_tuples;
