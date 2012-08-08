@@ -615,7 +615,6 @@ parse_json_query(const char* const query_mmap) {
   merger = json_object_object_get(query, "merger");
   if (merger != NULL) {
     merger_enabled = true;
-    ungrouper_enabled = true;
   }
 
   if (merger_enabled) {
@@ -724,6 +723,37 @@ parse_json_query(const char* const query_mmap) {
 
 #endif
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#ifdef UNGROUPER
+
+  /* -----------------------------------------------------------------------*/
+  /*                        check ungrouper                                 */
+  /* -----------------------------------------------------------------------*/
+
+
+  struct json_object*
+  ungrouper = json_object_object_get(query, "ungrouper");
+  if (ungrouper != NULL) {
+    ungrouper_enabled = true;
+  }
+
+  /* -----------------------------------------------------------------------*/
+
+#endif
 
 
 
