@@ -32,7 +32,7 @@ from pipeline import protocol
 
 if __name__ == '__main__':
 
-  term1 = {'term': vars(FilterRule('dPkts', 3, 'RULE_S1_32', 0, 'RULE_GE'))}
+  term1 = {'term': vars(FilterRule('dPkts', 0, 'RULE_S1_32', 0, 'RULE_GE'))}
   clause1 = {'clause': [term1]}
   filter1 = filter2 = {'dnf-expr': [clause1]}
 
