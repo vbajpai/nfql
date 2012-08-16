@@ -110,6 +110,9 @@ iter_init(
 bool
 iter_next(const struct permut_iter *iter);
 
+bool
+iter_prev(const struct permut_iter *iter);
+
 void
 iter_destroy(struct permut_iter *iter);
 

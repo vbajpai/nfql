@@ -175,7 +175,8 @@ get_grouper_intermediates
     if (gresult->sorted_recordset == NULL)
       errExit("calloc");
 
-    /* process each sorted record */
+    /* p
+     rocess each sorted record */
     for (int i = 0; i < num_filtered_records; i++) {
 
       gresult->sorted_recordset[i] = filtered_recordset[i];

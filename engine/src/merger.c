@@ -116,96 +116,143 @@ merger(
       fterr_errx(1, "ftio_write_header(): failed");
   }
 
-  /* iterate over all permutations */
-  unsigned int index = 0;
-  while(iter_next(iter)) {
-    bool clause = true;
-    index += 1;
+  
+  struct group* ref_record = branchset[0]->gfilter_result->filtered_groupset[0];
+  
+  struct permut_iter* iter_suc = iter_init(num_branches, branchset);
+  if (iter_suc == NULL)
+    return mresult;
 
-    /* write to-be matched tuple to file if requested */
-    if (verbose_vv && file) {
-      for (int j = 0; j < num_branches; j++) {
-        /* write the record to the output stream */
-        char* record = branchset[j]->gfilter_result->filtered_groupset
-                          [
-                           iter->filtered_group_tuple[j] - 1
-                          ]->aggr_result->aggr_record;
+  size_t index_val = 0;
+  while (ref_record != NULL) {
+    
+    /* iterate over all permutations */
+    do {
+      bool clause = true;
+      
+      /* write to-be matched tuple to file if requested */
+      if (verbose_vv && file) {
+        
+        char* record = ref_record->aggr_result->aggr_record;
         if ((n_tobe = ftio_write(ftio_tobe_out, record) < 0))
           fterr_errx(1, "ftio_write(): failed");
+        flow_print_record(dataformat, record);
+        
+        record = branchset[iter->num_branches - 1]->
+        gfilter_result->filtered_groupset
+          [
+           iter->filtered_group_tuple[iter->num_branches - 1] - 1
+          ]->aggr_result->aggr_record;
+          if ((n_tobe = ftio_write(ftio_tobe_out, record) < 0))
+            fterr_errx(1, "ftio_write(): failed");
+        flow_print_record(dataformat, record);
+
+        printf("\n");
       }
-    }
-
-    /* process each merger clause (clauses are OR'd) */
-    for (int k = 0; k < num_merger_clauses; k++) {
-
-      struct merger_clause* const mclause = merger_clauseset[k];
-
-      /* process each merger term (terms within a clause are AND'd) */
-      for (int j = 0; j < mclause->num_terms; j++) {
-
-        struct merger_term* const term = mclause->termset[j];
-        size_t group1_id = iter->filtered_group_tuple[term->branch1->branch_id];
-        size_t group2_id = iter->filtered_group_tuple[term->branch2->branch_id];
-
-        if (!term->
-            func(
-                 term->branch1->gfilter_result->filtered_groupset[group1_id-1],
-                 term->field1,
-                 term->branch2->gfilter_result->filtered_groupset[group2_id-1],
-                 term->field2,
-                 0
-                )
-           ) {
-          clause = false;
+      
+      /* process each merger clause (clauses are OR'd) */
+      for (int k = 0; k < num_merger_clauses; k++) {
+        
+        struct merger_clause* const mclause = merger_clauseset[k];
+        
+        /* process each merger term (terms within a clause are AND'd) */
+        for (int j = 0; j < mclause->num_terms; j++) {
+          
+          struct merger_term* const term = mclause->termset[j];
+          size_t group2_id = iter->filtered_group_tuple[iter->num_branches - 1];
+          
+          if (!term->
+              func(
+                   ref_record,
+                   term->field1,
+                   term->branch2->gfilter_result->filtered_groupset[group2_id-1],
+                   term->field2,
+                   0
+                   )
+              ) {
+            clause = false;
+            break;
+          }
+        }
+        
+        /* if any term is not satisfied, move to the next clause */
+        if (!clause)
+          continue;
+        /* else this clause is TRUE; so everything is TRUE; break out */
+        else {
           break;
         }
       }
-
-      /* if any term is not satisfied, move to the next clause */
-      if (!clause)
-        continue;
-      /* else this clause is TRUE; so everything is TRUE; break out */
-      else {
-        break;
-      }
-    }
-
-    /* add the groups to the group tuple, if one of the clause matched */
-    if(clause){
-
-      /* free'd just before calling ungrouper(...) */
-      struct group **matched_tuple = (struct group **)
-                                     calloc(num_branches,
-                                            sizeof(struct group *));
-      if (matched_tuple == NULL)
-        errExit("calloc");
-
-      /* save the groups in the matched tuple */
-      for (int j = 0; j < num_branches; j++){
-        size_t group_id = iter->filtered_group_tuple[j];
-        matched_tuple[j] =
-        branchset[j]->gfilter_result->filtered_groupset[group_id-1];
-
+      
+      /* add the groups to the group tuple, if one of the clause matched */
+      if(clause){
+        
+        /* free'd just before calling ungrouper(...) */
+        struct group **matched_tuple = (struct group **)
+        calloc(num_branches,
+               sizeof(struct group *));
+        if (matched_tuple == NULL)
+          errExit("calloc");
+        
+        /* save the groups in the matched tuple */
+        size_t group_id = iter->filtered_group_tuple[iter->num_branches - 1];
+        char* record =
+        branchset[iter->num_branches - 1]->gfilter_result->
+        filtered_groupset[group_id-1]->aggr_result->aggr_record;
+        
+        index_val += 1;
+        
         /* write to the output stream */
         if (verbose_v && file) {
-          if ((n = ftio_write(ftio_out,
-                              matched_tuple[j]->aggr_result->aggr_record) < 0))
+          if ((n = ftio_write(ftio_out, record) < 0))
             fterr_errx(1, "ftio_write(): failed");
+          //flow_print_record(dataformat, record);
         }
+        
+        /* free'd just before calling ungrouper(...) */
+        mresult->num_group_tuples += 1;
+        mresult->group_tuples = (struct group ***)
+        realloc(mresult->group_tuples,
+                mresult->num_group_tuples *sizeof(struct group**));
+        if (mresult->group_tuples == NULL)
+          errExit("realloc");
+        
+        mresult->group_tuples[mresult->num_group_tuples-1] = matched_tuple;
       }
-
-      /* free'd just before calling ungrouper(...) */
-      mresult->num_group_tuples += 1;
-      mresult->group_tuples = (struct group ***)
-      realloc(mresult->group_tuples,
-              mresult->num_group_tuples *sizeof(struct group**));
-      if (mresult->group_tuples == NULL)
-        errExit("realloc");
-
-      mresult->group_tuples[mresult->num_group_tuples-1] = matched_tuple;
+      else {
+        
+        iter_suc->filtered_group_tuple[iter->num_branches - 1] =
+        iter->filtered_group_tuple[iter->num_branches - 1];
+        
+        iter->num_branches -= 1;
+      }
+      
+    } while (iter_next(iter));
+    
+    index_val += 1;
+    /* write to the output stream */
+    if (verbose_v && file) {
+      if ((n = ftio_write(ftio_out, ref_record->aggr_result->aggr_record) < 0))
+        fterr_errx(1, "ftio_write(): failed");
+      //flow_print_record(dataformat, ref_record->aggr_result->aggr_record);
     }
-  };
-
+    
+    /* wrap around */
+    if ( (iter->filtered_group_tuple[iter->num_branches] - 1) == 0)
+      break;
+    
+    if ( (iter->num_branches) == (iter_suc->num_branches))
+      break;
+    
+    ref_record = branchset[0]->gfilter_result->filtered_groupset
+                 [iter->filtered_group_tuple[iter->num_branches] - 1];
+    
+    for (int i = 0; i < iter_suc->num_branches; i++)
+      iter->filtered_group_tuple = iter_suc->filtered_group_tuple;
+    iter->num_branches = iter_suc->num_branches;
+    
+  }
+  
   /* close the output stream */
   if (verbose_vv && file) {
     if ((n_tobe = ftio_close(ftio_tobe_out)) < 0)
@@ -220,7 +267,7 @@ merger(
     free(ftio_out);
   }
 
-  mresult->total_num_group_tuples = index;
+  mresult->total_num_group_tuples = index_val;
   iter_destroy(iter);
   return mresult;
 }

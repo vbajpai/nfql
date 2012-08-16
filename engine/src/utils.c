@@ -1,4 +1,5 @@
 
+
 /*
  * Copyright 2012 Vaibhav Bajpai <contact@vaibhavbajpai.com>
  * Copyright 2011 Johannes 'josch' Schauer <j.schauer@email.de>
@@ -241,7 +242,7 @@ iter_init(
   }
 
   /* the first call to iter_next will switch it to 1 */
-  iter->filtered_group_tuple[num_branches-1] = 0;
+  iter->filtered_group_tuple[num_branches-1] = 1;
   return iter;
 }
 
@@ -271,6 +272,35 @@ bool iter_next(const struct permut_iter *iter) {
   /* if everything is matched, return false */
   return false;
 }
+
+/*
+ * given the iterator, modify to represent the previous permutation
+ * and return true. if the first permutation is reached, return false.
+ */
+bool iter_prev(const struct permut_iter *iter) {
+  
+  
+  /* start from right to left in the group tuple */
+  for (int i = (int) iter->num_branches-1; i >= 0; --i) {
+    
+    /* if the item in particular index is not the first item,
+     * choose the previous element, and return
+     */
+    if (iter->filtered_group_tuple[i] > 0) {
+      iter->filtered_group_tuple[i]--;
+      return true;
+    } else {
+      /* if all the elements in this particular index of the tuple have been
+       checked, wrap the group around, and move to another (left) index
+       */
+      iter->filtered_group_tuple[i] = iter->num_filtered_groups[i];
+    }
+  }
+  
+  /* if everything is matched, return false */
+  return false;
+}
+
 
 void iter_destroy(struct permut_iter *iter) {
   free(iter->filtered_group_tuple); iter->filtered_group_tuple = NULL;

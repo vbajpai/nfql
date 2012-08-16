@@ -384,10 +384,6 @@ merger1_proto = """bool
   uint64_t delta)"""
 def merger1_body(op, atype1, atype2):
   result = " {\n\n"
-  if op in ['eq', 'ne', 'lt', 'gt', 'le', 'ge', 'in']:
-    result += "    if (*(%s*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||\n"%atype1
-    result += "        *(%s*)(group2->aggr_result->aggr_record + field2_offset) == 0)\n"%atype2
-    result += "      return false;\n\n"
   if op == "eq":
     result += """    return (*(%s*)(group1->aggr_result->aggr_record + field1_offset) >=
       *(%s*)(group2->aggr_result->aggr_record + field2_offset) - delta)
