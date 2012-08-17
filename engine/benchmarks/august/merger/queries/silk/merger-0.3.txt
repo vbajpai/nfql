@@ -1,0 +1,19 @@
+rm -f /tmp/filter0.rwz /tmp/grouper0.rwz /tmp/groupfilter0.rwz; \
+rwfilter --packets=0- --compression-method=zlib --pass=/tmp/filter0.rwz $INPUT; \
+rwsort --fields=1,2,3-9 /tmp/filter0.rwz | \
+rwgroup --id-fields=1,2,3-9 --summarize \
+        --compression-method=zlib --output-path=/tmp/grouper0.rwz; \
+rwfilter --packets=0- --compression-method=zlib /tmp/grouper0.rwz \
+         --pass=/tmp/groupfilter0.rwz; \
+
+rm -f /tmp/filter1.rwz /tmp/grouper1.rwz /tmp/groupfilter1.rwz; \
+rwfilter --packets=0- --compression-method=zlib --pass=/tmp/filter1.rwz $INPUT; \
+rwsort --fields=2,1,3-9, /tmp/filter1.rwz | \
+rwgroup --id-fields=2,1,3-9 --summarize \
+        --compression-method=zlib --output-path=/tmp/grouper1.rwz; \
+rwfilter --packets=0- --compression-method=zlib /tmp/grouper1.rwz \
+         --pass=/tmp/groupfilter1.rwz; \
+
+rm -f $OUTPUT; \
+rwmatch --infinite-delta --relate=1,2 --relate=2,1 /tmp/groupfilter0.rwz \
+                                      /tmp/groupfilter1.rwz $OUTPUT;
