@@ -290,19 +290,31 @@
               }, 
               {
                 "term": {
-                  "op": "RULE_SUM", 
+                  "delta": 0, 
+                  "op": {
+                    "type": "RULE_ABS", 
+                    "name": "RULE_EQ"
+                  }, 
                   "offset": {
-                    "datatype": "RULE_S1_32", 
-                    "name": "dPkts"
+                    "f2_datatype": "RULE_S2_32", 
+                    "f1_name": "srcaddr", 
+                    "f1_datatype": "RULE_S1_32", 
+                    "f2_name": "srcaddr"
                   }
                 }
               }, 
               {
                 "term": {
-                  "op": "RULE_SUM", 
+                  "delta": 0, 
+                  "op": {
+                    "type": "RULE_ABS", 
+                    "name": "RULE_EQ"
+                  }, 
                   "offset": {
-                    "datatype": "RULE_S1_32", 
-                    "name": "dOctets"
+                    "f2_datatype": "RULE_S2_32", 
+                    "f1_name": "dstaddr", 
+                    "f1_datatype": "RULE_S1_32", 
+                    "f2_name": "dstaddr"
                   }
                 }
               }, 
