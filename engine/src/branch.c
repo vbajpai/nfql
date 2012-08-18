@@ -31,14 +31,21 @@ void *
 branch_start(void *arg) {
 
   struct branch* branch = (struct branch *)arg;
-  
+
 #if defined(__linux)
-  cpu_set_t set;
-  CPU_ZERO(&set);
-  CPU_SET(branch->branch_id, &set);
-  int res = sched_setaffinity( pthread_self(), sizeof(cpu_set_t), &set );
-  if (res == -1)
-    errExit("sched_setaffinity(...) returned -1");
+  int num_cores = sysconf(_SC_NPROCESSORS_ONLN);
+  if (num_cores < 1)
+    errExit("sysconf(_SC_NPROCESSOR_ONLN returned %d", num_cores);
+
+  if (branch->branch_id < num_cores) {
+    printf("branchid:%d num_cores:%d", branch->branch_id, num_cores);
+    cpu_set_t set;
+    CPU_ZERO(&set);
+    CPU_SET(branch->branch_id, &set);
+    int res = sched_setaffinity( 0, sizeof(cpu_set_t), &set );
+    if (res == -1)
+      errExit("sched_setaffinity(...) returned -1");
+  }
 #endif
 
 
