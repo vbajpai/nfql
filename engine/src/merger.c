@@ -210,6 +210,7 @@ merger(
         if (verbose_v && file) {
           if ((n = ftio_write(ftio_out, ref_record->aggr_result->aggr_record) < 0))
             fterr_errx(1, "ftio_write(): failed");
+          //flow_print_record(dataformat, ref_record->aggr_result->aggr_record);
           if ((n = ftio_write(ftio_out, record) < 0))
             fterr_errx(1, "ftio_write(): failed");
           //flow_print_record(dataformat, record);
@@ -236,12 +237,12 @@ merger(
     } while (iter_next(iter));
     
     index_val += 1;
-   
+
     /* wrap around */
     if ( (iter->filtered_group_tuple[iter->num_branches] - 1) == 0)
       break;
     
-    if ( (iter->num_branches) == (iter_suc->num_branches))
+    if ( (iter->num_branches) != 0)
       break;
     
     ref_record = branchset[0]->gfilter_result->filtered_groupset
