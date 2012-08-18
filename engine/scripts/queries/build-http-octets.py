@@ -96,7 +96,7 @@ if __name__ == '__main__':
 
 
 
-  query = {'branchset': branchset, 'merger': merger, 'ungrouper': {}}
+  query = {'branchset': branchset, 'merger': merger}
   fjson = json.dumps(query, indent=2)
   fsock = open('query-http-octets.json', 'w')
   fsock.write(fjson)

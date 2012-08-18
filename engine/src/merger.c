@@ -163,9 +163,13 @@ merger(
           
           if (!term->
               func(
+                   
                    ref_record,
                    term->field1,
-                   term->branch2->gfilter_result->filtered_groupset[group2_id-1],
+                   
+                   branchset[iter->num_branches - 1]->gfilter_result->
+                   filtered_groupset[group2_id-1],
+                   
                    term->field2,
                    0
                    )
@@ -204,6 +208,8 @@ merger(
         
         /* write to the output stream */
         if (verbose_v && file) {
+          if ((n = ftio_write(ftio_out, ref_record->aggr_result->aggr_record) < 0))
+            fterr_errx(1, "ftio_write(): failed");
           if ((n = ftio_write(ftio_out, record) < 0))
             fterr_errx(1, "ftio_write(): failed");
           //flow_print_record(dataformat, record);
@@ -230,13 +236,7 @@ merger(
     } while (iter_next(iter));
     
     index_val += 1;
-    /* write to the output stream */
-    if (verbose_v && file) {
-      if ((n = ftio_write(ftio_out, ref_record->aggr_result->aggr_record) < 0))
-        fterr_errx(1, "ftio_write(): failed");
-      //flow_print_record(dataformat, ref_record->aggr_result->aggr_record);
-    }
-    
+   
     /* wrap around */
     if ( (iter->filtered_group_tuple[iter->num_branches] - 1) == 0)
       break;

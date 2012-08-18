@@ -35,14 +35,14 @@ if __name__ == '__main__':
 
 
 
-  term1 = {'term': vars(FilterRule('dstport', 80, 'RULE_S1_16', 0,
+  term1 = {'term': vars(FilterRule('srcport', 80, 'RULE_S1_16', 0,
                                    'RULE_EQ'))}
   term2 = {'term': vars(FilterRule('prot', protocol('TCP'), 'RULE_S1_16', 0,
                                     'RULE_EQ'))}
   clause1 = {'clause': [term1] + [term2]}
   filter1 = {'dnf-expr': [clause1]}
 
-  term1 = {'term': vars(FilterRule('srcport', 80, 'RULE_S1_16', 0,
+  term1 = {'term': vars(FilterRule('dstport', 80, 'RULE_S1_16', 0,
                                    'RULE_EQ'))}
   term2 = {'term': vars(FilterRule('prot', protocol('TCP'), 'RULE_S1_16', 0,
                                     'RULE_EQ'))}
@@ -60,8 +60,8 @@ if __name__ == '__main__':
   term2 = {'term': vars(GrouperRule('dstaddr', 'RULE_S1_32',
                                     'dstaddr', 'RULE_S2_32', 0,
                                     'RULE_EQ', 'RULE_ABS'))}
-  clause1 = {'clause': [term1] + [term2]}
-
+  grouper1_clause1 = {'clause': [term1] + [term2]}
+  grouper2_clause1 = {'clause': [term2] + [term1]}
 
   term1 = {'term': vars(AggregationRule('srcaddr', 'RULE_S1_32',
                                         'RULE_STATIC'))}
@@ -73,8 +73,8 @@ if __name__ == '__main__':
                                         'RULE_SUM'))}
   a1 = a2 = {'clause': [term1] + [term2] + [term3] + [term4]}
 
-  grouper1 = {'dnf-expr': [clause1], 'aggregation': a1}
-  grouper2 = {'dnf-expr': [clause1], 'aggregation': a2}
+  grouper1 = {'dnf-expr': [grouper1_clause1], 'aggregation': a1}
+  grouper2 = {'dnf-expr': [grouper2_clause1], 'aggregation': a2}
 
 
 
@@ -125,7 +125,7 @@ if __name__ == '__main__':
 
 
 
-  query = {'branchset': branchset, 'merger': merger, 'ungrouper': {}}
+  query = {'branchset': branchset, 'merger': merger}
   fjson = json.dumps(query, indent=2)
   fsock = open('query-http-tcp-session.json', 'w')
   fsock.write(fjson)
