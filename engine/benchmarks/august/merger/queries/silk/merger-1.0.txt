@@ -14,6 +14,10 @@ rwgroup --id-fields=1-9 --summarize \
 rwfilter --packets=0- --compression-method=zlib /tmp/grouper1.rwz \
          --pass=/tmp/groupfilter1.rwz; \
 
+rm -f /tmp/merger.raw; \
+rwmatch --infinite-delta \
+        --relate=1,1 /tmp/groupfilter0.rwz \
+                     /tmp/groupfilter1.rwz /tmp/merger.raw; \
+
 rm -f $OUTPUT; \
-rwmatch --infinite-delta --relate=1,1 /tmp/groupfilter0.rwz \
-                                      /tmp/groupfilter1.rwz $OUTPUT;
+rwcat /tmp/merger.raw --compression-method=zlib --output-path=$OUTPUT; 
