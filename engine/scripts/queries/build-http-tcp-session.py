@@ -35,14 +35,14 @@ if __name__ == '__main__':
 
 
 
-  term1 = {'term': vars(FilterRule('srcport', 80, 'RULE_S1_16', 0,
+  term1 = {'term': vars(FilterRule('dstport', 80, 'RULE_S1_16', 0,
                                    'RULE_EQ'))}
   term2 = {'term': vars(FilterRule('prot', protocol('TCP'), 'RULE_S1_16', 0,
                                     'RULE_EQ'))}
   clause1 = {'clause': [term1] + [term2]}
   filter1 = {'dnf-expr': [clause1]}
 
-  term1 = {'term': vars(FilterRule('dstport', 80, 'RULE_S1_16', 0,
+  term1 = {'term': vars(FilterRule('srcport', 80, 'RULE_S1_16', 0,
                                    'RULE_EQ'))}
   term2 = {'term': vars(FilterRule('prot', protocol('TCP'), 'RULE_S1_16', 0,
                                     'RULE_EQ'))}

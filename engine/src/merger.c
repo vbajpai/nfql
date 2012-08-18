@@ -129,6 +129,7 @@ merger(
     /* iterate over all permutations */
     do {
       bool clause = true;
+      bool continue_iter = false;
       
       /* write to-be matched tuple to file if requested */
       if (verbose_vv && file) {
@@ -161,21 +162,33 @@ merger(
           struct merger_term* const term = mclause->termset[j];
           size_t group2_id = iter->filtered_group_tuple[iter->num_branches - 1];
           
-          if (!term->
-              func(
-                   
-                   ref_record,
-                   term->field1,
-                   
-                   branchset[iter->num_branches - 1]->gfilter_result->
-                   filtered_groupset[group2_id-1],
-                   
-                   term->field2,
-                   0
+          if (
+              !term->
+              func (
+                     ref_record,
+                     term->field1,
+                     branchset[iter->num_branches - 1]->gfilter_result->
+                     filtered_groupset[group2_id-1],
+                     term->field2,
+                     0
                    )
-              ) {
+             ) {
+            
             clause = false;
-            break;
+            if (
+                 term->comp (
+                              ref_record,
+                              term->field1,
+                              branchset[iter->num_branches - 1]->
+                              gfilter_result->
+                              filtered_groupset[group2_id-1],
+                              term->field2,
+                              0
+                            )
+               ) {
+              continue_iter = true;
+            }
+             break;
           }
         }
         
@@ -214,6 +227,7 @@ merger(
           if ((n = ftio_write(ftio_out, record) < 0))
             fterr_errx(1, "ftio_write(): failed");
           //flow_print_record(dataformat, record);
+          //printf("\n");
         }
         
         /* free'd just before calling ungrouper(...) */
@@ -228,10 +242,14 @@ merger(
       }
       else {
         
-        iter_suc->filtered_group_tuple[iter->num_branches - 1] =
-        iter->filtered_group_tuple[iter->num_branches - 1];
-        
-        iter->num_branches -= 1;
+        if (!continue_iter) {
+          iter_suc->filtered_group_tuple[iter->num_branches - 1] =
+          iter->filtered_group_tuple[iter->num_branches - 1];
+          
+          iter->num_branches -= 1;
+          
+          continue_iter = false;
+        }
       }
       
     } while (iter_next(iter));

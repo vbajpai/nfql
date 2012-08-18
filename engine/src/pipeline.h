@@ -211,6 +211,13 @@ struct merger_term {
                size_t                         field2,
                uint64_t                       delta
                );
+  bool (*comp)(
+               const struct group* const      group1,
+               size_t                         field1,
+               const struct group* const      group2,
+               size_t                         field2,
+               uint64_t                       delta
+              );
 };
 
 struct merger_result {

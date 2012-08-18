@@ -709,6 +709,8 @@ for op in 'RULE_EQ', 'RULE_NE', 'RULE_GT', 'RULE_LT', 'RULE_LE', 'RULE_GE', 'RUL
       source.write("case %s | %s | %s:\n"%(op, atype1, atype2))
       source.write("term->func = merger_%s_%s_%s;\n"
                    %(enum_map[op], enum_map[atype1], enum_map[atype2]))
+      source.write("term->comp = merger_%s_%s_%s;\n"
+                   %(enum_map['RULE_GT'], enum_map[atype1], enum_map[atype2]))
       source.write("break;\n")
 
 for op in 'RULE_ALLEN_BF',  \
