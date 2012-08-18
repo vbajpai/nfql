@@ -221,10 +221,16 @@ struct merger_term {
 };
 
 struct merger_result {
-  uint32_t                                    num_group_tuples;
-  size_t                                      total_num_group_tuples;
-  struct group***                             group_tuples;
+  uint32_t                                    num_tries;
+  uint32_t                                    num_matches;
+  struct merger_match**                       matchset;
 };
+
+struct merger_match {
+  uint32_t                                    num_groups;
+  struct group**                              groupset;
+};
+
 struct ungrouper_result {
   size_t                                      num_streams;
   struct stream**                             streamset;

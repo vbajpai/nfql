@@ -28,13 +28,14 @@
 #include "ungrouper.h"
 
 #ifdef UNGROUPER
+
 struct ungrouper_result*
 ungrouper(
           size_t num_branches,
           const struct merger_result* const mresult,
           struct ft_data* dataformat
          ) {
-
+#ifdef FOO
   /* free'd after returning from ungrouper(...) */
   struct ungrouper_result* uresult = calloc(1, sizeof(struct ungrouper_result));
   if (uresult == NULL)
@@ -80,7 +81,7 @@ ungrouper(
         }
 
         struct group** group_tuple = mresult->group_tuples[i];
-        for (int j = 0; j < num_branches; j++) {
+        for (int j = 0; j < 2; j++) {
 
           struct group* group = group_tuple[j];
 
@@ -119,5 +120,7 @@ ungrouper(
     }
   }
   return uresult;
+#endif  
 }
+
 #endif

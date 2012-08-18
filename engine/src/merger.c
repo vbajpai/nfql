@@ -75,13 +75,11 @@ merger(
     if(out_fd == -1) errExit("get_fd(...) returned -1");
     else free(filename);
 
-    uint32_t num_flows = (uint32_t) (mresult->num_group_tuples * num_branches);
-
     /* get the output stream */
     ftio_out = get_ftio(
                          dataformat,
                          out_fd,
-                         num_flows
+                         mresult->num_matches
                        );
 
     /* write the header to the output stream */
@@ -101,14 +99,11 @@ merger(
     if(out_fd == -1) errExit("get_fd(...) returned -1");
     else free(filename);
 
-    uint32_t num_flows =
-    (uint32_t) (mresult->total_num_group_tuples * num_branches);
-
     /* get the output stream */
     ftio_tobe_out = get_ftio(
                               dataformat,
                               out_fd,
-                              num_flows
+                              mresult->num_tries
                             );
 
     /* write the header to the output stream */
@@ -116,18 +111,23 @@ merger(
       fterr_errx(1, "ftio_write_header(): failed");
   }
 
-  
   struct group* ref_record = branchset[0]->gfilter_result->filtered_groupset[0];
   
   struct permut_iter* iter_suc = iter_init(num_branches, branchset);
   if (iter_suc == NULL)
     return mresult;
 
-  size_t index_val = 0;
   while (ref_record != NULL) {
+    
+    /* TODO: when free'd? */
+    struct merger_match* match = calloc(1, sizeof(struct merger_match));
+    if (match == NULL)
+      errExit("calloc");
     
     /* iterate over all permutations */
     do {
+      
+      mresult->num_tries += 1;
       bool clause = true;
       bool continue_iter = false;
       
@@ -137,7 +137,6 @@ merger(
         char* record = ref_record->aggr_result->aggr_record;
         if ((n_tobe = ftio_write(ftio_tobe_out, record) < 0))
           fterr_errx(1, "ftio_write(): failed");
-        flow_print_record(dataformat, record);
         
         record = branchset[iter->num_branches - 1]->
         gfilter_result->filtered_groupset
@@ -146,9 +145,6 @@ merger(
           ]->aggr_result->aggr_record;
           if ((n_tobe = ftio_write(ftio_tobe_out, record) < 0))
             fterr_errx(1, "ftio_write(): failed");
-        flow_print_record(dataformat, record);
-
-        printf("\n");
       }
       
       /* process each merger clause (clauses are OR'd) */
@@ -205,40 +201,37 @@ merger(
       if(clause){
         
         /* free'd just before calling ungrouper(...) */
-        struct group **matched_tuple = (struct group **)
-        calloc(num_branches,
-               sizeof(struct group *));
-        if (matched_tuple == NULL)
+        struct group** group_tuple = (struct group **)
+        calloc(1, sizeof(struct group*));
+        if (group_tuple == NULL)
           errExit("calloc");
         
         /* save the groups in the matched tuple */
         size_t group_id = iter->filtered_group_tuple[iter->num_branches - 1];
-        char* record =
-        branchset[iter->num_branches - 1]->gfilter_result->
-        filtered_groupset[group_id-1]->aggr_result->aggr_record;
-        
-        index_val += 1;
+        struct group* group = branchset[iter->num_branches - 1]->
+                              gfilter_result->filtered_groupset[group_id-1];
         
         /* write to the output stream */
         if (verbose_v && file) {
-          if ((n = ftio_write(ftio_out, ref_record->aggr_result->aggr_record) < 0))
+          if ((n = ftio_write(ftio_out, group->
+                              aggr_result->aggr_record) < 0))
             fterr_errx(1, "ftio_write(): failed");
-          //flow_print_record(dataformat, ref_record->aggr_result->aggr_record);
-          if ((n = ftio_write(ftio_out, record) < 0))
-            fterr_errx(1, "ftio_write(): failed");
-          //flow_print_record(dataformat, record);
-          //printf("\n");
+          if (match->num_groups == 0)
+            if ((n = ftio_write(ftio_out, ref_record->
+                                aggr_result->aggr_record) < 0))
+              fterr_errx(1, "ftio_write(): failed");
         }
         
         /* free'd just before calling ungrouper(...) */
-        mresult->num_group_tuples += 1;
-        mresult->group_tuples = (struct group ***)
-        realloc(mresult->group_tuples,
-                mresult->num_group_tuples *sizeof(struct group**));
-        if (mresult->group_tuples == NULL)
+        match->num_groups += 1;
+        match->groupset = (struct group **)
+        realloc(match->groupset,
+                match->num_groups * sizeof(struct group*));
+        if (match->groupset == NULL)
           errExit("realloc");
         
-        mresult->group_tuples[mresult->num_group_tuples-1] = matched_tuple;
+        match->groupset[match->num_groups-1] = group;
+        
       }
       else {
         
@@ -254,14 +247,23 @@ merger(
       
     } while (iter_next(iter));
     
-    index_val += 1;
-
     /* wrap around */
     if ( (iter->filtered_group_tuple[iter->num_branches] - 1) == 0)
       break;
     
     if ( (iter->num_branches) != 0)
       break;
+    
+    if (match->num_groups != 0) {
+      mresult->num_matches += 1;
+      mresult->matchset = (struct merger_match **)
+      realloc(mresult->matchset,
+              mresult->num_matches * sizeof(struct merger_match*));
+      if (mresult->matchset == NULL)
+        errExit("realloc");
+      
+      mresult->matchset[mresult->num_matches-1] = match;
+    }
     
     ref_record = branchset[0]->gfilter_result->filtered_groupset
                  [iter->filtered_group_tuple[iter->num_branches] - 1];
@@ -286,7 +288,6 @@ merger(
     free(ftio_out);
   }
 
-  mresult->total_num_group_tuples = index_val;
   iter_destroy(iter);
   return mresult;
 }

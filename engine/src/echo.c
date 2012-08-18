@@ -27,6 +27,7 @@
 
 #include "echo.h"
 
+
 void
 echo_merger(
             size_t num_branches,
@@ -35,6 +36,7 @@ echo_merger(
             const struct merger_result* const mresult,
             struct ft_data* const dataformat
            ) {
+#ifdef FOO  
 
   if (verbose_vv) {
 
@@ -66,16 +68,19 @@ echo_merger(
     if (mresult->num_group_tuples != 0)
       puts(FLOWHEADER);
 
+    struct group* group = NULL;
     for (int j = 0; j < mresult->num_group_tuples; j++) {
       struct group** group_tuple = mresult->group_tuples[j];
-      for (int i = 0; i < num_branches; i++) {
-        struct group* group = group_tuple[i];
-        flow_print_record(dataformat, group->aggr_result->aggr_record);
-      }
+      group = group_tuple[0];
+      flow_print_record(dataformat, group->aggr_result->aggr_record);
+      group = group_tuple[1];
+      flow_print_record(dataformat, group->aggr_result->aggr_record);
       printf("\n");
     }
   }
+#endif
 }
+
 
 
 /* -----------------------------------------------------------------------*/

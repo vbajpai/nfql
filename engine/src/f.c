@@ -1737,6 +1737,7 @@ main(int argc, char **argv) {
 #endif
 
 #ifdef MERGER
+#ifdef FOO  
   /* free merger results */
   if (merger_enabled) {
     for (int i = 0; i < fquery->merger_result->num_group_tuples; i++) {
@@ -1752,6 +1753,7 @@ main(int argc, char **argv) {
     fquery->merger_result->group_tuples = NULL;
     free(fquery->merger_result); fquery->merger_result = NULL;
   }
+#endif  
 #endif
 
 #ifdef UNGROUPER
