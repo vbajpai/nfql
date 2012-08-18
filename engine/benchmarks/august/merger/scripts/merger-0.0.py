@@ -91,7 +91,7 @@ if __name__ == '__main__':
                    })
 
   term1 = {'term': vars(MergerRule(0, 1, 'dPkts', 'RULE_S1_32',
-                                         'dOctets', 'RULE_S2_32', 0, 
+                                         'dOctets', 'RULE_S2_32', 0,
                                          'RULE_EQ', 'RULE_ABS'))}
   clause1 = {'clause': [term1]}
   merger = {'dnf-expr': [clause1]}
