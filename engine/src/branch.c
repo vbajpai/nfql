@@ -38,7 +38,6 @@ branch_start(void *arg) {
     errExit("sysconf(_SC_NPROCESSOR_ONLN returned %d", num_cores);
 
   if (branch->branch_id < num_cores) {
-    printf("branchid:%d num_cores:%d", branch->branch_id, num_cores);
     cpu_set_t set;
     CPU_ZERO(&set);
     CPU_SET(branch->branch_id, &set);
