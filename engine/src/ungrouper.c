@@ -121,6 +121,7 @@ ungrouper(
   }
   return uresult;
 #endif  
+  return NULL;
 }
 
 #endif

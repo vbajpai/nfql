@@ -128,6 +128,7 @@ merger(
     do {
       
       mresult->num_tries += 1;
+      
       bool clause = true;
       bool continue_iter = false;
       
@@ -200,12 +201,6 @@ merger(
       /* add the groups to the group tuple, if one of the clause matched */
       if(clause){
         
-        /* free'd just before calling ungrouper(...) */
-        struct group** group_tuple = (struct group **)
-        calloc(1, sizeof(struct group*));
-        if (group_tuple == NULL)
-          errExit("calloc");
-        
         /* save the groups in the matched tuple */
         size_t group_id = iter->filtered_group_tuple[iter->num_branches - 1];
         struct group* group = branchset[iter->num_branches - 1]->
@@ -247,14 +242,16 @@ merger(
       
     } while (iter_next(iter));
     
-    /* wrap around */
-    if ( (iter->filtered_group_tuple[iter->num_branches] - 1) == 0)
-      break;
-    
-    if ( (iter->num_branches) != 0)
-      break;
-    
     if (match->num_groups != 0) {
+      
+      match->num_groups += 1;
+      match->groupset = (struct group **)
+      realloc(match->groupset,
+              match->num_groups * sizeof(struct group*));
+      if (match->groupset == NULL)
+        errExit("realloc");
+      match->groupset[match->num_groups-1] = ref_record;
+      
       mresult->num_matches += 1;
       mresult->matchset = (struct merger_match **)
       realloc(mresult->matchset,
@@ -264,6 +261,13 @@ merger(
       
       mresult->matchset[mresult->num_matches-1] = match;
     }
+    
+    /* wrap around */
+    if ( (iter->filtered_group_tuple[iter->num_branches] - 1) == 0)
+      break;
+    
+    if ( (iter->num_branches) != 0)
+      break;
     
     ref_record = branchset[0]->gfilter_result->filtered_groupset
                  [iter->filtered_group_tuple[iter->num_branches] - 1];

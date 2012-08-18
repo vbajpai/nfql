@@ -62,23 +62,23 @@ echo_merger(
       }
     }
   }
+#endif
+  
   if(!file) {
 
-    printf("\nNo. of Merged Groups: %u (Tuples)\n", mresult->num_group_tuples);
-    if (mresult->num_group_tuples != 0)
+    printf("\nNo. of Merged Groups: %u (Tuples)\n", mresult->num_matches);
+    if (mresult->num_matches != 0)
       puts(FLOWHEADER);
 
-    struct group* group = NULL;
-    for (int j = 0; j < mresult->num_group_tuples; j++) {
-      struct group** group_tuple = mresult->group_tuples[j];
-      group = group_tuple[0];
-      flow_print_record(dataformat, group->aggr_result->aggr_record);
-      group = group_tuple[1];
-      flow_print_record(dataformat, group->aggr_result->aggr_record);
+    for (int j = 0; j < mresult->num_matches; j++) {
+      struct merger_match* match = mresult->matchset[j];
+      for (int k = 0; k < match->num_groups; k++) {
+        struct group* group = match->groupset[k];
+        flow_print_record(dataformat, group->aggr_result->aggr_record);
+      }
       printf("\n");
     }
   }
-#endif
 }
 
 
