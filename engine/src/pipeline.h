@@ -221,9 +221,11 @@ struct merger_term {
 };
 
 struct merger_result {
-  uint32_t                                    num_tries;
+  uint32_t                                    num_match_tries;
   uint32_t                                    num_matches;
+  
   struct merger_match**                       matchset;
+  struct group***                             matchtryset;
 };
 
 struct merger_match {

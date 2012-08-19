@@ -37,37 +37,30 @@ echo_merger(
             const struct merger_result* const mresult,
             struct ft_data* const dataformat
            ) {
-#ifdef FOO  
+
 
   if (verbose_vv) {
 
     if(!file) {
-
-      struct permut_iter* iter = iter_init(num_branches, branchset);
-
-      printf("\nNo. of (to be) Matched Groups: %zu \n",
-             mresult->total_num_group_tuples);
-      if (iter != NULL) {
+      
+      printf("\nNo. of Match Attempts: %u \n", mresult->num_match_tries);
+      if (mresult->num_match_tries != 0)
         puts(FLOWHEADER);
-        while(iter_next(iter)) {
-          for (int j = 0; j < num_branches; j++) {
-            char* record = branchset[j]->gfilter_result->filtered_groupset
-                              [
-                               iter->filtered_group_tuple[j] - 1
-                              ]->aggr_result->aggr_record;
-            flow_print_record(dataformat, record);
-          }
-          printf("\n");
+
+      for (int i = 0; i < mresult->num_match_tries; i++) {
+        struct group** match_try = mresult->matchtryset[i];
+        for (int j = 0; j < 2; j++) {
+          struct group* group = match_try[j];
+          flow_print_record(dataformat, group->aggr_result->aggr_record);
         }
-        iter_destroy(iter);
+        printf("\n");
       }
     }
   }
-#endif
   
   if(!file) {
 
-    printf("\nNo. of Merged Groups: %u (Tuples)\n", mresult->num_matches);
+    printf("\nNo. of Merged Groups: %u \n", mresult->num_matches);
     if (mresult->num_matches != 0)
       puts(FLOWHEADER);
 

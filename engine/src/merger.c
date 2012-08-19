@@ -104,7 +104,7 @@ merger(
     ftio_tobe_out = get_ftio(
                               dataformat,
                               out_fd,
-                              mresult->num_tries
+                              mresult->num_match_tries
                             );
 
     /* write the header to the output stream */
@@ -126,8 +126,6 @@ merger(
     /* iterate over all iterator permutations */
     do {
       
-      mresult->num_tries += 1;
-      
       bool clause = true;
       bool continue_iter = false;
       
@@ -137,15 +135,38 @@ merger(
                                  [iter->num_branches - 1] - 1];
       
       /* write to-be matched tuple to file if requested */
-      if (verbose_vv && file) {
+      if (verbose_vv) {
         
-        if ((n_tobe = ftio_write(ftio_tobe_out,
-                                 ref_group->aggr_result->aggr_record) < 0))
-          fterr_errx(1, "ftio_write(): failed");
+        mresult->num_match_tries += 1;
         
-        if ((n_tobe = ftio_write(ftio_tobe_out,
-                                 cur_group->aggr_result->aggr_record) < 0))
+        /* TODO: when free'd? */
+        mresult->matchtryset =
+        realloc (
+                  mresult->matchtryset,
+                  mresult->num_match_tries * sizeof(struct group**)
+                );
+        if (mresult->matchtryset == NULL)
+          errExit("realloc");
+        
+        /* TODO: when free'd? */
+        struct group** match_try = calloc(2, sizeof(struct group*));
+        if (match_try == NULL)
+          errExit("realloc");
+
+        if (file) {
+          if ((n_tobe = ftio_write(ftio_tobe_out,
+                                   ref_group->aggr_result->aggr_record) < 0))
             fterr_errx(1, "ftio_write(): failed");
+          
+          if ((n_tobe = ftio_write(ftio_tobe_out,
+                                   cur_group->aggr_result->aggr_record) < 0))
+            fterr_errx(1, "ftio_write(): failed");
+        }
+        
+        match_try[0] = ref_group;
+        match_try[1] = cur_group;
+        
+        mresult->matchtryset[mresult->num_match_tries - 1] = match_try;
       }
       
       /* process each merger clause (clauses are OR'd) */
