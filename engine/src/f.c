@@ -1746,9 +1746,19 @@ main(int argc, char **argv) {
       free(match->groupset); match->groupset = NULL;
       free(match); match = NULL; fquery->merger_result->matchset[i] = NULL;
     }
+    if (verbose_vv) {
+      for (int i = 0; i < fquery->merger_result->num_match_tries; i++) {
+        struct group** match_try = fquery->merger_result->matchtryset[i];
+        match_try[0] = NULL; match_try[1] = NULL;
+        free(match_try);
+        match_try = NULL; fquery->merger_result->matchtryset[i] = NULL;
+      }
+      free(fquery->merger_result->matchtryset);
+      fquery->merger_result->matchtryset = NULL;
+    }
     free(fquery->merger_result->matchset);
     fquery->merger_result->matchset = NULL;
-    free(fquery->merger_result); fquery->merger_result = NULL;
+    free(fquery->merger_result); fquery->merger_result = NULL;    
   }
 #endif
 
