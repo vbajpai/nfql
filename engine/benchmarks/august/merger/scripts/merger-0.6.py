@@ -90,8 +90,8 @@ if __name__ == '__main__':
                     'groupfilter': gfilter2,
                    })
 
-  term1 = {'term': vars(MergerRule(0, 1, 'srcport', 'RULE_S1_32',
-                                         'dstport', 'RULE_S2_32', 0,
+  term1 = {'term': vars(MergerRule(0, 1, 'srcport', 'RULE_S1_16',
+                                         'dstport', 'RULE_S2_16', 0,
                                          'RULE_EQ', 'RULE_ABS'))}
   clause1 = {'clause': [term1]}
   merger = {'dnf-expr': [clause1]}
