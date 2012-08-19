@@ -35,23 +35,23 @@ ungrouper(
           const struct merger_result* const mresult,
           struct ft_data* dataformat
          ) {
-#ifdef FOO
+
   /* free'd after returning from ungrouper(...) */
   struct ungrouper_result* uresult = calloc(1, sizeof(struct ungrouper_result));
   if (uresult == NULL)
     errExit("calloc");
 
   if (mresult != NULL) {
-    if (mresult->num_group_tuples != 0) {
+    if (mresult->num_matches != 0) {
 
       /* free'd after returning from ungrouper(...) */
       struct stream** streamset = (struct stream**)
-      calloc(mresult->num_group_tuples,
+      calloc(mresult->num_matches,
              sizeof(struct stream*));
       if (streamset == NULL)
         errExit("calloc");
 
-      for (int i = 0; i < mresult->num_group_tuples; i++) {
+      for (int i = 0; i < mresult->num_matches; i++) {
 
         /* free'd after returning from ungrouper(...) */
         struct stream* stream = calloc(1, sizeof(struct stream));
@@ -80,10 +80,11 @@ ungrouper(
             fterr_errx(1, "ftio_write_header(): failed");
         }
 
-        struct group** group_tuple = mresult->group_tuples[i];
-        for (int j = 0; j < 2; j++) {
+        struct merger_match* match = mresult->matchset[i];
+        
+        for (int j = 0; j < match->num_groups; j++) {
 
-          struct group* group = group_tuple[j];
+          struct group* group = match->groupset[j];
 
           /* free'd after returning from ungrouper(...) */
           stream->recordset = realloc(stream->recordset,
@@ -116,12 +117,10 @@ ungrouper(
         }
       }
       uresult->streamset = streamset; streamset = NULL;
-      uresult->num_streams = mresult->num_group_tuples;
+      uresult->num_streams = mresult->num_matches;
     }
   }
   return uresult;
-#endif  
-  return NULL;
 }
 
 #endif
