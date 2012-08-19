@@ -250,6 +250,11 @@ merger(
           
           iter->num_branches -= 1;
           
+          if (iter->num_branches == 1 && match->num_groups != 0) {
+            ref_group = branchset[1]->
+            gfilter_result->filtered_groupset[iter_suc->filtered_group_tuple[1] - 2];
+          }
+          
           continue_iter = false;
         }
       }
