@@ -13,9 +13,9 @@
                 "name": "RULE_EQ"
               }, 
               "offset": {
-                "f2_datatype": "RULE_S2_32", 
+                "f2_datatype": "RULE_S2_16", 
                 "f1_name": "srcport", 
-                "f1_datatype": "RULE_S1_32", 
+                "f1_datatype": "RULE_S1_16", 
                 "f2_name": "dstport"
               }
             }
