@@ -1737,23 +1737,19 @@ main(int argc, char **argv) {
 #endif
 
 #ifdef MERGER
-#ifdef FOO  
   /* free merger results */
   if (merger_enabled) {
-    for (int i = 0; i < fquery->merger_result->num_group_tuples; i++) {
-      struct group** matched_tuple = fquery->merger_result->group_tuples[i];
-      for (int j = 0; j < fquery->num_branches; j++) {
-        /* unlink the groups */
-        matched_tuple[j] = NULL;
-      }
-      free(matched_tuple);
-      matched_tuple = NULL; fquery->merger_result->group_tuples[i] = NULL;
+    for (int i = 0; i < fquery->merger_result->num_matches; i++) {
+      struct merger_match* match = fquery->merger_result->matchset[i];
+      for (int j = 0; j < match->num_groups; j++)
+        match->groupset[j] = NULL;
+      free(match->groupset); match->groupset = NULL;
+      free(match); match = NULL; fquery->merger_result->matchset[i] = NULL;
     }
-    free(fquery->merger_result->group_tuples);
-    fquery->merger_result->group_tuples = NULL;
+    free(fquery->merger_result->matchset);
+    fquery->merger_result->matchset = NULL;
     free(fquery->merger_result); fquery->merger_result = NULL;
   }
-#endif  
 #endif
 
 #ifdef UNGROUPER

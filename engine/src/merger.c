@@ -118,7 +118,7 @@ merger(
   /* iterate over all reference records */
   while (ref_group != NULL) {
     
-    /* TODO: when free'd? */
+    /* free'd just before exiting from main(...) */
     struct merger_match* match = calloc(1, sizeof(struct merger_match));
     if (match == NULL)
       errExit("calloc");
@@ -128,11 +128,12 @@ merger(
       
       bool clause = true;
       bool continue_iter = false;
-      
+
+
       struct group* cur_group = branchset[iter->num_branches - 1]->
-                                 gfilter_result->filtered_groupset
-                                 [iter->filtered_group_tuple
-                                 [iter->num_branches - 1] - 1];
+                                gfilter_result->filtered_groupset
+                                [iter->filtered_group_tuple
+                                [iter->num_branches - 1] - 1];
       
       /* write to-be matched tuple to file if requested */
       if (verbose_vv) {
@@ -162,6 +163,7 @@ merger(
                                    cur_group->aggr_result->aggr_record) < 0))
             fterr_errx(1, "ftio_write(): failed");
         }
+
         
         match_try[0] = ref_group;
         match_try[1] = cur_group;
@@ -218,14 +220,9 @@ merger(
       /* add the groups to the group tuple, if one of the clause matched */
       if(clause){
         
-        /* save the groups in the matched tuple */
-        size_t group_id = iter->filtered_group_tuple[iter->num_branches - 1];
-        struct group* group = branchset[iter->num_branches - 1]->
-                              gfilter_result->filtered_groupset[group_id-1];
-        
         /* write to the output stream */
         if (verbose_v && file) {
-          if ((n = ftio_write(ftio_out, group->
+          if ((n = ftio_write(ftio_out, cur_group->
                               aggr_result->aggr_record) < 0))
             fterr_errx(1, "ftio_write(): failed");
           if (match->num_groups == 0)
@@ -242,7 +239,7 @@ merger(
         if (match->groupset == NULL)
           errExit("realloc");
         
-        match->groupset[match->num_groups-1] = group;
+        match->groupset[match->num_groups-1] = cur_group;
         
       }
       else {
@@ -280,17 +277,17 @@ merger(
     }
     
     /* wrap around */
-    if ( (iter->filtered_group_tuple[iter->num_branches] - 1) == 0)
-      break;
-    
     if ( (iter->num_branches) != 0)
       break;
+    else if ( iter->filtered_group_tuple[iter->num_branches] == 1)
+      break;
+
     
     ref_group = branchset[0]->gfilter_result->filtered_groupset
                  [iter->filtered_group_tuple[iter->num_branches] - 1];
     
     for (int i = 0; i < iter_suc->num_branches; i++)
-      iter->filtered_group_tuple = iter_suc->filtered_group_tuple;
+      iter->filtered_group_tuple[i] = iter_suc->filtered_group_tuple[i];
     iter->num_branches = iter_suc->num_branches;
     
   }
@@ -310,6 +307,7 @@ merger(
   }
 
   iter_destroy(iter);
+  iter_destroy(iter_suc);
   return mresult;
 }
 
