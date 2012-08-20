@@ -181,30 +181,48 @@ merger(
           
           struct merger_term* const term = mclause->termset[j];
           
-          if (
-              !term->
-              func (
-                     ref_group,
-                     term->field1,
-                     cur_group,
-                     term->field2,
-                     0
-                   )
-             ) {
-            
-            clause = false;
+          if (iter->num_branches == 1) {
             if (
-                 term->comp (
+                !term->
+                func (
+                      cur_group,
+                      term->field1,
+                      ref_group,
+                      term->field2,
+                      0
+                     )
+                ) {
+              
+              clause = false;
+              break;
+            }
+          } else {
+            if (
+                !term->
+                func (
+                      ref_group,
+                      term->field1,
+                      cur_group,
+                      term->field2,
+                      0
+                      )
+                ) {
+              
+              clause = false;
+              if (
+                  term->comp (
                               ref_group,
                               term->field1,
                               cur_group,
                               term->field2,
                               0
-                            )
-               ) {
-              continue_iter = true;
+                              )
+                  ) {
+                continue_iter = true;
+              }
+              break;
             }
-             break;
+            
           }
         }
         
