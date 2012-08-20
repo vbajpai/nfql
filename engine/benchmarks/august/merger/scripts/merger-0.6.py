@@ -63,10 +63,10 @@ if __name__ == '__main__':
   term9 = {'term': vars(GrouperRule('First', 'RULE_S1_32',
                                     'First', 'RULE_S2_32', 0,
                                     'RULE_EQ', 'RULE_ABS'))}
-  g1_clause1 = {'clause': [term3] + [term1] + [term2] + [term4] + [term5] +
+  g1_clause1 = {'clause': [term1] + [term2] + [term3] + [term4] + [term5] +
                           [term6] + [term7] + [term8] + [term9]
                }
-  g2_clause1 = {'clause': [term4] + [term1] + [term2] + [term3] + [term5] +
+  g2_clause1 = {'clause': [term2] + [term1] + [term3] + [term4] + [term5] +
                           [term6] + [term7] + [term8] + [term9]
                }
   term1 = {'term': vars(AggregationRule('dPkts', 'RULE_S1_32', 'RULE_SUM'))}
@@ -90,8 +90,8 @@ if __name__ == '__main__':
                     'groupfilter': gfilter2,
                    })
 
-  term1 = {'term': vars(MergerRule(0, 1, 'srcport', 'RULE_S1_16',
-                                         'dstport', 'RULE_S2_16', 0,
+  term1 = {'term': vars(MergerRule(0, 1, 'srcaddr', 'RULE_S1_32',
+                                         'dstaddr', 'RULE_S2_32', 0,
                                          'RULE_EQ', 'RULE_ABS'))}
   clause1 = {'clause': [term1]}
   merger = {'dnf-expr': [clause1]}
