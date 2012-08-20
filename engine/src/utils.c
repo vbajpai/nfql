@@ -266,7 +266,7 @@ bool iter_next(struct permut_iter *iter) {
      */
     } else {
 //      iter->filtered_group_tuple[i] = 1;
-      return false;
+        return false;
     }
   }
 

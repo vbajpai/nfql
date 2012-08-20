@@ -124,11 +124,11 @@ merger(
       errExit("calloc");
     
     /* iterate over all iterator permutations */
+    bool clause = true;
     do {
       
-      bool clause = true;
+      clause = true;
       bool continue_iter = false;
-
 
       struct group* cur_group = branchset[iter->num_branches - 1]->
                                 gfilter_result->filtered_groupset
@@ -293,7 +293,7 @@ merger(
     
     if (match->num_groups != 0) {
       
-      if (iter->num_branches != 0) {
+      if (iter->num_branches != 0 && clause) {
         if (verbose_v && file) {
           if ((n = ftio_write(ftio_out, ref_group->
                               aggr_result->aggr_record) < 0))

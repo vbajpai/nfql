@@ -59,7 +59,8 @@ if __name__ == '__main__':
   term2 = {'term': vars(GrouperRule('dstaddr', 'RULE_S1_32',
                                     'dstaddr', 'RULE_S2_32', 0,
                                     'RULE_EQ', 'RULE_ABS'))}
-  clause1 = {'clause': [term1] + [term2]}
+  g1_clause1 = {'clause': [term1] + [term2]}
+  g2_clause1 = {'clause': [term2] + [term1]}  
 
 
   term1 = {'term': vars(AggregationRule('srcaddr', 'RULE_S1_32',
@@ -72,8 +73,8 @@ if __name__ == '__main__':
                                         'RULE_SUM'))}
   a1 = a2 = {'clause': [term1] + [term2] + [term3] + [term4]}
 
-  grouper1 = {'dnf-expr': [clause1], 'aggregation': a1}
-  grouper2 = {'dnf-expr': [clause1], 'aggregation': a2}
+  grouper1 = {'dnf-expr': [g1_clause1], 'aggregation': a1}
+  grouper2 = {'dnf-expr': [g2_clause1], 'aggregation': a2}
 
 
 
@@ -133,7 +134,7 @@ if __name__ == '__main__':
 
 
 
-  query = {'branchset': branchset, 'merger': merger}
+  query = {'branchset': branchset, 'merger': merger, 'ungrouper': {}}
   fjson = json.dumps(query, indent=2)
   fsock = open('query-dns-udp.json', 'w')
   fsock.write(fjson)
