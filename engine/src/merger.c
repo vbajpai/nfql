@@ -207,7 +207,6 @@ merger(
                       0
                       )
                 ) {
-              
               clause = false;
               if (
                   term->comp (
@@ -217,8 +216,10 @@ merger(
                               term->field2,
                               0
                               )
-                  ) {
+                 ) {
                 continue_iter = true;
+              } else {
+                continue_iter = false;
               }
               break;
             }
@@ -243,10 +244,6 @@ merger(
           if ((n = ftio_write(ftio_out, cur_group->
                               aggr_result->aggr_record) < 0))
             fterr_errx(1, "ftio_write(): failed");
-          if (match->num_groups == 0)
-            if ((n = ftio_write(ftio_out, ref_group->
-                                aggr_result->aggr_record) < 0))
-              fterr_errx(1, "ftio_write(): failed");
         }
         
         /* free'd just before calling ungrouper(...) */
@@ -261,6 +258,21 @@ merger(
         
       }
       else {
+        
+        if (match->num_groups != 0 && iter->num_branches != 1) {
+          if (verbose_v && file) {
+            if ((n = ftio_write(ftio_out, ref_group->
+                                aggr_result->aggr_record) < 0))
+              fterr_errx(1, "ftio_write(): failed");
+          }
+          match->num_groups += 1;
+          match->groupset = (struct group **)
+          realloc(match->groupset,
+                  match->num_groups * sizeof(struct group*));
+          if (match->groupset == NULL)
+            errExit("realloc");
+          match->groupset[match->num_groups-1] = ref_group;
+        }
         
         if (!continue_iter) {
           iter_suc->filtered_group_tuple[iter->num_branches - 1] =
@@ -281,13 +293,20 @@ merger(
     
     if (match->num_groups != 0) {
       
-      match->num_groups += 1;
-      match->groupset = (struct group **)
-      realloc(match->groupset,
-              match->num_groups * sizeof(struct group*));
-      if (match->groupset == NULL)
-        errExit("realloc");
-      match->groupset[match->num_groups-1] = ref_group;
+      if (iter->num_branches != 0) {
+        if (verbose_v && file) {
+          if ((n = ftio_write(ftio_out, ref_group->
+                              aggr_result->aggr_record) < 0))
+            fterr_errx(1, "ftio_write(): failed");
+        }
+        match->num_groups += 1;
+        match->groupset = (struct group **)
+        realloc(match->groupset,
+                match->num_groups * sizeof(struct group*));
+        if (match->groupset == NULL)
+          errExit("realloc");
+        match->groupset[match->num_groups-1] = ref_group;
+      }
       
       mresult->num_matches += 1;
       mresult->matchset = (struct merger_match **)

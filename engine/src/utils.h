@@ -108,7 +108,7 @@ iter_init(
           struct branch** const branchset
           );
 bool
-iter_next(const struct permut_iter *iter);
+iter_next(struct permut_iter *iter);
 
 bool
 iter_prev(const struct permut_iter *iter);

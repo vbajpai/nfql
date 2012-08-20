@@ -250,7 +250,7 @@ iter_init(
  * given the iterator, modify to represent the next permutation
  * and return true. if the last permutation is reached, return false.
  */
-bool iter_next(const struct permut_iter *iter) {
+bool iter_next(struct permut_iter *iter) {
 
   /* start from right to left in the group tuple */
   for (int i = (int) iter->num_branches-1; i >= 0; --i) {
@@ -265,7 +265,8 @@ bool iter_next(const struct permut_iter *iter) {
        checked, wrap the group around, and move to another (left) index
      */
     } else {
-      iter->filtered_group_tuple[i] = 1;
+//      iter->filtered_group_tuple[i] = 1;
+      return false;
     }
   }
 
