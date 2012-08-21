@@ -1,5 +1,3 @@
-
-
 /*
  * Copyright 2012 Vaibhav Bajpai <contact@vaibhavbajpai.com>
  *
@@ -28,7 +26,6 @@
 
 #include "echo.h"
 
-
 void
 echo_merger(
             size_t num_branches,
@@ -37,7 +34,6 @@ echo_merger(
             const struct merger_result* const mresult,
             struct ft_data* const dataformat
            ) {
-
 
   if (verbose_vv) {
 
@@ -51,7 +47,7 @@ echo_merger(
         struct group** match_try = mresult->matchtryset[i];
         for (int j = 0; j < 2; j++) {
           struct group* group = match_try[j];
-          flow_print_record(dataformat, group->aggr_result->aggr_record);
+          flow_print_group_record(dataformat, group->aggr_result->aggr_record);
         }
         printf("\n");
       }
@@ -68,13 +64,12 @@ echo_merger(
       struct merger_match* match = mresult->matchset[j];
       for (int k = 0; k < match->num_groups; k++) {
         struct group* group = match->groupset[k];
-        flow_print_record(dataformat, group->aggr_result->aggr_record);
+        flow_print_group_record(dataformat, group->aggr_result->aggr_record);
       }
       printf("\n");
     }
   }
 }
-
 
 
 /* -----------------------------------------------------------------------*/
@@ -214,7 +209,7 @@ echo_group_aggr(
       puts(FLOWHEADER);
     for (int j = 0; j < gresult->num_groups; j++) {
       struct group* group = gresult->groupset[j];
-      flow_print_record(dataformat, group->aggr_result->aggr_record);
+      flow_print_group_record(dataformat, group->aggr_result->aggr_record);
     }
   }
 }
@@ -235,7 +230,7 @@ echo_gfilter(
 
     for (int j = 0; j < gfresult->num_filtered_groups; j++) {
       struct group* fgroup = gfresult->filtered_groupset[j];
-      flow_print_record(dataformat, fgroup->aggr_result->aggr_record);
+      flow_print_group_record(dataformat, fgroup->aggr_result->aggr_record);
     }
   }
 }

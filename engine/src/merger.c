@@ -156,11 +156,11 @@ merger(
 
         if (file) {
           if ((n_tobe = ftio_write(ftio_tobe_out,
-                                   ref_group->aggr_result->aggr_record) < 0))
+                                   ref_group->aggr_result->aggr_record->aggr_record) < 0))
             fterr_errx(1, "ftio_write(): failed");
           
           if ((n_tobe = ftio_write(ftio_tobe_out,
-                                   cur_group->aggr_result->aggr_record) < 0))
+                                   cur_group->aggr_result->aggr_record->aggr_record) < 0))
             fterr_errx(1, "ftio_write(): failed");
         }
 
@@ -296,7 +296,7 @@ merger(
       if (iter->num_branches != 0 && clause) {
         if (verbose_v && file) {
           if ((n = ftio_write(ftio_out, ref_group->
-                              aggr_result->aggr_record) < 0))
+                              aggr_result->aggr_record->aggr_record) < 0))
             fterr_errx(1, "ftio_write(): failed");
         }
         match->num_groups += 1;
