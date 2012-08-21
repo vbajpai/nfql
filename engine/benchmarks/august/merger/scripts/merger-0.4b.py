@@ -97,7 +97,7 @@ if __name__ == '__main__':
                                          'tcp_flags', 'RULE_S2_8', 0,
                                          'RULE_EQ', 'RULE_ABS'))}
   clause1 = {'clause': [term1]}
-  clause1 = {'clause': [term2]}
+  clause2 = {'clause': [term2]}
   merger = {'dnf-expr': [clause1] + [clause2]}
 
   query = {'branchset': branchset, 'merger': merger}
