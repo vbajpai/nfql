@@ -129,7 +129,7 @@ merger(
         char* record = branchset[j]->gfilter_result->filtered_groupset
                           [
                            iter->filtered_group_tuple[j] - 1
-                          ]->aggr_result->aggr_record;
+                          ]->aggr_result->aggr_record->aggr_record;
         if ((n_tobe = ftio_write(ftio_tobe_out, record) < 0))
           fterr_errx(1, "ftio_write(): failed");
       }
@@ -189,7 +189,8 @@ merger(
         /* write to the output stream */
         if (verbose_v && file) {
           if ((n = ftio_write(ftio_out,
-                              matched_tuple[j]->aggr_result->aggr_record) < 0))
+                              matched_tuple[j]->aggr_result->
+                              aggr_record->aggr_record) < 0))
             fterr_errx(1, "ftio_write(): failed");
         }
       }

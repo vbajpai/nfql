@@ -99,7 +99,7 @@ grouper_aggregations(
     /* free'd just after returning from merger(...) */
     aggrset[j] = term->func(
                              group->members,
-                             aresult->aggr_record,
+                             aresult->aggr_record->aggr_record,
                              group->num_members,
                              aggr_offset,
                              if_ignore_aggr_term
@@ -300,6 +300,42 @@ grouper(
      * if no group modules are defined */
     if (num_grouper_clauses == 0) {
 
+      /* ----------------------------------------------------------------- */
+      /*            create a cooked netflow v5 group record                */
+      /* ----------------------------------------------------------------- */
+
+      /* free'd just after returning from merger(...) */
+      struct aggr_result* aresult = calloc(1, sizeof(struct aggr_result));
+      if (aresult == NULL)
+        errExit("calloc");
+
+      /* free'd just after returning from merger(...) */
+      struct aggr_record* group_aggr_record =
+      calloc(1, sizeof(struct aggr_record));
+      if (group_aggr_record == NULL)
+        errExit("calloc");
+
+      /* free'd just after returning from merger(...) */
+      struct fttime* start = calloc(1, sizeof(struct fttime));
+      if (start == NULL)
+        errExit("calloc");
+
+      /* free'd just after returning from merger(...) */
+      struct fttime* end = calloc(1, sizeof(struct fttime));
+      if (end == NULL)
+        errExit("calloc");
+      group_aggr_record->start = start;
+      group_aggr_record->end = end;
+
+      /* free'd just after returning from merger(...) */
+      char* aggr_record = (char *)calloc(1, rec_size);
+      if (aggr_record == NULL)
+        errExit("calloc");
+      group_aggr_record->aggr_record = aggr_record;
+      aresult->aggr_record = group_aggr_record;
+
+      /* ----------------------------------------------------------------- */
+
       /* groupset with space for 1 group */
       gresult->num_groups = 1;
 
@@ -316,24 +352,71 @@ grouper(
       if (group->members == NULL)
         errExit("calloc");
 
-      for (int i = 0; i < fresult->num_filtered_records; i++)
-        group->members[i] = fresult->filtered_recordset[i];
+      /* set minimum START and maximum END timestamp */
 
+      char* first_item = fresult->filtered_recordset[0];
 
-      /* ----------------------------------------------------------------- */
-      /*            create a cooked netflow v5 group record                */
-      /* ----------------------------------------------------------------- */
+      uint32_t sysUpTime =
+      *(u_int32_t*)(first_item+(dataformat->offsets).sysUpTime);
+      uint32_t unix_secs =
+      *(u_int32_t*)(first_item+(dataformat->offsets).unix_secs);
+      uint32_t unix_nsecs =
+      *(u_int32_t*)(first_item+(dataformat->offsets).unix_nsecs);
+      uint32_t First =
+      *(u_int32_t*)(first_item+(dataformat->offsets).First);
+      uint32_t Last =
+      *(u_int32_t*)(first_item+(dataformat->offsets).Last);
 
-      /* free'd just after returning from merger(...) */
-      struct aggr_result* aresult = calloc(1, sizeof(struct aggr_result));
-      if (aresult == NULL)
-        errExit("calloc");
+      struct fttime min = ftltime(sysUpTime,unix_secs,unix_nsecs,First);
+      struct fttime max = ftltime(sysUpTime,unix_secs,unix_nsecs,Last);
 
-      /* free'd just after returning from merger(...) */
-      char* aggr_record = (char *)calloc(1, rec_size);
-      if (aggr_record == NULL)
-        errExit("calloc");
-      aresult->aggr_record = aggr_record;
+      group_aggr_record->start->secs = min.secs;
+      group_aggr_record->start->msecs = min.msecs;
+      group_aggr_record->end->secs = max.secs;
+      group_aggr_record->end->msecs = max.msecs;
+
+      for (int i = 0; i < fresult->num_filtered_records; i++) {
+
+        char* current_item = fresult->filtered_recordset[i];
+
+        uint32_t sysUpTime =
+        *(u_int32_t*)(current_item+(dataformat->offsets).sysUpTime);
+        uint32_t unix_secs =
+        *(u_int32_t*)(current_item+(dataformat->offsets).unix_secs);
+        uint32_t unix_nsecs =
+        *(u_int32_t*)(current_item+(dataformat->offsets).unix_nsecs);
+        uint32_t First =
+        *(u_int32_t*)(current_item+(dataformat->offsets).First);
+        uint32_t Last =
+        *(u_int32_t*)(current_item+(dataformat->offsets).Last);
+
+        struct fttime start =
+        ftltime (sysUpTime, unix_secs, unix_nsecs, First);
+        struct fttime end =
+        ftltime (sysUpTime, unix_secs, unix_nsecs, Last);
+
+        /* update the START timestamp if we have a new min */
+        if (
+            (start.secs < min.secs) ||
+            ((start.secs == min.secs) && (start.msecs < min.msecs))
+            ) {
+          min.secs = start.secs; min.msecs = start.msecs;
+          group_aggr_record->start->secs = min.secs;
+          group_aggr_record->start->msecs = min.msecs;
+        }
+
+        /* update the END timestamp if we have a new max */
+        if (
+            (end.secs > max.secs) ||
+            ((end.secs == max.secs) && (end.msecs > max.msecs))
+            ) {
+          max.secs = end.secs; max.msecs = end.msecs;
+          group_aggr_record->end->secs = max.secs;
+          group_aggr_record->end->msecs = max.msecs;
+        }
+
+        group->members[i] = current_item;
+      }
 
       group->aggr_result = aresult;
       if (group->aggr_result == NULL)
@@ -407,7 +490,8 @@ grouper(
 
         /* write the record to the output stream */
         if ((n_groups =
-             ftio_write(ftio_groups_out, group->aggr_result->aggr_record)) < 0)
+             ftio_write(ftio_groups_out,
+                        group->aggr_result->aggr_record->aggr_record)) < 0)
           fterr_errx(1, "ftio_write(): failed");
       }
 
@@ -506,6 +590,42 @@ grouper(
         /* process each filtered record for grouping */
         for (int k = 0; *current_item != NULL; current_item++) {
 
+          /* -------------------------------------------------------------- */
+          /*          create a cooked netflow v5 group record               */
+          /* -------------------------------------------------------------- */
+
+          /* free'd just after returning from merger(...) */
+          struct aggr_result* aresult = calloc(1, sizeof(struct aggr_result));
+          if (aresult == NULL)
+            errExit("calloc");
+
+          /* free'd just after returning from merger(...) */
+          struct aggr_record* group_aggr_record =
+          calloc(1, sizeof(struct aggr_record));
+          if (group_aggr_record == NULL)
+            errExit("calloc");
+
+          /* free'd just after returning from merger(...) */
+          struct fttime* start = calloc(1, sizeof(struct fttime));
+          if (start == NULL)
+            errExit("calloc");
+
+          /* free'd just after returning from merger(...) */
+          struct fttime* end = calloc(1, sizeof(struct fttime));
+          if (end == NULL)
+            errExit("calloc");
+          group_aggr_record->start = start;
+          group_aggr_record->end = end;
+
+          /* free'd just after returning from merger(...) */
+          char* aggr_record = (char *)calloc(1, rec_size);
+          if (aggr_record == NULL)
+            errExit("calloc");
+          group_aggr_record->aggr_record = aggr_record;
+          aresult->aggr_record = group_aggr_record;
+
+          /* -------------------------------------------------------------- */
+
           /* create a new group out of this item */
           gresult->num_groups += 1;
 
@@ -530,6 +650,26 @@ grouper(
           if (group->members == NULL)
             errExit("calloc");
           group->members[0] = *current_item;
+
+          /* set minimum START and maximum END timestamp */
+          uint32_t sysUpTime =
+          *(u_int32_t*)(*current_item+(dataformat->offsets).sysUpTime);
+          uint32_t unix_secs =
+          *(u_int32_t*)(*current_item+(dataformat->offsets).unix_secs);
+          uint32_t unix_nsecs =
+          *(u_int32_t*)(*current_item+(dataformat->offsets).unix_nsecs);
+          uint32_t First =
+          *(u_int32_t*)(*current_item+(dataformat->offsets).First);
+          uint32_t Last =
+          *(u_int32_t*)(*current_item+(dataformat->offsets).Last);
+
+          struct fttime min = ftltime(sysUpTime,unix_secs,unix_nsecs,First);
+          struct fttime max = ftltime(sysUpTime,unix_secs,unix_nsecs,Last);
+
+          group_aggr_record->start->secs = min.secs;
+          group_aggr_record->start->msecs = min.msecs;
+          group_aggr_record->end->secs = max.secs;
+          group_aggr_record->end->msecs = max.msecs;
 
           /* initialize an output stream, if file write is requested */
           struct ftio* ftio_members_out = NULL; int n_members = -1;
@@ -596,6 +736,42 @@ grouper(
                 errExit("realloc");
               group->members[group->num_members-1] = *current_item;
 
+              uint32_t sysUpTime =
+              *(u_int32_t*)(*current_item+(dataformat->offsets).sysUpTime);
+              uint32_t unix_secs =
+              *(u_int32_t*)(*current_item+(dataformat->offsets).unix_secs);
+              uint32_t unix_nsecs =
+              *(u_int32_t*)(*current_item+(dataformat->offsets).unix_nsecs);
+              uint32_t First =
+              *(u_int32_t*)(*current_item+(dataformat->offsets).First);
+              uint32_t Last =
+              *(u_int32_t*)(*current_item+(dataformat->offsets).Last);
+
+              struct fttime start =
+              ftltime (sysUpTime, unix_secs, unix_nsecs, First);
+              struct fttime end =
+              ftltime (sysUpTime, unix_secs, unix_nsecs, Last);
+
+              /* update the START timestamp if we have a new min */
+              if (
+                  (start.secs < min.secs) ||
+                  ((start.secs == min.secs) && (start.msecs < min.msecs))
+                 ) {
+                min.secs = start.secs; min.msecs = start.msecs;
+                group_aggr_record->start->secs = min.secs;
+                group_aggr_record->start->msecs = min.msecs;
+              }
+
+              /* update the END timestamp if we have a new max */
+              if (
+                  (end.secs > max.secs) ||
+                  ((end.secs == max.secs) && (end.msecs > max.msecs))
+                 ) {
+                max.secs = end.secs; max.msecs = end.msecs;
+                group_aggr_record->end->secs = max.secs;
+                group_aggr_record->end->msecs = max.msecs;
+              }
+
               // write this member to the file (if requested)
               if (verbose_vv && file) {
 
@@ -617,17 +793,6 @@ grouper(
         /* ----------------------------------------------------------------- */
         /*            create a cooked netflow v5 group record                */
         /* ----------------------------------------------------------------- */
-
-          /* free'd just after returning from merger(...) */
-          struct aggr_result* aresult = calloc(1, sizeof(struct aggr_result));
-          if (aresult == NULL)
-            errExit("calloc");
-
-          /* free'd just after returning from merger(...) */
-          char* aggr_record = (char *)calloc(1, rec_size);
-          if (aggr_record == NULL)
-            errExit("calloc");
-          aresult->aggr_record = aggr_record;
 
           group->aggr_result = aresult;
           if (group->aggr_result == NULL)
@@ -748,7 +913,7 @@ grouper(
                  ( n_groups =
                    ftio_write(
                               ftio_groups_out,
-                              group->aggr_result->aggr_record)
+                              group->aggr_result->aggr_record->aggr_record)
                              ) < 0
                )
               fterr_errx(1, "ftio_write(): failed");

@@ -40,8 +40,14 @@ struct group {
 };
 
 struct aggr_result {
-  char*                                       aggr_record;
+  struct aggr_record*                         aggr_record;
   struct aggr**                               aggrset;
+};
+
+struct aggr_record {
+  char*                                       aggr_record;
+  struct fttime*                              start;
+  struct fttime*                              end;
 };
 
 struct filter_clause {

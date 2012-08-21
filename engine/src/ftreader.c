@@ -561,3 +561,62 @@ flow_print_record(struct ft_data *data, char *record){
   if (0 & FT_OPT_NOBUF)
     fflush(stdout);
 }
+
+void
+flow_print_group_record(struct ft_data *data, struct aggr_record* aggr_record){
+
+  char* record = aggr_record->aggr_record;
+
+  struct fts3rec_all cur;
+  cur.unix_secs = ((u_int32_t*)(record+(data->offsets).unix_secs));
+  cur.unix_nsecs = ((u_int32_t*)(record+(data->offsets).unix_nsecs));
+  cur.sysUpTime = ((u_int32_t*)(record+(data->offsets).sysUpTime));
+  cur.dOctets = ((u_int32_t*)(record+(data->offsets).dOctets));
+  cur.dPkts = ((u_int32_t*)(record+(data->offsets).dPkts));
+  cur.First = ((u_int32_t*)(record+(data->offsets).First));
+  cur.Last = ((u_int32_t*)(record+(data->offsets).Last));
+  cur.srcaddr = ((u_int32_t*)(record+(data->offsets).srcaddr));
+  cur.dstaddr = ((u_int32_t*)(record+(data->offsets).dstaddr));
+  cur.input = ((u_int16_t*)(record+(data->offsets).input));
+  cur.output = ((u_int16_t*)(record+(data->offsets).output));
+  cur.srcport = ((u_int16_t*)(record+(data->offsets).srcport));
+  cur.dstport = ((u_int16_t*)(record+(data->offsets).dstport));
+  cur.prot = ((u_int8_t*)(record+(data->offsets).prot));
+  cur.tcp_flags = ((u_int8_t*)(record+(data->offsets).tcp_flags));
+
+  struct fttime
+  ftt = *aggr_record->start;
+  struct tm *tm;
+  time_t t_first = ftt.secs;
+  tm = localtime(&t_first);
+
+  printf("%-2.2d%-2.2d.%-2.2d:%-2.2d:%-2.2d.%-3.3lu ",
+         (int)tm->tm_mon+1, (int)tm->tm_mday, (int)tm->tm_hour,
+         (int)tm->tm_min, (int)tm->tm_sec, (u_long)ftt.msecs);
+
+  ftt = *aggr_record->end;
+  time_t t_last = ftt.secs;
+  tm = localtime(&t_last);
+
+  printf("%-2.2d%-2.2d.%-2.2d:%-2.2d:%-2.2d.%-3.3lu ",
+         (int)tm->tm_mon+1, (int)tm->tm_mday, (int)tm->tm_hour,
+         (int)tm->tm_min, (int)tm->tm_sec, (u_long)ftt.msecs);
+
+  /* other info */
+  char fmt_buf1[64], fmt_buf2[64];
+  fmt_ipv4(fmt_buf1, *cur.srcaddr, FMT_PAD_RIGHT);
+  fmt_ipv4(fmt_buf2, *cur.dstaddr, FMT_PAD_RIGHT);
+
+  printf("%-5u %-15.15s %-5u %-5u %-15.15s %-5u %-3u %-2d %-10lu %-10lu\n",
+
+         (u_int)*cur.input, fmt_buf1, (u_int)*cur.srcport,
+         (u_int)*cur.output, fmt_buf2, (u_int)*cur.dstport,
+         (u_int)*cur.prot,
+         (u_int)*cur.tcp_flags & 0x7,
+         (u_long)*cur.dPkts,
+         (u_long)*cur.dOctets);
+
+  if (0 & FT_OPT_NOBUF)
+    fflush(stdout);
+}
+

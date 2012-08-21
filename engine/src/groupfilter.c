@@ -133,7 +133,8 @@ groupfilter(
       /* write the record to the output stream */
       if (verbose_v && file) {
         struct group* fgroup = gresult->groupset[i];
-        if ((n = ftio_write(ftio_out, fgroup->aggr_result->aggr_record)) < 0)
+        if ((n = ftio_write(ftio_out,
+                            fgroup->aggr_result->aggr_record->aggr_record)) < 0)
           fterr_errx(1, "ftio_write(): failed");
       }
     }
