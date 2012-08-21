@@ -1,0 +1,4 @@
+nfql-ungrouper-0.0-twente:40297262 output:0 ratio:0.000000 avgtime:3255.423351
+nfql-ungrouper-0.2-twente:40297262 output:10327743 ratio:0.256289 avgtime:5646.228884
+nfql-ungrouper-0.5-twente:40297262 output:20176152 ratio:0.500683 avgtime:6108.249398
+nfql-ungrouper-1.0-twente:40297262 output:40297262 ratio:1.000000 avgtime:7443.025078
