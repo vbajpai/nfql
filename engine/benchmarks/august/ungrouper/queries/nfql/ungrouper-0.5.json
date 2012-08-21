@@ -13,27 +13,10 @@
                 "name": "RULE_EQ"
               }, 
               "offset": {
-                "f2_datatype": "RULE_S2_32", 
-                "f1_name": "srcaddr", 
-                "f1_datatype": "RULE_S1_32", 
-                "f2_name": "dstaddr"
-              }
-            }
-          }, 
-          {
-            "term": {
-              "branch2_id": 1, 
-              "branch1_id": 0, 
-              "delta": 0, 
-              "op": {
-                "type": "RULE_ABS", 
-                "name": "RULE_EQ"
-              }, 
-              "offset": {
-                "f2_datatype": "RULE_S2_32", 
-                "f1_name": "dstaddr", 
-                "f1_datatype": "RULE_S1_32", 
-                "f2_name": "srcaddr"
+                "f2_datatype": "RULE_S2_8", 
+                "f1_name": "prot", 
+                "f1_datatype": "RULE_S1_8", 
+                "f2_name": "prot"
               }
             }
           }

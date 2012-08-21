@@ -19,7 +19,11 @@
                 "f2_name": "dOctets"
               }
             }
-          }, 
+          }
+        ]
+      }, 
+      {
+        "clause": [
           {
             "term": {
               "branch2_id": 1, 

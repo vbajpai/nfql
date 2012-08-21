@@ -90,14 +90,15 @@ if __name__ == '__main__':
                     'groupfilter': gfilter2,
                    })
 
-  term1 = {'term': vars(MergerRule(0, 1, 'srcaddr', 'RULE_S1_32',
-                                         'dstaddr', 'RULE_S2_32', 0,
+  term1 = {'term': vars(MergerRule(0, 1, 'prot', 'RULE_S1_8',
+                                         'prot', 'RULE_S2_8', 0,
                                          'RULE_EQ', 'RULE_ABS'))}
-  term2 = {'term': vars(MergerRule(0, 1, 'dstaddr', 'RULE_S1_32',
-                                         'srcaddr', 'RULE_S2_32', 0,
+  term2 = {'term': vars(MergerRule(0, 1, 'tcp_flags', 'RULE_S1_8',
+                                         'tcp_flags', 'RULE_S2_8', 0,
                                          'RULE_EQ', 'RULE_ABS'))}
-  clause1 = {'clause': [term1] + [term2]}
-  merger = {'dnf-expr': [clause1]}
+  clause1 = {'clause': [term1]}
+  clause2 = {'clause': [term2]}
+  merger = {'dnf-expr': [clause1] + [clause2]}
 
   query = {'branchset': branchset, 'merger': merger, 'ungrouper': {}}
 

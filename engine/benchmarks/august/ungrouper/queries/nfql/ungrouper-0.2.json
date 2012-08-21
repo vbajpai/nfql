@@ -13,10 +13,31 @@
                 "name": "RULE_EQ"
               }, 
               "offset": {
-                "f2_datatype": "RULE_S2_16", 
-                "f1_name": "srcport", 
-                "f1_datatype": "RULE_S1_16", 
-                "f2_name": "dstport"
+                "f2_datatype": "RULE_S2_8", 
+                "f1_name": "prot", 
+                "f1_datatype": "RULE_S1_8", 
+                "f2_name": "prot"
+              }
+            }
+          }
+        ]
+      }, 
+      {
+        "clause": [
+          {
+            "term": {
+              "branch2_id": 1, 
+              "branch1_id": 0, 
+              "delta": 0, 
+              "op": {
+                "type": "RULE_ABS", 
+                "name": "RULE_EQ"
+              }, 
+              "offset": {
+                "f2_datatype": "RULE_S2_8", 
+                "f1_name": "tcp_flags", 
+                "f1_datatype": "RULE_S1_8", 
+                "f2_name": "tcp_flags"
               }
             }
           }
@@ -76,21 +97,6 @@
                     "name": "RULE_EQ"
                   }, 
                   "offset": {
-                    "f2_datatype": "RULE_S2_16", 
-                    "f1_name": "srcport", 
-                    "f1_datatype": "RULE_S1_16", 
-                    "f2_name": "srcport"
-                  }
-                }
-              }, 
-              {
-                "term": {
-                  "delta": 0, 
-                  "op": {
-                    "type": "RULE_ABS", 
-                    "name": "RULE_EQ"
-                  }, 
-                  "offset": {
                     "f2_datatype": "RULE_S2_32", 
                     "f1_name": "srcaddr", 
                     "f1_datatype": "RULE_S1_32", 
@@ -110,6 +116,21 @@
                     "f1_name": "dstaddr", 
                     "f1_datatype": "RULE_S1_32", 
                     "f2_name": "dstaddr"
+                  }
+                }
+              }, 
+              {
+                "term": {
+                  "delta": 0, 
+                  "op": {
+                    "type": "RULE_ABS", 
+                    "name": "RULE_EQ"
+                  }, 
+                  "offset": {
+                    "f2_datatype": "RULE_S2_16", 
+                    "f1_name": "srcport", 
+                    "f1_datatype": "RULE_S1_16", 
+                    "f2_name": "srcport"
                   }
                 }
               }, 
@@ -281,10 +302,10 @@
                     "name": "RULE_EQ"
                   }, 
                   "offset": {
-                    "f2_datatype": "RULE_S2_16", 
-                    "f1_name": "dstport", 
-                    "f1_datatype": "RULE_S1_16", 
-                    "f2_name": "dstport"
+                    "f2_datatype": "RULE_S2_32", 
+                    "f1_name": "dstaddr", 
+                    "f1_datatype": "RULE_S1_32", 
+                    "f2_name": "dstaddr"
                   }
                 }
               }, 
@@ -311,10 +332,10 @@
                     "name": "RULE_EQ"
                   }, 
                   "offset": {
-                    "f2_datatype": "RULE_S2_32", 
-                    "f1_name": "dstaddr", 
-                    "f1_datatype": "RULE_S1_32", 
-                    "f2_name": "dstaddr"
+                    "f2_datatype": "RULE_S2_16", 
+                    "f1_name": "srcport", 
+                    "f1_datatype": "RULE_S1_16", 
+                    "f2_name": "srcport"
                   }
                 }
               }, 
@@ -327,9 +348,9 @@
                   }, 
                   "offset": {
                     "f2_datatype": "RULE_S2_16", 
-                    "f1_name": "srcport", 
+                    "f1_name": "dstport", 
                     "f1_datatype": "RULE_S1_16", 
-                    "f2_name": "srcport"
+                    "f2_name": "dstport"
                   }
                 }
               }, 
