@@ -1640,7 +1640,12 @@ main(int argc, char **argv) {
           group->aggr_result->aggrset = NULL;
         }
 #endif
-        free(group->aggr_result->aggr_record);
+        struct aggr_record* aggr_record = group->aggr_result->aggr_record;
+        free(aggr_record->start); aggr_record->start = NULL;
+        free(aggr_record->end); aggr_record->end = NULL;
+        free(aggr_record->aggr_record); aggr_record->aggr_record = NULL;
+
+        free(aggr_record); aggr_record = NULL;
         group->aggr_result->aggr_record = NULL;
 
         free(group->aggr_result);
