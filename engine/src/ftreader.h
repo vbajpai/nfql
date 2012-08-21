@@ -94,5 +94,7 @@ u_int8_t  *ft_records_get_marked_tos(struct ft_data* data, int number);
 
 void ft_close(struct ft_data* data);
 void flow_print_record(struct ft_data *, char *);
+void flow_print_group_record(struct ft_data *data, struct aggr_record* aggr_record);
+
 
 #endif

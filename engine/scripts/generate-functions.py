@@ -360,7 +360,7 @@ gfilter_proto = """bool
 
 def gfilter_body(op, atype):
   result = " {\n\n"
-  result += "%s* aggr_value = (%s*)(group->aggr_result->aggr_record + field_offset);\n"%(atype,atype)
+  result += "%s* aggr_value = (%s*)(group->aggr_result->aggr_record->aggr_record + field_offset);\n"%(atype,atype)
 
   if op == "eq":
     result += "    return (*aggr_value >= value - delta) && (*aggr_value <= value + delta);\n"
@@ -385,31 +385,31 @@ merger1_proto = """bool
 def merger1_body(op, atype1, atype2):
   result = " {\n\n"
   if op in ['eq', 'ne', 'lt', 'gt', 'le', 'ge', 'in']:
-    result += "    if (*(%s*)(group1->aggr_result->aggr_record + field1_offset) == 0 ||\n"%atype1
-    result += "        *(%s*)(group2->aggr_result->aggr_record + field2_offset) == 0)\n"%atype2
+    result += "    if (*(%s*)(group1->aggr_result->aggr_record->aggr_record + field1_offset) == 0 ||\n"%atype1
+    result += "        *(%s*)(group2->aggr_result->aggr_record->aggr_record + field2_offset) == 0)\n"%atype2
     result += "      return false;\n\n"
   if op == "eq":
-    result += """    return (*(%s*)(group1->aggr_result->aggr_record + field1_offset) >=
-      *(%s*)(group2->aggr_result->aggr_record + field2_offset) - delta)
+    result += """    return (*(%s*)(group1->aggr_result->aggr_record->aggr_record + field1_offset) >=
+      *(%s*)(group2->aggr_result->aggr_record->aggr_record + field2_offset) - delta)
       &&
-      (*(%s*)(group1->aggr_result->aggr_record + field1_offset) <=
-      *(%s*)(group2->aggr_result->aggr_record + field2_offset) + delta);
+      (*(%s*)(group1->aggr_result->aggr_record->aggr_record + field1_offset) <=
+      *(%s*)(group2->aggr_result->aggr_record->aggr_record + field2_offset) + delta);
 
       """%(atype1, atype2, atype1, atype2)
   elif op == "ne":
-    result += """    return (*(%s*)(group1->aggr_result->aggr_record + field1_offset) <
-      *(%s*)(group2->aggr_result->aggr_record + field2_offset) - delta)
+    result += """    return (*(%s*)(group1->aggr_result->aggr_record->aggr_record + field1_offset) <
+      *(%s*)(group2->aggr_result->aggr_record->aggr_record + field2_offset) - delta)
       ||
-      (*(%s*)(group1->aggr_result->aggr_record + field1_offset) >
-      *(%s*)(group2->aggr_result->aggr_record + field2_offset) + delta);
+      (*(%s*)(group1->aggr_result->aggr_record->aggr_record + field1_offset) >
+      *(%s*)(group2->aggr_result->aggr_record->aggr_record + field2_offset) + delta);
       """%(atype1, atype2, atype1, atype2)
   elif op in ['lt', 'le']:
-    result += """  return (*(%s*)(group1->aggr_result->aggr_record + field1_offset) %s
-      *(%s*)(group2->aggr_result->aggr_record + field2_offset) + delta);\n
+    result += """  return (*(%s*)(group1->aggr_result->aggr_record->aggr_record + field1_offset) %s
+      *(%s*)(group2->aggr_result->aggr_record->aggr_record + field2_offset) + delta);\n
       """%(atype1, operation_map[op], atype2)
   elif op in ['gt', 'ge']:
-    result += """  return (*(%s*)(group1->aggr_result->aggr_record + field1_offset) %s
-      *(%s*)(group2->aggr_result->aggr_record + field2_offset) - delta);\n
+    result += """  return (*(%s*)(group1->aggr_result->aggr_record->aggr_record + field1_offset) %s
+      *(%s*)(group2->aggr_result->aggr_record->aggr_record + field2_offset) - delta);\n
       """%(atype1, operation_map[op], atype2)
   #TODO: need to cross-check
   elif op == 'in':
@@ -436,8 +436,8 @@ merger2_proto = """bool
 
 def merger2_body(op):
   result = " {\n\n"
-  result += "uint32_t* t1 = (u_int32_t*)(group1->aggr_result->aggr_record + field1_offset);\n"
-  result += "uint32_t* t2 = (u_int32_t*)(group2->aggr_result->aggr_record + field2_offset);\n"
+  result += "uint32_t* t1 = (u_int32_t*)(group1->aggr_result->aggr_record->aggr_record + field1_offset);\n"
+  result += "uint32_t* t2 = (u_int32_t*)(group2->aggr_result->aggr_record->aggr_record + field2_offset);\n"
   if op == 'allen_bf':
     result += "    return *t1 < *t2;\n"
   elif op == 'allen_af':
