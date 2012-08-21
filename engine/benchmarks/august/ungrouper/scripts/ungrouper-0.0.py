@@ -96,8 +96,9 @@ if __name__ == '__main__':
   term2 = {'term': vars(MergerRule(0, 1, 'dOctets', 'RULE_S1_32',
                                          'dPkts', 'RULE_S2_32', 0,
                                          'RULE_EQ', 'RULE_ABS'))}
-  clause1 = {'clause': [term1] + [term2]}
-  merger = {'dnf-expr': [clause1]}
+  clause1 = {'clause': [term1]}
+  clause2 = {'clause': [term2]}
+  merger = {'dnf-expr': [clause1] + [clause2]}
 
   query = {'branchset': branchset, 'merger': merger, 'ungrouper': {}}
 
