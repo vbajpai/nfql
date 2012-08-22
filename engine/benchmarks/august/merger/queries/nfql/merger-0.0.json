@@ -21,27 +21,6 @@
             }
           }
         ]
-      }, 
-      {
-        "clause": [
-          {
-            "term": {
-              "branch2_id": 1, 
-              "branch1_id": 0, 
-              "delta": 0, 
-              "op": {
-                "type": "RULE_ABS", 
-                "name": "RULE_EQ"
-              }, 
-              "offset": {
-                "f2_datatype": "RULE_S2_32", 
-                "f1_name": "dOctets", 
-                "f1_datatype": "RULE_S1_32", 
-                "f2_name": "dPkts"
-              }
-            }
-          }
-        ]
       }
     ]
   }, 
