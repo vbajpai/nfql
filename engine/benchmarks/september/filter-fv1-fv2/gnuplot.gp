@@ -1,8 +1,8 @@
 set terminal push
 set terminal postscript eps font "Times" color
 
-plot '$0' using 3:4 title "nfql" smooth unique with lp pt 5, \
-     '$1' using 3:4 title "nfql (optimized)" smooth unique with lp pt 5
+plot '$0' using 3:4 title "flowy 2.0" smooth unique with lp pt 5, \
+     '$1' using 3:4 title "nfql" smooth unique with lp pt 5
 
 set xlabel "Output Flows/Input Flows"
 set ylabel "Time (secs)"
