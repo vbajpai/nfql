@@ -1,0 +1,74 @@
+<h1 id="nfql">NFQL</h1>
+<hr />
+<p>An efficient C implementation of a stream-based flow query language.</p>
+<h3 id="motivation">Motivation</h3>
+<p>Understanding intricate traffic patterns require sophisticated flow analysis tools that can mine flow records for complex use cases. Unfortunately current tools fail to deliver owing to their language design and simplistic filtering methods. We have designed a flow query language that aims to cater to such needs. It can process flow records, aggregate them into groups, apply absolute or relative filters and invoke Allen interval algebra rules. NFQL (Network Flow Query Language) is an efficient implementation of the flow query language.</p>
+<h3 id="history">History</h3>
+<p>Flowy was a first feature complete Python prototype of the flow query language. Due to performance problems, it was superseeded by a complete rewrite in C, called Flowy 2.0. NFQL extends on Flowy 2.0, making it more feature complete. The execution engine has been optimized with crispier algorithms to make it scale to real-world sized traces. NFQL now has comparable execution times to contemporary flow analysis tools.</p>
+<h3 id="installation-and-usage">Installation and Usage</h3>
+<ul>
+<li><a href="install-debian.html">Debian-based Linux →</a></li>
+<li><a href="install-osx-homebrew.html">Mac OS X using Homebrew →</a></li>
+<li><a href="install-osx-macports.html">Mac OS X using Mac Ports →</a></li>
+</ul>
+<h3 id="publications">Publications</h3>
+<p><a href="http://www.springerlink.com/content/2t0mv427lk824224/">Flow-based Identification of Failures Caused by IPv6 Transition Mechanisms →</a><br />Vaibhav Bajpai, Nikolay Melnikov, Anuj Sehgal, Jürgen Schönwälder<br />AIMS 2012, Luxembourg, June 2012</p>
+<p><a href="http://ieeexplore.ieee.org/xpls/abs_all.jsp?arnumber=5990668">Flow Signatures of Popular Applications →</a><br />Vladislav Perelman, Nikolay Melnikov, Jürgen Schönwälder<br />IM 2011, Dublin, May 2011.</p>
+<p><a href="http://www.springerlink.com/content/l85hk73487086024/">Cybermetrics: User Identiﬁcation through Network Flow Analysis →</a><br />Nikolay Melnikov, Jürgen Schönwälder AIMS 2010, Zurich, June 2010.</p>
+<p><a href="http://www.springerlink.com/content/a565783288655j67">Implementation of a Stream-Based IP Flow Record Query Language →</a><br />Kaloyan Kanev, Nikolay Melnikov, Jürgen Schönwälder<br />AIMS 2010, Zurich, June 2010.</p>
+<p><a href="http://www.springerlink.com/content/j4555jj848l8q862/">Design of a Stream-Based IP Flow Record Query Language →</a><br />Vladislav Marinov, Jürgen Schönwälder<br />DSOM 2009, Venice, October 2009.</p>
+<p><a href="http://www.springerlink.com/content/0m76rk7653872426/">Design of an IP Flow Record Query Language →</a><br />Vladislav Marinov, Jürgen Schönwälder<br />AIMS 2008, Bremen, July 2008.</p>
+<h3 id="thesis">Thesis</h3>
+<p><a href="http://cnds.eecs.jacobs-university.de/archive/msc-2012-vbajpai.pdf">A Complete System Integration of the Network Flow Query Language →</a><br />Vaibhav Bajpai, Masters Thesis, August 2012.</p>
+<p><a href="http://cnds.eecs.jacobs-university.de/archive/bsc-2011-jschauer.pdf">Flowy 2.0: Fast Execution of Stream-based IP Flow Queries →</a><br />Johannes Schauer, Bachelors Thesis, May 2011.</p>
+<p><a href="http://cnds.eecs.jacobs-university.de/archive/msc-2010-nmelnikov.pdf">Cybermetrics: Identification of Users Through Network Flow Analysis →</a><br />Nikolay Melnikov, Masters Thesis, August 2010.</p>
+<p><a href="http://cnds.eecs.jacobs-university.de/archive/bsc-2010-vperelman.pdf">Flow Signatures of Popular Applications →</a><br />Vladislav Perelman, Bachelors Thesis, May 2010.</p>
+<p><a href="http://cnds.eecs.jacobs-university.de/archive/bsc-2010-pnemeth.pdf">Flowy improvements using MapReduce →</a><br />Peter Nemeth, Bachelors Thesis, May 2010.</p>
+<p><a href="http://cnds.eecs.jacobs-university.de/archive/msc-2009-kkanev.pdf">Flowy - Network Flow Analysis Application →</a><br />Kaloyan Kanev, Masters Thesis, August 2009.</p>
+<p><a href="http://cnds.eecs.jacobs-university.de/archive/msc-2009-vmarinov.pdf">Design of an IP Flow Record Query Language →</a><br />Vladislav Marinov, Masters Thesis, August 2009.</p>
+<h3 id="talks">Talks</h3>
+<p><a href="http://cnds.eecs.jacobs-university.de/slides/2012-aims-ipv6transeval.pdf">Flow-based Identification of Failures Caused by IPv6 Transition Mechanisms →</a><br />Vaibhav Bajpai, Nikolay Melnikov, Anuj Sehgal, Jürgen Schönwälder<br />AIMS 2012, Luxembourg, June 2012</p>
+<p><a href="http://cnds.eecs.jacobs-university.de/slides/2011-im-flow-signatures.pdf">Flow signatures of Popular Applications →</a><br />Vladislav Perelman, Nikolay Melnikov, Jürgen Schönwälder<br />IM 2011, Dublin, May 2011.</p>
+<p><a href="http://cnds.eecs.jacobs-university.de/slides/2010-ietf-78-nmrg-app-signatures.pdf">Flow Signatures of Popular Applications →</a><br />Nikolay Melnikov<br />78th IETF, Maastricht, July 2010.</p>
+<p><a href="http://cnds.eecs.jacobs-university.de/slides/2010-aims-cybermetrics.pdf">Cybermetrics: User Identiﬁcation through Network Flow Analysis →</a><br />Nikolay Melnikov, Jürgen Schönwälder<br />AIMS 2010, Zurich, June 2010.</p>
+<p><a href="http://cnds.eecs.jacobs-university.de/slides/2010-aims-flowy-implementation.pdf">Implementation of a Stream-Based IP Flow Record Query Language →</a><br />Kaloyan Kanev, Nikolay Melnikov, Jürgen Schönwälder<br />AIMS 2010, Zurich, June 2010.</p>
+<p><a href="http://cnds.eecs.jacobs-university.de/slides/2009-dsom-flow-query.pdf">Design of a Stream-Based IP Flow Record Query Language →</a><br />Vladislav Marinov, Jürgen Schönwälder<br />DSOM 2009, Venice, October 2009.</p>
+<h3 id="development-blog">Development Blog</h3>
+<p>A development blog discussing the internal details is <a href="http://mthesis.vaibhavbajpai.com">here →</a></p>
+<h3 id="releases">Releases</h3>
+<p>Earlier releases of NFQL can be downloaded from <a href="releases.html">here →</a></p>
+<h3 id="contributors">Contributors</h3>
+<ul>
+<li>Vaibhav Bajpai <a href="contact@vaibhavbajpai.com">contact@vaibhavbajpai.com</a></li>
+<li>Johannes Schauer <a href="j.schauer@email.de">j.schauer@email.de</a></li>
+<li>Kaloyan Kanev <a href="k.kanev@jacobs-university.de">k.kanev@jacobs-university.de</a></li>
+<li>Vladislav Marinov <a href="v.marinov@jacobs-university.de">v.marinov@jacobs-university.de</a></li>
+<li>Vladislav Perelman <a href="v.perelman@jacobs-university.de">v.perelman@jacobs-university.de</a></li>
+<li>Nikolay Melnikov <a href="n.melnikov@jacobs-university.de">n.melnikov@jacobs-university.de</a></li>
+<li>Jürgen Schönwälder <a href="j.schoenwaelder@jacobs-university.de">j.schoenwaelder@jacobs-university.de</a></li>
+</ul>
+<h3 id="license">License</h3>
+<pre>
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+
+ 1. Redistributions of source code must retain the above copyright
+    notice, this list of conditions and the following disclaimer.
+ 2. Redistributions in binary form must reproduce the above copyright
+    notice, this list of conditions and the following disclaimer in the
+    documentation and/or other materials provided with the distribution.
+
+ THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+ IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+ OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+ IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+ INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+ NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+ DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+ THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+</pre>
+
+
