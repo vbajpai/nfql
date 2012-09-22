@@ -1,0 +1,883 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+ 
+ <title>The Geek Debauchery</title>
+ <link href="http://username.github.com/atom.xml" rel="self"/>
+ <link href="http://username.github.com"/>
+ <updated>2012-09-22T14:27:01+02:00</updated>
+ <id>http://username.github.com</id>
+ <author>
+   <name>Vaibhav Bajpai</name>
+   <email>contact@vaibhavbajpai.com</email>
+ </author>
+
+ 
+ <entry>
+   <title>Git inside Git</title>
+   <link href="http://username.github.com/2012/05/24/git-inside-git"/>
+   <updated>2012-05-24T00:00:00+02:00</updated>
+   <id>http://username.github.com/2012/05/24/git-inside-git</id>
+   <content type="html">&lt;p&gt;I use &lt;a href='https://github.com/carlhuda/janus'&gt;janus &amp;#8594;&lt;/a&gt; and &lt;a href='https://github.com/robbyrussell/oh-my-zsh/'&gt;oh-my-zsh &amp;#8594;&lt;/a&gt; to setup a part of my dotfiles configuration.&lt;/p&gt;
+
+&lt;p&gt;My &lt;a href='https://github.com/vbajpai/dotfiles/'&gt;dotfiles &amp;#8594;&lt;/a&gt; configuration is setup as a git repository and because the aforementioned frameworks are git repositories themselves, I was faced with the task of setting up git inside git! Since I have used &lt;code&gt;svn externals&lt;/code&gt; before, I was sure there must be a way to do this. It turned out to be called &lt;a href='http://git-scm.com/book/en/Git-Tools-Submodules'&gt;git submodules &amp;#8594;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;To clone a submodule in the local path of your git repository -&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[root-repo] &amp;gt;&amp;gt; git submodule add &amp;lt;remote repository&amp;gt; &amp;lt;local path&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To update the submodule&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[root-repo] &amp;gt;&amp;gt; git submodule update&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;A new git clone requires reinitializing the submodules.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;&amp;gt;&amp;gt; git clone &amp;lt;root-repo&amp;gt;
+[root-repo] &amp;gt;&amp;gt; git submodule init
+[root-repo] &amp;gt;&amp;gt; git submodule update &lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To pull recent changes from all the submodules at once.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[root-repo] &amp;gt;&amp;gt; git submodule foreach git pull origin master&lt;/code&gt;&lt;/pre&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Default to clang on Mac OS X</title>
+   <link href="http://username.github.com/2012/05/20/default-to-clang-on-mac-os-x"/>
+   <updated>2012-05-20T00:00:00+02:00</updated>
+   <id>http://username.github.com/2012/05/20/default-to-clang-on-mac-os-x</id>
+   <content type="html">&lt;p&gt;The default compiler on Mac OS X Lion is &lt;code&gt;gcc-llvm&lt;/code&gt;.&lt;br /&gt;I have decided to default to &lt;code&gt;clang&lt;/code&gt; to take advantage of its static analysis capabilities:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;export CC=clang
+export CPP=c++
+export CXX=c++&lt;/code&gt;&lt;/pre&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Remote iPhone Packet Captures</title>
+   <link href="http://username.github.com/2012/04/18/remote-iphone-packet-captures"/>
+   <updated>2012-04-18T00:00:00+02:00</updated>
+   <id>http://username.github.com/2012/04/18/remote-iphone-packet-captures</id>
+   <content type="html">&lt;p&gt;Create the Remote Virtual Interface&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ rvictl -s $UDID&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The &lt;code&gt;UDID&lt;/code&gt; is visible by double clicking the Serial Number in iTunes. Run &lt;code&gt;ifconfig&lt;/code&gt; to check the interface name&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ ifconfig
+...
+rvi0: flags=3005&amp;lt;UP,DEBUG,LINK0,LINK1&amp;gt; mtu 0&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Run Wireshark to capture the packets&lt;/p&gt;
+
+&lt;p&gt;Delete the Interface&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ rvictl -x $UDID&lt;/code&gt;&lt;/pre&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Provisioning a VM from Command Line using Vagrant</title>
+   <link href="http://username.github.com/2012/04/13/provisioning-a-vm-from-command-line-using-vagrant"/>
+   <updated>2012-04-13T00:00:00+02:00</updated>
+   <id>http://username.github.com/2012/04/13/provisioning-a-vm-from-command-line-using-vagrant</id>
+   <content type="html">&lt;p&gt;&lt;img alt='vagrant logo' src='http://ajohnstone.com/wp-content/uploads/2011/12/vagrant_chilling.png' /&gt;&lt;/p&gt;
+
+&lt;blockquote&gt;
+&lt;p&gt;Web developers use virtual environments every day with their web applications. From EC2 and Rackspace Cloud to specialized solutions such as EngineYard and Heroku, virtualization is the tool of choice for easy deployment and infrastructure management. Vagrant aims to take those very same principles and put them to work in the heart of the application lifecycle. By providing easy to configure, lightweight, reproducible, and portable virtual machines targeted at development environments, Vagrant helps maximize the productivity and flexibility of you and your team.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;Here is a quick getting started with Vagrant:&lt;/p&gt;
+
+&lt;p&gt;Install &lt;a href='https://www.virtualbox.org/wiki/Downloads'&gt;Oracle VirtualBox &amp;#8594;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Install &lt;a href='http://downloads.vagrantup.com/'&gt;Vagrant &amp;#8594;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Add a &lt;a href='http://vagrantbox.es/'&gt;Base Box &amp;#8594;&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@local: $ vagrant box add $BOXNAME $BOXURL&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;where &lt;code&gt;$BOXNAME&lt;/code&gt; is a box name and &lt;code&gt;$BOXURL&lt;/code&gt; is a url to a &lt;code&gt;.box&lt;/code&gt; file.&lt;br /&gt;The boxes are saved in &lt;code&gt;~/.vagrant.d/boxes&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;&lt;span&gt;Additional Commands&lt;/span&gt; List and/or Remove boxes:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@local: $ vagrant box list
+@local: $ vagrant box remove $BOXNAME&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;remove&lt;/code&gt; removes the .box file from &lt;code&gt;~/.vagrant.d/boxes&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Initalize a VM in a project.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@local: $ git init foo/
+	
+@local: [foo] $ vagrant init $BOXNAME&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;code&gt;init&lt;/code&gt; creates a &lt;code&gt;Vagrantfile&lt;/code&gt; in the root of the project that describe the VM characteristics.&lt;/p&gt;
+
+&lt;p&gt;&lt;span&gt;Additional Commands&lt;/span&gt; Destroy the initialized VM:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@local: [foo] $ vagrant destroy&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Start the VM and remotely login.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@local: [foo] $ vagrant up
+@local: [foo] $ vagrant ssh&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;span&gt;Additional Commands&lt;/span&gt; Suspend and Resume the VM:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@local: [foo] $ vagrant suspend
+@local: [foo] $ vagrant resume&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;span&gt;Additional Commands&lt;/span&gt; Shutdown the VM:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@local: [foo] $ vagrant halt&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Vagrant VM characteristics&lt;/p&gt;
+
+&lt;p&gt;username/password: vagrant/vagrant&lt;br /&gt;sudo access does not require a password&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@vagrant: [\vagrant] &amp;lt;-- this is the same as foo with r/w access&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Monitor the VM&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@local: [foo] $ vagrant status&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Vagrantfile:&lt;/p&gt;
+
+&lt;p&gt;Switch to Bridged Mode:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# uncomment
+config.vm.network :bridged&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Port-forwarding:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;# uncomment
+config.vm.forward_port 80, 8080	&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Reload the Vagrantfile&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@local: [foo] $ vagrant reload&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Package the VM as BOX file for distribution&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;@local: [foo] $ vagrant package	&lt;/code&gt;&lt;/pre&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>OS X for Hackers</title>
+   <link href="http://username.github.com/2012/03/31/os-x-for-hackers"/>
+   <updated>2012-03-31T00:00:00+02:00</updated>
+   <id>http://username.github.com/2012/03/31/os-x-for-hackers</id>
+   <content type="html">&lt;p&gt;I found some useful tips from &lt;a href='https://gist.github.com/2260182'&gt;OSX for Hackers &amp;#8594;&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;echo &amp;quot;Enable subpixel font rendering on non-Apple LCDs&amp;quot;
+defaults write NSGlobalDomain AppleFontSmoothing -int 2
+
+echo &amp;quot;Enable AirDrop over Ethernet and on unsupported Macs running Lion&amp;quot;
+defaults write com.apple.NetworkBrowser BrowseAllInterfaces -bool true
+
+echo &amp;quot;Use current directory as default search scope in Finder&amp;quot;
+defaults write com.apple.finder FXDefaultSearchScope -string &amp;quot;SCcf&amp;quot;    &lt;/code&gt;&lt;/pre&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Parsing JSON using json c</title>
+   <link href="http://username.github.com/2012/03/23/parsing-json-using-json-c"/>
+   <updated>2012-03-23T00:00:00+01:00</updated>
+   <id>http://username.github.com/2012/03/23/parsing-json-using-json-c</id>
+   <content type="html">&lt;p&gt;Install &lt;code&gt;json-c&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew install json-c&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Read the &lt;code&gt;JSON&lt;/code&gt; file and parse it into a &lt;code&gt;json_object&lt;/code&gt; struct.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#include &amp;lt;json/json.h&amp;gt;
+...
+int main(int argc, char **argv) {
+
+  /* read and mmap the json file */
+  fsock = open(argv[1], O_RDONLY);
+  if (fsock == -1)
+    perror(&amp;quot;open&amp;quot;);
+  if (fstat(fsock, &amp;amp;sb) == -1)
+    perror(&amp;quot;fstat&amp;quot;);
+  fmap = mmap(NULL, sb.st_size, PROT_READ, MAP_PRIVATE, fsock, 0); 
+  if (fmap == MAP_FAILED)
+    perror(&amp;quot;mmap&amp;quot;);
+
+  /* parse the json into a json_object struct */  
+  struct json_object *fjson = json_tokener_parse(fmap);  
+  ...
+  /* cleanup the object when done */
+  json_object_object_del(fjson, &amp;quot;&amp;quot;);
+}  &lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Use getters to get to specific part in the &lt;code&gt;JSON&lt;/code&gt; object&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;struct json_object* child = json_object_object_get(fjson, &amp;quot;child&amp;quot;);&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Use type specific getters on the specific object.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;int json_object_get_int(struct json_object*);
+char* json_object_get_string(struct json_object*);
+...&lt;/code&gt;&lt;/pre&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>MySQL on Mac OS X</title>
+   <link href="http://username.github.com/2012/02/26/mysql-on-mac-os-x"/>
+   <updated>2012-02-26T00:00:00+01:00</updated>
+   <id>http://username.github.com/2012/02/26/mysql-on-mac-os-x</id>
+   <content type="html">&lt;p&gt;Install MySQL using Homebrew&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew install mysql&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Set up databases to run with your user with:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ unset TMPDIR
+$ mysql_install_db --verbose \
+                   --user=`whoami` \
+                   --basedir=&amp;quot;$(brew --prefix mysql)&amp;quot; \ 
+                   --datadir=/usr/local/var/mysql \
+                   --tmpdir=/tmp&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Start MySQL Daemon&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ mysql.server start&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Connect&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ mysql -uroot
+[…]	
+mysql&amp;gt; 		&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Stop MySQL Daemon&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ mysql.server stop&lt;/code&gt;&lt;/pre&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Git and opendiff since XCode 4.3</title>
+   <link href="http://username.github.com/2012/02/22/git-and-opendiff-since-xcode-43"/>
+   <updated>2012-02-22T00:00:00+01:00</updated>
+   <id>http://username.github.com/2012/02/22/git-and-opendiff-since-xcode-43</id>
+   <content type="html">&lt;p&gt;Apple released Xcode 4.3 on February 16, 2012.&lt;/p&gt;
+
+&lt;p&gt;Xcode 4.3 now bundles as a single app and recommends to remove older versions of Xcode during the installation. The &lt;code&gt;/Developer&lt;/code&gt; directory is eliminated in the process. As a result, &lt;code&gt;git&lt;/code&gt; using &lt;code&gt;opendiff&lt;/code&gt; to will no longer work after the installation.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ gd $SOURCE
+Error: No developer directory found at /Developer. [...]&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;The &lt;code&gt;/Developer&lt;/code&gt; directory is not gone, but now bundled within the &lt;code&gt;Xcode.app&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Switching the path will do the trick to get it back to normal.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo /usr/bin/xcode-select -switch /Applications/Xcode.app/Contents/Developer/
+$ gd $SOURCE&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Resources:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href='http://www.macrumors.com/2012/02/16/apple-releases-xcode-4-3-now-offered-as-app-instead-of-installer/'&gt;Mac Rumors - Apple Releases Xcode 4.3, Now Offered as App Instead of Installer &amp;#8594;&lt;/a&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;a href='https://developer.apple.com/library/ios/#documentation/DeveloperTools/Conceptual/WhatsNewXcode/Articles/xcode_4_3.html'&gt;iOS Developer Library - New Features in Xcode 4.3 &amp;#8594;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Python Ecosystem on Mac OS X</title>
+   <link href="http://username.github.com/2012/02/20/python-ecosystem-on-mac-os-x"/>
+   <updated>2012-02-20T00:00:00+01:00</updated>
+   <id>http://username.github.com/2012/02/20/python-ecosystem-on-mac-os-x</id>
+   <content type="html">&lt;p&gt;Install Homebrew and Prioritize it&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ ruby -e &amp;quot;$(curl -fsS https://raw.github.com/gist/323731)&amp;quot;
+$ export PATH=/usr/local/bin:$PATH&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Install Python&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew install python --framework&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Put &lt;code&gt;easy_install&lt;/code&gt; in PATH&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;export PATH=/usr/local/share/python:$PATH&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Install &lt;code&gt;pip&lt;/code&gt; and Upgrade it to latest version available in PyPI&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ easy_install pip
+$ pip install pip --upgrade&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Using &lt;code&gt;pip&lt;/code&gt; to install (or uninstall) and upgrade (or degrade) packages&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ pip install $PACKAGE
+$ pip install $PACKAGE==$VERSION
+$ pip install $PACKAGE --upgrade
+$ pip install $PACKAGE==$VERSION --upgrade
+$ pip uninstall $PACKAGE&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Using &lt;code&gt;pip&lt;/code&gt; to search (or list installed) packages&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ pip search $PACKAGE
+$ pip freeze&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Installing IPython and BPython&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ pip install bpython
+$ pip install ipython&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Install Virtualenv and VirtualenvWrapper&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ pip install virtualenv
+$ pip install virtualenvwrapper&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;VirtualenvWrapper configuration for your &lt;code&gt;.bashrc&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;if [ `id -u` != &amp;#39;0&amp;#39; ]; then	
+  export VIRTUALENV_USE_DISTRIBUTE=1        
+  export WORKON_HOME=$HOME/.virtualenvs	
+  source /usr/local/share/python/virtualenvwrapper.sh
+fi&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Using VirtualenvWrapper&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ mkvirtualenv foo
+
+(foo) $ which python
+$HOME/.virtualenvs/foo/bin/python
+
+(foo) $ which pip
+$HOME/.virtualenvs/foo/bin/pip
+
+(foo) $ pip freeze
+distribute==0.6.24
+wsgiref==0.1.2
+
+(foo) $ deactivate
+
+$ which python
+/usr/local/bin/python
+
+$ which pip
+/usr/local/share/python/pip
+
+$ pip freeze
+bpython==0.10.1
+distribute==0.6.24
+ipython==0.12
+virtualenv==1.7.1.2
+virtualenvwrapper==3.0
+
+$ lsvirtualenv
+foo
+
+$ rmvirtualenv foo&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Using Virtualenv to freeze current state of environment packages&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;(foo) $ pip freeze &amp;gt; requirements.txt
+(bar) $ pip install -r requirements.txt&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Resources:&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href='http://mirnazim.org/writings/python-ecosystem-introduction/'&gt;Python Ecosystem - An Introduction &amp;#8594;&lt;/a&gt;&lt;/li&gt;
+
+&lt;li&gt;&lt;a href='http://docs.python-guide.org/en/latest/index.html'&gt;The Hitchhiker’s Guide to Python! &amp;#8594;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Konica Minolta Network Printers on Mac OS X</title>
+   <link href="http://username.github.com/2011/10/27/konica-minolta-network-printers-on-mac-os-x"/>
+   <updated>2011-10-27T00:00:00+02:00</updated>
+   <id>http://username.github.com/2011/10/27/konica-minolta-network-printers-on-mac-os-x</id>
+   <content type="html">&lt;p&gt;Jacobs University Bremen &lt;a href='https://teamwork.jacobs-university.de:8443/confluence/display/ircit/2011/10/24/Replacement+of+network+printers'&gt;replaced&lt;/a&gt; its network printers on October 27, 2011.&lt;br /&gt;Here are the steps to setup the new Konica Minolta Multi Function Printers:&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt='' src='http://www.konicaminolta.com.au/library/bizhub_652_enlarge_a.jpg' /&gt;&lt;/p&gt;
+
+&lt;p&gt;Download and Install the &lt;a href='http://onyxftp.mykonicaminolta.com/DownloadFile/Download.ashx?fileid=23423&amp;amp;productid=1190'&gt;C652Series Driver &amp;#8594;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Goto System Preferences → Print &amp;amp; Scan If you don&amp;#8217;t have the qpilot setup already, follow these &lt;a href='https://teamwork.jacobs-university.de:8443/confluence/display/ircit/How+to+configure+Jacobs+network+printing+on+Mac'&gt;instructions &amp;#8594;&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Change the address to &lt;code&gt;CAMPUSNETUSERNAME@qpilot.jacobs-university.de&lt;/code&gt; if your mac userID is not your campusNet userID&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt='qPilot' src='http://i.imgur.com/5hURi.png' /&gt;&lt;/p&gt;
+
+&lt;p&gt;Goto Options &amp;amp; Supplies → Driver. Select Printer Software in Print Using: and setup the settings as shown below:&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt='Printing Preferences' src='http://i.imgur.com/o43x5.png' /&gt;&lt;/p&gt;
+
+&lt;p&gt;Enabled Double Sided Printing:&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt='Double-Sided' src='http://i.imgur.com/66mSQ.png' /&gt;&lt;/p&gt;
+
+&lt;p&gt;Enable Double Sided Stapling:&lt;/p&gt;
+
+&lt;p&gt;&lt;img alt='Imgur' src='http://i.imgur.com/jJq3W.png' /&gt;&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Exporting a Mercurial Repository to Git</title>
+   <link href="http://username.github.com/2011/10/16/exporting-a-mercurial-repository-to-git"/>
+   <updated>2011-10-16T00:00:00+02:00</updated>
+   <id>http://username.github.com/2011/10/16/exporting-a-mercurial-repository-to-git</id>
+   <content type="html">&lt;p&gt;Clone &lt;a href='http://repo.or.cz/w/fast-export.git'&gt;hg-fast-export &amp;#8594;&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ git clone git://repo.or.cz/fast-export.git&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Put &lt;code&gt;hg-fast-export&lt;/code&gt; in your &lt;code&gt;PATH&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Initialize a &lt;code&gt;Git&lt;/code&gt; repository:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ git init foo&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Export &lt;code&gt;hg&lt;/code&gt; repository:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[foo] $ hg-fast-export.sh -r bar&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;where &lt;code&gt;bar&lt;/code&gt; is the path to your &lt;code&gt;hg&lt;/code&gt; repository.&lt;/p&gt;
+
+&lt;p&gt;Checkout &lt;code&gt;master&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[foo] $ git checkout&lt;/code&gt;&lt;/pre&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Dropbox on Ubuntu Server</title>
+   <link href="http://username.github.com/2011/10/10/dropbox-on-ubuntu-server"/>
+   <updated>2011-10-10T00:00:00+02:00</updated>
+   <id>http://username.github.com/2011/10/10/dropbox-on-ubuntu-server</id>
+   <content type="html">&lt;p&gt;Download the latest tarball: &lt;a href='http://www.dropbox.com/download/?plat=lnx.x86'&gt;x86&lt;/a&gt; or &lt;a href='http://www.dropbox.com/download/?plat=lnx.x86_64'&gt;x86-64&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Extract the tarball and relocate it.&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ tar -zxvf $TARBALL
+$ mv .dropbox-dist ~/&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Download the Dropbox CLI and put it in your &lt;code&gt;PATH&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ curl -O http://linux.dropbox.com/packages/dropbox.py
+$ chmod +x dropbox.py
+$ mv dropbox.py ~/.bin/dropbox
+$ dropbox
+
+Dropbox command-line interface
+
+commands:
+
+Note: use dropbox help &amp;lt;command&amp;gt; to view usage for a specific command.
+
+ status       get current status of the dropboxd
+ help         provide help
+ puburl       get public url of a file in your dropbox
+ stop         stop dropboxd
+ running      return whether dropbox is running
+ start        start dropboxd
+ filestatus   get current sync status of one or more files
+ ls           list directory contents with current sync status
+ autostart    automatically start dropbox at login
+ exclude      ignores/excludes a directory from syncing&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Run the Dropbox Daemon; and goto the URL to link the machine and start syncing!&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[$HOME/.dropbox-dist]$ ./dropboxd
+This client is not linked to any account... Please visit $URL to link this machine.     &lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Download the &lt;a href='http://wiki.dropbox.com/TipsAndTricks/TextBasedLinuxInstall/UbuntuStartup'&gt;init.d script&lt;/a&gt;, change &lt;code&gt;DROPBOX_USERS&lt;/code&gt; to include your &lt;code&gt;username&lt;/code&gt; and save the script at &lt;code&gt;/etc/init.d/dropbox&lt;/code&gt;.&lt;/p&gt;
+
+&lt;p&gt;Add execute permissions:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo chmod +x /etc/init.d/dropbox&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Add to the very top of the script:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;### BEGIN INIT INFO
+# Provides:          dropbox
+# Required-Start:    $local_fs $remote_fs $network $syslog $named
+# Required-Stop:     $local_fs $remote_fs $network $syslog $named
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# X-Interactive:     false
+# Short-Description: dropbox service
+### END INIT INFO&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Update&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo update-rc.d dropbox defaults&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Reboot and then test:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ dropbox status    
+Idle&lt;/code&gt;&lt;/pre&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>zsh on Ubuntu</title>
+   <link href="http://username.github.com/2011/09/12/zsh-on-ubuntu"/>
+   <updated>2011-09-12T00:00:00+02:00</updated>
+   <id>http://username.github.com/2011/09/12/zsh-on-ubuntu</id>
+   <content type="html">&lt;p&gt;Check your current shell:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ echo $SHELL&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Check the available shells:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ cat /etc/shells&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Install &lt;code&gt;zsh&lt;/code&gt; (if not available):&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apt-get install zsh&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Switch to &lt;code&gt;zsh&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ chsh -s bin/zsh&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Logout and Login back&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Slam6D on Mac OS X</title>
+   <link href="http://username.github.com/2011/08/12/slam6d-on-mac-os-x"/>
+   <updated>2011-08-12T00:00:00+02:00</updated>
+   <id>http://username.github.com/2011/08/12/slam6d-on-mac-os-x</id>
+   <content type="html">&lt;p&gt;Prepare for Homebrew&lt;/p&gt;
+
+&lt;ul&gt;
+&lt;li&gt;Install Xcode from the Mac App Store (Some Formulae require Xcode)&lt;/li&gt;
+
+&lt;li&gt;Install &lt;a href='http://support.apple.com/kb/DL1421'&gt;Java Developer Update&lt;/a&gt; (CMake tries to build the Java bindings)&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;Install Homebrew&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ /usr/bin/ruby -e &amp;quot;$(curl -fsSL https://raw.github.com/gist/323731)&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Install CMake&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew install cmake&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Install Boost Libraries&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ brew install boost&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Checkout &lt;a href='http://slam6d.sourceforge.net/'&gt;3DTK &amp;#8594;&lt;/a&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ svn checkout https://slam6d.svn.sourceforge.net/svnroot/slam6d/trunk slam6d&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Compile Slam6D&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[slam6d] $ make&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Run Slam6D&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[slam6d] $ bin/slam6D dat&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Run the Show Program&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[slam6d] $ bin/show dat&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&lt;img alt='Slam6D on Mac OS X Lion' src='http://i.imgur.com/iOrox.png' /&gt;&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Git rebase in Mercurial</title>
+   <link href="http://username.github.com/2011/08/11/git-rebase-in-mercurial"/>
+   <updated>2011-08-11T00:00:00+02:00</updated>
+   <id>http://username.github.com/2011/08/11/git-rebase-in-mercurial</id>
+   <content type="html">&lt;p&gt;The scenario is to rebase the commits of your feature branch on top of the newer updates from master branch: To achieve it in &lt;code&gt;git&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[master] $ git checkout feature
+[feature] $ git rebase master&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;To achieve it in &lt;code&gt;hg&lt;/code&gt;, enable rebase extension in &lt;code&gt;~/.hgrc&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[...]
+[extensions]
+rebase = &lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;and then rebase&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[default] $ hg update feature
+[feature] $ hg rebase -d default --keepbranches&lt;/code&gt;&lt;/pre&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Removing Tracked Content from an Updated .hgignore</title>
+   <link href="http://username.github.com/2011/07/30/removing-tracked-content-from-an-updated-hgignore"/>
+   <updated>2011-07-30T00:00:00+02:00</updated>
+   <id>http://username.github.com/2011/07/30/removing-tracked-content-from-an-updated-hgignore</id>
+   <content type="html">&lt;p&gt;A change in the &lt;code&gt;.hgignore&lt;/code&gt; file does NOT automatically remove the currently tracked items from the &lt;code&gt;hg&lt;/code&gt; repository. A manual &lt;code&gt;$ hg remove&lt;/code&gt; is required. However if the recent ignore pattern involves several files kept in fragmented place of the repository, a manual remove may involve some work. Mercurial&amp;#8217; support for a functional language to select a set of files comes to the rescue and it even has a special predicate to specify the current &lt;code&gt;.hgignore&lt;/code&gt; file pattern to get this done in one simple command -&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ hg remove -f &amp;quot;set:hgignore()&amp;quot;&lt;/code&gt;&lt;/pre&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Installing TextMate Bundles</title>
+   <link href="http://username.github.com/2011/07/02/installing-textmate-bundles"/>
+   <updated>2011-07-02T00:00:00+02:00</updated>
+   <id>http://username.github.com/2011/07/02/installing-textmate-bundles</id>
+   <content type="html">&lt;p&gt;Create the Bundles Directory&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ mkdir -p /Library/Application\ Support/TextMate/Bundles&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Checkout Bundles from &lt;code&gt;svn&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[.../TextMate] $ svn co http://svn.textmate.org/trunk/Bundles/&lt;/code&gt;&lt;/pre&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Git diffs with Mac OS X FileMerge</title>
+   <link href="http://username.github.com/2011/06/25/git-diffs-with-mac-os-x-filemerge"/>
+   <updated>2011-06-25T00:00:00+02:00</updated>
+   <id>http://username.github.com/2011/06/25/git-diffs-with-mac-os-x-filemerge</id>
+   <content type="html">&lt;p&gt;Add a function for &lt;code&gt;git difftool&lt;/code&gt; in your &lt;code&gt;.zshrc&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;gd () {
+	git difftool -t opendiff $1
+}&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Diff using &lt;code&gt;gd()&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ gd $file&lt;/code&gt;&lt;/pre&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Mercurial diffs with Mac OS X FileMerge</title>
+   <link href="http://username.github.com/2011/06/24/mercurial-diffs-with-mac-os-x-filemerge"/>
+   <updated>2011-06-24T00:00:00+02:00</updated>
+   <id>http://username.github.com/2011/06/24/mercurial-diffs-with-mac-os-x-filemerge</id>
+   <content type="html">&lt;p&gt;Create &lt;code&gt;opendiff-w&lt;/code&gt; script in &lt;code&gt;/usr/bin&lt;/code&gt;:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;#!/bin/sh
+# opendiff returns immediately, without waiting for FileMerge to exit.
+# Piping the output makes opendiff wait for FileMerge.
+opendiff &amp;quot;$@&amp;quot; | cat&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Give execute permissions to the script: &lt;code&gt;$ chmod +x /usr/bin/opendiff-w&lt;/code&gt;&lt;/p&gt;
+
+&lt;p&gt;Edit &lt;code&gt;~/.hgrc&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;[extensions]
+hgext.extdiff = 
+
+[extdiff]
+cmd.interdiff = hg-interdiff
+cmd.opendiff = opendiff-w
+
+[merge-tools]
+filemerge.executable = opendiff-w
+filemerge.args = $local $other -ancestor $base -merge $output         &lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Add a function for &lt;code&gt;hg opendiff&lt;/code&gt; in your &lt;code&gt;.zshrc&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;hgd () {
+	hg opendiff $1
+}&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Diff using &lt;code&gt;hgd()&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ hgd $file&lt;/code&gt;&lt;/pre&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>WPA on Ubuntu Server</title>
+   <link href="http://username.github.com/2011/06/16/wpa-on-ubuntu-server"/>
+   <updated>2011-06-16T00:00:00+02:00</updated>
+   <id>http://username.github.com/2011/06/16/wpa-on-ubuntu-server</id>
+   <content type="html">&lt;p&gt;Find your network&amp;#8217;s PSK string&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ wpa_passphrase $SSID $PSK&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;where &lt;code&gt;$SSID&lt;/code&gt; is the network name and &lt;code&gt;$PSK&lt;/code&gt; is WPA password&lt;/p&gt;
+
+&lt;p&gt;Edit &lt;code&gt;/etc/wpa_supplicant.conf&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;ctrl_interface=/var/run/wpa_supplicant
+#ap_scan=2
+network={
+   ssid=&amp;quot;$SSID&amp;quot;
+   scan_ssid=1
+   proto=WPA RSN
+   key_mgmt=WPA-PSK
+   pairwise=CCMP TKIP
+   group=CCMP TKIP
+   psk=$PSKSTRING
+}&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;where &lt;code&gt;$SSID&lt;/code&gt; is the network name and &lt;code&gt;$PSKSTRING&lt;/code&gt; is from step1&lt;/p&gt;
+
+&lt;p&gt;Edit &lt;code&gt;/etc/network/interfaces&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;auto wlan0
+iface wlan0 inet static
+address $IPADDR
+netmask 255.255.255.0
+wireless-essid $SSID
+gateway 192.168.1.1
+pre-up wpa_supplicant -B -Dwext -iwlan0 -c/etc/wpa_supplicant.conf
+post-down killall -q wpa_supplicant&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;where &lt;code&gt;$SSID&lt;/code&gt; is the network name and &lt;code&gt;$IPADDR&lt;/code&gt; is &lt;code&gt;192.168.1.x&lt;/code&gt;&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Rasdaman on Ubuntu</title>
+   <link href="http://username.github.com/2011/06/12/rasdaman-on-ubuntu"/>
+   <updated>2011-06-12T00:00:00+02:00</updated>
+   <id>http://username.github.com/2011/06/12/rasdaman-on-ubuntu</id>
+   <content type="html">&lt;blockquote&gt;
+&lt;p&gt;rasdaman is a universal, domain-independent, array&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;DBMS for multidimensional arrays of arbitrary size and structure. A declarative, SQL-based array query language offers flexible retrieval and manipulation. Efficient server- based query evaluation is enabled by an intelligent optimizer and a streamlined storage architecture based on flexible array tiling and compression.&lt;/p&gt;
+
+&lt;p&gt;for more information visit the &lt;a href='http://www.rasdaman.com/'&gt;rasdaman homepage →&lt;/a&gt;&lt;/p&gt;
+
+&lt;p&gt;Create a &lt;code&gt;rasdaman&lt;/code&gt; user account&lt;/p&gt;
+
+&lt;p&gt;Install Dependencies&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apt-get install git-core g++ autoconf libtool gawk bison
+  postgresql libecpg-dev libncurses5-dev libhdf4g-dev flex
+  libpng12-dev libjpeg-dev libnetpbm10-dev libreadline-dev
+  libtiff-dev make build-essential openjdk-6-jdk doxygen&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;&amp;#8230; it also sets up &lt;code&gt;PostgreSQL&lt;/code&gt; by default&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;- Adding user postgres to group ssl-cert ...
+- Setting up postgresql-8.4 (8.4.5-0ubuntu10.10) ...
+- Creating new cluster (configuration: ...
+- Configuring postgresql.conf to use port 5432...
+- Starting PostgreSQL 8.4 database server ...
+- Done&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Clone &lt;code&gt;rasdaman&lt;/code&gt; source&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ git clone git://kahlua.eecs.jacobs-university.de/rasdaman.git&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Compile and Install from source&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ ./autoreconf
+$ ./configure
+$ sudo make 
+$ sudo make install &lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Add &lt;code&gt;rasdaman&lt;/code&gt; and &lt;code&gt;PostgreSQL&lt;/code&gt; binaries to &lt;code&gt;PATH&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ export PATH=$PATH:$RASDAMAN/bin
+$ export PATH=$PATH:/usr/lib/postgresql/8.4/bin&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Either edit &lt;code&gt;/etc/postgresql/8.4/main/postgresql.conf&lt;/code&gt; and change port from 5432 to 5433 or:&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo pg_dropcluster --stop 8.4 main&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Change ownership of &lt;code&gt;PostgreSQL&lt;/code&gt; for user &lt;code&gt;rasdaman&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo chown -R rasdaman /var/run/postgresql&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Initialize and Start a new Database Cluster&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ initdb -D $DBDATA
+$ pg_ctl -D $DBDATA start&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;where &lt;code&gt;$DBDATA&lt;/code&gt; is the location where the cluster will be stored.&lt;/p&gt;
+
+&lt;p&gt;Create the database on the cluster and start &lt;code&gt;rasdaman&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ bash create_db.sh
+$ bash start_rasdaman.sh&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;check the logs to make sure the server daemon started successfully.&lt;/p&gt;
+
+&lt;p&gt;Run the insert script&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ insertdemo.sh localhost 7001 
+  $RASDAMAN/share/rasdaman/images rasadmin rasadmin&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Test &lt;code&gt;rasdaman&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ rasql &amp;amp;ndash;q &amp;quot;select r from RAS_COLLECTIONNAMES as r&amp;quot; --out string&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Pointers:&lt;/p&gt;
+
+&lt;p&gt;Databases: &lt;code&gt;RASBASE&lt;/code&gt; and &lt;code&gt;petascopedb&lt;/code&gt; &lt;br /&gt;Superusers: &lt;code&gt;rasdaman&lt;/code&gt; and &lt;code&gt;petauser&lt;/code&gt; &lt;br /&gt;User: &lt;code&gt;rasguest&lt;/code&gt;&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Basic Graph Plots in MATLAB</title>
+   <link href="http://username.github.com/2010/11/14/basic-graph-plots-in-matlab"/>
+   <updated>2010-11-14T00:00:00+01:00</updated>
+   <id>http://username.github.com/2010/11/14/basic-graph-plots-in-matlab</id>
+   <content type="html">&lt;p&gt;Plot &lt;code&gt;x[1]&lt;/code&gt; v &lt;code&gt;x[2]&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;plot(x(:,1), x(:,2)&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Add legends for each plot&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;legend(&amp;#39;foo&amp;#39; , &amp;#39;bar&amp;#39;, ...)&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Set axis extremas&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;axis([Xmin, Xmax, Ymin, Ymax])&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Label the axises&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;xlabel(&amp;#39;foo&amp;#39;)
+ylabel(&amp;#39;bar&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Add a title to the graph&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;title(&amp;#39;foobar&amp;#39;)&lt;/code&gt;&lt;/pre&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>OpenXML fonts on Mac OS X</title>
+   <link href="http://username.github.com/2010/11/13/openxml-fonts-on-mac-os-x"/>
+   <updated>2010-11-13T00:00:00+01:00</updated>
+   <id>http://username.github.com/2010/11/13/openxml-fonts-on-mac-os-x</id>
+   <content type="html">&lt;p&gt;Download Open XML File Format Converter for Mac from &lt;a href='http://www.microsoft.com/mac/downloads'&gt;Mactopia →&lt;/a&gt;&lt;br /&gt;Install &lt;code&gt;.../Contents/Packages/OpenXML_all_fonts.pkg&lt;/code&gt;&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>ns2 on Ubuntu</title>
+   <link href="http://username.github.com/2010/11/02/ns2-on-ubuntu"/>
+   <updated>2010-11-02T00:00:00+01:00</updated>
+   <id>http://username.github.com/2010/11/02/ns2-on-ubuntu</id>
+   <content type="html">&lt;p&gt;Add &lt;a href='https://launchpad.net/~wouterh/+archive/ppa'&gt;Wouter Horré&amp;#8217;s&lt;/a&gt; PPA&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;deb http://ppa.launchpad.net/wouterh/ppa/ubuntu YOUR_UBUNTU_VERSION_HERE main 
+deb-src http://ppa.launchpad.net/wouterh/ppa/ubuntu YOUR_UBUNTU_VERSION_HERE main &lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;Install &lt;code&gt;ns&lt;/code&gt;&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;$ sudo apt-get install ns nam xgraph&lt;/code&gt;&lt;/pre&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>ns2 on Mac OS X</title>
+   <link href="http://username.github.com/2010/11/02/ns2-on-mac-os-x"/>
+   <updated>2010-11-02T00:00:00+01:00</updated>
+   <id>http://username.github.com/2010/11/02/ns2-on-mac-os-x</id>
+   <content type="html">&lt;p&gt;Download the precompiled &lt;a href='https://github.com/downloads/vbajpai/vbajpai.github.com/ns2-2.34.pkg'&gt;binary →&lt;/a&gt;&lt;/p&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Gathering For Gardner</title>
+   <link href="http://username.github.com/2010/10/04/gathering-for-gardner"/>
+   <updated>2010-10-04T00:00:00+02:00</updated>
+   <id>http://username.github.com/2010/10/04/gathering-for-gardner</id>
+   <content type="html">&lt;p&gt;The Gathering for Gardner Dragon is an example of Hollow Face Illusion in which the concave (hollow) face appears to be convex. Human beings have a strong bias towards convex shapes, so much so that they overcome lightening, shadow and stereoscopic cues. This is the reason why the illusion is more pronounced when one eye is closed or using a camera lens. The bias towards convex face is because of the strong connectivity between top and bottom parts of our brain and how the top part can sometimes dominate the bottom part. The bottom part is responsible for capturing sensory information and the top part for processing that information. In this example, when we move around to see the object from different angles, the top part uses the past learning experience to create a hypothesis which overpowers the actual sensory data received from the bottom part making us believe the object is staring at us.&lt;/p&gt;
+&lt;iframe frameborder='0' height='315' src='http://www.youtube.com/embed/ChdUtBxyieo' width='560'&gt;
+&lt;/iframe&gt;</content>
+ </entry>
+ 
+ <entry>
+   <title>Image Morphing using xmorph</title>
+   <link href="http://username.github.com/2010/10/02/image-morphing-using-xmorph"/>
+   <updated>2010-10-02T00:00:00+02:00</updated>
+   <id>http://username.github.com/2010/10/02/image-morphing-using-xmorph</id>
+   <content type="html">&lt;iframe frameborder='0' height='315' src='http://www.youtube.com/embed/RMlR5Ogi7UM' width='420'&gt;
+&lt;/iframe&gt;
+&lt;p&gt;&lt;a href='http://xmorph.sourceforge.net/'&gt;xmorph &amp;#8594;&lt;/a&gt;&lt;/p&gt;</content>
+ </entry>
+ 
+ 
+</feed>
