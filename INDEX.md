@@ -29,6 +29,10 @@ now has comparable execution times to contemporary flow analysis tools.
 - [Mac OS X using Homebrew &rarr;](install-osx-homebrew.html)
 - [Mac OS X using Mac Ports &rarr;](install-osx-macports.html)
 
+### Development Blog
+
+A development blog discussing the internal details is [here &rarr;](http://blog.nfql.vaibhavbajpai.com)
+
 ### Publications
 
 [Flow-based Identification of Failures Caused by IPv6 Transition Mechanisms &rarr;](http://www.springerlink.com/content/2t0mv427lk824224/)  
@@ -106,9 +110,6 @@ AIMS 2010, Zurich, June 2010.
 Vladislav Marinov, Jürgen Schönwälder  
 DSOM 2009, Venice, October 2009.
 
-### Development Blog
-
-A development blog discussing the internal details is [here &rarr;](http://mthesis.vaibhavbajpai.com)
 
 ### Releases
 
