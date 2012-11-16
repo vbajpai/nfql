@@ -35,6 +35,10 @@ A development blog discussing the internal details is [here &rarr;](http://blog.
 
 ### Publications
 
+[NFQL: An Efficient Tool for Querying Network Flow Records &rarr;](http://www.vaibhavbajpai.com/documents/papers/proceedings/nfql-im-2013.pdf)  
+Vaibhav Bajpai, Johannes Schauer, Jürgen Schönwälder  
+IM 2013, Ghent, May 2013
+
 [Flow-based Identification of Failures Caused by IPv6 Transition Mechanisms &rarr;](http://www.springerlink.com/content/2t0mv427lk824224/)  
 Vaibhav Bajpai, Nikolay Melnikov, Anuj Sehgal, Jürgen Schönwälder  
 AIMS 2012, Luxembourg, June 2012
