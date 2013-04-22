@@ -38,44 +38,56 @@ size_t
 get_offset(const char * const name,
            const struct fts3rec_offsets* const offsets) {
 
+  #define CASEOFF_IPFIX(ipfix_ie, memb)       \
+  if (strcmp(name, #ipfix_ie) == 0)           \
+    return offsets->memb
+
   #define CASEOFF(memb)                       \
   if (strcmp(name, #memb) == 0)               \
     return offsets->memb
 
+/*
+XXX CASEOFF() will be removed after moving from fts3rec_offsets to fixbuf
+ */
 	CASEOFF(unix_secs);
 	CASEOFF(unix_nsecs);
 	CASEOFF(sysUpTime);
 	CASEOFF(exaddr);
-	CASEOFF(srcaddr);
-	CASEOFF(dstaddr);
-	CASEOFF(nexthop);
+	CASEOFF_IPFIX(sourceIPv4Address, srcaddr);
+	CASEOFF_IPFIX(destinationIPv4Address, dstaddr);
+	CASEOFF_IPFIX(ipNextHopIPv4Address, nexthop);
 	CASEOFF(input);
 	CASEOFF(output);
-	CASEOFF(dFlows);
-	CASEOFF(dPkts);
-	CASEOFF(dOctets);
-	CASEOFF(First);
-	CASEOFF(Last);
-	CASEOFF(srcport);
-	CASEOFF(dstport);
-	CASEOFF(prot);
-	CASEOFF(tos);
-	CASEOFF(tcp_flags);
+	CASEOFF_IPFIX(deltaFlowCount, dFlows);
+	CASEOFF_IPFIX(packetDeltaCount, dPkts);
+	CASEOFF_IPFIX(octetDeltaCount, dOctets);
+	CASEOFF_IPFIX(flowStartSysUpTime, First);
+	CASEOFF_IPFIX(flowEndSysUpTime, Last);
+	CASEOFF_IPFIX(tcpSourcePort, srcport);
+	CASEOFF_IPFIX(udpSourcePort, srcport);
+	CASEOFF_IPFIX(tcpDestinationPort, dstport);
+	CASEOFF_IPFIX(udpDestinationPort, dstport);
+	CASEOFF_IPFIX(protocolIdentifier, prot);
+	CASEOFF_IPFIX(ipClassOfService, tos);
+	CASEOFF_IPFIX(tcpControlBits, tcp_flags);
 	CASEOFF(pad);
 	CASEOFF(engine_type);
 	CASEOFF(engine_id);
 	CASEOFF(src_mask);
 	CASEOFF(dst_mask);
-	CASEOFF(src_as);
-	CASEOFF(dst_as);
+	CASEOFF_IPFIX(bgpSourceAsNumber, src_as);
+	CASEOFF_IPFIX(bgpDestinationAsNumber, dst_as);
 	CASEOFF(in_encaps);
 	CASEOFF(out_encaps);
-	CASEOFF(peer_nexthop);
+	CASEOFF_IPFIX(ipNextHopIPv4Address, peer_nexthop);
 	CASEOFF(router_sc);
 	CASEOFF(src_tag);
 	CASEOFF(dst_tag);
 	CASEOFF(extra_pkts);
 	CASEOFF(marked_tos);
+
+  #undef CASEOFF_IPFIX
+  #undef CASEOFF
 
   return -1;
 }

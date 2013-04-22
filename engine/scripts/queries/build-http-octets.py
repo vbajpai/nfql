@@ -34,11 +34,11 @@ if __name__ == '__main__':
 
 
 
-  term1 = {'term': vars(FilterRule('srcport', 80,
+  term1 = {'term': vars(FilterRule('tcpSourcePort', 80,
                                    'RULE_S1_16', 0, 'RULE_EQ'))}
   clause1 = {'clause': [term1]}
 
-  term1 = {'term': vars(FilterRule('dstport', 80,
+  term1 = {'term': vars(FilterRule('tcpDestinationPort', 80,
                                    'RULE_S1_16', 0, 'RULE_EQ'))}
   clause2 = {'clause': [term1]}
 
@@ -48,9 +48,9 @@ if __name__ == '__main__':
 
 
 
-  term1 = {'term': vars(AggregationRule('dPkts', 'RULE_S1_32',
+  term1 = {'term': vars(AggregationRule('packetDeltaCount', 'RULE_S1_32',
                                         'RULE_SUM'))}
-  term2 = {'term': vars(AggregationRule('dOctets', 'RULE_S1_32',
+  term2 = {'term': vars(AggregationRule('octetDeltaCount', 'RULE_S1_32',
                                         'RULE_SUM'))}
   a1 = {'clause': [term1] + [term2]}
 
@@ -61,7 +61,7 @@ if __name__ == '__main__':
 
 
 
-  term1 = {'term': vars(GroupFilterRule('dPkts', 0,
+  term1 = {'term': vars(GroupFilterRule('packetDeltaCount', 0,
                                         'RULE_S1_32', 0,
                                         'RULE_LT'))}
   clause1 = {'clause': [term1]}
