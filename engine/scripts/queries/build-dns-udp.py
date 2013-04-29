@@ -55,10 +55,10 @@ if __name__ == '__main__':
 
   term1 = {'term': vars(GrouperRule('sourceIPv4Address', 'RULE_S1_32',
                                     'sourceIPv4Address', 'RULE_S2_32', 0,
-                                    'RULE_EQ', 'RULE_ABS'))}
+                                    'RULE_EQ', 'RULE_REL'))}
   term2 = {'term': vars(GrouperRule('destinationIPv4Address', 'RULE_S1_32',
                                     'destinationIPv4Address', 'RULE_S2_32', 0,
-                                    'RULE_EQ', 'RULE_ABS'))}
+                                    'RULE_EQ', 'RULE_REL'))}
   clause1 = {'clause': [term1] + [term2]}
 
 
@@ -115,12 +115,12 @@ if __name__ == '__main__':
   term1 = {'term': vars(MergerRule(0, 1, 'sourceIPv4Address', 'RULE_S1_32',
                                          'destinationIPv4Address', 'RULE_S2_32', 0,
                                                     'RULE_EQ',
-                                                    'RULE_ABS'))}
+                                                    'RULE_REL'))}
 
   term2 = {'term': vars(MergerRule(0, 1, 'destinationIPv4Address', 'RULE_S1_32',
                                          'sourceIPv4Address', 'RULE_S2_32', 0,
                                                     'RULE_EQ',
-                                                    'RULE_ABS'))}
+                                                    'RULE_REL'))}
   clause1 = {'clause': [term1] + [term2]}
   merger = {'dnf-expr': [clause1]}
 
