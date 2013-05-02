@@ -1,0 +1,2 @@
+ - see IE semantic changes (mask broken into prefix len and prefix) - test required here
+ - are 2 diff types for comparison ops necessary (i.e. RULE_S1 and RULE_S2) ?
