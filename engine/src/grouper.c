@@ -151,8 +151,9 @@ get_grouper_intermediates
 
       /* get a file descriptor */
       char* filename = (char*)0L;
-      asprintf(&filename, "%s/grouper-branch-%d-sorted-records.ftz",
-               dirpath, branch_id);
+      if (asprintf(&filename, "%s/grouper-branch-%d-sorted-records.ftz",
+               dirpath, branch_id) < 0)
+        errExit("asprintf(...): failed");
       int out_fd = get_fd(filename);
       if(out_fd == -1) errExit("get_fd(...) returned -1");
       else free(filename);
@@ -278,8 +279,8 @@ grouper(
 
       /* get a file descriptor */
       char* filename = (char*)0L;
-      asprintf(&filename, "%s/grouper-branch-%d-groups.ftz",
-               dirpath, branch_id);
+      if (asprintf(&filename, "%s/grouper-branch-%d-groups.ftz",
+               dirpath, branch_id) < 0) errExit("asprintf(...) returned -1");
       int out_fd = get_fd(filename);
       if(out_fd == -1) errExit("get_fd(...) returned -1");
       else free(filename);
@@ -501,8 +502,9 @@ grouper(
 
         /* get a file descriptor */
         char* filename = (char*)0L;
-        asprintf(&filename, "%s/grouper-branch-%d-group-%d-records.ftz",
-                 dirpath, branch_id, 0);
+        if (asprintf(&filename, "%s/grouper-branch-%d-group-%d-records.ftz",
+                 dirpath, branch_id, 0) < 0)
+          errExit("asprintf(...) returned -1");
         int out_fd = get_fd(filename);
         if(out_fd == -1) errExit("get_fd(...) returned -1");
         else free(filename);
@@ -677,8 +679,9 @@ grouper(
 
             /* get a file descriptor */
             char* filename = (char*)0L;
-            asprintf(&filename, "%s/grouper-branch-%d-group-%d-records.ftz",
-                     dirpath, branch_id, gresult->num_groups - 1);
+            if (asprintf(&filename, "%s/grouper-branch-%d-group-%d-records.ftz",
+                     dirpath, branch_id, gresult->num_groups - 1) < 0)
+              errExit("asprintf(...): failed");
             int out_fd = get_fd(filename);
             if(out_fd == -1) errExit("get_fd(...) returned -1");
             else free(filename);

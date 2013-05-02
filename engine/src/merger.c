@@ -70,7 +70,8 @@ merger(
 
     /* get a file descriptor */
     char* filename = (char*)0L;
-    asprintf(&filename, "%s/merger-merged-groups.ftz", dirpath);
+    if (asprintf(&filename, "%s/merger-merged-groups.ftz", dirpath) < 0)
+      errExit("asprintf(): failed");
     int out_fd = get_fd(filename);
     if(out_fd == -1) errExit("get_fd(...) returned -1");
     else free(filename);
@@ -96,7 +97,8 @@ merger(
 
     /* get a file descriptor */
     char* filename = (char*)0L;
-    asprintf(&filename, "%s/merger-to-be-merged-groups.ftz", dirpath);
+    if (asprintf(&filename, "%s/merger-to-be-merged-groups.ftz", dirpath) < 0)
+      errExit("asprintf(): failed");
     int out_fd = get_fd(filename);
     if(out_fd == -1) errExit("get_fd(...) returned -1");
     else free(filename);

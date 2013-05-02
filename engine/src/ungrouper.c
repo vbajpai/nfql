@@ -62,7 +62,8 @@ ungrouper(
 
           /* get a file descriptor */
           char* filename = (char*)0L;
-          asprintf(&filename, "%s/ungrouper-stream-%d.ftz",dirpath,i);
+          if (asprintf(&filename, "%s/ungrouper-stream-%d.ftz",dirpath,i) < 0)
+            errExit("asprintf(...): failed");
           int out_fd = get_fd(filename);
           if(out_fd == -1) errExit("get_fd(...) returned -1");
           else free(filename);

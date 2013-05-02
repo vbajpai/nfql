@@ -118,8 +118,9 @@ ft_read(
 
       /* get a file descriptor */
       char* filename = (char*)0L;
-      asprintf(&filename, "%s/filter-branch-%d-filtered-records.ftz",
-               dirpath, branch->branch_id);
+      if (asprintf(&filename, "%s/filter-branch-%d-filtered-records.ftz",
+               dirpath, branch->branch_id) < 0)
+        errExit("asprintf(...): failed");
       int out_fd = get_fd(filename);
       if(out_fd == -1) errExit("get_fd(...) returned -1");
       else free(filename);
