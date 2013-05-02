@@ -38,6 +38,7 @@ size_t
 get_offset(const char * const name,
            const struct fts3rec_offsets* const offsets) {
 
+  /* TODO fix temporary hack */
   #define CASEOFF_IPFIX(ipfix_ie, memb)       \
   if (strcmp(name, #ipfix_ie) == 0)           \
     return offsets->memb
@@ -46,9 +47,6 @@ get_offset(const char * const name,
   if (strcmp(name, #memb) == 0)               \
     return offsets->memb
 
-/*
-XXX CASEOFF() will be removed after moving from fts3rec_offsets to fixbuf
- */
 	CASEOFF(unix_secs);
 	CASEOFF(unix_nsecs);
 	CASEOFF(sysUpTime);
@@ -93,6 +91,13 @@ XXX CASEOFF() will be removed after moving from fts3rec_offsets to fixbuf
 }
 
 
+/* TODO
+
+uint64_t
+get_type(IE_NAME) {
+}
+
+ */
 
 uint64_t
 get_enum(const char * const name) {

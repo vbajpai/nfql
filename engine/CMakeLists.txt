@@ -62,13 +62,24 @@ find_library(MLIB m)
 find_library(ZLIB z)
 find_library(FTLIB ft)
 find_library(JSONLIB json)
+find_library(FIXBUF fixbuf)
+find_package(PkgConfig)
+pkg_check_modules(GLIB glib-2.0)
+if (GLIB_FOUND)
+  message("Found glib-2.0")
+  include_directories(${GLIB_INCLUDE_DIRS})
+endif (GLIB_FOUND)
+
 
 # specify linked libraries
 target_link_libraries(engine ${MLIB}
                              ${CMAKE_THREAD_LIBS_INIT}
                              ${FTLIB}
                              ${JSONLIB}
-                             ${ZLIB})
+                             ${ZLIB}
+                             ${FIXBUF}
+                             ${GLIB_LIBRARIES}
+)
 
 # ---------------------------------------------------------------------------#
 

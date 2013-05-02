@@ -38,6 +38,8 @@
 #include "merger.h"
 #include "ungrouper.h"
 
+#include "ipfix.h"
+
 #include "auto-assign.h"
 #include "errorhandlers.h"
 #include "ftreader.h"
