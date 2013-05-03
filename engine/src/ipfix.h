@@ -29,13 +29,16 @@
 
 #include <fixbuf/public.h>
 #include <glib.h>
+#include <assert.h>
 
+#include "errorhandlers.h"
 #include "ipfix-constants.h"
 #include "pipeline.h"
 
 typedef struct ipfix_ie_s {
-  const char        *name;
+  char              *name;
   size_t             offset;
+  size_t             size;
 } ipfix_ie_t;
 
 typedef struct ipfix_templ_s {
@@ -44,18 +47,39 @@ typedef struct ipfix_templ_s {
   size_t        next_offset;
 } ipfix_templ_t;
 
+/**
+ * @return 0 on success, -1 on failure
+ */
 int
-ipfix_register_ie(const char * const ie_name,
+ipfix_ie_register(char * const ie_name,
                   ipfix_templ_t* templ);
 
-uint64_t
-ipfix_get_type_enum(const char * const ie_name);
+/**
+ * @return retrieve IE ptr from template
+ */
+ipfix_ie_t*
+ipfix_templ_get_ie(const ipfix_templ_t* templ,
+                   const char * const ie_name);
 
-uint64_t
-ipfix_get_offset(const char * const         ie_name,
-                 const ipfix_templ_t* const templ);
+/**
+ * @return positive size in bytes on success, -1 on failure
+ */
+ssize_t
+ipfix_templ_get_ie_offset(const ipfix_templ_t* templ,
+                          const char * const ie_name);
 
-struct fbInfoElementSpec_st*
-ipfix_get_fixbuf_template(ipfix_templ_t* templ);
+/**
+ * @return positive size in bytes on success, -1 on failure
+ */
+ssize_t
+ipfix_ie_type_sizeof(enum ipfix_ie_type type);
+
+
+/**
+ * @return internal fibxuf template spec on success
+ * @return NULL on failure
+ */
+fbInfoElementSpec_t*
+ipfix_get_fb_info_elem_spec(const ipfix_templ_t* templ);
 
 #endif

@@ -26,9 +26,11 @@
 
 
 #
-# Use this on ipfix.xml
+# Download ipfix.xml from [1] and remove default namespace declaration,
+# then run this to generate ipfix-constants.[c|h].
 #
-
+# [1] http://www.iana.org/assignments/ipfix/ipfix.xml
+#
 
 ie2types = {}
 ietypes = []
