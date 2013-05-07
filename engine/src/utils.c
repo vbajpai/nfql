@@ -28,76 +28,38 @@
 
 #include "utils.h"
 
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/stat.h>
+#include <unistd.h>
 
+
+/* -----------------------------------------------------------------------*/
+/*                                generic                                 */
+/* -----------------------------------------------------------------------*/
+
+int
+get_fd(char* filename) {
+
+  int out_fd = 1;
+
+  if ((out_fd = open(filename,  O_WRONLY|O_CREAT|O_TRUNC, 0644)) == -1){
+    fterr_err(1, "open(%s)", filename);
+    return -1;
+  }
+
+  struct stat sb;
+  if (fstat(out_fd, &sb) == -1) {
+    fterr_err(1, "fstat(%s)", filename);
+    return -1;
+  }
+
+  return out_fd;
+}
 
 /* -----------------------------------------------------------------------*/
 /*                         query parsing utilities                        */
 /* -----------------------------------------------------------------------*/
-
-size_t
-get_offset(const char * const name,
-           const struct fts3rec_offsets* const offsets) {
-
-  /* TODO fix temporary hack */
-  #define CASEOFF_IPFIX(ipfix_ie, memb)       \
-  if (strcmp(name, #ipfix_ie) == 0)           \
-    return offsets->memb
-
-  #define CASEOFF(memb)                       \
-  if (strcmp(name, #memb) == 0)               \
-    return offsets->memb
-
-	CASEOFF(unix_secs);
-	CASEOFF(unix_nsecs);
-	CASEOFF(sysUpTime);
-	CASEOFF(exaddr);
-	CASEOFF_IPFIX(sourceIPv4Address, srcaddr);
-	CASEOFF_IPFIX(destinationIPv4Address, dstaddr);
-	CASEOFF_IPFIX(ipNextHopIPv4Address, nexthop);
-	CASEOFF(input);
-	CASEOFF(output);
-	CASEOFF_IPFIX(deltaFlowCount, dFlows);
-	CASEOFF_IPFIX(packetDeltaCount, dPkts);
-	CASEOFF_IPFIX(octetDeltaCount, dOctets);
-	CASEOFF_IPFIX(flowStartSysUpTime, First);
-	CASEOFF_IPFIX(flowEndSysUpTime, Last);
-	CASEOFF_IPFIX(tcpSourcePort, srcport);
-	CASEOFF_IPFIX(udpSourcePort, srcport);
-	CASEOFF_IPFIX(tcpDestinationPort, dstport);
-	CASEOFF_IPFIX(udpDestinationPort, dstport);
-	CASEOFF_IPFIX(protocolIdentifier, prot);
-	CASEOFF_IPFIX(ipClassOfService, tos);
-	CASEOFF_IPFIX(tcpControlBits, tcp_flags);
-	CASEOFF(pad);
-	CASEOFF(engine_type);
-	CASEOFF(engine_id);
-	CASEOFF(src_mask);
-	CASEOFF(dst_mask);
-	CASEOFF_IPFIX(bgpSourceAsNumber, src_as);
-	CASEOFF_IPFIX(bgpDestinationAsNumber, dst_as);
-	CASEOFF(in_encaps);
-	CASEOFF(out_encaps);
-	CASEOFF_IPFIX(ipNextHopIPv4Address, peer_nexthop);
-	CASEOFF(router_sc);
-	CASEOFF(src_tag);
-	CASEOFF(dst_tag);
-	CASEOFF(extra_pkts);
-	CASEOFF(marked_tos);
-
-  #undef CASEOFF_IPFIX
-  #undef CASEOFF
-
-  return -1;
-}
-
-
-/* TODO
-
-uint64_t
-get_type(IE_NAME) {
-}
-
- */
 
 uint64_t
 get_enum(const char * const name) {

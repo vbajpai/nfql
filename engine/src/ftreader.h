@@ -29,10 +29,15 @@
 #define f_engine_ftreader_h
 
 #include "base.h"
-#include "f.h"
+#include "pipeline.h"
+#include "errorhandlers.h"
+#include "auto-assign.h"
+#include "ftreader.h"
+#include "echo.h"
 
 #include <fcntl.h>
 #include <ftlib.h>
+#include <time.h>
 
 struct ft_data {
   int                             fd;
@@ -54,43 +59,9 @@ ft_read(
          struct flowquery* fquery
        );
 
-void
-ft_records_get_all(struct ft_data* data, int number,
-                   struct fts3rec_all *record);
-
-u_int32_t *ft_records_get_unix_secs(struct ft_data* data, int number);
-u_int32_t *ft_records_get_unix_nsecs(struct ft_data* data, int number);
-u_int32_t *ft_records_get_sysUpTime(struct ft_data* data, int number);
-u_int32_t *ft_records_get_exaddr(struct ft_data* data, int number);
-u_int32_t *ft_records_get_srcaddr(struct ft_data* data, int number);
-u_int32_t *ft_records_get_dstaddr(struct ft_data* data, int number);
-u_int32_t *ft_records_get_nexthop(struct ft_data* data, int number);
-u_int16_t *ft_records_get_input(struct ft_data* data, int number);
-u_int16_t *ft_records_get_output(struct ft_data* data, int number);
-u_int32_t *ft_records_get_dFlows(struct ft_data* data, int number);
-u_int32_t *ft_records_get_dPkts(struct ft_data* data, int number);
-u_int32_t *ft_records_get_dOctets(struct ft_data* data, int number);
-u_int32_t *ft_records_get_First(struct ft_data* data, int number);
-u_int32_t *ft_records_get_Last(struct ft_data* data, int number);
-u_int16_t *ft_records_get_srcport(struct ft_data* data, int number);
-u_int16_t *ft_records_get_dstport(struct ft_data* data, int number);
-u_int8_t  *ft_records_get_prot(struct ft_data* data, int number);
-u_int8_t  *ft_records_get_tos(struct ft_data* data, int number);
-u_int8_t  *ft_records_get_tcp_flags(struct ft_data* data, int number);
-u_int8_t  *ft_records_get_engine_type(struct ft_data* data, int number);
-u_int8_t  *ft_records_get_engine_id(struct ft_data* data, int number);
-u_int8_t  *ft_records_get_src_mask(struct ft_data* data, int number);
-u_int8_t  *ft_records_get_dst_mask(struct ft_data* data, int number);
-u_int16_t *ft_records_get_src_as(struct ft_data* data, int number);
-u_int16_t *ft_records_get_dst_as(struct ft_data* data, int number);
-u_int8_t  *ft_records_get_in_encaps(struct ft_data* data, int number);
-u_int8_t  *ft_records_get_out_encaps(struct ft_data* data, int number);
-u_int32_t *ft_records_get_peer_nexthop(struct ft_data* data, int number);
-u_int32_t *ft_records_get_router_sc(struct ft_data* data, int number);
-u_int32_t *ft_records_get_src_tag(struct ft_data* data, int number);
-u_int32_t *ft_records_get_dst_tag(struct ft_data* data, int number);
-u_int32_t *ft_records_get_extra_pkts(struct ft_data* data, int number);
-u_int8_t  *ft_records_get_marked_tos(struct ft_data* data, int number);
+size_t
+io_ft_get_offset(const char * const name,
+                 const struct fts3rec_offsets* const offsets);
 
 void ft_close(struct ft_data* data);
 void flow_print_record(struct ft_data *, char *);

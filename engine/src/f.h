@@ -28,9 +28,10 @@
 #ifndef f_engine_f_h
 #define f_engine_f_h
 
-#include <pthread.h>
+#include <fixbuf/public.h>
 #include <getopt.h>
 #include <json/json.h>
+#include <pthread.h>
 #include <sys/stat.h>
 #include <sys/mman.h>
 
@@ -38,7 +39,7 @@
 #include "merger.h"
 #include "ungrouper.h"
 
-#include "ipfix.h"
+//#include "io.h"
 
 #include "auto-assign.h"
 #include "errorhandlers.h"

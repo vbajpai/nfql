@@ -290,207 +290,61 @@ ft_read(
   return data;
 }
 
-void
-ft_records_get_all(struct ft_data* data, int number,
-                   struct fts3rec_all *record) {
-  record->unix_secs = ft_records_get_unix_secs(data, number);
-  record->unix_nsecs = ft_records_get_unix_nsecs(data, number);
-  record->sysUpTime = ft_records_get_sysUpTime(data, number);
-  record->exaddr = ft_records_get_exaddr(data, number);
-  record->srcaddr = ft_records_get_srcaddr(data, number);
-  record->dstaddr = ft_records_get_dstaddr(data, number);
-  record->nexthop = ft_records_get_nexthop(data, number);
-  record->input = ft_records_get_input(data, number);
-  record->output = ft_records_get_output(data, number);
-  record->dFlows = ft_records_get_dFlows(data, number);
-  record->dPkts = ft_records_get_dPkts(data, number);
-  record->dOctets = ft_records_get_dOctets(data, number);
-  record->First = ft_records_get_First(data, number);
-  record->Last = ft_records_get_Last(data, number);
-  record->srcport = ft_records_get_srcport(data, number);
-  record->dstport = ft_records_get_dstport(data, number);
-  record->prot = ft_records_get_prot(data, number);
-  record->tos = ft_records_get_tos(data, number);
-  record->tcp_flags = ft_records_get_tcp_flags(data, number);
-  record->engine_type = ft_records_get_engine_type(data, number);
-  record->engine_id = ft_records_get_engine_id(data, number);
-  record->src_mask = ft_records_get_src_mask(data, number);
-  record->dst_mask = ft_records_get_dst_mask(data, number);
-  record->src_as = ft_records_get_src_as(data, number);
-  record->dst_as = ft_records_get_dst_as(data, number);
-  record->in_encaps = ft_records_get_in_encaps(data, number);
-  record->out_encaps = ft_records_get_out_encaps(data, number);
-  record->peer_nexthop = ft_records_get_peer_nexthop(data, number);
-  record->router_sc = ft_records_get_router_sc(data, number);
-  record->src_tag = ft_records_get_src_tag(data, number);
-  record->dst_tag = ft_records_get_dst_tag(data, number);
-  record->extra_pkts = ft_records_get_extra_pkts(data, number);
-  record->marked_tos = ft_records_get_marked_tos(data, number);
-}
 
-u_int32_t *
-ft_records_get_unix_secs(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->recordset[number] + data->offsets.unix_secs);
-}
+size_t
+io_ft_get_offset(const char * const name,
+                 const struct fts3rec_offsets* const offsets) {
 
-u_int32_t *
-ft_records_get_unix_nsecs(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->recordset[number] + data->offsets.unix_nsecs);
-}
+  /* TODO fix temporary hack */
+  #define CASEOFF_IPFIX(ipfix_ie, memb)       \
+  if (strcmp(name, #ipfix_ie) == 0)           \
+    return offsets->memb
 
-u_int32_t *
-ft_records_get_sysUpTime(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->recordset[number] + data->offsets.sysUpTime);
-}
+  #define CASEOFF(memb)                       \
+  if (strcmp(name, #memb) == 0)               \
+    return offsets->memb
 
-u_int32_t *
-ft_records_get_exaddr(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->recordset[number] + data->offsets.exaddr);
-}
+	CASEOFF(unix_secs);
+	CASEOFF(unix_nsecs);
+	CASEOFF(sysUpTime);
+	CASEOFF(exaddr);
+	CASEOFF_IPFIX(sourceIPv4Address, srcaddr);
+	CASEOFF_IPFIX(destinationIPv4Address, dstaddr);
+	CASEOFF_IPFIX(ipNextHopIPv4Address, nexthop);
+	CASEOFF(input);
+	CASEOFF(output);
+	CASEOFF_IPFIX(deltaFlowCount, dFlows);
+	CASEOFF_IPFIX(packetDeltaCount, dPkts);
+	CASEOFF_IPFIX(octetDeltaCount, dOctets);
+	CASEOFF_IPFIX(flowStartSysUpTime, First);
+	CASEOFF_IPFIX(flowEndSysUpTime, Last);
+	CASEOFF_IPFIX(tcpSourcePort, srcport);
+	CASEOFF_IPFIX(udpSourcePort, srcport);
+	CASEOFF_IPFIX(tcpDestinationPort, dstport);
+	CASEOFF_IPFIX(udpDestinationPort, dstport);
+	CASEOFF_IPFIX(protocolIdentifier, prot);
+	CASEOFF_IPFIX(ipClassOfService, tos);
+	CASEOFF_IPFIX(tcpControlBits, tcp_flags);
+	CASEOFF(pad);
+	CASEOFF(engine_type);
+	CASEOFF(engine_id);
+	CASEOFF(src_mask);
+	CASEOFF(dst_mask);
+	CASEOFF_IPFIX(bgpSourceAsNumber, src_as);
+	CASEOFF_IPFIX(bgpDestinationAsNumber, dst_as);
+	CASEOFF(in_encaps);
+	CASEOFF(out_encaps);
+	CASEOFF_IPFIX(ipNextHopIPv4Address, peer_nexthop);
+	CASEOFF(router_sc);
+	CASEOFF(src_tag);
+	CASEOFF(dst_tag);
+	CASEOFF(extra_pkts);
+	CASEOFF(marked_tos);
 
-u_int32_t *
-ft_records_get_srcaddr(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->recordset[number] + data->offsets.srcaddr);
-}
+  #undef CASEOFF_IPFIX
+  #undef CASEOFF
 
-u_int32_t *
-ft_records_get_dstaddr(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->recordset[number] + data->offsets.dstaddr);
-}
-
-u_int32_t *
-ft_records_get_nexthop(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->recordset[number] + data->offsets.nexthop);
-}
-
-u_int16_t *
-ft_records_get_input(struct ft_data* data, int number) {
-  return (u_int16_t *)(data->recordset[number] + data->offsets.input);
-}
-
-u_int16_t *
-ft_records_get_output(struct ft_data* data, int number) {
-  return (u_int16_t *)(data->recordset[number] + data->offsets.output);
-}
-
-u_int32_t *
-ft_records_get_dFlows(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->recordset[number] + data->offsets.dFlows);
-}
-
-u_int32_t *
-ft_records_get_dPkts(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->recordset[number] +  data->offsets.dPkts);
-}
-
-u_int32_t *
-ft_records_get_dOctets(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->recordset[number] +  data->offsets.dOctets);
-}
-
-u_int32_t *
-ft_records_get_First(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->recordset[number] +  data->offsets.First);
-}
-
-u_int32_t *
-ft_records_get_Last(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->recordset[number] +  data->offsets.Last);
-}
-
-u_int16_t *
-ft_records_get_srcport(struct ft_data* data, int number) {
-  return (u_int16_t *)(data->recordset[number] +  data->offsets.srcport);
-}
-
-u_int16_t *
-ft_records_get_dstport(struct ft_data* data, int number) {
-  return (u_int16_t *)(data->recordset[number] +  data->offsets.dstport);
-}
-
-u_int8_t *
-ft_records_get_prot(struct ft_data* data, int number) {
-  return (u_int8_t  *)(data->recordset[number] +  data->offsets.prot);
-}
-
-u_int8_t *
-ft_records_get_tos(struct ft_data* data, int number) {
-  return (u_int8_t  *)(data->recordset[number] +  data->offsets.tos);
-}
-
-u_int8_t *
-ft_records_get_tcp_flags(struct ft_data* data, int number) {
-  return (u_int8_t  *)(data->recordset[number] +  data->offsets.tcp_flags);
-}
-
-u_int8_t *
-ft_records_get_engine_type(struct ft_data* data, int number) {
-  return (u_int8_t  *)(data->recordset[number] +  data->offsets.engine_type);
-}
-
-u_int8_t *
-ft_records_get_engine_id(struct ft_data* data, int number) {
-  return (u_int8_t  *)(data->recordset[number] +  data->offsets.engine_id);
-}
-
-u_int8_t *
-ft_records_get_src_mask(struct ft_data* data, int number) {
-  return (u_int8_t  *)(data->recordset[number] +  data->offsets.src_mask);
-}
-
-u_int8_t *
-ft_records_get_dst_mask(struct ft_data* data, int number) {
-  return (u_int8_t  *)(data->recordset[number] +  data->offsets.dst_mask);
-}
-
-u_int16_t *
-ft_records_get_src_as(struct ft_data* data, int number) {
-  return (u_int16_t *)(data->recordset[number] +  data->offsets.src_as);
-}
-
-u_int16_t *
-ft_records_get_dst_as(struct ft_data* data, int number) {
-  return (u_int16_t *)(data->recordset[number] +  data->offsets.dst_as);
-}
-
-u_int8_t  *
-ft_records_get_in_encaps(struct ft_data* data, int number) {
-  return (u_int8_t  *)(data->recordset[number] +  data->offsets.in_encaps);
-}
-
-u_int8_t  *
-ft_records_get_out_encaps(struct ft_data* data, int number) {
-  return (u_int8_t  *)(data->recordset[number] +  data->offsets.out_encaps);
-}
-
-u_int32_t *
-ft_records_get_peer_nexthop(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->recordset[number] +  data->offsets.peer_nexthop);
-}
-
-u_int32_t *
-ft_records_get_router_sc(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->recordset[number] +  data->offsets.router_sc);
-}
-
-u_int32_t *
-ft_records_get_src_tag(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->recordset[number] +  data->offsets.src_tag);
-}
-
-u_int32_t *
-ft_records_get_dst_tag(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->recordset[number] +  data->offsets.dst_tag);
-}
-
-u_int32_t *
-ft_records_get_extra_pkts(struct ft_data* data, int number) {
-  return (u_int32_t *)(data->recordset[number] +  data->offsets.extra_pkts);
-}
-
-u_int8_t  *
-ft_records_get_marked_tos(struct ft_data* data, int number) {
-  return (u_int8_t  *)(data->recordset[number] +  data->offsets.marked_tos);
+  return -1;
 }
 
 void

@@ -30,6 +30,8 @@
 #include "grouper.h"
 #include "groupfilter.h"
 
+#include <pthread.h>
+
 void *
 branch_start(void *arg);
 

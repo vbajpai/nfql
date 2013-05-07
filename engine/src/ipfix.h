@@ -29,37 +29,50 @@
 
 #include <fixbuf/public.h>
 #include <glib.h>
-#include <assert.h>
 
 #include "errorhandlers.h"
 #include "ipfix-constants.h"
 #include "pipeline.h"
 
-typedef struct ipfix_ie_s {
-  char              *name;
-  size_t             offset;
-  size_t             size;
-} ipfix_ie_t;
+/*--------------------------------------------------------------------------*/
+/* Type declarations                                                        */
+/*--------------------------------------------------------------------------*/
 
-typedef struct ipfix_templ_s {
-  ipfix_ie_t   *arr;
-  size_t        len;
-  size_t        next_offset;
-} ipfix_templ_t;
+struct ipfix_templ_s;
+typedef struct ipfix_templ_s ipfix_templ_t;
+
+typedef struct ipfix_handler_s {
+  fbInfoModel_t *info_model;
+  fbSession_t   *session;
+  fbCollector_t *collector;
+  fBuf_t        *fbuf;
+  GError        *err;
+} ipfix_handler_t;
+
+/*--------------------------------------------------------------------------*/
+/* Methods                                                                  */
+/*--------------------------------------------------------------------------*/
+
+/*--------------------------------------------------------------------------*/
+/* Template specification                                                   */
+/*--------------------------------------------------------------------------*/
+
+/**
+ * @return ipfix_templ_t handle on success
+ * @return NULL on failure
+ *
+ * The caller owns this object and needs to pass it to free() once
+ * it is done using it.
+ */
+ipfix_templ_t*
+ipfix_templ_new(void);
 
 /**
  * @return 0 on success, -1 on failure
  */
 int
-ipfix_ie_register(char * const ie_name,
-                  ipfix_templ_t* templ);
-
-/**
- * @return retrieve IE ptr from template
- */
-ipfix_ie_t*
-ipfix_templ_get_ie(const ipfix_templ_t* templ,
-                   const char * const ie_name);
+ipfix_templ_ie_register(ipfix_templ_t* templ,
+                        char * const ie_name);
 
 /**
  * @return positive size in bytes on success, -1 on failure
@@ -68,18 +81,20 @@ ssize_t
 ipfix_templ_get_ie_offset(const ipfix_templ_t* templ,
                           const char * const ie_name);
 
-/**
- * @return positive size in bytes on success, -1 on failure
- */
-ssize_t
-ipfix_ie_type_sizeof(enum ipfix_ie_type type);
-
+/*--------------------------------------------------------------------------*/
+/* Reader                                                                   */
+/*--------------------------------------------------------------------------*/
 
 /**
- * @return internal fibxuf template spec on success
- * @return NULL on failure
+ * @return ipfix_hanlder on success
+ *
+ * On error, errExit() is called
  */
-fbInfoElementSpec_t*
-ipfix_get_fb_info_elem_spec(const ipfix_templ_t* templ);
+ipfix_handler_t*
+ipfix_init_read(char* file,
+                ipfix_templ_t* templ);
+
+void
+ipfix_destroy(ipfix_handler_t *ipfix);
 
 #endif

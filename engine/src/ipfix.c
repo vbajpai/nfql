@@ -26,10 +26,71 @@
 
 #include "ipfix.h"
 
+#include <assert.h>
+
+
+/*--------------------------------------------------------------------------*/
+/* Type declarations                                                        */
+/*--------------------------------------------------------------------------*/
+
+typedef struct ipfix_ie_s {
+  char              *name;
+  size_t             offset;
+  size_t             size;
+} ipfix_ie_t;
+
+typedef struct ipfix_templ_s {
+  ipfix_ie_t   *arr;
+  size_t        len;
+  size_t        next_offset;
+} ipfix_templ_t;
+
+
+/*--------------------------------------------------------------------------*/
+/* Local methods                                                            */
+/*--------------------------------------------------------------------------*/
+
+/**
+ * @return retrieve IE ptr from template
+ */
+static
+ipfix_ie_t*
+ipfix_templ_get_ie(const ipfix_templ_t* templ,
+                   const char * const ie_name);
+
+/**
+ * @return positive size in bytes on success, -1 on failure
+ */
+static
+ssize_t
+ipfix_ie_type_sizeof(enum ipfix_ie_type type);
+
+
+/**
+ * @return internal fibxuf template spec on success
+ * @return NULL on failure
+ */
+static
+fbInfoElementSpec_t*
+ipfix_get_fb_info_elem_spec(const ipfix_templ_t* templ);
+
+
+/*--------------------------------------------------------------------------*/
+/* Implementation                                                           */
+/*--------------------------------------------------------------------------*/
+
+/*--------------------------------------------------------------------------*/
+/* Template specification                                                   */
+/*--------------------------------------------------------------------------*/
+
+ipfix_templ_t*
+ipfix_templ_new(void) {
+  return calloc(1, sizeof(ipfix_templ_t));
+}
 
 int
-ipfix_ie_register(char * const ie_name,
-                  ipfix_templ_t* templ) {
+ipfix_templ_ie_register(ipfix_templ_t* templ,
+                        char * const ie_name) {
   /* do not insert duplicate IEs */
   if (ipfix_templ_get_ie(templ, ie_name) != NULL) return 0;
 
@@ -61,6 +122,84 @@ ipfix_ie_register(char * const ie_name,
   return 0;
 }
 
+
+ssize_t
+ipfix_templ_get_ie_offset(const ipfix_templ_t* templ,
+                          const char * const ie_name) {
+  ipfix_ie_t* ie = ipfix_templ_get_ie(templ, ie_name);
+  if (ie == NULL) return -1;
+
+  return ie->offset;
+}
+
+/*--------------------------------------------------------------------------*/
+/* Reader                                                                   */
+/*--------------------------------------------------------------------------*/
+
+ipfix_handler_t*
+ipfix_init_read(char* file,
+                ipfix_templ_t* templ) {
+  ipfix_templ_ie_register(templ, "tcpSourcePort");
+
+  ipfix_handler_t* ipfix = calloc(1, sizeof(ipfix_handler_t));
+  exitOn(ipfix == NULL);
+
+  ipfix->info_model = fbInfoModelAlloc();
+  exitOn(ipfix->info_model == NULL);
+
+  ipfix->session = fbSessionAlloc(ipfix->info_model);
+  exitOn(ipfix->session == NULL);
+
+  ipfix->collector = fbCollectorAllocFile(NULL, file, &ipfix->err);
+  exitOn(ipfix->collector == NULL);
+
+  ipfix->fbuf = fBufAllocForCollection(ipfix->session, ipfix->collector);
+  exitOn(ipfix->fbuf == NULL);
+
+  fbTemplate_t *fb_templ = fbTemplateAlloc(ipfix->info_model);
+  exitOn(fb_templ == NULL);
+  fbInfoElementSpec_t* ie_spec = ipfix_get_fb_info_elem_spec(templ);
+  exitOn(ie_spec == NULL);
+  exitOn(fbTemplateAppendSpecArray(fb_templ,
+                                   ie_spec,
+                                   0xffffffff,
+                                   &ipfix->err) == FALSE);
+  free(ie_spec);
+
+  uint16_t templateID = fbSessionAddTemplate(ipfix->session, TRUE, FB_TID_AUTO,
+                                             fb_templ, &ipfix->err);
+  exitOn(templateID == 0);
+  exitOn(fBufSetInternalTemplate(ipfix->fbuf,
+                                 templateID,
+                                 &ipfix->err) == FALSE);
+
+  uint8_t raw_buf[1024];
+  size_t  raw_buf_size = sizeof(raw_buf);
+  printf("START\n");
+  int records = 0;
+  while (fBufNext(ipfix->fbuf, raw_buf, &raw_buf_size, &ipfix->err)) {
+      records++;
+      printf("Read %d bytes\n", (int) raw_buf_size);
+      raw_buf_size = sizeof(raw_buf);
+  }
+  printf("DONE %d records\n", records);
+
+  fBufFree(ipfix->fbuf);
+
+  return ipfix;
+}
+
+void
+ipfix_destroy(ipfix_handler_t* ipfix) {
+  fBufFree(ipfix->fbuf);
+  fbInfoModelFree(ipfix->info_model);
+}
+
+/*--------------------------------------------------------------------------*/
+/* Local implementation                                                     */
+/*--------------------------------------------------------------------------*/
+
+static
 ipfix_ie_t*
 ipfix_templ_get_ie(const ipfix_templ_t* templ,
                    const char * const ie_name) {
@@ -75,15 +214,7 @@ ipfix_templ_get_ie(const ipfix_templ_t* templ,
   return NULL;
 }
 
-ssize_t
-ipfix_templ_get_ie_offset(const ipfix_templ_t* templ,
-                          const char * const ie_name) {
-  ipfix_ie_t* ie = ipfix_templ_get_ie(templ, ie_name);
-  if (ie == NULL) return -1;
-
-  return ie->offset;
-}
-
+static
 ssize_t
 ipfix_ie_type_sizeof(enum ipfix_ie_type type) {
   switch (type) {
@@ -124,7 +255,7 @@ ipfix_ie_type_sizeof(enum ipfix_ie_type type) {
   return -1;
 }
 
-
+static
 fbInfoElementSpec_t*
 ipfix_get_fb_info_elem_spec(const ipfix_templ_t* templ) {
   fbInfoElementSpec_t* spec = NULL;
@@ -170,6 +301,12 @@ ipfix_get_fb_info_elem_spec(const ipfix_templ_t* templ) {
   }
 
   /* FIXME end of struct padding may be required */
+
+  /* Add final element - use padding spec element and replace it with
+     the NULL one for convenience */
+  fbInfoElementSpec_t fb_iespec_null = FB_IESPEC_NULL;
+  _fbtempl_add_padding(0);
+  memcpy(&spec[spec_size-1], &fb_iespec_null, sizeof(fb_iespec_null));
 
 #undef __fbtempl_add_elem
 #undef _fbtempl_add_padding

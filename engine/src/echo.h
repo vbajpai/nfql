@@ -29,6 +29,7 @@
 
 #include "pipeline.h"
 #include "base.h"
+#include "merger.h"
 #include "ftreader.h"
 #include "ftwriter.h"
 

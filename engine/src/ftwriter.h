@@ -30,9 +30,6 @@
 #include "base.h"
 #include "ftreader.h"
 
-int
-get_fd(char* filename);
-
 struct ftio*
 get_ftio(
          struct ft_data* const dataformat,

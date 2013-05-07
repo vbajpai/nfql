@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Vaibhav Bajpai <contact@vaibhavbajpai.com>
+ * Copyright 2013 Corneliu Prodescu <cprodescu@gmail.com>
  *
  * All rights reserved.
  *
@@ -24,25 +24,41 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef f_engine_merger_h
-#define f_engine_merger_h
+#ifndef f_engine_io_h
+#define f_engine_io_h
 
-#include "pipeline.h"
-#include "errorhandlers.h"
+#include "ftreader.h"
+#include "ipfix.h"
 
-#include "ftwriter.h"
-#include "auto-comps.h"
-#include "utils.h"
+typedef union io_reader_u {
+  struct ft_data         ft;
+  struct ipfix_handler_s ipfix;
+} io_reader_t;
 
-struct merger_rule;
+typedef union io_writer_u {
+  int                   ft;     /**< flow-tools IO file descriptor */
+  ipfix_handler_t ipfix;
+} io_writer_t;
 
-struct merger_result*
-merger(
-       size_t num_merger_clauses,
-       struct merger_clause** const merger_clauseset,
+typedef union io_ctxt_u {
+    ipfix_templ_t* ipfix;
+} io_ctxt_t;
 
-       size_t num_branches,
-       struct branch** const branchset,
-       struct ft_data* data
-      );
-#endif
+typedef struct io_handler_s {
+  io_reader_t*  (*io_read_init)(io_ctxt_t* io_ctxt, int read_fd);
+  char*         (*io_read_record)(io_reader_t* io_ctxt);
+  size_t        (*io_read_get_field_offset)(io_reader_t* io_reader, const char* field);
+  int           (*io_read_close)(io_reader_t* io_ctxt);
+
+  io_writer_t*  (*io_write_init)(io_reader_t* writer_ctxt, int write_fd);
+  int (*io_write_record)(io_writer_t* io_writer, char* record);
+  int (*io_write_close)(io_writer_t* io_writer);
+
+  void  (*io_print_header)(io_reader_t* io_reader);
+  void  (*io_print_record)(io_reader_t* io_reader, char* record);
+
+  io_ctxt_t ctxt;
+
+} io_handler_t;
+
+#endif // ! f_engine_io_h

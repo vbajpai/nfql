@@ -865,9 +865,9 @@ prepare_flowquery(struct ft_data* const trace,
 
           struct json_filter_term* term_json = fclause_json->termset[j];
 
-          size_t offset = get_offset(term_json->off->name, &trace->offsets);
+          size_t offset = io_ft_get_offset(term_json->off->name, &trace->offsets);
           if (offset == -1)
-            errExit("get_offset(term_json->off->name) returned -1");
+            errExit("io_ft_get_offset(term_json->off->name) returned -1");
 
           uint64_t op_enum = get_enum(term_json->op);
           if (op_enum == -1)
@@ -940,15 +940,15 @@ prepare_flowquery(struct ft_data* const trace,
 
           struct json_grouper_term* term_json = gclause_json->termset[j];
 
-          size_t f1_offset = get_offset(term_json->off->f1_name,
+          size_t f1_offset = io_ft_get_offset(term_json->off->f1_name,
                                         &trace->offsets);
           if (f1_offset == -1)
-            errExit("get_offset(term_json->off->f1_name) returned -1");
+            errExit("io_ft_get_offset(term_json->off->f1_name) returned -1");
 
-          size_t f2_offset = get_offset(term_json->off->f2_name,
+          size_t f2_offset = io_ft_get_offset(term_json->off->f2_name,
                                         &trace->offsets);
           if (f2_offset == -1)
-            errExit("get_offset(term_json->off->f2_name) returned -1");
+            errExit("io_ft_get_offset(term_json->off->f2_name) returned -1");
 
           uint64_t op_name_enum = get_enum(term_json->op->name);
           if (op_name_enum == -1)
@@ -1011,10 +1011,10 @@ prepare_flowquery(struct ft_data* const trace,
           term->op = op; op = NULL;
 
         struct json_aggr_term* term_json = json_branch->aggr_clause_termset[j];
-        size_t offset = get_offset(term_json->off->name,
+        size_t offset = io_ft_get_offset(term_json->off->name,
                                    &trace->offsets);
         if (offset == -1)
-          errExit("get_offset(term_json->off->name) returned -1");
+          errExit("io_ft_get_offset(term_json->off->name) returned -1");
 
         uint64_t op_enum = get_enum(term_json->op);
         if (op_enum == -1)
@@ -1083,9 +1083,9 @@ prepare_flowquery(struct ft_data* const trace,
 
           struct json_groupfilter_term* term_json = gfclause_json->termset[j];
 
-          size_t offset = get_offset(term_json->off->name, &trace->offsets);
+          size_t offset = io_ft_get_offset(term_json->off->name, &trace->offsets);
           if (offset == -1)
-            errExit("get_offset(term_json->off->name) returned -1");
+            errExit("io_ft_get_offset(term_json->off->name) returned -1");
 
           uint64_t op_enum = get_enum(term_json->op);
           if (op_enum == -1)
@@ -1170,13 +1170,13 @@ prepare_flowquery(struct ft_data* const trace,
 
         struct json_merger_term* term_json = mclause_json->termset[j];
 
-        size_t f1_offset = get_offset(term_json->off->f1_name, &trace->offsets);
+        size_t f1_offset = io_ft_get_offset(term_json->off->f1_name, &trace->offsets);
         if (f1_offset == -1)
-          errExit("get_offset(grule_json->off->f1_name) returned -1");
+          errExit("io_ft_get_offset(grule_json->off->f1_name) returned -1");
 
-        size_t f2_offset = get_offset(term_json->off->f2_name, &trace->offsets);
+        size_t f2_offset = io_ft_get_offset(term_json->off->f2_name, &trace->offsets);
         if (f2_offset == -1)
-          errExit("get_offset(grule_json->off->f2_name) returned -1");
+          errExit("io_ft_get_offset(grule_json->off->f2_name) returned -1");
 
         uint64_t op_name = get_enum(term_json->op->name);
         if (op_name == -1)

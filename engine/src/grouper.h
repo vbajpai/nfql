@@ -27,11 +27,12 @@
 #ifndef f_engine_grouper_h
 #define f_engine_grouper_h
 
-#include "pipeline.h"
-#include "utils.h"
+#include "auto-assign.h"
 #include "errorhandlers.h"
 #include "ftreader.h"
-#include "auto-assign.h"
+#include "ftwriter.h"
+#include "pipeline.h"
+#include "utils.h"
 
 struct grouper_term;
 struct grouper_aggr;

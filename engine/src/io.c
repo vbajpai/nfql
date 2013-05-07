@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Vaibhav Bajpai <contact@vaibhavbajpai.com>
+ * Copyright 2013 Corneliu Prodescu <cprodescu@gmail.com>
  *
  * All rights reserved.
  *
@@ -24,25 +24,4 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef f_engine_merger_h
-#define f_engine_merger_h
-
-#include "pipeline.h"
-#include "errorhandlers.h"
-
-#include "ftwriter.h"
-#include "auto-comps.h"
-#include "utils.h"
-
-struct merger_rule;
-
-struct merger_result*
-merger(
-       size_t num_merger_clauses,
-       struct merger_clause** const merger_clauseset,
-
-       size_t num_branches,
-       struct branch** const branchset,
-       struct ft_data* data
-      );
-#endif
+#include "io.h"
