@@ -39,22 +39,14 @@
 #include "merger.h"
 #include "ungrouper.h"
 
-//#include "io.h"
-
 #include "auto-assign.h"
 #include "errorhandlers.h"
-#include "io-ft.h"
+#include "io.h"
 #include "echo.h"
 
 struct parameters {
   char*                           query_filename;
   char*                           trace_filename;
-};
-struct parameters_data {
-  char*                           query_mmap;
-  struct stat*                    query_mmap_stat;
-  struct ft_data*                 trace;
-  int                             trace_fsock;
 };
 
 struct json {
@@ -170,18 +162,19 @@ struct json_merger_term_op {
 struct parameters*
 parse_cmdline_args(int argc, char** const argv);
 
-struct parameters_data*
-open_trace_read_query(const struct parameters* const param);
-
 struct json*
-parse_json_query(const char* const query_mmap);
+parse_json_query(const char* query_file);
 
 struct flowquery*
-prepare_flowquery(struct ft_data* const trace,
+prepare_flowquery(io_handler_t* io,
+                  io_reader_t*  io_read_ctxt,
+                  io_data_t*    io_data,
                   const struct json* const json_query);
 
-struct ft_data*
-read_trace(const struct parameters_data* const param_data,
+int
+read_trace(struct io_handler_s* io,
+           struct io_reader_s* read_ctxt,
+           struct io_data_s* data,
            struct flowquery* fquery);
 
 pthread_t*

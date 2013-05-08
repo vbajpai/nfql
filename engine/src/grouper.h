@@ -29,7 +29,7 @@
 
 #include "auto-assign.h"
 #include "errorhandlers.h"
-#include "io-ft.h"
+#include "io.h"
 #include "pipeline.h"
 #include "utils.h"
 
@@ -85,7 +85,9 @@ get_grouper_intermediates
                   struct grouper_clause* clause,
                   struct grouper_result* const gresult,
 
-                  struct ft_data* dataformat,
+                  struct io_handler_s* io,
+                  struct io_reader_s*  read_ctxt,
+
                   int branch_id
                 );
 
@@ -103,7 +105,8 @@ grouper(
         const struct filter_result* const fresult,
         int rec_size,
 
-        struct ft_data* dataformat,
+        struct io_handler_s* io,
+        struct io_reader_s*  read_ctxt,
         int branch_id
        );
 

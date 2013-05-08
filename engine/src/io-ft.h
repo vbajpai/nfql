@@ -31,13 +31,8 @@
 
 #include "base.h"
 #include "pipeline.h"
-#include "errorhandlers.h"
-#include "auto-assign.h"
-#include "echo.h"
 
-#include <fcntl.h>
 #include <ftlib.h>
-#include <time.h>
 
 /*--------------------------------------------------------------------------*/
 /* Type declarations                                                        */
@@ -71,6 +66,7 @@ io_reader_t* io_ft_read_init(io_ctxt_t* io_ctxt, int read_fd);
 char*        io_ft_read_record(io_reader_t* io_reader);
 size_t       io_ft_read_get_field_offset(io_reader_t* io_reader,
                                          const char* field);
+size_t       io_ft_read_get_record_size(io_reader_t* read_ctxt);
 int          io_ft_read_close(io_reader_t* io_reader);
 
 void         io_ft_print_header(io_reader_t* io_reader);
@@ -80,35 +76,21 @@ void         io_ft_print_aggr_record(io_reader_t* io_reader,
 
 io_writer_t* io_ft_write_init(io_reader_t* io_reader,
                               int write_fd,
-                              int num_records);
+                              uint32_t num_records);
 int          io_ft_write_record(io_writer_t* io_writer, char* record);
 int          io_ft_write_close(io_writer_t* io_writer);
 
 
 /* Legacy methods */
 
-struct ft_data*
-ft_init(int fsock);
-
-struct ft_data *
-ft_read(
-         struct ft_data* data,
-         struct flowquery* fquery
-       );
-
-size_t
-io_ft_get_offset(const char * const name,
-                 const struct fts3rec_offsets* const offsets);
-
+struct ft_data* ft_init(int fsock);
+size_t io_ft_get_offset(const char * const name,
+                        const struct fts3rec_offsets* const offsets);
 void ft_close(struct ft_data* data);
 void flow_print_record(struct ft_data *, char *);
 void flow_print_group_record(struct ft_data *data, struct aggr_record* aggr_record);
-
-struct ftio*
-get_ftio(
-         struct ft_data* const dataformat,
-         int out_fd,
-         uint32_t total_flows
-        );
+struct ftio* get_ftio(struct ft_data* const dataformat,
+                      int out_fd,
+                      uint32_t total_flows);
 
 #endif

@@ -55,11 +55,17 @@ typedef struct io_ctxt_s {
   } d;
 } io_ctxt_t;
 
+typedef struct io_data_s {
+  char** recordset;
+  size_t num_records;
+} io_data_t;
+
 typedef struct io_handler_s {
   io_reader_t*  (*io_read_init)(io_ctxt_t* io_ctxt, int read_fd);
-  char*         (*io_read_record)(io_reader_t* io_ctxt);
-  size_t        (*io_read_get_field_offset)(io_reader_t* io_reader, const char* field);
-  int           (*io_read_close)(io_reader_t* io_ctxt);
+  char*         (*io_read_record)(io_reader_t* read_ctxt);
+  size_t        (*io_read_get_field_offset)(io_reader_t* read_ctxt, const char* field);
+  size_t        (*io_read_get_record_size)(io_reader_t* read_ctxt);
+  int           (*io_read_close)(io_reader_t* io_reader);
 
   void          (*io_print_header)(io_reader_t* io_reader);
   void          (*io_print_record)(io_reader_t* io_reader, char* record);
@@ -69,7 +75,7 @@ typedef struct io_handler_s {
   io_writer_t*  (*io_write_init)(io_reader_t* io_reader,
                                  int write_fd,
                                  uint32_t num_records);
-  int           (*io_write_record)(io_writer_t* io_writer, char* record);
+  int           (*io_write_record)(io_writer_t* writer_ctxt, char* record);
   int           (*io_write_close)(io_writer_t* io_writer);
 
   void          (*io_handler_destroy)(io_ctxt_t* io_ctxt);

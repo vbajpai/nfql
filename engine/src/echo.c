@@ -32,7 +32,8 @@ echo_merger(
             struct branch** const branchset,
 
             const struct merger_result* const mresult,
-            struct ft_data* const dataformat
+            struct io_handler_s* io,
+            struct io_reader_s* read_ctxt
            ) {
 
   if (verbose_vv) {
@@ -44,7 +45,7 @@ echo_merger(
       printf("\nNo. of (to be) Matched Groups: %zu \n",
              mresult->total_num_group_tuples);
       if (iter != NULL) {
-        puts(FLOWHEADER);
+        io->io_print_header(read_ctxt);
         while(iter_next(iter)) {
           for (int j = 0; j < num_branches; j++) {
             struct aggr_record* record =
@@ -52,7 +53,7 @@ echo_merger(
                               [
                                iter->filtered_group_tuple[j] - 1
                               ]->aggr_result->aggr_record;
-            flow_print_group_record(dataformat, record);
+            io->io_print_aggr_record(read_ctxt, record);
           }
           printf("\n");
         }
@@ -64,13 +65,13 @@ echo_merger(
 
     printf("\nNo. of Merged Groups: %u (Tuples)\n", mresult->num_group_tuples);
     if (mresult->num_group_tuples != 0)
-      puts(FLOWHEADER);
+      io->io_print_header(read_ctxt);
 
     for (int j = 0; j < mresult->num_group_tuples; j++) {
       struct group** group_tuple = mresult->group_tuples[j];
       for (int i = 0; i < num_branches; i++) {
         struct group* group = group_tuple[i];
-        flow_print_group_record(dataformat, group->aggr_result->aggr_record);
+        io->io_print_aggr_record(read_ctxt, group->aggr_result->aggr_record);
       }
       printf("\n");
     }
@@ -86,7 +87,8 @@ void
 echo_branch(
             size_t num_branches,
             struct branch** branchset,
-            struct ft_data* dataformat
+            struct io_handler_s* io,
+            struct io_reader_s* read_ctxt
            ){
 
 
@@ -104,7 +106,8 @@ echo_branch(
                       branch->filter_result->num_filtered_records,
 
                       branch->grouper_result,
-                      branch->data
+                      io,
+                      read_ctxt
                     );
       }
     }
@@ -117,7 +120,8 @@ echo_branch(
       echo_group_aggr(
                       branch->branch_id,
                       branch->grouper_result,
-                      branch->data
+                      io,
+                      read_ctxt
                       );
     }
 #endif
@@ -129,7 +133,8 @@ echo_branch(
       echo_gfilter(
                     branch->branch_id,
                     branch->gfilter_result,
-                    branch->data
+                    io,
+                    read_ctxt
                   );
     }
 #endif
@@ -140,18 +145,19 @@ void
 echo_filter(
             int branch_id,
             const struct filter_result* const fresult,
-            struct ft_data* const dataformat
+            struct io_handler_s* io,
+            struct io_reader_s* read_ctxt
            ) {
 
   if(!file) {
 
     printf("\nNo. of Filtered Records: %u\n", fresult->num_filtered_records);
     if (fresult->num_filtered_records != 0)
-      puts(FLOWHEADER);
+      io->io_print_header(read_ctxt);
 
     for (int j = 0; j < fresult->num_filtered_records; j++) {
       char* record = fresult->filtered_recordset[j];
-      flow_print_record(dataformat, record);
+      io->io_print_record(read_ctxt, record);
     }
   }
 }
@@ -163,7 +169,8 @@ echo_grouper(
              uint32_t num_sorted_records,
 
              const struct grouper_result* const gresult,
-             struct ft_data* const dataformat
+             struct io_handler_s* io,
+             struct io_reader_s* read_ctxt
             ) {
 
   if(num_grouper_clauses > 0) {
@@ -173,10 +180,10 @@ echo_grouper(
 
       printf("\nNo. of Sorted Records: %u\n", num_sorted_records);
       if (num_sorted_records != 0)
-        puts(FLOWHEADER);
+        io->io_print_header(read_ctxt);
 
       for (int j = 0; j < num_sorted_records; j++)
-        flow_print_record(dataformat, gresult->sorted_recordset[j]);
+        io->io_print_record(read_ctxt, gresult->sorted_recordset[j]);
     }
   }
 
@@ -185,7 +192,7 @@ echo_grouper(
     printf("\nNo. of Groups: %u (Verbose Output)\n", gresult->num_groups);
 
     if (gresult->num_groups > 0)
-      puts(FLOWHEADER);
+      io->io_print_header(read_ctxt);
   }
   for (int j = 0; j < gresult->num_groups; j++) {
 
@@ -195,7 +202,7 @@ echo_grouper(
       printf("\n");
       /* print group members */
       for (int k = 0; k < group->num_members; k++)
-        flow_print_record(dataformat, group->members[k]);
+        io->io_print_record(read_ctxt, group->members[k]);
     }
   }
 }
@@ -204,7 +211,8 @@ void
 echo_group_aggr(
                 int branch_id,
                 const struct grouper_result* const gresult,
-                struct ft_data* const dataformat
+                struct io_handler_s* io,
+                struct io_reader_s* read_ctxt
                ) {
 
   /* write to the file is directly done by the thread */
@@ -212,10 +220,10 @@ echo_group_aggr(
 
     printf("\nNo. of Groups: %u (Aggregations)\n", gresult->num_groups);
     if (gresult->num_groups != 0)
-      puts(FLOWHEADER);
+      io->io_print_header(read_ctxt);
     for (int j = 0; j < gresult->num_groups; j++) {
       struct group* group = gresult->groupset[j];
-      flow_print_group_record(dataformat, group->aggr_result->aggr_record);
+      io->io_print_aggr_record(read_ctxt, group->aggr_result->aggr_record);
     }
   }
 }
@@ -224,7 +232,8 @@ void
 echo_gfilter(
              int branch_id,
              const struct groupfilter_result* const gfresult,
-             struct ft_data* const dataformat
+             struct io_handler_s* io,
+             struct io_reader_s* read_ctxt
             ) {
 
   if(!file) {
@@ -232,11 +241,11 @@ echo_gfilter(
     printf("\nNo. of Filtered Groups: %u (Aggregations)\n",
            gfresult->num_filtered_groups);
     if (gfresult->num_filtered_groups != 0)
-      puts(FLOWHEADER);
+      io->io_print_header(read_ctxt);
 
     for (int j = 0; j < gfresult->num_filtered_groups; j++) {
       struct group* fgroup = gfresult->filtered_groupset[j];
-      flow_print_group_record(dataformat, fgroup->aggr_result->aggr_record);
+      io->io_print_aggr_record(read_ctxt, fgroup->aggr_result->aggr_record);
     }
   }
 }
@@ -246,7 +255,8 @@ echo_gfilter(
 void
 echo_results(
              const struct ungrouper_result* const uresult,
-             struct ft_data* const dataformat
+             struct io_handler_s* io,
+             struct io_reader_s* read_ctxt
             ) {
 
 
@@ -267,11 +277,11 @@ echo_results(
         printf("\nNo. of Records in Stream (%d): %u \n",j+1,
                stream->num_records);
         if (stream->num_records != 0)
-          puts(FLOWHEADER);
+          io->io_print_header(read_ctxt);
 
         for (int i = 0; i < stream->num_records; i++) {
           char* record = stream->recordset[i];
-          flow_print_record(dataformat, record);
+          io->io_print_record(read_ctxt, record);
         }
 
         printf("\n");

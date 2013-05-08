@@ -38,7 +38,9 @@ merger(
 
        size_t num_branches,
        struct branch** const branchset,
-       struct ft_data* dataformat
+
+       struct io_handler_s* io,
+       struct io_reader_s*  read_ctxt
       ) {
 
   /* free'd just before calling ungrouper(...) */
@@ -65,7 +67,7 @@ merger(
   }
 
   /* initialze an output stream, if file write is requested */
-  struct ftio* ftio_out = NULL; int n = -1;
+  io_writer_t* writer_ctxt = NULL;
   if (verbose_v && file) {
 
     /* get a file descriptor */
@@ -79,20 +81,12 @@ merger(
     uint32_t num_flows = (uint32_t) (mresult->num_group_tuples * num_branches);
 
     /* get the output stream */
-    ftio_out = get_ftio(
-                         dataformat,
-                         out_fd,
-                         num_flows
-                       );
-
-    /* write the header to the output stream */
-    if ((n = ftio_write_header(ftio_out)) < 0)
-      fterr_errx(1, "ftio_write_header(): failed");
-
+    writer_ctxt = io->io_write_init(read_ctxt, out_fd, num_flows);
+    exitOn(writer_ctxt == NULL);
   }
 
   /* initialze an output stream, if file write is requested */
-  struct ftio* ftio_tobe_out = NULL; int n_tobe = -1;
+  io_writer_t* writer_ctxt_tobe = NULL;
   if (verbose_vv && file) {
 
     /* get a file descriptor */
@@ -107,15 +101,8 @@ merger(
     (uint32_t) (mresult->total_num_group_tuples * num_branches);
 
     /* get the output stream */
-    ftio_tobe_out = get_ftio(
-                              dataformat,
-                              out_fd,
-                              num_flows
-                            );
-
-    /* write the header to the output stream */
-    if ((n_tobe = ftio_write_header(ftio_tobe_out)) < 0)
-      fterr_errx(1, "ftio_write_header(): failed");
+    writer_ctxt_tobe = io->io_write_init(read_ctxt, out_fd, num_flows);
+    exitOn(writer_ctxt_tobe == NULL);
   }
 
   /* iterate over all permutations */
@@ -132,8 +119,7 @@ merger(
                           [
                            iter->filtered_group_tuple[j] - 1
                           ]->aggr_result->aggr_record->aggr_record;
-        if ((n_tobe = ftio_write(ftio_tobe_out, record) < 0))
-          fterr_errx(1, "ftio_write(): failed");
+        exitOn(io->io_write_record(writer_ctxt_tobe, record) < 0);
       }
     }
 
@@ -190,10 +176,9 @@ merger(
 
         /* write to the output stream */
         if (verbose_v && file) {
-          if ((n = ftio_write(ftio_out,
+          exitOn(io->io_write_record(writer_ctxt, 
                               matched_tuple[j]->aggr_result->
-                              aggr_record->aggr_record) < 0))
-            fterr_errx(1, "ftio_write(): failed");
+                              aggr_record->aggr_record) < 0);
         }
       }
 
@@ -211,16 +196,12 @@ merger(
 
   /* close the output stream */
   if (verbose_vv && file) {
-    if ((n_tobe = ftio_close(ftio_tobe_out)) < 0)
-      fterr_errx(1, "ftio_close(): failed");
-    free(ftio_tobe_out);
+    exitOn(io->io_write_close(writer_ctxt_tobe) < 0);
   }
 
   /* close the output stream */
   if (verbose_v && file) {
-    if ((n = ftio_close(ftio_out)) < 0)
-      fterr_errx(1, "ftio_close(): failed");
-    free(ftio_out);
+    exitOn(io->io_write_close(writer_ctxt) < 0);
   }
 
   mresult->total_num_group_tuples = index;

@@ -26,13 +26,45 @@
 
 #include "io.h"
 
+#include "io-ft.h"
+#include "errorhandlers.h"
+
 /*--------------------------------------------------------------------------*/
 /* Local methods                                                            */
 /*--------------------------------------------------------------------------*/
 
 /* flow-tools adapter */
+static void io_ft_handler_destroy(io_ctxt_t* io_ctxt);
 
 /*--------------------------------------------------------------------------*/
 /* Local implementation                                                     */
 /*--------------------------------------------------------------------------*/
 
+io_handler_t*
+ft_io_handler(void) {
+  io_handler_t* io = calloc(1, sizeof(io_handler_t));
+  exitOn(io == NULL);
+
+  io->io_read_init             = io_ft_read_init;
+  io->io_read_record           = io_ft_read_record;
+  io->io_read_get_field_offset = io_ft_read_get_field_offset;
+  io->io_read_get_record_size  = io_ft_read_get_record_size;
+  io->io_read_close            = io_ft_read_close;
+
+  io->io_print_header          = io_ft_print_header;
+  io->io_print_record          = io_ft_print_record;
+  io->io_print_aggr_record     = io_ft_print_aggr_record;
+
+  io->io_write_init            = io_ft_write_init;
+  io->io_write_record          = io_ft_write_record;
+  io->io_write_close           = io_ft_write_close;
+
+  io->io_handler_destroy       = io_ft_handler_destroy;
+
+  return io;
+}
+
+static
+void
+io_ft_handler_destroy(io_ctxt_t* io_ctxt) {
+}

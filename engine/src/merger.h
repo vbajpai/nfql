@@ -30,7 +30,7 @@
 #include "pipeline.h"
 #include "errorhandlers.h"
 
-#include "io-ft.h"
+#include "io.h"
 #include "auto-comps.h"
 #include "utils.h"
 
@@ -43,6 +43,8 @@ merger(
 
        size_t num_branches,
        struct branch** const branchset,
-       struct ft_data* data
+
+       struct io_handler_s* io,
+       struct io_reader_s*  read_ctxt
       );
 #endif

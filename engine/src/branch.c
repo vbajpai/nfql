@@ -26,11 +26,13 @@
 
 #include "branch.h"
 
+#include "io.h"
+
 void *
 branch_start(void *arg) {
 
   struct branch* branch = (struct branch *)arg;
-
+  size_t rec_size = branch->io->io_read_get_record_size(branch->read_ctxt);
 
 
 
@@ -84,9 +86,10 @@ branch_start(void *arg) {
                                       branch->aggr_clause_termset,
 
                                       branch->filter_result,
-                                      branch->data->rec_size,
+                                      rec_size,
 
-                                      branch->data,
+                                      branch->io,
+                                      branch->read_ctxt,
                                       branch->branch_id
                                     );
     if (branch->grouper_result == NULL)
@@ -166,7 +169,9 @@ branch_start(void *arg) {
 
                                           branch->grouper_result,
 
-                                          branch->data,
+                                          branch->io,
+                                          branch->read_ctxt,
+
                                           branch->branch_id
                                         );
 

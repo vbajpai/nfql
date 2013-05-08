@@ -26,6 +26,9 @@
 
 #include "groupfilter.h"
 
+#include "errorhandlers.h"
+#include "auto-assign.h"
+
 struct groupfilter_result*
 groupfilter(
             size_t num_groupfilter_clauses,
@@ -33,7 +36,9 @@ groupfilter(
 
             const struct grouper_result* const gresult,
 
-            struct ft_data* data,
+            struct io_handler_s* io,
+            struct io_reader_s*  read_ctxt,
+
             int branch_id
            ) {
 
@@ -57,7 +62,7 @@ groupfilter(
   }
 
   /* initialize an output stream if file write is requested */
-  struct ftio* ftio_out = NULL; int n = -1;
+  io_writer_t* writer_ctxt = NULL;
   if (verbose_v && file) {
 
     /* get a file descriptor */
@@ -70,15 +75,9 @@ groupfilter(
     else free(filename);
 
     /* get the output stream */
-    ftio_out = get_ftio(
-                         data,
-                         out_fd,
-                         gfilter_result->num_filtered_groups
-                       );
-
-    /* write the header to the output stream */
-    if ((n = ftio_write_header(ftio_out)) < 0)
-      fterr_errx(1, "ftio_write_header(): failed");
+    writer_ctxt = io->io_write_init(read_ctxt, out_fd,
+                                    gfilter_result->num_filtered_groups);
+    exitOn(writer_ctxt == NULL);
   }
 
   /* iterate over each group */
@@ -134,18 +133,15 @@ groupfilter(
       /* write the record to the output stream */
       if (verbose_v && file) {
         struct group* fgroup = gresult->groupset[i];
-        if ((n = ftio_write(ftio_out,
-                            fgroup->aggr_result->aggr_record->aggr_record)) < 0)
-          fterr_errx(1, "ftio_write(): failed");
+        exitOn(io->io_write_record(writer_ctxt,
+                    fgroup->aggr_result->aggr_record->aggr_record) < 0);
       }
     }
   }
 
   /* close the output stream */
   if (verbose_v && file) {
-    if ((n = ftio_close(ftio_out)) < 0)
-      fterr_errx(1, "ftio_close(): failed");
-    free(ftio_out);
+    exitOn(io->io_write_close(writer_ctxt));
   }
 
   return gfilter_result;

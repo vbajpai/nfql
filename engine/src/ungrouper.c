@@ -27,12 +27,18 @@
 
 #include "ungrouper.h"
 
+#include "errorhandlers.h"
+#include "pipeline.h"
+#include "utils.h"
+
+
 #ifdef UNGROUPER
 struct ungrouper_result*
 ungrouper(
           size_t num_branches,
           const struct merger_result* const mresult,
-          struct ft_data* dataformat
+          struct io_handler_s* io,
+          struct io_reader_s*  read_ctxt
          ) {
 
   /* free'd after returning from ungrouper(...) */
@@ -69,15 +75,10 @@ ungrouper(
           else free(filename);
 
           /* get the output stream */
-          stream->ftio_out = get_ftio(
-                                       dataformat,
-                                       out_fd,
-                                       stream->num_records
-                                     );
-
-          /* write the header to the output stream */
-          if ((ftio_write_header(stream->ftio_out)) < 0)
-            fterr_errx(1, "ftio_write_header(): failed");
+          stream->writer_ctxt = io->io_write_init(read_ctxt,
+                                                  out_fd,
+                                                  stream->num_records);
+          exitOn(stream->writer_ctxt == NULL);
         }
 
         struct group** group_tuple = mresult->group_tuples[i];
@@ -99,8 +100,7 @@ ungrouper(
 
             /* write the record to the output stream */
             if (file) {
-              if ((ftio_write(stream->ftio_out, stream->recordset[k])) < 0)
-                fterr_errx(1, "ftio_write(): failed");
+              exitOn(io->io_write_record(stream->writer_ctxt, stream->recordset[k]) < 0);
             }
           }
           stream->num_records += group->num_members;
@@ -110,9 +110,7 @@ ungrouper(
 
         /* close the output stream */
         if (file) {
-          if ((ftio_close(stream->ftio_out)) < 0)
-            fterr_errx(1, "ftio_close(): failed");
-          free(stream->ftio_out);
+          exitOn(io->io_write_close(stream->writer_ctxt) < 0);
         }
       }
       uresult->streamset = streamset; streamset = NULL;

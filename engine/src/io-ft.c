@@ -28,6 +28,11 @@
 #include "io-ft.h"
 
 #include "io.h"
+//#include "errorhandlers.h"
+//#include "auto-assign.h"
+//#include "echo.h"
+//#include <fcntl.h>
+//#include <time.h>
 
 #include <assert.h>
 
@@ -58,6 +63,11 @@ io_ft_read_get_field_offset(io_reader_t* io_reader, const char* field) {
   return io_ft_get_offset(field, &io_reader->d.ft.offsets);
 }
 
+size_t
+io_ft_read_get_record_size(io_reader_t* read_ctxt) {
+  return (size_t) read_ctxt->d.ft.rec_size;
+}
+
 int
 io_ft_read_close(io_reader_t* io_reader) {
   ft_close(&io_reader->d.ft);
@@ -68,6 +78,7 @@ io_ft_read_close(io_reader_t* io_reader) {
 void
 io_ft_print_header(io_reader_t* io_reader) {
   ftio_header_print(&io_reader->d.ft.io, stdout, '#');
+  puts(FLOWHEADER);
 }
 
 void
@@ -83,10 +94,17 @@ io_ft_print_aggr_record(io_reader_t* io_reader,
 
 io_writer_t*
 io_ft_write_init(io_reader_t* io_reader,
-                 int write_fd,
-                 int num_records) {
-  // XXX union padding guarantees
-  return (io_writer_t*) get_ftio(&io_reader->d.ft, write_fd, num_records);
+                 int          write_fd,
+                 uint32_t     num_records) {
+  struct ftio* ftio = get_ftio(&io_reader->d.ft, write_fd, num_records);
+  if (ftio == NULL) return NULL;
+  
+  /* write the header to the output stream */
+  if (ftio_write_header(ftio) < 0) {
+    fterr_errx(1, "ftio_write_header(): failed");
+  }
+  
+  return (io_writer_t*) ftio;
 }
 
 int
@@ -95,7 +113,11 @@ io_ft_write_record(io_writer_t* io_writer, char* record) {
 }
 
 int io_ft_write_close(io_writer_t* io_writer) {
-  return ftio_close(&io_writer->d.ft);
+  int rv = ftio_close(&io_writer->d.ft);
+
+  free(io_writer);
+
+  return rv;
 }
 
 
@@ -144,228 +166,6 @@ ft_init(int fd) {
   data->rec_size = ftio_rec_size(&data->io);
   return data;
 }
-
-struct ft_data *
-ft_read(
-         struct ft_data* data,
-         struct flowquery* fquery
-       ) {
-
-  /* assign filter func for all the branches */
-  if (filter_enabled) {
-    for (int i = 0; i < fquery->num_branches; i++) {
-
-      struct branch* branch = fquery->branchset[i];
-
-      /* free'd before exiting from main(...) */
-      branch->filter_result = calloc(1, sizeof(struct filter_result));
-      if (branch->filter_result == NULL)
-        errExit("calloc");
-
-      /* free'd before exiting from main(...) */
-      branch->filter_result->filtered_recordset = (char **)
-      calloc(branch->filter_result->num_filtered_records, sizeof(char *));
-      if (branch->filter_result->filtered_recordset == NULL)
-        errExit("calloc");
-
-      /* assign a filter func for each filter rule */
-      for (int k = 0; k < branch->num_filter_clauses; k++) {
-
-        struct filter_clause* const fclause = branch->filter_clauseset[k];
-
-        for (int j = 0; j < fclause->num_terms; j++) {
-
-          struct filter_term* const term = fclause->termset[j];
-
-          /* get a uintX_t specific function depending on frule->op */
-          assign_filter_func(term);
-          fclause->termset[j] = term;
-        }
-      }
-    }
-  }
-
-  /* initialize the output stream if file write is requested */
-  if (verbose_v && file) {
-
-    for (int i = 0; i < fquery->num_branches; i++) {
-
-      struct branch* branch = fquery->branchset[i];
-
-      /* get a file descriptor */
-      char* filename = (char*)0L;
-      if (asprintf(&filename, "%s/filter-branch-%d-filtered-records.ftz",
-               dirpath, branch->branch_id) < 0)
-        errExit("asprintf(...): failed");
-      int out_fd = get_fd(filename);
-      if(out_fd == -1) errExit("get_fd(...) returned -1");
-      else free(filename);
-
-      /* get the output stream */
-      branch->ftio_out = get_ftio(
-                                  data,
-                                  out_fd,
-                                  branch->filter_result->num_filtered_records
-                                 );
-      /* write the header to the output stream */
-      if (ftio_write_header(branch->ftio_out) < 0)
-        fterr_errx(1, "ftio_write_header(): failed");
-    }
-  }
-
-  /* display the flow-header when --debug/--verbose=3 is SET */
-  if(verbose_vvv && !file){
-
-    /* print flow header */
-    ftio_header_print(&data->io, stdout, '#');
-
-    puts(FLOWHEADER);
-  }
-
-  char* record = NULL;
-  /* process each flow record */
-  while ((record = ftio_read(&data->io)) != NULL) {
-
-    /* display each record when --debug/--verbose=3 is SET */
-    if(verbose_vvv && !file)
-      flow_print_record(data, record);
-
-    /* process each branch */
-    char* target = NULL; bool first_time = true;
-    for (int i = 0, j; i < fquery->num_branches; i++) {
-
-      struct branch* branch = fquery->branchset[i]; bool satisfied = false;
-
-      /* process each filter clause (clauses are OR'd) */
-      for (int k = 0; k < branch->num_filter_clauses; k++) {
-
-        struct filter_clause* const fclause = branch->filter_clauseset[k];
-
-        /* process each filter term (terms within a clause are AND'd) */
-        for (j = 0; j < fclause->num_terms; j++) {
-
-          struct filter_term* const term = fclause->termset[j];
-
-          /* run the comparator function of the filter rule on the record */
-          if (!term->func(
-                          record,
-                          term->field_offset,
-                          term->value,
-                          term->delta
-                         ))
-            break;
-        }
-
-        /* if any rule is not satisfied, move to the next module */
-        if (j < fclause->num_terms)
-          continue;
-        /* else this module is TRUE; so everything is TRUE; break out */
-        else {
-          satisfied = true; break;
-        }
-      }
-
-      /* if rules are satisfied then save this record */
-      if (satisfied) {
-
-        /* save this record in the trace data only once for all the
-         * branches to refer to */
-        if(first_time) {
-
-          /* allocate memory for the record */
-          target = (char*) calloc(1, data->rec_size);
-          if (target == NULL)
-            errExit("calloc(...)");
-
-          /* copy the record */
-          memcpy(target, record, data->rec_size);
-
-          /* save the record in the trace data */
-          data->num_records += 1;
-          data->recordset = (char**) realloc(
-                                              data->recordset,
-                                              data->num_records * sizeof(char*)
-                                            );
-          if(data->recordset)
-          data->recordset[data->num_records - 1] = target;
-          first_time = false;
-        }
-
-        /* increase the filtered recordset size */
-        branch->filter_result->num_filtered_records += 1;
-        branch->filter_result->filtered_recordset = (char **)
-                         realloc(branch->filter_result->filtered_recordset,
-                                (branch->filter_result->num_filtered_records)
-                                 *sizeof(char *));
-        if (branch->filter_result->filtered_recordset == NULL)
-          errExit("realloc");
-
-        /* also save the pointer in the filtered recordset */
-        branch->filter_result->
-        filtered_recordset[branch->filter_result->
-                           num_filtered_records - 1] = target;
-
-        /* write to the output stream, if requested */
-        if (verbose_v && file) {
-          if ((ftio_write(branch->ftio_out, record)) < 0)
-            fterr_errx(1, "ftio_write(): failed");
-        }
-      }
-    }
-  }
-
-  /* close the output stream */
-  if (verbose_v && file) {
-    for (int i = 0; i < fquery->num_branches; i++) {
-
-      struct branch* branch = fquery->branchset[i];
-
-      if ((ftio_close(branch->ftio_out)) < 0)
-        fterr_errx(1, "ftio_close(): failed");
-      free(branch->ftio_out);
-    }
-  }
-
-  /* set the last item in filtered_recordset to NULL */
-  if (filter_enabled) {
-
-    for (int i = 0; i < fquery->num_branches; i++) {
-
-      struct branch* branch = fquery->branchset[i];
-
-      /* add one more member and assign it to NULL */
-      branch->filter_result->filtered_recordset = (char **)
-      realloc( branch->filter_result->filtered_recordset,
-               (branch->filter_result->num_filtered_records + 1) * sizeof(char*)
-             );
-      if (branch->filter_result->filtered_recordset == NULL)
-        errExit("realloc");
-
-      branch->filter_result->filtered_recordset
-      [branch->filter_result->num_filtered_records] = NULL;
-    }
-  }
-
-  /* print the filtered records if verbose mode is set */
-  if (filter_enabled) {
-    if (verbose_v) {
-      /* process each branch */
-      for (int i = 0; i < fquery->num_branches; i++) {
-        struct branch* branch = fquery->branchset[i];
-
-#ifdef FILTER
-        echo_filter(
-                    branch->branch_id,
-                    branch->filter_result,
-                    data
-                    );
-#endif
-      }
-    }
-  }
-  return data;
-}
-
 
 size_t
 io_ft_get_offset(const char * const name,
@@ -427,10 +227,6 @@ void
 ft_close(struct ft_data* data) {
 
   ftio_close(&data->io);
-  for (int i=0; i<data->num_records; i++) {
-    free(data->recordset[i]); data->recordset[i] = NULL;
-  }
-  free(data->recordset); data->recordset = NULL;
 
   if(data->fd)
     close(data->fd);

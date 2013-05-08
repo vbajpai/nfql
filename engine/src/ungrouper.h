@@ -28,15 +28,15 @@
 #ifndef f_engine_ungrouper_h
 #define f_engine_ungrouper_h
 
-#include "pipeline.h"
-#include "errorhandlers.h"
-#include "io-ft.h"
+#include "base.h"
+#include "io.h"
 
 struct ungrouper_result*
 ungrouper(
           size_t num_branches,
           const struct merger_result* const mresult,
-          struct ft_data* dataformat
+          struct io_handler_s* io,
+          struct io_reader_s*  read_ctxt
          );
 
 #endif

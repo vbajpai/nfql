@@ -29,6 +29,8 @@
 
 #include "grouper.h"
 
+#include "io.h"
+
 
 struct aggr_result*
 grouper_aggregations(
@@ -117,7 +119,8 @@ get_grouper_intermediates
                   struct grouper_clause* clause,
                   struct grouper_result* const gresult,
 
-                  struct ft_data* dataformat,
+                  struct io_handler_s* io,
+                  struct io_reader_s*  read_ctxt,
                   int branch_id
                 ) {
 
@@ -146,7 +149,7 @@ get_grouper_intermediates
   if(verbose_vv){
 
     /* initialize the output stream, if write to file is requested */
-    struct ftio* ftio_out = NULL; int n = -1;
+    struct io_writer_s* writer_ctxt = NULL;
     if(file) {
 
       /* get a file descriptor */
@@ -159,15 +162,8 @@ get_grouper_intermediates
       else free(filename);
 
       /* get the output stream */
-      ftio_out = get_ftio(
-                           dataformat,
-                           out_fd,
-                           num_filtered_records
-                         );
-
-      /* write the header to the output stream */
-      if ((n = ftio_write_header(ftio_out)) < 0)
-        fterr_errx(1, "ftio_write_header(): failed");
+      writer_ctxt = io->io_write_init(read_ctxt, out_fd, num_filtered_records);
+      exitOn(writer_ctxt == NULL);
     }
 
     /* free'd just before calling merger(...) ?*/
@@ -183,16 +179,14 @@ get_grouper_intermediates
 
       /* write the record to the output stream */
       if(file) {
-        if ((n = ftio_write(ftio_out, gresult->sorted_recordset[i])) < 0)
-          fterr_errx(1, "ftio_write(): failed");
+        exitOn((io->io_write_record(writer_ctxt,
+                                    gresult->sorted_recordset[i])) < 0);
       }
     }
 
     /* close the output stream */
     if(file) {
-      if ((n = ftio_close(ftio_out)) < 0)
-        fterr_errx(1, "ftio_close(): failed");
-      free(ftio_out);
+      exitOn(io->io_write_close(writer_ctxt) < 0);
     }
   }
 
@@ -217,7 +211,8 @@ grouper(
         const struct filter_result* const fresult,
         int rec_size,
 
-        struct ft_data* dataformat,
+        struct io_handler_s* io,
+        struct io_reader_s*  read_ctxt,
         int branch_id
        ) {
 
@@ -274,7 +269,8 @@ grouper(
     }
 
     /* open a output stream, if a file write is requested */
-    struct ftio* ftio_groups_out = NULL; int n_groups = -1;
+    io_writer_t* writer_ctxt = NULL;
+    int n_groups = -1;
     if (verbose_v && file) {
 
       /* get a file descriptor */
@@ -285,16 +281,9 @@ grouper(
       if(out_fd == -1) errExit("get_fd(...) returned -1");
       else free(filename);
 
-      /* get the output stream */
-      ftio_groups_out = get_ftio(
-                                  dataformat,
-                                  out_fd,
-                                  gresult->num_groups
-                                );
-
-      /* write the header to the output stream */
-      if ((n_groups = ftio_write_header(ftio_groups_out)) < 0)
-      fterr_errx(1, "ftio_write_header(): failed");
+      writer_ctxt = io->io_write_init(read_ctxt, out_fd, gresult->num_groups);
+      exitOn(writer_ctxt == NULL);
+      n_groups = gresult->num_groups;
     }
 
     /* club all filtered records into one group,
@@ -358,15 +347,15 @@ grouper(
       char* first_item = fresult->filtered_recordset[0];
 
       uint32_t sysUpTime =
-      *(u_int32_t*)(first_item+(dataformat->offsets).sysUpTime);
+      *(u_int32_t*)(first_item+ io->io_read_get_field_offset(read_ctxt, "sysUpTime"));
       uint32_t unix_secs =
-      *(u_int32_t*)(first_item+(dataformat->offsets).unix_secs);
+      *(u_int32_t*)(first_item+ io->io_read_get_field_offset(read_ctxt, "unix_secs"));
       uint32_t unix_nsecs =
-      *(u_int32_t*)(first_item+(dataformat->offsets).unix_nsecs);
+      *(u_int32_t*)(first_item+ io->io_read_get_field_offset(read_ctxt, "unix_nsecs"));
       uint32_t First =
-      *(u_int32_t*)(first_item+(dataformat->offsets).First);
+      *(u_int32_t*)(first_item+ io->io_read_get_field_offset(read_ctxt, "flowStartSysUpTime"));
       uint32_t Last =
-      *(u_int32_t*)(first_item+(dataformat->offsets).Last);
+      *(u_int32_t*)(first_item+ io->io_read_get_field_offset(read_ctxt, "flowEndSysUpTime"));
 
       struct fttime min = ftltime(sysUpTime,unix_secs,unix_nsecs,First);
       struct fttime max = ftltime(sysUpTime,unix_secs,unix_nsecs,Last);
@@ -381,15 +370,15 @@ grouper(
         char* current_item = fresult->filtered_recordset[i];
 
         uint32_t sysUpTime =
-        *(u_int32_t*)(current_item+(dataformat->offsets).sysUpTime);
+        *(u_int32_t*)(current_item + io->io_read_get_field_offset(read_ctxt, "sysUpTime"));
         uint32_t unix_secs =
-        *(u_int32_t*)(current_item+(dataformat->offsets).unix_secs);
+        *(u_int32_t*)(current_item + io->io_read_get_field_offset(read_ctxt, "unix_secs"));
         uint32_t unix_nsecs =
-        *(u_int32_t*)(current_item+(dataformat->offsets).unix_nsecs);
+        *(u_int32_t*)(current_item + io->io_read_get_field_offset(read_ctxt, "unix_nsecs"));
         uint32_t First =
-        *(u_int32_t*)(current_item+(dataformat->offsets).First);
+        *(u_int32_t*)(current_item + io->io_read_get_field_offset(read_ctxt, "flowStartSysUpTime"));
         uint32_t Last =
-        *(u_int32_t*)(current_item+(dataformat->offsets).Last);
+        *(u_int32_t*)(current_item + io->io_read_get_field_offset(read_ctxt, "flowEndSysUpTime"));
 
         struct fttime start =
         ftltime (sysUpTime, unix_secs, unix_nsecs, First);
@@ -490,14 +479,13 @@ grouper(
       if (verbose_v && file) {
 
         /* write the record to the output stream */
-        if ((n_groups =
-             ftio_write(ftio_groups_out,
-                        group->aggr_result->aggr_record->aggr_record)) < 0)
-          fterr_errx(1, "ftio_write(): failed");
+        exitOn((n_groups =
+                io->io_write_record(writer_ctxt,
+                        group->aggr_result->aggr_record->aggr_record)) < 0);
       }
 
       /* open a output stream for group members, if a file write is requested */
-      struct ftio* ftio_members_out = NULL; int n_members = -1;
+      struct io_writer_s* members_writer_ctxt = NULL;
       if (verbose_vv && file) {
 
         /* get a file descriptor */
@@ -510,22 +498,15 @@ grouper(
         else free(filename);
 
         /* get the output stream */
-        ftio_members_out = get_ftio(
-                                     dataformat,
-                                     out_fd,
-                                     group->num_members
-                                   );
-
-        /* write the header to the output stream */
-        if ((n_members = ftio_write_header(ftio_members_out)) < 0)
-          fterr_errx(1, "ftio_write_header(): failed");
+        members_writer_ctxt = io->io_write_init(read_ctxt,
+                                                out_fd,
+                                                group->num_members);
+        exitOn(members_writer_ctxt == NULL);
       }
 
       /* close the output stream */
       if (verbose_vv && file) {
-        if ((n_members = ftio_close(ftio_members_out)) < 0)
-          fterr_errx(1, "ftio_close(): failed");
-        free(ftio_members_out);
+        io->io_write_close(members_writer_ctxt);
       }
 
       /* ----------------------------------------------------------------- */
@@ -576,7 +557,9 @@ grouper(
                                    gclause,
                                    gresult,
 
-                                   dataformat,
+                                   io,
+                                   read_ctxt,
+
                                    branch_id
                                  );
 
@@ -655,15 +638,15 @@ grouper(
 
           /* set minimum START and maximum END timestamp */
           uint32_t sysUpTime =
-          *(u_int32_t*)(*current_item+(dataformat->offsets).sysUpTime);
+          *(u_int32_t*)(*current_item + io->io_read_get_field_offset(read_ctxt, "sysUpTime"));
           uint32_t unix_secs =
-          *(u_int32_t*)(*current_item+(dataformat->offsets).unix_secs);
+          *(u_int32_t*)(*current_item + io->io_read_get_field_offset(read_ctxt, "unix_secs"));
           uint32_t unix_nsecs =
-          *(u_int32_t*)(*current_item+(dataformat->offsets).unix_nsecs);
+          *(u_int32_t*)(*current_item + io->io_read_get_field_offset(read_ctxt, "unix_nsecs"));
           uint32_t First =
-          *(u_int32_t*)(*current_item+(dataformat->offsets).First);
+          *(u_int32_t*)(*current_item + io->io_read_get_field_offset(read_ctxt, "flowStartSysUpTime"));
           uint32_t Last =
-          *(u_int32_t*)(*current_item+(dataformat->offsets).Last);
+          *(u_int32_t*)(*current_item + io->io_read_get_field_offset(read_ctxt, "flowEndSysUpTime"));
 
           struct fttime min = ftltime(sysUpTime,unix_secs,unix_nsecs,First);
           struct fttime max = ftltime(sysUpTime,unix_secs,unix_nsecs,Last);
@@ -674,7 +657,6 @@ grouper(
           group_aggr_record->end->msecs = max.msecs;
 
           /* initialize an output stream, if file write is requested */
-          struct ftio* ftio_members_out = NULL; int n_members = -1;
           if(verbose_vv && file) {
 
             /* get a file descriptor */
@@ -687,15 +669,7 @@ grouper(
             else free(filename);
 
             /* get the output stream */
-            ftio_members_out = get_ftio(
-                                         dataformat,
-                                         out_fd,
-                                         group->num_members
-                                       );
-
-            /* write the header to the output stream */
-            if ((n_members = ftio_write_header(ftio_members_out)) < 0)
-              fterr_errx(1, "ftio_write_header(): failed");
+            writer_ctxt = io->io_write_init(read_ctxt, out_fd, group->num_members);
           }
 
           while (current_item != last_item) {
@@ -732,23 +706,22 @@ grouper(
 
               // add this member to the group
               group->num_members += 1;
-              group->members = (char **)
-              realloc(group->members,
-                      sizeof(char *)*group->num_members);
+              group->members = (char **) realloc(group->members,
+                                            sizeof(char*)*group->num_members);
               if (group->members == NULL)
                 errExit("realloc");
               group->members[group->num_members-1] = *current_item;
 
               uint32_t sysUpTime =
-              *(u_int32_t*)(*current_item+(dataformat->offsets).sysUpTime);
+              *(u_int32_t*)(*current_item + io->io_read_get_field_offset(read_ctxt, "sysUpTime"));
               uint32_t unix_secs =
-              *(u_int32_t*)(*current_item+(dataformat->offsets).unix_secs);
+              *(u_int32_t*)(*current_item + io->io_read_get_field_offset(read_ctxt, "unix_secs"));
               uint32_t unix_nsecs =
-              *(u_int32_t*)(*current_item+(dataformat->offsets).unix_nsecs);
+              *(u_int32_t*)(*current_item + io->io_read_get_field_offset(read_ctxt, "unix_nsecs"));
               uint32_t First =
-              *(u_int32_t*)(*current_item+(dataformat->offsets).First);
+              *(u_int32_t*)(*current_item + io->io_read_get_field_offset(read_ctxt, "flowStartSysUpTime"));
               uint32_t Last =
-              *(u_int32_t*)(*current_item+(dataformat->offsets).Last);
+              *(u_int32_t*)(*current_item + io->io_read_get_field_offset(read_ctxt, "flowEndSysUpTime"));
 
               struct fttime start =
               ftltime (sysUpTime, unix_secs, unix_nsecs, First);
@@ -779,18 +752,14 @@ grouper(
               if (verbose_vv && file) {
 
                 /* write the record to the output stream */
-                if ((n_members =
-                     ftio_write(ftio_members_out, *current_item) < 0))
-                  fterr_errx(1, "ftio_write(): failed");
+                exitOn(io->io_write_record(writer_ctxt, *current_item) < 0);
               }
             }
           }
 
           /* close the output stream */
           if (verbose_vv && file) {
-            if ((n_members = ftio_close(ftio_members_out)) < 0)
-              fterr_errx(1, "ftio_close(): failed");
-            free(ftio_members_out);
+            exitOn(io->io_write_close(writer_ctxt) < 0);
           }
 
         /* ----------------------------------------------------------------- */
@@ -911,15 +880,9 @@ grouper(
         /* ----------------------------------------------------------------- */
 
           if (verbose_v && file) {
-
-            if (
-                 ( n_groups =
-                   ftio_write(
-                              ftio_groups_out,
+            exitOn((n_groups = io->io_write_record(writer_ctxt,
                               group->aggr_result->aggr_record->aggr_record)
-                             ) < 0
-               )
-              fterr_errx(1, "ftio_write(): failed");
+                             ) < 0);
           }
 
         /* ----------------------------------------------------------------- */
@@ -941,9 +904,7 @@ grouper(
 
     /* close the output stream */
     if (verbose_v && file) {
-      if ((n_groups = ftio_close(ftio_groups_out)) < 0)
-        fterr_errx(1, "ftio_close(): failed");
-      free(ftio_groups_out);
+      io->io_write_close(writer_ctxt);
     }
   }
 
