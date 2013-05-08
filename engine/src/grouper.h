@@ -29,8 +29,7 @@
 
 #include "auto-assign.h"
 #include "errorhandlers.h"
-#include "ftreader.h"
-#include "ftwriter.h"
+#include "io-ft.h"
 #include "pipeline.h"
 #include "utils.h"
 

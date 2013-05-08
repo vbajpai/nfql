@@ -28,8 +28,11 @@
 
 #include "utils.h"
 
+#include "errorhandlers.h"
+#include "ftlib.h"
+#include <math.h>
+
 #include <fcntl.h>
-#include <sys/stat.h>
 #include <sys/stat.h>
 #include <unistd.h>
 
@@ -55,6 +58,12 @@ get_fd(char* filename) {
   }
 
   return out_fd;
+}
+
+FILE*
+get_fp(int fd) {
+    /* TODO !! */
+  return NULL;
 }
 
 /* -----------------------------------------------------------------------*/

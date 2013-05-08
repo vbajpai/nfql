@@ -30,11 +30,6 @@
 
 #include "base.h"
 #include "pipeline.h"
-#include "errorhandlers.h"
-#include "ftlib.h"
-#include <math.h>
-
-
 
 
 /* -----------------------------------------------------------------------*/
@@ -45,6 +40,8 @@ int
 get_fd(char* filename);
 
 
+FILE*
+get_fp(int fd);
 
 
 

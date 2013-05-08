@@ -27,21 +27,32 @@
 #ifndef f_engine_io_h
 #define f_engine_io_h
 
-#include "ftreader.h"
+#include "pipeline.h"
+#include "io-ft.h"
 #include "ipfix.h"
 
-typedef union io_reader_u {
-  struct ft_data         ft;
-  struct ipfix_handler_s ipfix;
+/*--------------------------------------------------------------------------*/
+/* Type declarations                                                        */
+/*--------------------------------------------------------------------------*/
+
+typedef struct io_reader_s {
+  union {
+    struct ft_data         ft;
+    struct ipfix_handler_s ipfix;
+  } d;
 } io_reader_t;
 
-typedef union io_writer_u {
-  int                   ft;     /**< flow-tools IO file descriptor */
-  ipfix_handler_t ipfix;
+typedef struct io_writer_s {
+  union {
+    struct ftio     ft;
+    ipfix_handler_t ipfix;
+  } d;
 } io_writer_t;
 
-typedef union io_ctxt_u {
+typedef struct io_ctxt_s {
+  union {
     ipfix_templ_t* ipfix;
+  } d;
 } io_ctxt_t;
 
 typedef struct io_handler_s {
@@ -50,15 +61,43 @@ typedef struct io_handler_s {
   size_t        (*io_read_get_field_offset)(io_reader_t* io_reader, const char* field);
   int           (*io_read_close)(io_reader_t* io_ctxt);
 
-  io_writer_t*  (*io_write_init)(io_reader_t* writer_ctxt, int write_fd);
-  int (*io_write_record)(io_writer_t* io_writer, char* record);
-  int (*io_write_close)(io_writer_t* io_writer);
+  void          (*io_print_header)(io_reader_t* io_reader);
+  void          (*io_print_record)(io_reader_t* io_reader, char* record);
+  void          (*io_print_aggr_record)(io_reader_t* io_reader,
+                                        struct aggr_record* aggr_record);
 
-  void  (*io_print_header)(io_reader_t* io_reader);
-  void  (*io_print_record)(io_reader_t* io_reader, char* record);
+  io_writer_t*  (*io_write_init)(io_reader_t* io_reader,
+                                 int write_fd,
+                                 uint32_t num_records);
+  int           (*io_write_record)(io_writer_t* io_writer, char* record);
+  int           (*io_write_close)(io_writer_t* io_writer);
+
+  void          (*io_handler_destroy)(io_ctxt_t* io_ctxt);
 
   io_ctxt_t ctxt;
 
 } io_handler_t;
+
+/*--------------------------------------------------------------------------*/
+/* Methods                                                                  */
+/*--------------------------------------------------------------------------*/
+
+/**
+ * @brief Create IPFIX I/O handler
+ *
+ * @return I/O handler on success
+ * @return NULL on failure
+ */
+io_handler_t*
+ipfix_io_handler(ipfix_templ_t* ipfix);
+
+/**
+ * @brief Create flow-tools I/O handler
+ *
+ * @return I/O handler on success
+ * @return NULL on failure
+ */
+io_handler_t*
+ft_io_handler(void);
 
 #endif // ! f_engine_io_h

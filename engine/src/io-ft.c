@@ -25,8 +25,84 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "ftreader.h"
+#include "io-ft.h"
 
+#include "io.h"
+
+#include <assert.h>
+
+/*--------------------------------------------------------------------------*/
+/* Methods                                                                  */
+/*--------------------------------------------------------------------------*/
+
+io_reader_t*
+io_ft_read_init(io_ctxt_t* io_ctxt, int read_fd) {
+  UNUSED(io_ctxt);
+
+  struct ft_data* data = ft_init(read_fd);
+  io_reader_t* io_reader = (io_reader_t*) data;
+
+  assert(&io_reader->d.ft == data); /* XXX This may be guaranteed by the
+                                       standard */
+
+  return io_reader;
+}
+
+char*
+io_ft_read_record(io_reader_t* io_reader) {
+  return ftio_read(&io_reader->d.ft.io);
+}
+
+size_t
+io_ft_read_get_field_offset(io_reader_t* io_reader, const char* field) {
+  return io_ft_get_offset(field, &io_reader->d.ft.offsets);
+}
+
+int
+io_ft_read_close(io_reader_t* io_reader) {
+  ft_close(&io_reader->d.ft);
+
+  return 0;
+}
+
+void
+io_ft_print_header(io_reader_t* io_reader) {
+  ftio_header_print(&io_reader->d.ft.io, stdout, '#');
+}
+
+void
+io_ft_print_record(io_reader_t* io_reader, char* record) {
+  flow_print_record(&io_reader->d.ft, record);
+}
+
+void
+io_ft_print_aggr_record(io_reader_t* io_reader,
+                        struct aggr_record* aggr_record) {
+  flow_print_group_record(&io_reader->d.ft, aggr_record);
+}
+
+io_writer_t*
+io_ft_write_init(io_reader_t* io_reader,
+                 int write_fd,
+                 int num_records) {
+  // XXX union padding guarantees
+  return (io_writer_t*) get_ftio(&io_reader->d.ft, write_fd, num_records);
+}
+
+int
+io_ft_write_record(io_writer_t* io_writer, char* record) {
+  return ftio_write(&io_writer->d.ft, record);
+}
+
+int io_ft_write_close(io_writer_t* io_writer) {
+  return ftio_close(&io_writer->d.ft);
+}
+
+
+/* Legacy methods */
+/*--------------------------------------------------------------------------*/
+/* Legacy methods                                                           */
+/*--------------------------------------------------------------------------*/
 struct ft_data *
 ft_init(int fd) {
 
@@ -475,3 +551,57 @@ flow_print_group_record(struct ft_data *data, struct aggr_record* aggr_record){
     fflush(stdout);
 }
 
+
+struct ftio*
+get_ftio(
+         struct ft_data* const dataformat,
+         int out_fd,
+         uint32_t total_flows
+        ) {
+
+  /* initialize output ftio structure */
+  struct ftio* ftio_out = calloc(1, sizeof(struct ftio));
+  if (ftio_out == NULL)
+    errExit("calloc");
+
+  struct ftset ftset; ftset_init(&ftset, 0);
+  /* defaults to 5 */
+  ftset.z_level = zlevel;
+  if (ftio_init(ftio_out, out_fd, FT_IO_FLAG_WRITE |
+    ((ftset.z_level) ? FT_IO_FLAG_ZINIT : 0) ) < 0)
+    fterr_errx(1, "ftio_init(): failed");
+
+  /* set compression level */
+  ftio_set_z_level(ftio_out, ftset.z_level);
+
+  /* set endianess */
+  ftset.byte_order = FT_HEADER_LITTLE_ENDIAN;
+  ftio_set_byte_order(ftio_out, ftset.byte_order);
+
+  ftio_set_streaming(ftio_out, 1);
+  ftio_set_debug(ftio_out, debug);
+  ftio_set_preloaded(ftio_out, 1);
+
+  /* set total, corrupt and lost flows */
+  uint32_t corrupt_flows = 0;uint32_t lost_flows = 0;
+  ftio_set_flows_count(ftio_out, total_flows);
+  ftio_set_corrupt(ftio_out, corrupt_flows);
+  ftio_set_lost(ftio_out, lost_flows);
+
+  /* set the hostname and comments */
+  struct ftio ftio_in = dataformat->io;
+  if (ftio_get_hostname(&ftio_in))
+    ftio_set_cap_hostname(ftio_out, ftio_get_hostname(&ftio_in));
+  if (ftio_get_comment(&ftio_in))
+    ftio_set_comment(ftio_out, ftio_get_comment(&ftio_in));
+  if (ftio_in.fth.fields & FT_FIELD_SEQ_RESET)
+    ftio_set_reset(ftio_out, ftio_in.fth.seq_reset);
+
+  /* set the version information */
+  struct ftver ftv2; bzero(&ftv2, sizeof ftv2);
+  ftio_get_ver(&ftio_in, &ftv2);
+  if (ftio_set_ver(ftio_out, &ftv2) < 0)
+    fterr_errx(1, "ftio_set_ver(): failed");
+
+  return ftio_out;
+}

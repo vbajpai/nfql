@@ -30,8 +30,7 @@
 
 #include "pipeline.h"
 #include "errorhandlers.h"
-#include "ftreader.h"
-#include "ftwriter.h"
+#include "io-ft.h"
 
 struct ungrouper_result*
 ungrouper(

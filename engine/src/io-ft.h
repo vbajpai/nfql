@@ -1,4 +1,5 @@
 /*
+ * Copyright 2013 Corneliu Prodescu <cprodescu@gmail.com>
  * Copyright 2012 Vaibhav Bajpai <contact@vaibhavbajpai.com>
  * Copyright 2011 Johannes 'josch' Schauer <j.schauer@email.de>
  *
@@ -25,19 +26,22 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef f_engine_ftreader_h
-#define f_engine_ftreader_h
+#ifndef f_engine_io_ft_h
+#define f_engine_io_ft_h
 
 #include "base.h"
 #include "pipeline.h"
 #include "errorhandlers.h"
 #include "auto-assign.h"
-#include "ftreader.h"
 #include "echo.h"
 
 #include <fcntl.h>
 #include <ftlib.h>
 #include <time.h>
+
+/*--------------------------------------------------------------------------*/
+/* Type declarations                                                        */
+/*--------------------------------------------------------------------------*/
 
 struct ft_data {
   int                             fd;
@@ -49,6 +53,39 @@ struct ft_data {
   char**                          recordset;
   size_t                          num_records;
 };
+
+struct io_ctxt_t;
+typedef struct io_ctxt_s io_ctxt_t;
+struct io_reader_s;
+typedef struct io_reader_s io_reader_t;
+struct io_writer_s;
+typedef struct io_writer_s io_writer_t;
+
+
+/*--------------------------------------------------------------------------*/
+/* Methods                                                                  */
+/*--------------------------------------------------------------------------*/
+
+/* I/O handler methods */
+io_reader_t* io_ft_read_init(io_ctxt_t* io_ctxt, int read_fd);
+char*        io_ft_read_record(io_reader_t* io_reader);
+size_t       io_ft_read_get_field_offset(io_reader_t* io_reader,
+                                         const char* field);
+int          io_ft_read_close(io_reader_t* io_reader);
+
+void         io_ft_print_header(io_reader_t* io_reader);
+void         io_ft_print_record(io_reader_t* io_reader, char* record);
+void         io_ft_print_aggr_record(io_reader_t* io_reader,
+                                     struct aggr_record* aggr_record);
+
+io_writer_t* io_ft_write_init(io_reader_t* io_reader,
+                              int write_fd,
+                              int num_records);
+int          io_ft_write_record(io_writer_t* io_writer, char* record);
+int          io_ft_write_close(io_writer_t* io_writer);
+
+
+/* Legacy methods */
 
 struct ft_data*
 ft_init(int fsock);
@@ -67,5 +104,11 @@ void ft_close(struct ft_data* data);
 void flow_print_record(struct ft_data *, char *);
 void flow_print_group_record(struct ft_data *data, struct aggr_record* aggr_record);
 
+struct ftio*
+get_ftio(
+         struct ft_data* const dataformat,
+         int out_fd,
+         uint32_t total_flows
+        );
 
 #endif

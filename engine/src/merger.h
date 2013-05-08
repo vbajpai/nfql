@@ -30,7 +30,7 @@
 #include "pipeline.h"
 #include "errorhandlers.h"
 
-#include "ftwriter.h"
+#include "io-ft.h"
 #include "auto-comps.h"
 #include "utils.h"
 

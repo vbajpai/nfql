@@ -45,6 +45,8 @@
 #   define FALSE 0
 #endif
 
+#define UNUSED(var) do { (void) var; } while (0)
+
 #define FILTER
 #define GROUPER
 #define GROUPERAGGREGATIONS

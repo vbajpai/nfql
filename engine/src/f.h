@@ -43,7 +43,7 @@
 
 #include "auto-assign.h"
 #include "errorhandlers.h"
-#include "ftreader.h"
+#include "io-ft.h"
 #include "echo.h"
 
 struct parameters {
