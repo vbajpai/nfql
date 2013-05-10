@@ -45,55 +45,19 @@ struct ft_data {
   struct ftver                    version;
   u_int64_t                       xfield;
   int                             rec_size;
-  char**                          recordset;
-  size_t                          num_records;
 };
-
-struct io_ctxt_t;
-typedef struct io_ctxt_s io_ctxt_t;
-struct io_reader_s;
-typedef struct io_reader_s io_reader_t;
-struct io_writer_s;
-typedef struct io_writer_s io_writer_t;
-
 
 /*--------------------------------------------------------------------------*/
 /* Methods                                                                  */
 /*--------------------------------------------------------------------------*/
 
-/* I/O handler methods */
-io_reader_t* io_ft_read_init(io_ctxt_t* io_ctxt, int read_fd);
-char*        io_ft_read_record(io_reader_t* io_reader);
-size_t       io_ft_read_get_field_offset(io_reader_t* io_reader,
-                                         const char* field);
-size_t       io_ft_read_get_record_size(io_reader_t* read_ctxt);
-int          io_ft_read_close(io_reader_t* io_reader);
-
-void         io_ft_print_header(io_reader_t* io_reader);
-void         io_ft_print_record(io_reader_t* io_reader, char* record);
-void         io_ft_print_aggr_record(io_reader_t* io_reader,
-                                     struct aggr_record* aggr_record);
-
-uint64_t     io_ft_record_get_StartTS(io_reader_t* read_ctxt, char* record);
-uint64_t     io_ft_record_get_EndTS(io_reader_t* read_ctxt, char* record);
-
-io_writer_t* io_ft_write_init(io_reader_t* io_reader,
-                              int write_fd,
-                              uint32_t num_records);
-int          io_ft_write_record(io_writer_t* io_writer, char* record);
-int          io_ft_write_close(io_writer_t* io_writer);
-
-
-/* Legacy methods */
-
-struct ft_data* ft_init(int fsock);
-size_t io_ft_get_offset(const char * const name,
-                        const struct fts3rec_offsets* const offsets);
-void ft_close(struct ft_data* data);
-void flow_print_record(struct ft_data *, char *);
-void flow_print_group_record(struct ft_data *data, struct aggr_record* aggr_record);
-struct ftio* get_ftio(struct ft_data* const dataformat,
-                      int out_fd,
-                      uint32_t total_flows);
+/**
+ * @brief Create flow-tools I/O handler
+ *
+ * @return I/O handler on success
+ * @return NULL on failure
+ */
+struct io_handler_s*
+ft_io_handler(void);
 
 #endif

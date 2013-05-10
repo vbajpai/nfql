@@ -24,34 +24,82 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#ifndef f_engine_ipfix_h
-#define f_engine_ipfix_h
+#ifndef f_engine_io_ipfix_h
+#define f_engine_io_ipfix_h
+
+#include "pipeline.h"
 
 #include <fixbuf/public.h>
 #include <glib.h>
-
-#include "errorhandlers.h"
-#include "ipfix-constants.h"
-#include "pipeline.h"
 
 /*--------------------------------------------------------------------------*/
 /* Type declarations                                                        */
 /*--------------------------------------------------------------------------*/
 
+struct io_ctxt_s;
 struct ipfix_templ_s;
 typedef struct ipfix_templ_s ipfix_templ_t;
 
-typedef struct ipfix_handler_s {
+struct ipfix_ctxt_s {
+  struct ipfix_templ_s* templ_spec;
+  fbInfoModel_t* info_model;
+};
+
+struct ipfix_reader_s {
   fbInfoModel_t *info_model;
   fbSession_t   *session;
   fbCollector_t *collector;
   fBuf_t        *fbuf;
   GError        *err;
-} ipfix_handler_t;
+};
+
+struct ipfix_writer_s {
+  fbInfoModel_t *info_model;
+  fbSession_t   *session;
+  fbCollector_t *collector;
+  fBuf_t        *fbuf;
+  GError        *err;
+};
 
 /*--------------------------------------------------------------------------*/
 /* Methods                                                                  */
 /*--------------------------------------------------------------------------*/
+
+/**
+ * @brief Create IPFIX I/O handler
+ *
+ * @return I/O handler on success
+ * @return NULL on failure
+ */
+struct io_handler_s*
+ipfix_io_handler(ipfix_templ_t* ipfix);
+
+/*--------------------------------------------------------------------------*/
+/* I/O handler                                                              */
+/*--------------------------------------------------------------------------*/
+
+struct io_reader_s* io_ipfix_read_init(struct io_ctxt_s* io_ctxt, int read_fd);
+char*        io_ipfix_read_record(struct io_reader_s* io_reader);
+size_t       io_ipfix_read_get_field_offset(struct io_reader_s* io_reader,
+                                         const char* field);
+size_t       io_ipfix_read_get_record_size(struct io_reader_s* read_ctxt);
+int          io_ipfix_read_close(struct io_reader_s* io_reader);
+
+void         io_ipfix_print_header(struct io_reader_s* io_reader);
+void         io_ipfix_print_record(struct io_reader_s* io_reader, char* record);
+void         io_ipfix_print_aggr_record(struct io_reader_s* io_reader,
+                                     struct aggr_record* aggr_record);
+
+uint64_t io_ipfix_record_get_StartTS(struct io_reader_s* read_ctxt,
+                                     char* record);
+uint64_t io_ipfix_record_get_EndTS(struct io_reader_s* read_ctxt,
+                                   char* record);
+
+struct io_writer_s* io_ipfix_write_init(struct io_reader_s* io_reader,
+                              int write_fd,
+                              uint32_t num_records);
+int          io_ipfix_write_record(struct io_writer_s* io_writer, char* record);
+int          io_ipfix_write_close(struct io_writer_s* io_writer);
 
 /*--------------------------------------------------------------------------*/
 /* Template specification                                                   */
@@ -90,11 +138,11 @@ ipfix_templ_get_ie_offset(const ipfix_templ_t* templ,
  *
  * On error, errExit() is called
  */
-ipfix_handler_t*
-ipfix_init_read(char* file,
+struct ipfix_reader_s*
+ipfix_init_read(FILE* fp,
                 ipfix_templ_t* templ);
 
 void
-ipfix_destroy(ipfix_handler_t *ipfix);
+ipfix_ctxt_destroy(struct ipfix_ctxt_s* ipfix);
 
 #endif

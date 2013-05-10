@@ -24,10 +24,13 @@
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
-#include "ipfix.h"
+#include "io-ipfix.h"
+
+#include "io.h"
+#include "ipfix-constants.h"
+#include "errorhandlers.h"
 
 #include <assert.h>
-
 
 /*--------------------------------------------------------------------------*/
 /* Type declarations                                                        */
@@ -50,6 +53,7 @@ typedef struct ipfix_templ_s {
 /* Local methods                                                            */
 /*--------------------------------------------------------------------------*/
 
+static void io_ipfix_ctxt_destroy(io_ctxt_t* io_ctxt);
 /**
  * @return retrieve IE ptr from template
  */
@@ -78,6 +82,59 @@ ipfix_get_fb_info_elem_spec(const ipfix_templ_t* templ);
 /*--------------------------------------------------------------------------*/
 /* Implementation                                                           */
 /*--------------------------------------------------------------------------*/
+
+io_handler_t*
+ipfix_io_handler(ipfix_templ_t* templ_spec) {
+
+  io_handler_t* io = calloc(1, sizeof(io_handler_t));
+  exitOn(io == NULL);
+
+  io->io_read_init             = io_ipfix_read_init;
+#if 0
+  io->io_read_record           = io_ipfix_read_record;
+  io->io_read_get_field_offset = io_ipfix_read_get_field_offset;
+  io->io_read_get_record_size  = io_ipfix_read_get_record_size;
+  io->io_read_close            = io_ipfix_read_close;
+
+  io->io_print_header          = io_ipfix_print_header;
+  io->io_print_debug_header    = io_ipfix_print_debug_header;
+  io->io_print_record          = io_ipfix_print_record;
+  io->io_print_aggr_record     = io_ipfix_print_aggr_record;
+
+  io->io_record_get_StartTS    = io_ipfix_record_get_StartTS;
+  io->io_record_get_EndTS      = io_ipfix_record_get_EndTS;
+
+  io->io_write_init            = io_ipfix_write_init;
+  io->io_write_record          = io_ipfix_write_record;
+  io->io_write_close           = io_ipfix_write_close;
+#endif
+  io->io_ctxt_destroy       = io_ipfix_ctxt_destroy;
+
+  io->ctxt.d.ipfix.templ_spec = templ_spec;
+  // TODO init info_model
+
+  return io;
+}
+
+/*--------------------------------------------------------------------------*/
+/* Local implementation                                                     */
+/*--------------------------------------------------------------------------*/
+
+
+static
+void
+io_ipfix_ctxt_destroy(io_ctxt_t* io_ctxt) {
+  // TODO destroy fb info elem
+}
+/*--------------------------------------------------------------------------*/
+/* I/O handler                                                              */
+/*--------------------------------------------------------------------------*/
+
+struct io_reader_s*
+io_ipfix_read_init(struct io_ctxt_s* io_ctxt, int read_fd) {
+  // TODO
+  return NULL;
+}
 
 /*--------------------------------------------------------------------------*/
 /* Template specification                                                   */
@@ -136,12 +193,12 @@ ipfix_templ_get_ie_offset(const ipfix_templ_t* templ,
 /* Reader                                                                   */
 /*--------------------------------------------------------------------------*/
 
-ipfix_handler_t*
-ipfix_init_read(char* file,
+struct ipfix_reader_s*
+ipfix_init_read(FILE* fp,
                 ipfix_templ_t* templ) {
   ipfix_templ_ie_register(templ, "tcpSourcePort");
 
-  ipfix_handler_t* ipfix = calloc(1, sizeof(ipfix_handler_t));
+  struct ipfix_reader_s* ipfix = calloc(1, sizeof(struct ipfix_reader_s));
   exitOn(ipfix == NULL);
 
   ipfix->info_model = fbInfoModelAlloc();
@@ -150,7 +207,7 @@ ipfix_init_read(char* file,
   ipfix->session = fbSessionAlloc(ipfix->info_model);
   exitOn(ipfix->session == NULL);
 
-  ipfix->collector = fbCollectorAllocFile(NULL, file, &ipfix->err);
+  ipfix->collector = fbCollectorAllocFP(NULL, fp);
   exitOn(ipfix->collector == NULL);
 
   ipfix->fbuf = fBufAllocForCollection(ipfix->session, ipfix->collector);
@@ -190,9 +247,9 @@ ipfix_init_read(char* file,
 }
 
 void
-ipfix_destroy(ipfix_handler_t* ipfix) {
-  fBufFree(ipfix->fbuf);
+ipfix_ctxt_destroy(struct ipfix_ctxt_s* ipfix) {
   fbInfoModelFree(ipfix->info_model);
+  free(ipfix->templ_spec);
 }
 
 /*--------------------------------------------------------------------------*/

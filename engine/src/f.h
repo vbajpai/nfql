@@ -28,21 +28,8 @@
 #ifndef f_engine_f_h
 #define f_engine_f_h
 
-#include <fixbuf/public.h>
-#include <getopt.h>
-#include <json/json.h>
-#include <pthread.h>
-#include <sys/stat.h>
-#include <sys/mman.h>
-
-#include "branch.h"
-#include "merger.h"
-#include "ungrouper.h"
-
-#include "auto-assign.h"
-#include "errorhandlers.h"
+#include "base.h"
 #include "io.h"
-#include "echo.h"
 
 struct parameters {
   char*                           query_filename;
@@ -166,9 +153,9 @@ struct json*
 parse_json_query(const char* query_file);
 
 struct flowquery*
-prepare_flowquery(io_handler_t* io,
-                  io_reader_t*  io_read_ctxt,
-                  io_data_t*    io_data,
+prepare_flowquery(struct io_handler_s* io,
+                  struct io_reader_s*  io_read_ctxt,
+                  struct io_data_s*    io_data,
                   const struct json* const json_query);
 
 int

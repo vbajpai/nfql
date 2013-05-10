@@ -29,10 +29,25 @@
 #define STR(x) #x
 #define XSTR(x) STR(x)
 #define VERSION 2.5
+
 #include "f.h"
 
-#include <sys/stat.h>
+#include "auto-assign.h"
+#include "branch.h"
+#include "echo.h"
+#include "errorhandlers.h"
+#include "io.h"
+#include "merger.h"
+#include "ungrouper.h"
+
 #include <fcntl.h>
+#include <fixbuf/public.h>
+#include <getopt.h>
+#include <json/json.h>
+#include <pthread.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <sys/stat.h>
 
 
 struct parameters*
@@ -1278,8 +1293,7 @@ read_trace(
 
   /* display the flow-header when --debug/--verbose=3 is SET */
   if(verbose_vvv && !file){
-
-    /* print flow header */
+    io->io_print_debug_header(read_ctxt);
     io->io_print_header(read_ctxt);
   }
 
@@ -1990,7 +2004,8 @@ main(int argc, char **argv) {
   /* close IO reader */
   io->io_read_close(read_ctxt);
 
-  io->io_handler_destroy(&io->ctxt);
+  /* free IO handler */
+  io->io_ctxt_destroy(&io->ctxt);
   free(io);
 
   /* free IO data */

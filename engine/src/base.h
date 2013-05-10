@@ -77,6 +77,5 @@ extern bool groupfilter_enabled;
 extern bool merger_enabled;
 extern bool ungrouper_enabled;
 
-#define FLOWHEADER "\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n"
 
 #endif

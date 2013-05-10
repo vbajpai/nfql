@@ -28,13 +28,101 @@
 #include "io-ft.h"
 
 #include "io.h"
+#include "errorhandlers.h"
 
 #include <assert.h>
 
 /*--------------------------------------------------------------------------*/
-/* Methods                                                                  */
+/* Local methods                                                            */
 /*--------------------------------------------------------------------------*/
 
+
+/* I/O handler methods */
+
+static struct io_reader_s*  io_ft_read_init(struct io_ctxt_s* io_ctxt,
+                                            int read_fd);
+static char*    io_ft_read_record(struct io_reader_s* read_ctxt);
+static size_t   io_ft_read_get_field_offset(struct io_reader_s* read_ctxt,
+                                            const char* field);
+static size_t   io_ft_read_get_record_size(struct io_reader_s* read_ctxt);
+static int  io_ft_read_close(struct io_reader_s* io_reader);
+
+static void io_ft_print_header(struct io_reader_s* io_reader);
+static void io_ft_print_debug_header(struct io_reader_s* io_reader);
+static void io_ft_print_record(struct io_reader_s* io_reader,
+                               char* record);
+static void io_ft_print_aggr_record(struct io_reader_s* io_reader,
+                                    struct aggr_record* aggr_record);
+
+static uint64_t io_ft_record_get_StartTS(struct io_reader_s* read_ctxt,
+                                         char* record);
+static uint64_t io_ft_record_get_EndTS(struct io_reader_s* read_ctxt,
+                                       char* record);
+
+static struct io_writer_s*  io_ft_write_init(struct io_reader_s* read_ctxt,
+                                             int write_fd,
+                                             uint32_t num_records);
+static int  io_ft_write_record(struct io_writer_s* io_writer,
+                               char* record);
+static int  io_ft_write_close(struct io_writer_s* io_writer);
+static void io_ft_ctxt_destroy(io_ctxt_t* io_ctxt);
+
+/* Legacy methods */
+
+static struct ft_data* ft_init(int fsock);
+static size_t io_ft_get_offset(const char * const name,
+                               const struct fts3rec_offsets* const offsets);
+static void ft_close(struct ft_data* data);
+static void flow_print_record(struct ft_data *, char *);
+static void flow_print_group_record(struct ft_data *data,
+                                    struct aggr_record* aggr_record);
+static struct ftio* get_ftio(struct ft_data* const dataformat,
+                             int out_fd,
+                             uint32_t total_flows);
+
+/*--------------------------------------------------------------------------*/
+/* Implementation                                                           */
+/*--------------------------------------------------------------------------*/
+
+struct io_handler_s*
+ft_io_handler(void) {
+  struct io_handler_s* io = calloc(1, sizeof(io_handler_t));
+  exitOn(io == NULL);
+
+  io->io_read_init             = io_ft_read_init;
+  io->io_read_record           = io_ft_read_record;
+  io->io_read_get_field_offset = io_ft_read_get_field_offset;
+  io->io_read_get_record_size  = io_ft_read_get_record_size;
+  io->io_read_close            = io_ft_read_close;
+
+  io->io_print_header          = io_ft_print_header;
+  io->io_print_debug_header    = io_ft_print_debug_header;
+  io->io_print_record          = io_ft_print_record;
+  io->io_print_aggr_record     = io_ft_print_aggr_record;
+
+  io->io_record_get_StartTS    = io_ft_record_get_StartTS;
+  io->io_record_get_EndTS      = io_ft_record_get_EndTS;
+
+  io->io_write_init            = io_ft_write_init;
+  io->io_write_record          = io_ft_write_record;
+  io->io_write_close           = io_ft_write_close;
+
+  io->io_ctxt_destroy          = io_ft_ctxt_destroy;
+
+  /* io->io_ctxt unused */
+
+  return io;
+}
+
+/*--------------------------------------------------------------------------*/
+/* Local implementation                                                     */
+/*--------------------------------------------------------------------------*/
+
+/*--------------------------------------------------------------------------*/
+/* I/O handler methods                                                      */
+/*--------------------------------------------------------------------------*/
+
+static
 io_reader_t*
 io_ft_read_init(io_ctxt_t* io_ctxt, int read_fd) {
   UNUSED(io_ctxt);
@@ -42,27 +130,28 @@ io_ft_read_init(io_ctxt_t* io_ctxt, int read_fd) {
   struct ft_data* data = ft_init(read_fd);
   io_reader_t* io_reader = (io_reader_t*) data;
 
-  assert(&io_reader->d.ft == data); /* XXX This may be guaranteed by the
-                                       standard */
-
   return io_reader;
 }
 
+static
 char*
 io_ft_read_record(io_reader_t* io_reader) {
   return ftio_read(&io_reader->d.ft.io);
 }
 
+static
 size_t
 io_ft_read_get_field_offset(io_reader_t* io_reader, const char* field) {
   return io_ft_get_offset(field, &io_reader->d.ft.offsets);
 }
 
+static
 size_t
 io_ft_read_get_record_size(io_reader_t* read_ctxt) {
   return (size_t) read_ctxt->d.ft.rec_size;
 }
 
+static
 int
 io_ft_read_close(io_reader_t* io_reader) {
   ft_close(&io_reader->d.ft);
@@ -70,23 +159,32 @@ io_ft_read_close(io_reader_t* io_reader) {
   return 0;
 }
 
+static
 void
-io_ft_print_header(io_reader_t* io_reader) {
+io_ft_print_debug_header(io_reader_t* io_reader) {
   ftio_header_print(&io_reader->d.ft.io, stdout, '#');
-  puts(FLOWHEADER);
 }
 
+static
+void
+io_ft_print_header(io_reader_t* io_reader) {
+  puts("\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n");
+}
+
+static
 void
 io_ft_print_record(io_reader_t* io_reader, char* record) {
   flow_print_record(&io_reader->d.ft, record);
 }
 
+static
 void
 io_ft_print_aggr_record(io_reader_t* io_reader,
                         struct aggr_record* aggr_record) {
   flow_print_group_record(&io_reader->d.ft, aggr_record);
 }
 
+static
 uint64_t
 io_ft_record_get_StartTS(io_reader_t* read_ctxt, char* record) {
     struct ft_data* dataformat = &read_ctxt->d.ft;
@@ -103,6 +201,7 @@ io_ft_record_get_StartTS(io_reader_t* read_ctxt, char* record) {
     return start_ts_msecs;
 }
 
+static
 uint64_t
 io_ft_record_get_EndTS(io_reader_t* read_ctxt, char* record) {
     struct ft_data* dataformat = &read_ctxt->d.ft;
@@ -119,6 +218,7 @@ io_ft_record_get_EndTS(io_reader_t* read_ctxt, char* record) {
     return end_ts_msecs;
 }
 
+static
 io_writer_t*
 io_ft_write_init(io_reader_t* io_reader,
                  int          write_fd,
@@ -134,11 +234,13 @@ io_ft_write_init(io_reader_t* io_reader,
   return (io_writer_t*) ftio;
 }
 
+static
 int
 io_ft_write_record(io_writer_t* io_writer, char* record) {
   return ftio_write(&io_writer->d.ft, record);
 }
 
+static
 int io_ft_write_close(io_writer_t* io_writer) {
   int rv = ftio_close(&io_writer->d.ft);
 
@@ -147,11 +249,17 @@ int io_ft_write_close(io_writer_t* io_writer) {
   return rv;
 }
 
+static
+void
+io_ft_ctxt_destroy(io_ctxt_t* io_ctxt) {
+}
 
-/* Legacy methods */
+
 /*--------------------------------------------------------------------------*/
 /* Legacy methods                                                           */
 /*--------------------------------------------------------------------------*/
+
+static
 struct ft_data *
 ft_init(int fd) {
 
@@ -194,6 +302,7 @@ ft_init(int fd) {
   return data;
 }
 
+static
 size_t
 io_ft_get_offset(const char * const name,
                  const struct fts3rec_offsets* const offsets) {
@@ -250,6 +359,7 @@ io_ft_get_offset(const char * const name,
   return -1;
 }
 
+static
 void
 ft_close(struct ft_data* data) {
 
@@ -260,6 +370,7 @@ ft_close(struct ft_data* data) {
   free(data); data = NULL;
 }
 
+static
 void
 flow_print_record(struct ft_data *data, char *record){
 
@@ -316,6 +427,7 @@ flow_print_record(struct ft_data *data, char *record){
     fflush(stdout);
 }
 
+static
 void
 flow_print_group_record(struct ft_data *data, struct aggr_record* aggr_record){
 
@@ -373,7 +485,7 @@ flow_print_group_record(struct ft_data *data, struct aggr_record* aggr_record){
     fflush(stdout);
 }
 
-
+static
 struct ftio*
 get_ftio(
          struct ft_data* const dataformat,

@@ -29,7 +29,7 @@
 
 #include "pipeline.h"
 #include "io-ft.h"
-#include "ipfix.h"
+#include "io-ipfix.h"
 
 /*--------------------------------------------------------------------------*/
 /* Type declarations                                                        */
@@ -37,21 +37,21 @@
 
 typedef struct io_reader_s {
   union {
-    struct ft_data         ft;
-    struct ipfix_handler_s ipfix;
+    struct ft_data        ft;
+    struct ipfix_reader_s ipfix;
   } d;
 } io_reader_t;
 
 typedef struct io_writer_s {
   union {
-    struct ftio     ft;
-    ipfix_handler_t ipfix;
+    struct ftio           ft;
+    struct ipfix_writer_s ipfix;
   } d;
 } io_writer_t;
 
 typedef struct io_ctxt_s {
   union {
-    ipfix_templ_t* ipfix;
+    struct ipfix_ctxt_s ipfix;
   } d;
 } io_ctxt_t;
 
@@ -68,6 +68,7 @@ typedef struct io_handler_s {
   int           (*io_read_close)(io_reader_t* io_reader);
 
   void          (*io_print_header)(io_reader_t* io_reader);
+  void          (*io_print_debug_header)(io_reader_t* io_reader);
   void          (*io_print_record)(io_reader_t* io_reader, char* record);
   void          (*io_print_aggr_record)(io_reader_t* io_reader,
                                         struct aggr_record* aggr_record);
@@ -81,7 +82,7 @@ typedef struct io_handler_s {
   int           (*io_write_record)(io_writer_t* writer_ctxt, char* record);
   int           (*io_write_close)(io_writer_t* io_writer);
 
-  void          (*io_handler_destroy)(io_ctxt_t* io_ctxt);
+  void          (*io_ctxt_destroy)(io_ctxt_t* io_ctxt);
 
   io_ctxt_t ctxt;
 
@@ -90,23 +91,5 @@ typedef struct io_handler_s {
 /*--------------------------------------------------------------------------*/
 /* Methods                                                                  */
 /*--------------------------------------------------------------------------*/
-
-/**
- * @brief Create IPFIX I/O handler
- *
- * @return I/O handler on success
- * @return NULL on failure
- */
-io_handler_t*
-ipfix_io_handler(ipfix_templ_t* ipfix);
-
-/**
- * @brief Create flow-tools I/O handler
- *
- * @return I/O handler on success
- * @return NULL on failure
- */
-io_handler_t*
-ft_io_handler(void);
 
 #endif // ! f_engine_io_h
