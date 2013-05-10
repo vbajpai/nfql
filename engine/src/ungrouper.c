@@ -70,8 +70,8 @@ ungrouper(
           char* filename = (char*)0L;
           if (asprintf(&filename, "%s/ungrouper-stream-%d.ftz",dirpath,i) < 0)
             errExit("asprintf(...): failed");
-          int out_fd = get_fd(filename);
-          if(out_fd == -1) errExit("get_fd(...) returned -1");
+          int out_fd = get_wronly_fd(filename);
+          if(out_fd == -1) errExit("get_wronly_fd(...) returned -1");
           else free(filename);
 
           /* get the output stream */

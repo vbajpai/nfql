@@ -74,8 +74,8 @@ merger(
     char* filename = (char*)0L;
     if (asprintf(&filename, "%s/merger-merged-groups.ftz", dirpath) < 0)
       errExit("asprintf(): failed");
-    int out_fd = get_fd(filename);
-    if(out_fd == -1) errExit("get_fd(...) returned -1");
+    int out_fd = get_wronly_fd(filename);
+    if(out_fd == -1) errExit("get_wronly_fd(...) returned -1");
     else free(filename);
 
     uint32_t num_flows = (uint32_t) (mresult->num_group_tuples * num_branches);
@@ -93,8 +93,8 @@ merger(
     char* filename = (char*)0L;
     if (asprintf(&filename, "%s/merger-to-be-merged-groups.ftz", dirpath) < 0)
       errExit("asprintf(): failed");
-    int out_fd = get_fd(filename);
-    if(out_fd == -1) errExit("get_fd(...) returned -1");
+    int out_fd = get_wronly_fd(filename);
+    if(out_fd == -1) errExit("get_wronly_fd(...) returned -1");
     else free(filename);
 
     uint32_t num_flows =

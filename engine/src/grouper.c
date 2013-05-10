@@ -157,8 +157,8 @@ get_grouper_intermediates
       if (asprintf(&filename, "%s/grouper-branch-%d-sorted-records.ftz",
                dirpath, branch_id) < 0)
         errExit("asprintf(...): failed");
-      int out_fd = get_fd(filename);
-      if(out_fd == -1) errExit("get_fd(...) returned -1");
+      int out_fd = get_wronly_fd(filename);
+      if(out_fd == -1) errExit("get_wronly_fd(...) returned -1");
       else free(filename);
 
       /* get the output stream */
@@ -277,8 +277,8 @@ grouper(
       char* filename = (char*)0L;
       if (asprintf(&filename, "%s/grouper-branch-%d-groups.ftz",
                dirpath, branch_id) < 0) errExit("asprintf(...) returned -1");
-      int out_fd = get_fd(filename);
-      if(out_fd == -1) errExit("get_fd(...) returned -1");
+      int out_fd = get_wronly_fd(filename);
+      if(out_fd == -1) errExit("get_wronly_fd(...) returned -1");
       else free(filename);
 
       writer_ctxt = io->io_write_init(read_ctxt, out_fd, gresult->num_groups);
@@ -304,18 +304,6 @@ grouper(
       calloc(1, sizeof(struct aggr_record));
       if (group_aggr_record == NULL)
         errExit("calloc");
-
-      /* free'd just after returning from merger(...) */
-      struct fttime* start = calloc(1, sizeof(struct fttime));
-      if (start == NULL)
-        errExit("calloc");
-
-      /* free'd just after returning from merger(...) */
-      struct fttime* end = calloc(1, sizeof(struct fttime));
-      if (end == NULL)
-        errExit("calloc");
-      group_aggr_record->start = start;
-      group_aggr_record->end = end;
 
       /* free'd just after returning from merger(...) */
       char* aggr_record = (char *)calloc(1, rec_size);
@@ -346,63 +334,29 @@ grouper(
 
       char* first_item = fresult->filtered_recordset[0];
 
-      uint32_t sysUpTime =
-      *(u_int32_t*)(first_item+ io->io_read_get_field_offset(read_ctxt, "sysUpTime"));
-      uint32_t unix_secs =
-      *(u_int32_t*)(first_item+ io->io_read_get_field_offset(read_ctxt, "unix_secs"));
-      uint32_t unix_nsecs =
-      *(u_int32_t*)(first_item+ io->io_read_get_field_offset(read_ctxt, "unix_nsecs"));
-      uint32_t First =
-      *(u_int32_t*)(first_item+ io->io_read_get_field_offset(read_ctxt, "flowStartSysUpTime"));
-      uint32_t Last =
-      *(u_int32_t*)(first_item+ io->io_read_get_field_offset(read_ctxt, "flowEndSysUpTime"));
+      uint64_t min = io->io_record_get_StartTS(read_ctxt, first_item);
+      uint64_t max = io->io_record_get_EndTS(read_ctxt, first_item);
 
-      struct fttime min = ftltime(sysUpTime,unix_secs,unix_nsecs,First);
-      struct fttime max = ftltime(sysUpTime,unix_secs,unix_nsecs,Last);
-
-      group_aggr_record->start->secs = min.secs;
-      group_aggr_record->start->msecs = min.msecs;
-      group_aggr_record->end->secs = max.secs;
-      group_aggr_record->end->msecs = max.msecs;
+      group_aggr_record->start_ts_msec = min;
+      group_aggr_record->end_ts_msec = max;
 
       for (int i = 0; i < fresult->num_filtered_records; i++) {
 
         char* current_item = fresult->filtered_recordset[i];
 
-        uint32_t sysUpTime =
-        *(u_int32_t*)(current_item + io->io_read_get_field_offset(read_ctxt, "sysUpTime"));
-        uint32_t unix_secs =
-        *(u_int32_t*)(current_item + io->io_read_get_field_offset(read_ctxt, "unix_secs"));
-        uint32_t unix_nsecs =
-        *(u_int32_t*)(current_item + io->io_read_get_field_offset(read_ctxt, "unix_nsecs"));
-        uint32_t First =
-        *(u_int32_t*)(current_item + io->io_read_get_field_offset(read_ctxt, "flowStartSysUpTime"));
-        uint32_t Last =
-        *(u_int32_t*)(current_item + io->io_read_get_field_offset(read_ctxt, "flowEndSysUpTime"));
-
-        struct fttime start =
-        ftltime (sysUpTime, unix_secs, unix_nsecs, First);
-        struct fttime end =
-        ftltime (sysUpTime, unix_secs, unix_nsecs, Last);
+        uint64_t start = io->io_record_get_StartTS(read_ctxt, current_item);
+        uint64_t end = io->io_record_get_EndTS(read_ctxt, current_item);
 
         /* update the START timestamp if we have a new min */
-        if (
-            (start.secs < min.secs) ||
-            ((start.secs == min.secs) && (start.msecs < min.msecs))
-            ) {
-          min.secs = start.secs; min.msecs = start.msecs;
-          group_aggr_record->start->secs = min.secs;
-          group_aggr_record->start->msecs = min.msecs;
+        if (start < min) {
+          min = start;
+          group_aggr_record->start_ts_msec = min;
         }
 
         /* update the END timestamp if we have a new max */
-        if (
-            (end.secs > max.secs) ||
-            ((end.secs == max.secs) && (end.msecs > max.msecs))
-            ) {
-          max.secs = end.secs; max.msecs = end.msecs;
-          group_aggr_record->end->secs = max.secs;
-          group_aggr_record->end->msecs = max.msecs;
+        if (end > max) {
+          max = end;
+          group_aggr_record->end_ts_msec = max;
         }
 
         group->members[i] = current_item;
@@ -493,8 +447,8 @@ grouper(
         if (asprintf(&filename, "%s/grouper-branch-%d-group-%d-records.ftz",
                  dirpath, branch_id, 0) < 0)
           errExit("asprintf(...) returned -1");
-        int out_fd = get_fd(filename);
-        if(out_fd == -1) errExit("get_fd(...) returned -1");
+        int out_fd = get_wronly_fd(filename);
+        if(out_fd == -1) errExit("get_wronly_fd(...) returned -1");
         else free(filename);
 
         /* get the output stream */
@@ -591,18 +545,6 @@ grouper(
             errExit("calloc");
 
           /* free'd just after returning from merger(...) */
-          struct fttime* start = calloc(1, sizeof(struct fttime));
-          if (start == NULL)
-            errExit("calloc");
-
-          /* free'd just after returning from merger(...) */
-          struct fttime* end = calloc(1, sizeof(struct fttime));
-          if (end == NULL)
-            errExit("calloc");
-          group_aggr_record->start = start;
-          group_aggr_record->end = end;
-
-          /* free'd just after returning from merger(...) */
           char* aggr_record = (char *)calloc(1, rec_size);
           if (aggr_record == NULL)
             errExit("calloc");
@@ -637,24 +579,11 @@ grouper(
           group->members[0] = *current_item;
 
           /* set minimum START and maximum END timestamp */
-          uint32_t sysUpTime =
-          *(u_int32_t*)(*current_item + io->io_read_get_field_offset(read_ctxt, "sysUpTime"));
-          uint32_t unix_secs =
-          *(u_int32_t*)(*current_item + io->io_read_get_field_offset(read_ctxt, "unix_secs"));
-          uint32_t unix_nsecs =
-          *(u_int32_t*)(*current_item + io->io_read_get_field_offset(read_ctxt, "unix_nsecs"));
-          uint32_t First =
-          *(u_int32_t*)(*current_item + io->io_read_get_field_offset(read_ctxt, "flowStartSysUpTime"));
-          uint32_t Last =
-          *(u_int32_t*)(*current_item + io->io_read_get_field_offset(read_ctxt, "flowEndSysUpTime"));
+          uint64_t min = io->io_record_get_StartTS(read_ctxt, *current_item);
+          uint64_t max = io->io_record_get_EndTS(read_ctxt, *current_item);
 
-          struct fttime min = ftltime(sysUpTime,unix_secs,unix_nsecs,First);
-          struct fttime max = ftltime(sysUpTime,unix_secs,unix_nsecs,Last);
-
-          group_aggr_record->start->secs = min.secs;
-          group_aggr_record->start->msecs = min.msecs;
-          group_aggr_record->end->secs = max.secs;
-          group_aggr_record->end->msecs = max.msecs;
+          group_aggr_record->start_ts_msec = min;
+          group_aggr_record->end_ts_msec = max;
 
           /* initialize an output stream, if file write is requested */
           if(verbose_vv && file) {
@@ -664,8 +593,8 @@ grouper(
             if (asprintf(&filename, "%s/grouper-branch-%d-group-%d-records.ftz",
                      dirpath, branch_id, gresult->num_groups - 1) < 0)
               errExit("asprintf(...): failed");
-            int out_fd = get_fd(filename);
-            if(out_fd == -1) errExit("get_fd(...) returned -1");
+            int out_fd = get_wronly_fd(filename);
+            if(out_fd == -1) errExit("get_wronly_fd(...) returned -1");
             else free(filename);
 
             /* get the output stream */
@@ -712,40 +641,19 @@ grouper(
                 errExit("realloc");
               group->members[group->num_members-1] = *current_item;
 
-              uint32_t sysUpTime =
-              *(u_int32_t*)(*current_item + io->io_read_get_field_offset(read_ctxt, "sysUpTime"));
-              uint32_t unix_secs =
-              *(u_int32_t*)(*current_item + io->io_read_get_field_offset(read_ctxt, "unix_secs"));
-              uint32_t unix_nsecs =
-              *(u_int32_t*)(*current_item + io->io_read_get_field_offset(read_ctxt, "unix_nsecs"));
-              uint32_t First =
-              *(u_int32_t*)(*current_item + io->io_read_get_field_offset(read_ctxt, "flowStartSysUpTime"));
-              uint32_t Last =
-              *(u_int32_t*)(*current_item + io->io_read_get_field_offset(read_ctxt, "flowEndSysUpTime"));
-
-              struct fttime start =
-              ftltime (sysUpTime, unix_secs, unix_nsecs, First);
-              struct fttime end =
-              ftltime (sysUpTime, unix_secs, unix_nsecs, Last);
+              uint64_t start = io->io_record_get_StartTS(read_ctxt, *current_item);
+              uint64_t end = io->io_record_get_EndTS(read_ctxt, *current_item);
 
               /* update the START timestamp if we have a new min */
-              if (
-                  (start.secs < min.secs) ||
-                  ((start.secs == min.secs) && (start.msecs < min.msecs))
-                 ) {
-                min.secs = start.secs; min.msecs = start.msecs;
-                group_aggr_record->start->secs = min.secs;
-                group_aggr_record->start->msecs = min.msecs;
+              if (start < min) {
+                min = start;
+                group_aggr_record->start_ts_msec = min;
               }
 
               /* update the END timestamp if we have a new max */
-              if (
-                  (end.secs > max.secs) ||
-                  ((end.secs == max.secs) && (end.msecs > max.msecs))
-                 ) {
-                max.secs = end.secs; max.msecs = end.msecs;
-                group_aggr_record->end->secs = max.secs;
-                group_aggr_record->end->msecs = max.msecs;
+              if (end > max) {
+                max = end;
+                group_aggr_record->end_ts_msec = max;
               }
 
               // write this member to the file (if requested)

@@ -28,11 +28,6 @@
 #include "io-ft.h"
 
 #include "io.h"
-//#include "errorhandlers.h"
-//#include "auto-assign.h"
-//#include "echo.h"
-//#include <fcntl.h>
-//#include <time.h>
 
 #include <assert.h>
 
@@ -90,6 +85,38 @@ void
 io_ft_print_aggr_record(io_reader_t* io_reader,
                         struct aggr_record* aggr_record) {
   flow_print_group_record(&io_reader->d.ft, aggr_record);
+}
+
+uint64_t
+io_ft_record_get_StartTS(io_reader_t* read_ctxt, char* record) {
+    struct ft_data* dataformat = &read_ctxt->d.ft;
+
+    uint32_t sysUpTime = *(u_int32_t*)(record + (dataformat->offsets).sysUpTime);
+    uint32_t unix_secs = *(u_int32_t*)(record + (dataformat->offsets).unix_secs);
+    uint32_t unix_nsecs = *(u_int32_t*)(record + (dataformat->offsets).unix_nsecs);
+    uint32_t First = *(u_int32_t*)(record + (dataformat->offsets).First);
+
+    struct fttime ft_start_ts = ftltime(sysUpTime,unix_secs,unix_nsecs,First);
+
+    uint64_t start_ts_msecs = 1000LL * ft_start_ts.secs + ft_start_ts.msecs;
+
+    return start_ts_msecs;
+}
+
+uint64_t
+io_ft_record_get_EndTS(io_reader_t* read_ctxt, char* record) {
+    struct ft_data* dataformat = &read_ctxt->d.ft;
+
+    uint32_t sysUpTime = *(u_int32_t*)(record + (dataformat->offsets).sysUpTime);
+    uint32_t unix_secs = *(u_int32_t*)(record + (dataformat->offsets).unix_secs);
+    uint32_t unix_nsecs = *(u_int32_t*)(record + (dataformat->offsets).unix_nsecs);
+    uint32_t Last = *(u_int32_t*)(record + (dataformat->offsets).Last);
+
+    struct fttime ft_end_ts = ftltime(sysUpTime,unix_secs,unix_nsecs,Last);
+
+    uint64_t end_ts_msecs = 1000LL * ft_end_ts.secs + ft_end_ts.msecs;
+
+    return end_ts_msecs;
 }
 
 io_writer_t*
@@ -311,23 +338,22 @@ flow_print_group_record(struct ft_data *data, struct aggr_record* aggr_record){
   cur.prot = ((u_int8_t*)(record+(data->offsets).prot));
   cur.tcp_flags = ((u_int8_t*)(record+(data->offsets).tcp_flags));
 
-  struct fttime
-  ftt = *aggr_record->start;
-  struct tm *tm;
-  time_t t_first = ftt.secs;
-  tm = localtime(&t_first);
+  struct tm* tm;
+  time_t t_first_secs = aggr_record->start_ts_msec / 1000;
+  u_long first_msecs = aggr_record->start_ts_msec % 1000;
+  tm = localtime(&t_first_secs);
 
   printf("%-2.2d%-2.2d.%-2.2d:%-2.2d:%-2.2d.%-3.3lu ",
          (int)tm->tm_mon+1, (int)tm->tm_mday, (int)tm->tm_hour,
-         (int)tm->tm_min, (int)tm->tm_sec, (u_long)ftt.msecs);
+         (int)tm->tm_min, (int)tm->tm_sec, first_msecs);
 
-  ftt = *aggr_record->end;
-  time_t t_last = ftt.secs;
-  tm = localtime(&t_last);
+  time_t t_last_secs = aggr_record->end_ts_msec / 1000;
+  u_long last_msecs = aggr_record->end_ts_msec % 1000;
+  tm = localtime(&t_last_secs);
 
   printf("%-2.2d%-2.2d.%-2.2d:%-2.2d:%-2.2d.%-3.3lu ",
          (int)tm->tm_mon+1, (int)tm->tm_mday, (int)tm->tm_hour,
-         (int)tm->tm_min, (int)tm->tm_sec, (u_long)ftt.msecs);
+         (int)tm->tm_min, (int)tm->tm_sec, last_msecs);
 
   /* other info */
   char fmt_buf1[64], fmt_buf2[64];

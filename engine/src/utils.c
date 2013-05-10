@@ -42,18 +42,16 @@
 /* -----------------------------------------------------------------------*/
 
 int
-get_fd(char* filename) {
+get_wronly_fd(char* filename) {
 
   int out_fd = 1;
 
   if ((out_fd = open(filename,  O_WRONLY|O_CREAT|O_TRUNC, 0644)) == -1){
-    fterr_err(1, "open(%s)", filename);
     return -1;
   }
 
   struct stat sb;
   if (fstat(out_fd, &sb) == -1) {
-    fterr_err(1, "fstat(%s)", filename);
     return -1;
   }
 

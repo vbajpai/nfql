@@ -72,6 +72,9 @@ typedef struct io_handler_s {
   void          (*io_print_aggr_record)(io_reader_t* io_reader,
                                         struct aggr_record* aggr_record);
 
+  uint64_t      (*io_record_get_StartTS)(io_reader_t* read_ctxt, char* record);
+  uint64_t      (*io_record_get_EndTS)(io_reader_t* read_ctxt, char* record);
+
   io_writer_t*  (*io_write_init)(io_reader_t* io_reader,
                                  int write_fd,
                                  uint32_t num_records);

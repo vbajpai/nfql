@@ -55,6 +55,9 @@ ft_io_handler(void) {
   io->io_print_record          = io_ft_print_record;
   io->io_print_aggr_record     = io_ft_print_aggr_record;
 
+  io->io_record_get_StartTS    = io_ft_record_get_StartTS;
+  io->io_record_get_EndTS      = io_ft_record_get_EndTS;
+
   io->io_write_init            = io_ft_write_init;
   io->io_write_record          = io_ft_write_record;
   io->io_write_close           = io_ft_write_close;

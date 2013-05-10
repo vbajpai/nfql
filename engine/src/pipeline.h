@@ -46,8 +46,8 @@ struct aggr_result {
 
 struct aggr_record {
   char*                                       aggr_record;
-  struct fttime*                              start;
-  struct fttime*                              end;
+  uint64_t                                    start_ts_msec;
+  uint64_t                                    end_ts_msec;
 };
 
 struct filter_clause {

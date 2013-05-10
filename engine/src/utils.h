@@ -38,7 +38,7 @@
 
 /* WRONLY */
 int
-get_fd(char* filename);
+get_wronly_fd(char* filename);
 
 
 FILE*

@@ -1263,8 +1263,8 @@ read_trace(
       if (asprintf(&filename, "%s/filter-branch-%d-filtered-records.ftz",
                dirpath, branch->branch_id) < 0)
         errExit("asprintf(...): failed");
-      int out_fd = get_fd(filename);
-      if(out_fd == -1) errExit("get_fd(...) returned -1");
+      int out_fd = get_wronly_fd(filename);
+      if(out_fd == -1) errExit("get_wronly_fd(...) returned -1");
       else free(filename);
 
       /* get the output stream */
@@ -1824,8 +1824,6 @@ main(int argc, char **argv) {
         }
 #endif
         struct aggr_record* aggr_record = group->aggr_result->aggr_record;
-        free(aggr_record->start); aggr_record->start = NULL;
-        free(aggr_record->end); aggr_record->end = NULL;
         free(aggr_record->aggr_record); aggr_record->aggr_record = NULL;
 
         free(aggr_record); aggr_record = NULL;
