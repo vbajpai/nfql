@@ -77,5 +77,7 @@ extern bool groupfilter_enabled;
 extern bool merger_enabled;
 extern bool ungrouper_enabled;
 
+/* IPFIX I/O format */
+extern bool ipfix_enabled;
 
 #endif

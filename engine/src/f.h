@@ -150,7 +150,7 @@ struct parameters*
 parse_cmdline_args(int argc, char** const argv);
 
 struct json*
-parse_json_query(const char* query_file);
+parse_json_query(const char* query_file, struct ipfix_templ_s* templ);
 
 struct flowquery*
 prepare_flowquery(struct io_handler_s* io,

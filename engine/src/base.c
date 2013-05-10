@@ -43,3 +43,6 @@ bool groupaggregations_enabled;
 bool groupfilter_enabled;
 bool merger_enabled;
 bool ungrouper_enabled;
+
+/* IPFIX I/O format */
+bool ipfix_enabled;

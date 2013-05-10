@@ -54,7 +54,7 @@ struct parameters*
 parse_cmdline_args(int argc, char** const argv) {
 
   int                                 opt;
-  char*                               shortopts = "z:d:v:DhV";
+  char*                               shortopts = "z:d:v:DhVI";
   static struct option                longopts[] = {
     { "zlevel",     required_argument,  NULL,           'z' },
     { "dirpath",    required_argument,  NULL,           'd' },
@@ -62,6 +62,7 @@ parse_cmdline_args(int argc, char** const argv) {
     { "verbose",    required_argument,  NULL,           'v' },
     { "version",    no_argument,        NULL,           'V' },
     { "help",       no_argument,        NULL,           'h' },
+    { "ipfix",      no_argument,        NULL,           'I' },
     {  NULL,        0,                  NULL,            0  }
   };
   enum verbosity_levels               verbose_level = -1;
@@ -104,6 +105,7 @@ parse_cmdline_args(int argc, char** const argv) {
       case 'h': usageErr(usage_string, argv[0], argv[0]);
       case 'V': fprintf(stdout, "%s version %s", argv[0], XSTR(VERSION));
                 exit(EXIT_SUCCESS);
+      case 'I': ipfix_enabled = TRUE; break;
       case ':': usageError(argv[0], "Missing argument", optopt);
       default: exit(EXIT_FAILURE);
     }
@@ -119,13 +121,20 @@ parse_cmdline_args(int argc, char** const argv) {
 }
 
 struct json*
-parse_json_query(const char* const query_file) {
+parse_json_query(const char* const query_file,
+                 struct ipfix_templ_s* ipfix_templ) {
 
-  /* param_data->query_mmap is free'd after calling parse_json_query(...)
-   * param_data->query_mmap_stat is free'd after freeing param_data->query_mmap
-   * param_data->trace is free'd before exiting from main(...)
-   * param_data is free'd before exiting from main(...)
-   */
+#define REGISTER_IPFIX_IE(ie)                                               \
+  do {                                                                      \
+    if (ipfix_enabled) {                                                    \
+      if (ipfix_templ_ie_register(ipfix_templ,                              \
+                            json_object_get_string(ie)) < 0) {              \
+        fprintf(stderr, "Error while registering IE %s\n",                  \
+                json_object_get_string(ie));                                \
+        errExit("ipfix_templ_ie_register");                                 \
+      }                                                                     \
+    }                                                                       \
+  } while (0)
 
   struct stat query_mmap_stat;
   int fsock;
@@ -254,6 +263,7 @@ parse_json_query(const char* const query_file) {
           foffset = json_object_object_get(term_items, "offset");
           struct json_object*
           fo_name = json_object_object_get(foffset, "name");
+          REGISTER_IPFIX_IE(fo_name);
           struct json_object*
           fo_val = json_object_object_get(foffset, "value");
           struct json_object*
@@ -354,8 +364,10 @@ parse_json_query(const char* const query_file) {
 
           struct json_object*
           f1_name = json_object_object_get(offset, "f1_name");
+          REGISTER_IPFIX_IE(f1_name);
           struct json_object*
           f2_name = json_object_object_get(offset, "f2_name");
+          REGISTER_IPFIX_IE(f2_name);
           struct json_object*
           f1_datatype = json_object_object_get(offset, "f1_datatype");
           struct json_object*
@@ -453,6 +465,7 @@ parse_json_query(const char* const query_file) {
 
           struct json_object*
           name = json_object_object_get(offset, "name");
+          REGISTER_IPFIX_IE(name);
           struct json_object*
           datatype = json_object_object_get(offset, "datatype");
 
@@ -555,6 +568,7 @@ parse_json_query(const char* const query_file) {
           offset = json_object_object_get(term_items, "offset");
           struct json_object*
           fo_name = json_object_object_get(offset, "name");
+          REGISTER_IPFIX_IE(fo_name);
           struct json_object*
           fo_val = json_object_object_get(offset, "value");
           struct json_object*
@@ -675,8 +689,10 @@ parse_json_query(const char* const query_file) {
 
         struct json_object*
         f1_name = json_object_object_get(offset, "f1_name");
+        REGISTER_IPFIX_IE(f1_name);
         struct json_object*
         f2_name = json_object_object_get(offset, "f2_name");
+        REGISTER_IPFIX_IE(f2_name);
         struct json_object*
         f1_datatype = json_object_object_get(offset, "f1_datatype");
         struct json_object*
@@ -745,13 +761,7 @@ parse_json_query(const char* const query_file) {
 
 #endif
 
-
-
-
-
-
-
-
+#undef REGISTER_IPFIX_IE
 
   /* call put(...) only on the root to decremenet the reference count */
   json_object_put(query); query = NULL;
@@ -1491,9 +1501,6 @@ run_branch_async(const struct flowquery* const fquery){
 
 int
 main(int argc, char **argv) {
-
-
-
   /* -----------------------------------------------------------------------*/
   /*                  parsing the command line arguments                    */
   /* -----------------------------------------------------------------------*/
@@ -1504,18 +1511,18 @@ main(int argc, char **argv) {
 
   /* ----------------------------------------------------------------------- */
 
-
-
-
-
-
-
   /* -----------------------------------------------------------------------*/
   /*                         read the input query                           */
   /*                  parse the query json into struct                      */
   /* -----------------------------------------------------------------------*/
 
-  struct json* json_query = parse_json_query(params->query_filename);
+  ipfix_templ_t* ipfix_templ = NULL;
+  if (ipfix_enabled) {
+    ipfix_templ = ipfix_templ_new();
+  }
+
+  struct json* json_query = parse_json_query(params->query_filename,
+                                             ipfix_templ);
   if (json_query == NULL)
     errExit("parse_json_query(...) returned NULL");
 
@@ -1526,7 +1533,13 @@ main(int argc, char **argv) {
   /* -----------------------------------------------------------------------*/
 
   io_data_t     io_data = { 0 };
-  io_handler_t* io = ft_io_handler();
+  io_handler_t* io = NULL;
+
+  if (ipfix_enabled) {
+    io = ipfix_io_handler(ipfix_templ);
+  } else {
+    io = ft_io_handler();
+  }
 
   int trace_fd;
   if(!strcmp(params->trace_filename,"-"))

@@ -34,14 +34,14 @@ if __name__ == '__main__':
 
 
 
-  term1 = {'term': vars(FilterRule('tcpDestinationPort', 443, 'RULE_S1_16', 0,
+  term1 = {'term': vars(FilterRule('destinationTransportPort', 443, 'RULE_S1_16', 0,
                                    'RULE_EQ'))}
   term2 = {'term': vars(FilterRule('protocolIdentifier', protocol('TCP'), 'RULE_S1_16', 0,
                                     'RULE_EQ'))}
   clause1 = {'clause': [term1] + [term2]}
   filter1 = {'dnf-expr': [clause1]}
 
-  term1 = {'term': vars(FilterRule('tcpSourcePort', 443, 'RULE_S1_16', 0,
+  term1 = {'term': vars(FilterRule('sourceTransportPort', 443, 'RULE_S1_16', 0,
                                    'RULE_EQ'))}
   term2 = {'term': vars(FilterRule('protocolIdentifier', protocol('TCP'), 'RULE_S1_16', 0,
                                     'RULE_EQ'))}

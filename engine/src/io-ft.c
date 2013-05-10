@@ -36,8 +36,9 @@
 /* Local methods                                                            */
 /*--------------------------------------------------------------------------*/
 
-
-/* I/O handler methods */
+/*--------------------------------------------------------------------------*/
+/* I/O handler                                                              */
+/*--------------------------------------------------------------------------*/
 
 static struct io_reader_s*  io_ft_read_init(struct io_ctxt_s* io_ctxt,
                                             int read_fd);
@@ -307,11 +308,12 @@ size_t
 io_ft_get_offset(const char * const name,
                  const struct fts3rec_offsets* const offsets) {
 
-  /* TODO fix temporary hack */
+  /* IPFIX -> NFv5 mappings */
   #define CASEOFF_IPFIX(ipfix_ie, memb)       \
   if (strcmp(name, #ipfix_ie) == 0)           \
     return offsets->memb
 
+  /* NFv5 only */
   #define CASEOFF(memb)                       \
   if (strcmp(name, #memb) == 0)               \
     return offsets->memb
@@ -330,10 +332,8 @@ io_ft_get_offset(const char * const name,
 	CASEOFF_IPFIX(octetDeltaCount, dOctets);
 	CASEOFF_IPFIX(flowStartSysUpTime, First);
 	CASEOFF_IPFIX(flowEndSysUpTime, Last);
-	CASEOFF_IPFIX(tcpSourcePort, srcport);
-	CASEOFF_IPFIX(udpSourcePort, srcport);
-	CASEOFF_IPFIX(tcpDestinationPort, dstport);
-	CASEOFF_IPFIX(udpDestinationPort, dstport);
+	CASEOFF_IPFIX(sourceTransportPort, srcport);
+	CASEOFF_IPFIX(destinationTransportPort, dstport);
 	CASEOFF_IPFIX(protocolIdentifier, prot);
 	CASEOFF_IPFIX(ipClassOfService, tos);
 	CASEOFF_IPFIX(tcpControlBits, tcp_flags);

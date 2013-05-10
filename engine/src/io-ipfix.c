@@ -53,7 +53,58 @@ typedef struct ipfix_templ_s {
 /* Local methods                                                            */
 /*--------------------------------------------------------------------------*/
 
-static void io_ipfix_ctxt_destroy(io_ctxt_t* io_ctxt);
+/*--------------------------------------------------------------------------*/
+/* I/O handler                                                              */
+/*--------------------------------------------------------------------------*/
+
+static  struct  io_reader_s*  io_ipfix_read_init(struct io_ctxt_s* io_ctxt,
+                                               int read_fd);
+static  char*   io_ipfix_read_record(struct io_reader_s* read_ctxt);
+static  size_t  io_ipfix_read_get_field_offset(struct io_reader_s* read_ctxt,
+                                               const char* field);
+static  size_t  io_ipfix_read_get_record_size(struct io_reader_s* read_ctxt);
+static  int     io_ipfix_read_close(struct io_reader_s* read_ctxt);
+
+static  void    io_ipfix_print_header(struct io_reader_s* read_ctxt);
+static  void    io_ipfix_print_debug_header(struct io_reader_s* read_ctxt);
+static  void    io_ipfix_print_record(struct io_reader_s* read_ctxt,
+                                      char* record);
+static  void    io_ipfix_print_aggr_record(struct io_reader_s* read_ctxt,
+                                           struct aggr_record* aggr_record);
+
+static  uint64_t    io_ipfix_record_get_StartTS(struct io_reader_s* read_ctxt,
+                                                char* record);
+static  uint64_t    io_ipfix_record_get_EndTS(struct io_reader_s* read_ctxt,
+                                              char* record);
+
+static  struct io_writer_s* io_ipfix_write_init(struct io_reader_s* read_ctxt,
+                                                int write_fd,
+                                                uint32_t num_records);
+static int      io_ipfix_write_record(struct io_writer_s* write_ctxt,
+                                      char* record);
+static int      io_ipfix_write_close(struct io_writer_s* write_ctxt);
+static void     io_ipfix_ctxt_destroy(struct io_ctxt_s* io_ctxt);
+
+/*--------------------------------------------------------------------------*/
+/* Template specification                                                   */
+/*--------------------------------------------------------------------------*/
+
+/**
+ * @return positive size in bytes on success, -1 on failure
+ */
+ssize_t
+ipfix_templ_get_ie_offset(const ipfix_templ_t* templ,
+                          const char * const ie_name);
+
+/**
+ * @return ipfix_hanlder on success
+ *
+ * On error, errExit() is called
+ */
+struct ipfix_reader_s*
+ipfix_init_read(FILE* fp,
+                ipfix_templ_t* templ);
+
 /**
  * @return retrieve IE ptr from template
  */
@@ -90,7 +141,6 @@ ipfix_io_handler(ipfix_templ_t* templ_spec) {
   exitOn(io == NULL);
 
   io->io_read_init             = io_ipfix_read_init;
-#if 0
   io->io_read_record           = io_ipfix_read_record;
   io->io_read_get_field_offset = io_ipfix_read_get_field_offset;
   io->io_read_get_record_size  = io_ipfix_read_get_record_size;
@@ -107,7 +157,7 @@ ipfix_io_handler(ipfix_templ_t* templ_spec) {
   io->io_write_init            = io_ipfix_write_init;
   io->io_write_record          = io_ipfix_write_record;
   io->io_write_close           = io_ipfix_write_close;
-#endif
+
   io->io_ctxt_destroy       = io_ipfix_ctxt_destroy;
 
   io->ctxt.d.ipfix.templ_spec = templ_spec;
@@ -121,19 +171,71 @@ ipfix_io_handler(ipfix_templ_t* templ_spec) {
 /*--------------------------------------------------------------------------*/
 
 
-static
-void
-io_ipfix_ctxt_destroy(io_ctxt_t* io_ctxt) {
-  // TODO destroy fb info elem
-}
 /*--------------------------------------------------------------------------*/
 /* I/O handler                                                              */
 /*--------------------------------------------------------------------------*/
 
-struct io_reader_s*
-io_ipfix_read_init(struct io_ctxt_s* io_ctxt, int read_fd) {
-  // TODO
+
+static
+struct  io_reader_s*
+io_ipfix_read_init(struct io_ctxt_s* io_ctxt,
+                   int read_fd) {
   return NULL;
+}
+
+static  char*   io_ipfix_read_record(struct io_reader_s* read_ctxt) {
+  return NULL;
+}
+static  size_t  io_ipfix_read_get_field_offset(struct io_reader_s* read_ctxt,
+                                               const char* field) {
+  return 0;
+}
+
+static  size_t  io_ipfix_read_get_record_size(struct io_reader_s* read_ctxt) {
+  return 0;
+}
+
+static  int     io_ipfix_read_close(struct io_reader_s* read_ctxt) {
+  return 0;
+}
+
+static  void    io_ipfix_print_header(struct io_reader_s* read_ctxt) { }
+static  void    io_ipfix_print_debug_header(struct io_reader_s* read_ctxt) { }
+static  void    io_ipfix_print_record(struct io_reader_s* read_ctxt,
+                                      char* record) { }
+static  void    io_ipfix_print_aggr_record(struct io_reader_s* read_ctxt,
+                                           struct aggr_record* aggr_record) { }
+
+static  uint64_t    io_ipfix_record_get_StartTS(struct io_reader_s* read_ctxt,
+                                                char* record) {
+  return 0;
+}
+static  uint64_t    io_ipfix_record_get_EndTS(struct io_reader_s* read_ctxt,
+                                              char* record) {
+  return 0;
+}
+
+static  struct io_writer_s* io_ipfix_write_init(struct io_reader_s* read_ctxt,
+                                                int write_fd,
+                                                uint32_t num_records) {
+  return NULL;
+}
+
+static int      io_ipfix_write_record(struct io_writer_s* write_ctxt,
+                                      char* record) {
+  return 0;
+}
+static int      io_ipfix_write_close(struct io_writer_s* write_ctxt) {
+  return 0;
+}
+
+static
+void
+io_ipfix_ctxt_destroy(struct io_ctxt_s* io_ctxt) {
+  struct ipfix_ctxt_s* ipfix = &io_ctxt->d.ipfix;
+
+  fbInfoModelFree(ipfix->info_model);
+  free(ipfix->templ_spec);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -142,12 +244,56 @@ io_ipfix_read_init(struct io_ctxt_s* io_ctxt, int read_fd) {
 
 ipfix_templ_t*
 ipfix_templ_new(void) {
-  return calloc(1, sizeof(ipfix_templ_t));
+  ipfix_templ_t* ipfix_templ = calloc(1, sizeof(ipfix_templ_t));
+  if (ipfix_templ == NULL) return NULL;
+
+#define REGISTER(ie_name)                                                   \
+  do {                                                                      \
+    if (ipfix_templ_ie_register(ipfix_templ, ie_name) < 0) {                \
+      free(ipfix_templ);                                                    \
+      return NULL;                                                          \
+    }                                                                       \
+  } while (0)
+
+  /* absolute timestamps */
+  REGISTER("flowStartMilliseconds");
+  REGISTER("flowEndMilliseconds");
+
+  /* 4-tuple */
+  REGISTER("sourceIPv6Address");
+  REGISTER("destinationIPv6Address");
+  REGISTER("sourceIPv4Address");
+  REGISTER("destinationIPv4Address");
+  REGISTER("sourceTransportPort");
+  REGISTER("destinationTransportPort");
+
+  /* Router interface information */
+  REGISTER("ipNextHopIPv4Address");
+  REGISTER("ipNextHopIPv6Address");
+  REGISTER("ingressInterface");
+  REGISTER("egressInterface");
+
+  /* Counters */
+  REGISTER("packetDeltaCount");
+  REGISTER("octetDeltaCount");
+  REGISTER("deltaFlowCount");
+
+  /* Protocol; sensor information */
+  REGISTER("protocolIdentifier");
+
+  /* Flags */
+  REGISTER("tcpControlBits");
+  REGISTER("initialTCPFlags");
+  REGISTER("unionTCPFlags");
+
+#undef REGISTER
+
+  return ipfix_templ;
 }
 
 int
 ipfix_templ_ie_register(ipfix_templ_t* templ,
-                        char * const ie_name) {
+                        const char * const ie_name) {
   /* do not insert duplicate IEs */
   if (ipfix_templ_get_ie(templ, ie_name) != NULL) return 0;
 
@@ -166,7 +312,8 @@ ipfix_templ_ie_register(ipfix_templ_t* templ,
   templ->arr = realloc(templ->arr, sizeof(ipfix_ie_t) * (templ->len + 1));
   if (templ->arr == NULL) return -1;
   ipfix_ie_t *new_ie = &templ->arr[templ->len];
-  new_ie->name   = ie_name;
+  new_ie->name   = strdup(ie_name);
+  exitOn(new_ie->name == NULL);
   new_ie->offset = templ->next_offset;
   new_ie->size   = size;
 
@@ -189,6 +336,16 @@ ipfix_templ_get_ie_offset(const ipfix_templ_t* templ,
   return ie->offset;
 }
 
+void
+ipfix_templ_free(ipfix_templ_t* ipfix_templ) {
+  size_t i;
+  for (i = 0; i < ipfix_templ->len; i++) {
+    free(ipfix_templ->arr[i].name);
+  }
+  free(ipfix_templ);
+}
+
+
 /*--------------------------------------------------------------------------*/
 /* Reader                                                                   */
 /*--------------------------------------------------------------------------*/
@@ -196,7 +353,6 @@ ipfix_templ_get_ie_offset(const ipfix_templ_t* templ,
 struct ipfix_reader_s*
 ipfix_init_read(FILE* fp,
                 ipfix_templ_t* templ) {
-  ipfix_templ_ie_register(templ, "tcpSourcePort");
 
   struct ipfix_reader_s* ipfix = calloc(1, sizeof(struct ipfix_reader_s));
   exitOn(ipfix == NULL);
@@ -245,16 +401,6 @@ ipfix_init_read(FILE* fp,
 
   return ipfix;
 }
-
-void
-ipfix_ctxt_destroy(struct ipfix_ctxt_s* ipfix) {
-  fbInfoModelFree(ipfix->info_model);
-  free(ipfix->templ_spec);
-}
-
-/*--------------------------------------------------------------------------*/
-/* Local implementation                                                     */
-/*--------------------------------------------------------------------------*/
 
 static
 ipfix_ie_t*

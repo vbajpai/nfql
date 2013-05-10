@@ -65,18 +65,18 @@ typedef struct io_handler_s {
   char*         (*io_read_record)(io_reader_t* read_ctxt);
   size_t        (*io_read_get_field_offset)(io_reader_t* read_ctxt, const char* field);
   size_t        (*io_read_get_record_size)(io_reader_t* read_ctxt);
-  int           (*io_read_close)(io_reader_t* io_reader);
+  int           (*io_read_close)(io_reader_t* read_ctxt);
 
-  void          (*io_print_header)(io_reader_t* io_reader);
-  void          (*io_print_debug_header)(io_reader_t* io_reader);
-  void          (*io_print_record)(io_reader_t* io_reader, char* record);
-  void          (*io_print_aggr_record)(io_reader_t* io_reader,
+  void          (*io_print_header)(io_reader_t* read_ctxt);
+  void          (*io_print_debug_header)(io_reader_t* read_ctxt);
+  void          (*io_print_record)(io_reader_t* read_ctxt, char* record);
+  void          (*io_print_aggr_record)(io_reader_t* read_ctxt,
                                         struct aggr_record* aggr_record);
 
   uint64_t      (*io_record_get_StartTS)(io_reader_t* read_ctxt, char* record);
   uint64_t      (*io_record_get_EndTS)(io_reader_t* read_ctxt, char* record);
 
-  io_writer_t*  (*io_write_init)(io_reader_t* io_reader,
+  io_writer_t*  (*io_write_init)(io_reader_t* read_cxt,
                                  int write_fd,
                                  uint32_t num_records);
   int           (*io_write_record)(io_writer_t* writer_ctxt, char* record);
@@ -87,9 +87,5 @@ typedef struct io_handler_s {
   io_ctxt_t ctxt;
 
 } io_handler_t;
-
-/*--------------------------------------------------------------------------*/
-/* Methods                                                                  */
-/*--------------------------------------------------------------------------*/
 
 #endif // ! f_engine_io_h
