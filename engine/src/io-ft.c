@@ -346,7 +346,7 @@ io_ft_get_offset(const char * const name,
 	CASEOFF_IPFIX(bgpDestinationAsNumber, dst_as);
 	CASEOFF(in_encaps);
 	CASEOFF(out_encaps);
-	CASEOFF_IPFIX(ipNextHopIPv4Address, peer_nexthop);
+	CASEOFF(peer_nexthop);
 	CASEOFF(router_sc);
 	CASEOFF(src_tag);
 	CASEOFF(dst_tag);

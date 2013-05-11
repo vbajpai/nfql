@@ -29,9 +29,12 @@
 #include "io.h"
 #include "ipfix-constants.h"
 #include "errorhandlers.h"
+#include "utils.h"
 
 #include <assert.h>
+#include <ftlib.h>
 
+#define     FMT_BUF_SIZE    1024
 /*--------------------------------------------------------------------------*/
 /* Type declarations                                                        */
 /*--------------------------------------------------------------------------*/
@@ -40,6 +43,7 @@ typedef struct ipfix_ie_s {
   char              *name;
   size_t             offset;
   size_t             size;
+  enum ipfix_ie_type type;
 } ipfix_ie_t;
 
 typedef struct ipfix_templ_s {
@@ -48,14 +52,40 @@ typedef struct ipfix_templ_s {
   size_t        next_offset;
 } ipfix_templ_t;
 
+struct debug_record {
+    uint64_t        flowStartMilliseconds;          /*   0-  7 */
+    uint64_t        flowEndMilliseconds;            /*   8- 15 */
+
+    uint8_t         sourceIPv6Address[16];          /*  16- 31 */
+    uint8_t         destinationIPv6Address[16];     /*  32- 47 */
+
+    uint32_t        sourceIPv4Address;              /*  48- 51 */
+    uint32_t        destinationIPv4Address;         /*  52- 55 */
+
+    uint16_t        sourceTransportPort;            /*  56- 57 */
+    uint16_t        destinationTransportPort;       /*  58- 59 */
+
+    uint32_t        ipNextHopIPv4Address;           /*  60- 63 */
+    uint8_t         ipNextHopIPv6Address[16];       /*  64- 79 */
+    uint32_t        ingressInterface;               /*  80- 83 */
+    uint32_t        egressInterface;                /*  84- 87 */
+
+    uint64_t        packetDeltaCount;               /*  88- 95 */
+    uint64_t        octetDeltaCount;                /*  96-103 */
+
+    uint8_t         protocolIdentifier;             /*  104-105 */
+
+    uint8_t         ipClassOfService;               /*  105-106 */
+    uint8_t         tcpControlBits;                 /*  106-107 */
+
+    uint8_t         paddingOctets[5];               /*  107-112 */
+};
 
 /*--------------------------------------------------------------------------*/
 /* Local methods                                                            */
 /*--------------------------------------------------------------------------*/
 
-/*--------------------------------------------------------------------------*/
 /* I/O handler                                                              */
-/*--------------------------------------------------------------------------*/
 
 static  struct  io_reader_s*  io_ipfix_read_init(struct io_ctxt_s* io_ctxt,
                                                int read_fd);
@@ -85,25 +115,7 @@ static int      io_ipfix_write_record(struct io_writer_s* write_ctxt,
 static int      io_ipfix_write_close(struct io_writer_s* write_ctxt);
 static void     io_ipfix_ctxt_destroy(struct io_ctxt_s* io_ctxt);
 
-/*--------------------------------------------------------------------------*/
 /* Template specification                                                   */
-/*--------------------------------------------------------------------------*/
-
-/**
- * @return positive size in bytes on success, -1 on failure
- */
-ssize_t
-ipfix_templ_get_ie_offset(const ipfix_templ_t* templ,
-                          const char * const ie_name);
-
-/**
- * @return ipfix_hanlder on success
- *
- * On error, errExit() is called
- */
-struct ipfix_reader_s*
-ipfix_init_read(FILE* fp,
-                ipfix_templ_t* templ);
 
 /**
  * @return retrieve IE ptr from template
@@ -158,89 +170,36 @@ ipfix_io_handler(ipfix_templ_t* templ_spec) {
   io->io_write_record          = io_ipfix_write_record;
   io->io_write_close           = io_ipfix_write_close;
 
-  io->io_ctxt_destroy       = io_ipfix_ctxt_destroy;
+  io->io_ctxt_destroy          = io_ipfix_ctxt_destroy;
 
-  io->ctxt.d.ipfix.templ_spec = templ_spec;
-  // TODO init info_model
+  /* initialize IPFIX I/O context */
+  struct ipfix_ctxt_s* ipfix = &io->ctxt.d.ipfix;
+
+  ipfix->templ_spec  = templ_spec;
+
+  ipfix->fb_info_model = fbInfoModelAlloc();
+  exitOn(ipfix->fb_info_model == NULL);
+
+  ipfix->fb_templ = fbTemplateAlloc(ipfix->fb_info_model);
+  exitOn(ipfix->fb_templ == NULL);
+
+  fbInfoElementSpec_t* ie_spec = ipfix_get_fb_info_elem_spec(templ_spec);
+  GError* err = NULL;
+
+  exitOn(ie_spec == NULL);
+  if(fbTemplateAppendSpecArray(ipfix->fb_templ,
+                               ie_spec,
+                               0xffffffff,
+                               &err) == FALSE) {
+     errExit("fbTemplateAppendSpecArray(..): %s", err->message);
+  }
+
+  free(ie_spec);
 
   return io;
 }
 
-/*--------------------------------------------------------------------------*/
-/* Local implementation                                                     */
-/*--------------------------------------------------------------------------*/
-
-
-/*--------------------------------------------------------------------------*/
-/* I/O handler                                                              */
-/*--------------------------------------------------------------------------*/
-
-
-static
-struct  io_reader_s*
-io_ipfix_read_init(struct io_ctxt_s* io_ctxt,
-                   int read_fd) {
-  return NULL;
-}
-
-static  char*   io_ipfix_read_record(struct io_reader_s* read_ctxt) {
-  return NULL;
-}
-static  size_t  io_ipfix_read_get_field_offset(struct io_reader_s* read_ctxt,
-                                               const char* field) {
-  return 0;
-}
-
-static  size_t  io_ipfix_read_get_record_size(struct io_reader_s* read_ctxt) {
-  return 0;
-}
-
-static  int     io_ipfix_read_close(struct io_reader_s* read_ctxt) {
-  return 0;
-}
-
-static  void    io_ipfix_print_header(struct io_reader_s* read_ctxt) { }
-static  void    io_ipfix_print_debug_header(struct io_reader_s* read_ctxt) { }
-static  void    io_ipfix_print_record(struct io_reader_s* read_ctxt,
-                                      char* record) { }
-static  void    io_ipfix_print_aggr_record(struct io_reader_s* read_ctxt,
-                                           struct aggr_record* aggr_record) { }
-
-static  uint64_t    io_ipfix_record_get_StartTS(struct io_reader_s* read_ctxt,
-                                                char* record) {
-  return 0;
-}
-static  uint64_t    io_ipfix_record_get_EndTS(struct io_reader_s* read_ctxt,
-                                              char* record) {
-  return 0;
-}
-
-static  struct io_writer_s* io_ipfix_write_init(struct io_reader_s* read_ctxt,
-                                                int write_fd,
-                                                uint32_t num_records) {
-  return NULL;
-}
-
-static int      io_ipfix_write_record(struct io_writer_s* write_ctxt,
-                                      char* record) {
-  return 0;
-}
-static int      io_ipfix_write_close(struct io_writer_s* write_ctxt) {
-  return 0;
-}
-
-static
-void
-io_ipfix_ctxt_destroy(struct io_ctxt_s* io_ctxt) {
-  struct ipfix_ctxt_s* ipfix = &io_ctxt->d.ipfix;
-
-  fbInfoModelFree(ipfix->info_model);
-  free(ipfix->templ_spec);
-}
-
-/*--------------------------------------------------------------------------*/
 /* Template specification                                                   */
-/*--------------------------------------------------------------------------*/
 
 ipfix_templ_t*
 ipfix_templ_new(void) {
@@ -260,31 +219,30 @@ ipfix_templ_new(void) {
   REGISTER("flowEndMilliseconds");
 
   /* 4-tuple */
-  REGISTER("sourceIPv6Address");
-  REGISTER("destinationIPv6Address");
+  //REGISTER("sourceIPv6Address");
+  //REGISTER("destinationIPv6Address");
   REGISTER("sourceIPv4Address");
   REGISTER("destinationIPv4Address");
   REGISTER("sourceTransportPort");
   REGISTER("destinationTransportPort");
 
   /* Router interface information */
-  REGISTER("ipNextHopIPv4Address");
-  REGISTER("ipNextHopIPv6Address");
+  //REGISTER("ipNextHopIPv4Address");
+  //REGISTER("ipNextHopIPv6Address");
   REGISTER("ingressInterface");
   REGISTER("egressInterface");
 
   /* Counters */
   REGISTER("packetDeltaCount");
   REGISTER("octetDeltaCount");
-  REGISTER("deltaFlowCount");
+  // REGISTER("deltaFlowCount"); // draft-ietf-ipfix-a9n-08 - not in fixbuf
 
   /* Protocol; sensor information */
   REGISTER("protocolIdentifier");
 
   /* Flags */
+  REGISTER("ipClassOfService");
   REGISTER("tcpControlBits");
-  REGISTER("initialTCPFlags");
-  REGISTER("unionTCPFlags");
 
 #undef REGISTER
 
@@ -316,6 +274,7 @@ ipfix_templ_ie_register(ipfix_templ_t* templ,
   exitOn(new_ie->name == NULL);
   new_ie->offset = templ->next_offset;
   new_ie->size   = size;
+  new_ie->type   = ie_type;
 
   assert(new_ie->offset % new_ie->size == 0);
 
@@ -336,71 +295,274 @@ ipfix_templ_get_ie_offset(const ipfix_templ_t* templ,
   return ie->offset;
 }
 
+size_t
+ipfix_templ_get_rec_size(const ipfix_templ_t* templ) {
+
+  /* The size is the next_offset, rounded to 8byte */
+  size_t size = templ->next_offset;
+  size += 7;
+  size >>= 3;
+  size <<= 3;
+
+  return size;
+}
+
 void
 ipfix_templ_free(ipfix_templ_t* ipfix_templ) {
   size_t i;
   for (i = 0; i < ipfix_templ->len; i++) {
     free(ipfix_templ->arr[i].name);
   }
+  free(ipfix_templ->arr);
   free(ipfix_templ);
 }
 
 
 /*--------------------------------------------------------------------------*/
-/* Reader                                                                   */
+/* Local implementation                                                     */
 /*--------------------------------------------------------------------------*/
 
-struct ipfix_reader_s*
-ipfix_init_read(FILE* fp,
-                ipfix_templ_t* templ) {
+/* I/O handler                                                              */
 
-  struct ipfix_reader_s* ipfix = calloc(1, sizeof(struct ipfix_reader_s));
-  exitOn(ipfix == NULL);
+static
+struct  io_reader_s*
+io_ipfix_read_init(struct io_ctxt_s* io_ctxt,
+                   int read_fd) {
+  struct ipfix_ctxt_s* ipfix = &io_ctxt->d.ipfix;
 
-  ipfix->info_model = fbInfoModelAlloc();
-  exitOn(ipfix->info_model == NULL);
+  /* allocate ipfix_reader space */
+  struct ipfix_reader_s* read_ctxt = calloc(1, sizeof(struct ipfix_reader_s));
+  exitOn(read_ctxt == NULL);
 
-  ipfix->session = fbSessionAlloc(ipfix->info_model);
-  exitOn(ipfix->session == NULL);
+  /* create fixbuf session */
+  fbSession_t* session = fbSessionAlloc(ipfix->fb_info_model);
+  exitOn(session == NULL);
 
-  ipfix->collector = fbCollectorAllocFP(NULL, fp);
-  exitOn(ipfix->collector == NULL);
-
-  ipfix->fbuf = fBufAllocForCollection(ipfix->session, ipfix->collector);
-  exitOn(ipfix->fbuf == NULL);
-
-  fbTemplate_t *fb_templ = fbTemplateAlloc(ipfix->info_model);
-  exitOn(fb_templ == NULL);
-  fbInfoElementSpec_t* ie_spec = ipfix_get_fb_info_elem_spec(templ);
-  exitOn(ie_spec == NULL);
-  exitOn(fbTemplateAppendSpecArray(fb_templ,
-                                   ie_spec,
-                                   0xffffffff,
-                                   &ipfix->err) == FALSE);
-  free(ie_spec);
-
-  uint16_t templateID = fbSessionAddTemplate(ipfix->session, TRUE, FB_TID_AUTO,
-                                             fb_templ, &ipfix->err);
+  uint16_t templateID = fbSessionAddTemplate(session, TRUE, FB_TID_AUTO,
+                                             ipfix->fb_templ, &read_ctxt->err);
   exitOn(templateID == 0);
-  exitOn(fBufSetInternalTemplate(ipfix->fbuf,
+
+  /* create fixbuf collector */
+  read_ctxt->fp = fdopen(read_fd, "r");
+  exitOn(read_ctxt->fp == NULL);
+
+  fbCollector_t* collector = fbCollectorAllocFP(NULL, read_ctxt->fp);
+  exitOn(collector == NULL);
+
+  /* create fixbuf fbuf */
+  read_ctxt->fbuf = fBufAllocForCollection(session, collector);
+  exitOn(read_ctxt->fbuf == NULL);
+
+  exitOn(fBufSetInternalTemplate(read_ctxt->fbuf,
                                  templateID,
-                                 &ipfix->err) == FALSE);
+                                 &read_ctxt->err) == FALSE);
 
-  uint8_t raw_buf[1024];
-  size_t  raw_buf_size = sizeof(raw_buf);
-  printf("START\n");
-  int records = 0;
-  while (fBufNext(ipfix->fbuf, raw_buf, &raw_buf_size, &ipfix->err)) {
-      records++;
-      printf("Read %d bytes\n", (int) raw_buf_size);
-      raw_buf_size = sizeof(raw_buf);
-  }
-  printf("DONE %d records\n", records);
+  /* save info_model, templ_spec, fb_templ */
+  read_ctxt->templ_spec = ipfix->templ_spec;
+  read_ctxt->fb_info_model = ipfix->fb_info_model;
+  read_ctxt->fb_templ = ipfix->fb_templ;
 
-  fBufFree(ipfix->fbuf);
+  /* save rec_size, first_off, last_off */
+  read_ctxt->rec_size =
+        ipfix_templ_get_rec_size(read_ctxt->templ_spec);
+  read_ctxt->first_off = ipfix_templ_get_ie_offset(ipfix->templ_spec,
+                                                   "flowStartMilliseconds");
+  read_ctxt->last_off = ipfix_templ_get_ie_offset(ipfix->templ_spec,
+                                                  "flowEndMilliseconds");
 
-  return ipfix;
+  /* alloc rec_buf */
+  read_ctxt->rec_buf = malloc(read_ctxt->rec_size);
+
+  return (struct io_reader_s*) read_ctxt;
 }
+
+static  char*   io_ipfix_read_record(struct io_reader_s* _read_ctxt) {
+  struct ipfix_reader_s* read_ctxt = &_read_ctxt->d.ipfix;
+
+  size_t rec_size = read_ctxt->rec_size;
+
+  if (fBufNext(read_ctxt->fbuf,
+               read_ctxt->rec_buf, &rec_size,
+               &read_ctxt->err)) {
+
+    assert(rec_size == read_ctxt->rec_size);
+
+    return (char*)read_ctxt->rec_buf;
+  } else if (read_ctxt->err->code == FB_ERROR_EOF) {
+
+  } else {
+    errExit("%s", read_ctxt->err->message);
+  }
+
+  return NULL;
+}
+
+static  size_t  io_ipfix_read_get_field_offset(struct io_reader_s* _read_ctxt,
+                                               const char* field) {
+  struct ipfix_reader_s* read_ctxt = &_read_ctxt->d.ipfix;
+
+  ssize_t offset = ipfix_templ_get_ie_offset(read_ctxt->templ_spec, field);
+  exitOn(offset == -1);
+
+  return (size_t) offset;
+}
+
+static  size_t  io_ipfix_read_get_record_size(struct io_reader_s* _read_ctxt) {
+  struct ipfix_reader_s* read_ctxt = &_read_ctxt->d.ipfix;
+
+  return read_ctxt->rec_size;
+}
+
+static  int     io_ipfix_read_close(struct io_reader_s* _read_ctxt) {
+  struct ipfix_reader_s* read_ctxt = &_read_ctxt->d.ipfix;
+
+  fBufFree(read_ctxt->fbuf);
+  free(read_ctxt->rec_buf);
+
+  return fclose(read_ctxt->fp);
+}
+
+static  void    io_ipfix_print_header(struct io_reader_s* read_ctxt) {
+  size_t len = read_ctxt->d.ipfix.templ_spec->len;
+  struct ipfix_ie_s* ies = read_ctxt->d.ipfix.templ_spec->arr;
+
+  size_t i;
+  for (i = 0; i < len; i++) {
+    if (strcmp(ies[i].name, "paddingOctets") != 0)
+      printf("%18.*s ", 18, ies[i].name);
+  }
+  printf("\n");
+}
+
+static  void    io_ipfix_print_debug_header(struct io_reader_s* read_ctxt) {
+}
+
+static  void    io_ipfix_print_record(struct io_reader_s* read_ctxt,
+                                      char* record) {
+  size_t len = read_ctxt->d.ipfix.templ_spec->len;
+  struct ipfix_ie_s* ies = read_ctxt->d.ipfix.templ_spec->arr;
+
+  size_t i;
+  for (i = 0; i < len; i++) {
+    if (strcmp(ies[i].name, "paddingOctets") == 0) { /* ignore */
+    } else switch(ies[i].type) {
+      case IETYPE_IPV4ADDRESS: {
+        char fmt_buf[64];
+        fmt_ipv4(fmt_buf, *(uint32_t*)(record + ies[i].offset), FMT_PAD_LEFT);
+        printf("%18s ", fmt_buf);
+        break;
+      }
+
+      case IETYPE_IPV6ADDRESS: {
+        char fmt_buf[FMT_BUF_SIZE];
+        uint8_t* addr = (uint8_t*)(record + ies[i].offset);
+        snprintf(fmt_buf, sizeof(fmt_buf),
+    "%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x:%02x%02x ",
+                (int)addr[0], (int)addr[1],
+                (int)addr[2], (int)addr[3],
+                (int)addr[4], (int)addr[5],
+                (int)addr[6], (int)addr[7],
+                (int)addr[8], (int)addr[9],
+                (int)addr[10], (int)addr[11],
+                (int)addr[12], (int)addr[13],
+                (int)addr[14], (int)addr[15]);
+        printf("%18s ", fmt_buf);
+        break;
+      }
+
+      case IETYPE_UNSIGNED8: {
+        printf("%18"PRIu8" ", *(uint8_t*)(record + ies[i].offset));
+        break;
+      }
+
+      case IETYPE_UNSIGNED16: {
+        printf("%18"PRIu16" ", *(uint16_t*)(record + ies[i].offset));
+        break;
+      }
+
+      case IETYPE_UNSIGNED32: {
+        printf("%18"PRIu32" ", *(uint32_t*)(record + ies[i].offset));
+        break;
+      }
+
+      case IETYPE_UNSIGNED64: {
+        printf("%18"PRIu64" ", *(uint64_t*)(record + ies[i].offset));
+        break;
+      }
+
+      case IETYPE_DATETIMEMILLISECONDS: {
+        char fmt_buf[FMT_BUF_SIZE];
+
+        uint64_t time_msecs = *(uint64_t*)(record + ies[i].offset);
+
+        time_t secs = time_msecs / 1000;
+        struct tm *tm = localtime(&secs);
+        snprintf(fmt_buf, sizeof(fmt_buf),
+                 "%-2.2d%-2.2d.%-2.2d:%-2.2d:%-2.2d.%-3.3lu ",
+                 (int)tm->tm_mon+1, (int)tm->tm_mday, (int)tm->tm_hour,
+                 (int)tm->tm_min, (int)tm->tm_sec, (u_long)time_msecs % 1000);
+        printf("%18s ", fmt_buf);
+        break;
+      }
+        /*
+      fmt_buf2[64];
+  fmt_ipv4(fmt_buf2, *cur.dstaddr, FMT_PAD_RIGHT);
+
+  printf("%-5u %-15.15s %-5u %-5u %-15.15s %-5u %-3u %-2d %-10lu %-10lu\n",
+*/
+      default:
+        printf("%10.*s ", 10, ies[i].name);
+    }
+  }
+  printf("\n");
+}
+
+static  void    io_ipfix_print_aggr_record(struct io_reader_s* read_ctxt,
+                                           struct aggr_record* aggr_record) {
+  puts("group record");
+}
+
+static  uint64_t    io_ipfix_record_get_StartTS(struct io_reader_s* _read_ctxt,
+                                                char* record) {
+  struct ipfix_reader_s* read_ctxt = &_read_ctxt->d.ipfix;
+
+  return *(uint64_t*)(record + read_ctxt->first_off);
+}
+
+static  uint64_t    io_ipfix_record_get_EndTS(struct io_reader_s* _read_ctxt,
+                                              char* record) {
+  struct ipfix_reader_s* read_ctxt = &_read_ctxt->d.ipfix;
+
+  return *(uint64_t*)(record + read_ctxt->last_off);
+}
+
+/* TODO */
+static  struct io_writer_s* io_ipfix_write_init(struct io_reader_s* read_ctxt,
+                                                int write_fd,
+                                                uint32_t num_records) {
+  return NULL;
+}
+
+static int      io_ipfix_write_record(struct io_writer_s* write_ctxt,
+                                      char* record) {
+  return 0;
+}
+static int      io_ipfix_write_close(struct io_writer_s* write_ctxt) {
+  return 0;
+}
+
+static
+void
+io_ipfix_ctxt_destroy(struct io_ctxt_s* io_ctxt) {
+  struct ipfix_ctxt_s* ipfix = &io_ctxt->d.ipfix;
+
+  ipfix_templ_free(ipfix->templ_spec);
+  fbInfoModelFree(ipfix->fb_info_model);
+  /* fb_templ is reference counted across fbSessions and freed with
+     the last session */
+}
+
+/* Template specification                                                   */
 
 static
 ipfix_ie_t*
@@ -430,7 +592,7 @@ ipfix_ie_type_sizeof(enum ipfix_ie_type type) {
     case IETYPE_UNSIGNED16:
       return 2;
     case IETYPE_UNSIGNED32:
-      return 1;
+      return 4;
     case IETYPE_IPV6ADDRESS:
       return 16;
     case IETYPE_IPV4ADDRESS:
@@ -503,7 +665,10 @@ ipfix_get_fb_info_elem_spec(const ipfix_templ_t* templ) {
     curr_offset += ie->size;
   }
 
-  /* FIXME end of struct padding may be required */
+  /* end of struct padding to align to 8byte boundary */
+  if (curr_offset % 8 != 0) {
+    _fbtempl_add_padding(8 - curr_offset % 8);
+  }
 
   /* Add final element - use padding spec element and replace it with
      the NULL one for convenience */

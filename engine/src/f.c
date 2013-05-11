@@ -1519,6 +1519,7 @@ main(int argc, char **argv) {
   ipfix_templ_t* ipfix_templ = NULL;
   if (ipfix_enabled) {
     ipfix_templ = ipfix_templ_new();
+    exitOn(ipfix_templ == NULL);
   }
 
   struct json* json_query = parse_json_query(params->query_filename,

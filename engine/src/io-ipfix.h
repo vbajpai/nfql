@@ -42,21 +42,26 @@ typedef struct ipfix_templ_s ipfix_templ_t;
 
 struct ipfix_ctxt_s {
   struct ipfix_templ_s* templ_spec;
-  fbInfoModel_t* info_model;
+  fbInfoModel_t* fb_info_model;
+  fbTemplate_t*  fb_templ;
 };
 
 struct ipfix_reader_s {
-  fbInfoModel_t *info_model;
-  fbSession_t   *session;
-  fbCollector_t *collector;
-  fBuf_t        *fbuf;
-  GError        *err;
+  struct ipfix_templ_s* templ_spec;
+  fbInfoModel_t* fb_info_model;
+  fbTemplate_t*  fb_templ;
+  FILE*          fp;
+  fBuf_t*        fbuf;
+  GError*        err;
+  uint8_t*       rec_buf;
+  size_t         rec_size;
+  size_t         first_off;
+  size_t         last_off;
 };
 
 struct ipfix_writer_s {
+  struct ipfix_templ_s* templ_spec;
   fbInfoModel_t *info_model;
-  fbSession_t   *session;
-  fbCollector_t *collector;
   fBuf_t        *fbuf;
   GError        *err;
 };
@@ -98,6 +103,20 @@ int
 ipfix_templ_ie_register(ipfix_templ_t* ipfix_templ,
                         const char * const ie_name);
 
+/**
+ * @return offset of the ie within the record on success
+ * @return -1 on failure
+ */
+ssize_t
+ipfix_templ_get_ie_offset(const ipfix_templ_t* templ,
+                          const char * const ie_name);
+
+size_t
+ipfix_templ_get_rec_size(const ipfix_templ_t* templ);
+
+/**
+ * Free the ipfix_templ
+ */
 void
 ipfix_templ_free(ipfix_templ_t* ipfix_templ);
 
