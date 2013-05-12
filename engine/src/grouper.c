@@ -149,21 +149,22 @@ get_grouper_intermediates
   if(verbose_vv){
 
     /* initialize the output stream, if write to file is requested */
-    struct io_writer_s* writer_ctxt = NULL;
+    struct io_writer_s* sorted_recs_writer = NULL;
     if(file) {
 
       /* get a file descriptor */
       char* filename = (char*)0L;
-      if (asprintf(&filename, "%s/grouper-branch-%d-sorted-records.ftz",
-               dirpath, branch_id) < 0)
+      if (asprintf(&filename, "%s/grouper-branch-%d-sorted-records.%s",
+               dirpath, branch_id, io->io_get_format_suffix()) < 0)
         errExit("asprintf(...): failed");
       int out_fd = get_wronly_fd(filename);
       if(out_fd == -1) errExit("get_wronly_fd(...) returned -1");
       else free(filename);
 
       /* get the output stream */
-      writer_ctxt = io->io_write_init(read_ctxt, out_fd, num_filtered_records);
-      exitOn(writer_ctxt == NULL);
+      sorted_recs_writer = io->io_write_init(read_ctxt, out_fd,
+                                             num_filtered_records);
+      exitOn(sorted_recs_writer == NULL);
     }
 
     /* free'd just before calling merger(...) ?*/
@@ -179,14 +180,14 @@ get_grouper_intermediates
 
       /* write the record to the output stream */
       if(file) {
-        exitOn((io->io_write_record(writer_ctxt,
+        exitOn((io->io_write_record(sorted_recs_writer,
                                     gresult->sorted_recordset[i])) < 0);
       }
     }
 
     /* close the output stream */
     if(file) {
-      exitOn(io->io_write_close(writer_ctxt) < 0);
+      exitOn(io->io_write_close(sorted_recs_writer) < 0);
     }
   }
 
@@ -269,21 +270,21 @@ grouper(
     }
 
     /* open a output stream, if a file write is requested */
-    io_writer_t* writer_ctxt = NULL;
-    int n_groups = -1;
+    io_writer_t* groups_writer = NULL;
     if (verbose_v && file) {
 
       /* get a file descriptor */
       char* filename = (char*)0L;
-      if (asprintf(&filename, "%s/grouper-branch-%d-groups.ftz",
-               dirpath, branch_id) < 0) errExit("asprintf(...) returned -1");
+      if (asprintf(&filename, "%s/grouper-branch-%d-groups.%s",
+               dirpath, branch_id, io->io_get_format_suffix()) < 0)
+        errExit("asprintf(...) returned -1");
+
       int out_fd = get_wronly_fd(filename);
       if(out_fd == -1) errExit("get_wronly_fd(...) returned -1");
       else free(filename);
 
-      writer_ctxt = io->io_write_init(read_ctxt, out_fd, gresult->num_groups);
-      exitOn(writer_ctxt == NULL);
-      n_groups = gresult->num_groups;
+      groups_writer = io->io_write_init(read_ctxt, out_fd, gresult->num_groups);
+      exitOn(groups_writer == NULL);
     }
 
     /* club all filtered records into one group,
@@ -433,34 +434,33 @@ grouper(
       if (verbose_v && file) {
 
         /* write the record to the output stream */
-        exitOn((n_groups =
-                io->io_write_record(writer_ctxt,
-                        group->aggr_result->aggr_record->aggr_record)) < 0);
+        exitOn(io->io_write_record(groups_writer,
+                         group->aggr_result->aggr_record->aggr_record) < 0);
       }
 
       /* open a output stream for group members, if a file write is requested */
-      struct io_writer_s* members_writer_ctxt = NULL;
+      struct io_writer_s* members_writer = NULL;
       if (verbose_vv && file) {
 
         /* get a file descriptor */
         char* filename = (char*)0L;
-        if (asprintf(&filename, "%s/grouper-branch-%d-group-%d-records.ftz",
-                 dirpath, branch_id, 0) < 0)
+        if (asprintf(&filename, "%s/grouper-branch-%d-group-%d-records.%s",
+                 dirpath, branch_id, 0, io->io_get_format_suffix()) < 0)
           errExit("asprintf(...) returned -1");
         int out_fd = get_wronly_fd(filename);
         if(out_fd == -1) errExit("get_wronly_fd(...) returned -1");
         else free(filename);
 
         /* get the output stream */
-        members_writer_ctxt = io->io_write_init(read_ctxt,
-                                                out_fd,
-                                                group->num_members);
-        exitOn(members_writer_ctxt == NULL);
+        members_writer = io->io_write_init(read_ctxt,
+                                           out_fd,
+                                           group->num_members);
+        exitOn(members_writer == NULL);
       }
 
       /* close the output stream */
       if (verbose_vv && file) {
-        io->io_write_close(members_writer_ctxt);
+        exitOn(io->io_write_close(members_writer) < 0);
       }
 
       /* ----------------------------------------------------------------- */
@@ -586,19 +586,22 @@ grouper(
           group_aggr_record->end_ts_msec = max;
 
           /* initialize an output stream, if file write is requested */
+          struct io_writer_s* members_writer = NULL;
           if(verbose_vv && file) {
 
             /* get a file descriptor */
             char* filename = (char*)0L;
-            if (asprintf(&filename, "%s/grouper-branch-%d-group-%d-records.ftz",
-                     dirpath, branch_id, gresult->num_groups - 1) < 0)
+            if (asprintf(&filename, "%s/grouper-branch-%d-group-%d-records.%s",
+                     dirpath, branch_id, gresult->num_groups - 1,
+                     io->io_get_format_suffix()) < 0)
               errExit("asprintf(...): failed");
             int out_fd = get_wronly_fd(filename);
             if(out_fd == -1) errExit("get_wronly_fd(...) returned -1");
             else free(filename);
 
             /* get the output stream */
-            writer_ctxt = io->io_write_init(read_ctxt, out_fd, group->num_members);
+            members_writer = io->io_write_init(read_ctxt, out_fd,
+                                               group->num_members);
           }
 
           while (current_item != last_item) {
@@ -660,14 +663,14 @@ grouper(
               if (verbose_vv && file) {
 
                 /* write the record to the output stream */
-                exitOn(io->io_write_record(writer_ctxt, *current_item) < 0);
+                exitOn(io->io_write_record(members_writer, *current_item) < 0);
               }
             }
           }
 
           /* close the output stream */
           if (verbose_vv && file) {
-            exitOn(io->io_write_close(writer_ctxt) < 0);
+            exitOn(io->io_write_close(members_writer) < 0);
           }
 
         /* ----------------------------------------------------------------- */
@@ -788,9 +791,8 @@ grouper(
         /* ----------------------------------------------------------------- */
 
           if (verbose_v && file) {
-            exitOn((n_groups = io->io_write_record(writer_ctxt,
-                              group->aggr_result->aggr_record->aggr_record)
-                             ) < 0);
+            exitOn(io->io_write_record(groups_writer,
+                            group->aggr_result->aggr_record->aggr_record) < 0);
           }
 
         /* ----------------------------------------------------------------- */
@@ -812,7 +814,7 @@ grouper(
 
     /* close the output stream */
     if (verbose_v && file) {
-      io->io_write_close(writer_ctxt);
+      exitOn(io->io_write_close(groups_writer) < 0);
     }
   }
 

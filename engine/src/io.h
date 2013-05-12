@@ -75,7 +75,7 @@ typedef struct io_handler_s {
 
   uint64_t      (*io_record_get_StartTS)(io_reader_t* read_ctxt, char* record);
   uint64_t      (*io_record_get_EndTS)(io_reader_t* read_ctxt, char* record);
-
+  const char*   (*io_get_format_suffix)(void);
   io_writer_t*  (*io_write_init)(io_reader_t* read_cxt,
                                  int write_fd,
                                  uint32_t num_records);

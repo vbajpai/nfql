@@ -1285,8 +1285,8 @@ read_trace(
 
       /* get a file descriptor */
       char* filename = (char*)0L;
-      if (asprintf(&filename, "%s/filter-branch-%d-filtered-records.ftz",
-               dirpath, branch->branch_id) < 0)
+      if (asprintf(&filename, "%s/filter-branch-%d-filtered-records.%s",
+               dirpath, branch->branch_id, io->io_get_format_suffix()) < 0)
         errExit("asprintf(...): failed");
       int out_fd = get_wronly_fd(filename);
       if(out_fd == -1) errExit("get_wronly_fd(...) returned -1");
@@ -1406,7 +1406,6 @@ read_trace(
       struct branch* branch = fquery->branchset[i];
 
       exitOn(io->io_write_close(branch->write_ctxt) < 0);
-      free(branch->write_ctxt);
     }
   }
 

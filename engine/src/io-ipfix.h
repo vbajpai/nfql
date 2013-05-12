@@ -60,10 +60,10 @@ struct ipfix_reader_s {
 };
 
 struct ipfix_writer_s {
-  struct ipfix_templ_s* templ_spec;
-  fbInfoModel_t *info_model;
   fBuf_t        *fbuf;
   GError        *err;
+  FILE          *fp;
+  size_t         rec_size;
 };
 
 /*--------------------------------------------------------------------------*/

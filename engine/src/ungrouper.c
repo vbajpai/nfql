@@ -68,7 +68,8 @@ ungrouper(
 
           /* get a file descriptor */
           char* filename = (char*)0L;
-          if (asprintf(&filename, "%s/ungrouper-stream-%d.ftz",dirpath,i) < 0)
+          if (asprintf(&filename, "%s/ungrouper-stream-%d.%s",
+                       dirpath, i, io->io_get_format_suffix()) < 0)
             errExit("asprintf(...): failed");
           int out_fd = get_wronly_fd(filename);
           if(out_fd == -1) errExit("get_wronly_fd(...) returned -1");

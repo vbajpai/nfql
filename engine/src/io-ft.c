@@ -60,6 +60,7 @@ static uint64_t io_ft_record_get_StartTS(struct io_reader_s* read_ctxt,
 static uint64_t io_ft_record_get_EndTS(struct io_reader_s* read_ctxt,
                                        char* record);
 
+static const char*  io_ft_get_format_suffix(void);
 static struct io_writer_s*  io_ft_write_init(struct io_reader_s* read_ctxt,
                                              int write_fd,
                                              uint32_t num_records);
@@ -104,6 +105,7 @@ ft_io_handler(void) {
   io->io_record_get_StartTS    = io_ft_record_get_StartTS;
   io->io_record_get_EndTS      = io_ft_record_get_EndTS;
 
+  io->io_get_format_suffix     = io_ft_get_format_suffix;
   io->io_write_init            = io_ft_write_init;
   io->io_write_record          = io_ft_write_record;
   io->io_write_close           = io_ft_write_close;
@@ -217,6 +219,12 @@ io_ft_record_get_EndTS(io_reader_t* read_ctxt, char* record) {
     uint64_t end_ts_msecs = 1000LL * ft_end_ts.secs + ft_end_ts.msecs;
 
     return end_ts_msecs;
+}
+
+static
+const char*
+io_ft_get_format_suffix(void) {
+  return "ftz";
 }
 
 static

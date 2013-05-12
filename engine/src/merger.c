@@ -72,7 +72,8 @@ merger(
 
     /* get a file descriptor */
     char* filename = (char*)0L;
-    if (asprintf(&filename, "%s/merger-merged-groups.ftz", dirpath) < 0)
+    if (asprintf(&filename, "%s/merger-merged-groups.%s", dirpath,
+                            io->io_get_format_suffix()) < 0)
       errExit("asprintf(): failed");
     int out_fd = get_wronly_fd(filename);
     if(out_fd == -1) errExit("get_wronly_fd(...) returned -1");
@@ -91,7 +92,8 @@ merger(
 
     /* get a file descriptor */
     char* filename = (char*)0L;
-    if (asprintf(&filename, "%s/merger-to-be-merged-groups.ftz", dirpath) < 0)
+    if (asprintf(&filename, "%s/merger-to-be-merged-groups.%s",
+                            dirpath, io->io_get_format_suffix()) < 0)
       errExit("asprintf(): failed");
     int out_fd = get_wronly_fd(filename);
     if(out_fd == -1) errExit("get_wronly_fd(...) returned -1");

@@ -67,8 +67,8 @@ groupfilter(
 
     /* get a file descriptor */
     char* filename = (char*)0L;
-    if (asprintf(&filename, "%s/groupfilter-branch-%d-filtered-groups.ftz",
-             dirpath, branch_id) < 0)
+    if (asprintf(&filename, "%s/groupfilter-branch-%d-filtered-groups.%s",
+                 dirpath, branch_id, io->io_get_format_suffix()) < 0)
       errExit("asprintf(...): failed");
     int out_fd = get_wronly_fd(filename);
     if(out_fd == -1) errExit("get_wronly_fd(...) returned -1");
@@ -141,7 +141,7 @@ groupfilter(
 
   /* close the output stream */
   if (verbose_v && file) {
-    exitOn(io->io_write_close(writer_ctxt));
+    exitOn(io->io_write_close(writer_ctxt) < 0);
   }
 
   return gfilter_result;
