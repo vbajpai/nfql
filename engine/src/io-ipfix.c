@@ -456,6 +456,7 @@ static  void    io_ipfix_print_header(struct io_reader_s* read_ctxt) {
   size_t len = read_ctxt->d.ipfix.templ_spec->len;
   struct ipfix_ie_s* ies = read_ctxt->d.ipfix.templ_spec->arr;
 
+  printf("\n");
   size_t i;
   for (i = 0; i < len; i++) {
     if (strcmp(ies[i].name, "paddingOctets") != 0) {
@@ -464,7 +465,7 @@ static  void    io_ipfix_print_header(struct io_reader_s* read_ctxt) {
       printf("%*.*s" FMT_COL_SEP, fmt_size, fmt_size, ies[i].name);
     }
   }
-  printf("\n");
+  printf("\n\n");
 }
 
 static  void    io_ipfix_print_debug_header(struct io_reader_s* read_ctxt) {
@@ -673,9 +674,10 @@ void fmt_field_str(char* str, size_t size,
       time_t secs = time_msecs / 1000;
       struct tm *tm = localtime(&secs);
       snprintf(str, size,
-               "%-2.2d%-2.2d.%-2.2d:%-2.2d:%-2.2d.%-3.3lu",
-               (int)tm->tm_mon+1, (int)tm->tm_mday, (int)tm->tm_hour,
-               (int)tm->tm_min, (int)tm->tm_sec, (u_long)time_msecs % 1000);
+               "%4.4d/%-2.2d/%-2.2dT%-2.2d:%-2.2d:%-2.2d.%-3.3lu",
+               (int)tm->tm_year + 1900, (int)tm->tm_mon+1, (int)tm->tm_mday,
+               (int)tm->tm_hour, (int)tm->tm_min,
+               (int)tm->tm_sec, (u_long)time_msecs % 1000);
       break;
     }
       /*
@@ -712,7 +714,7 @@ int fmt_field_size(enum ipfix_ie_type type) {
 
     case IETYPE_IPV4ADDRESS: return 15;
 
-    case IETYPE_DATETIMEMILLISECONDS: return 18;
+    case IETYPE_DATETIMEMILLISECONDS: return 21;
     /*
     case IETYPE_DATETIMESECONDS: return 14;
     case IETYPE_DATETIMEMICROSECONDS:
