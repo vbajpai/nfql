@@ -207,6 +207,11 @@ ipfix_io_handler(ipfix_templ_t* templ_spec) {
 
   free(ie_spec);
 
+  /* Initialize fb mutex as fixbuf is not designed for multi-threaded use */
+  ipfix->fb_mutex = calloc(1, sizeof(pthread_mutex_t));
+  exitOn(ipfix->fb_mutex == NULL);
+  exitOn(pthread_mutex_init(ipfix->fb_mutex, NULL) != 0);
+
   return io;
 }
 
@@ -345,13 +350,19 @@ io_ipfix_read_init(struct io_ctxt_s* io_ctxt,
   struct ipfix_reader_s* read_ctxt = calloc(1, sizeof(struct ipfix_reader_s));
   exitOn(read_ctxt == NULL);
 
+  /* save fb mutex */
+  read_ctxt->fb_mutex = ipfix->fb_mutex;
+
   /* create fixbuf session */
   fbSession_t* session = fbSessionAlloc(ipfix->fb_info_model);
   exitOn(session == NULL);
 
+  /* ipfix->fb_templ is shared, thus a mutex is used */
+  pthread_mutex_lock(read_ctxt->fb_mutex);
   uint16_t templateID = fbSessionAddTemplate(session, TRUE, FB_TID_AUTO,
                                              ipfix->fb_templ, &read_ctxt->err);
   exitOn(templateID == 0);
+  pthread_mutex_unlock(read_ctxt->fb_mutex);
 
   /* create fixbuf collector */
   read_ctxt->fp = fdopen(read_fd, "r");
@@ -429,7 +440,10 @@ static  int     io_ipfix_read_close(struct io_reader_s* _read_ctxt) {
 
   FILE* fp = read_ctxt->fp;
 
+  /* internal fb_templ is shared across sessions, thus a mutex is used */
+  pthread_mutex_lock(read_ctxt->fb_mutex);
   fBufFree(read_ctxt->fbuf);
+  pthread_mutex_unlock(read_ctxt->fb_mutex);
   free(read_ctxt->rec_buf);
   free(read_ctxt);
 
@@ -526,13 +540,18 @@ static  struct io_writer_s* io_ipfix_write_init(struct io_reader_s* _read_ctxt,
 
   struct ipfix_reader_s* ipfix = &_read_ctxt->d.ipfix;
 
-  /* allocate ipfix_reader space */
+  /* allocate ipfix_writer space */
   struct ipfix_writer_s* writer_ctxt = calloc(1, sizeof(struct ipfix_writer_s));
+
+  /* save fb mutex */
+  writer_ctxt->fb_mutex = ipfix->fb_mutex;
 
   /* create fixbuf session */
   fbSession_t* session = fbSessionAlloc(ipfix->fb_info_model);
   exitOn(session == NULL);
 
+  /* ipfix->fb_templ is shared, thus a mutex is used */
+  pthread_mutex_lock(writer_ctxt->fb_mutex);
   uint16_t intTemplateID = fbSessionAddTemplate(session,
                                                 /* internal = */ TRUE,
                                                 FB_TID_AUTO,
@@ -545,6 +564,7 @@ static  struct io_writer_s* io_ipfix_write_init(struct io_reader_s* _read_ctxt,
                                                 ipfix->fb_templ,
                                                 &writer_ctxt->err);
   exitOn(extTemplateID == 0);
+  pthread_mutex_unlock(writer_ctxt->fb_mutex);
 
   /* create fixbuf exporter */
   writer_ctxt->fp = fdopen(write_fd, "w");
@@ -594,7 +614,10 @@ static int      io_ipfix_write_close(struct io_writer_s* _writer_ctxt) {
 
   GError *err;
   exitOn(fBufEmit(writer_ctxt->fbuf, &err) == FALSE);
+  /* internal fb_templ is shared across sessions, thus a mutex is used */
+  pthread_mutex_lock(writer_ctxt->fb_mutex);
   fBufFree(writer_ctxt->fbuf);
+  pthread_mutex_unlock(writer_ctxt->fb_mutex);
   free(writer_ctxt);
 
   return fclose(fp);
@@ -609,6 +632,9 @@ io_ipfix_ctxt_destroy(struct io_ctxt_s* io_ctxt) {
   fbInfoModelFree(ipfix->fb_info_model);
   /* fb_templ is reference counted across fbSessions and freed with
      the last session */
+
+  exitOn(pthread_mutex_destroy(ipfix->fb_mutex) != 0);
+  free(ipfix->fb_mutex);
 }
 
 /* Field formatter                                                          */

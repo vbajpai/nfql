@@ -42,8 +42,9 @@ typedef struct ipfix_templ_s ipfix_templ_t;
 
 struct ipfix_ctxt_s {
   struct ipfix_templ_s* templ_spec;
-  fbInfoModel_t* fb_info_model;
-  fbTemplate_t*  fb_templ;
+  fbInfoModel_t*    fb_info_model;
+  fbTemplate_t*     fb_templ;
+  pthread_mutex_t*  fb_mutex;
 };
 
 struct ipfix_reader_s {
@@ -57,6 +58,7 @@ struct ipfix_reader_s {
   size_t         rec_size;
   size_t         first_off;
   size_t         last_off;
+  pthread_mutex_t*  fb_mutex;
 };
 
 struct ipfix_writer_s {
@@ -64,6 +66,7 @@ struct ipfix_writer_s {
   GError        *err;
   FILE          *fp;
   size_t         rec_size;
+  pthread_mutex_t*  fb_mutex;
 };
 
 /*--------------------------------------------------------------------------*/
