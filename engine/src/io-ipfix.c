@@ -411,7 +411,9 @@ static  char*   io_ipfix_read_record(struct io_reader_s* _read_ctxt) {
 
     return (char*)read_ctxt->rec_buf;
   } else if (read_ctxt->err->code == FB_ERROR_EOF) {
-
+    /* EOF is not an issue */
+    g_error_free(read_ctxt->err);
+    read_ctxt->err = NULL;
   } else {
     errExit("%s", read_ctxt->err->message);
   }

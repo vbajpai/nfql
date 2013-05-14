@@ -1,2 +1,3 @@
  - see IE semantic changes (mask broken into prefix len and prefix) - test required here
- - are 2 diff types for comparison ops necessary (i.e. RULE_S1 and RULE_S2) ?
+ - check addTemplate callback to register internal template
+ - Use G_DEBUG=gc-friendly G_SLICE=always-malloc to test with valgrind (fixbuf uses glibc)
