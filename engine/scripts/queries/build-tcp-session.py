@@ -34,12 +34,12 @@ if __name__ == '__main__':
 
 
 
-  term1 = {'term': vars(FilterRule('protocolIdentifier', protocol('TCP'), 'RULE_S1_16', 0,
+  term1 = {'term': vars(FilterRule('protocolIdentifier', protocol('TCP'), 'RULE_S1_8', 0,
                                     'RULE_EQ'))}
   clause1 = {'clause': [term1]}
   filter1 = {'dnf-expr': [clause1]}
 
-  term1 = {'term': vars(FilterRule('protocolIdentifier', protocol('TCP'), 'RULE_S1_16', 0,
+  term1 = {'term': vars(FilterRule('protocolIdentifier', protocol('TCP'), 'RULE_S1_8', 0,
                                     'RULE_EQ'))}
   clause1 = {'clause': [term1]}
   filter2 = {'dnf-expr': [clause1]}

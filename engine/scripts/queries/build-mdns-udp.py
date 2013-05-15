@@ -37,13 +37,13 @@ if __name__ == '__main__':
 
   term1 = {'term': vars(FilterRule('destinationTransportPort', 5353, 'RULE_S1_16', 0,
                                    'RULE_EQ'))}
-  term2 = {'term': vars(FilterRule('protocolIdentifier', protocol('UDP'), 'RULE_S1_16', 0,
+  term2 = {'term': vars(FilterRule('protocolIdentifier', protocol('UDP'), 'RULE_S1_8', 0,
                                    'RULE_EQ'))}
   clause1 = {'clause': [term1] + [term2]}
 
   term1 = {'term': vars(FilterRule('sourceTransportPort', 5353, 'RULE_S1_16', 0,
                                    'RULE_EQ'))}
-  term2 = {'term': vars(FilterRule('protocolIdentifier', protocol('UDP'), 'RULE_S1_16', 0,
+  term2 = {'term': vars(FilterRule('protocolIdentifier', protocol('UDP'), 'RULE_S1_8', 0,
                                    'RULE_EQ'))}
   clause2 = {'clause': [term1] + [term2]}
   filter1 = {'dnf-expr': [clause1] + [clause2]}
