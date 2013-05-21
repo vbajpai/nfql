@@ -1,3 +1,22 @@
  - see IE semantic changes (mask broken into prefix len and prefix) - test required here
  - check addTemplate callback to register internal template
  - Use G_DEBUG=gc-friendly G_SLICE=always-malloc to test with valgrind (fixbuf uses glibc)
+
+for @prode
+  - update bin/engine -h
+  - mac OS X requires gettext installed as a dependency
+    $ brew install gettext
+    $ brew link --force gettext
+  - clang errors out on duplicate const declarations in auto_*.{c,h}
+  - python tests/regression.py does not use ipfix traces right now
+  - can we have a --ipfix
+
+for @vbajpai
+  - make target for fetching ipfix.xml to generate ipfix_constants.{h,c}
+  - put durim' parser in parser/
+
+for @vbajpai and @prode
+  - remove datatypes from JSON query, they should be inferred in the engine.
+  - they are some datatype size mismatches in v5 and IPFIX: example:
+    packetDeltaCount ...
+
