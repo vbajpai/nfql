@@ -90,6 +90,11 @@ Vladislav Marinov, Masters Thesis, August 2009.
 
 ### Talks
 
+[NFQL: A Tool for Querying Network Flow Records
+&rarr;](http://www.vaibhavbajpai.com/documents/talks/nfql-im-2013.pdf)  
+Vaibhav Bajpai, Johannes Schauer, Jürgen Schönwälder  
+IM 2013, Ghent, May 2013
+
 [Flow-based Identification of Failures Caused by IPv6 Transition Mechanisms &rarr;](http://cnds.eecs.jacobs-university.de/slides/2012-aims-ipv6transeval.pdf)  
 Vaibhav Bajpai, Nikolay Melnikov, Anuj Sehgal, Jürgen Schönwälder  
 AIMS 2012, Luxembourg, June 2012
