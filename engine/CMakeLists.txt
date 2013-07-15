@@ -61,7 +61,7 @@ find_package(Threads)
 find_library(MLIB m)
 find_library(ZLIB z)
 find_library(FTLIB ft)
-find_library(JSONLIB json)
+find_library(JSONLIB json-c)
 
 # specify linked libraries
 target_link_libraries(engine ${MLIB}
