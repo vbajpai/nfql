@@ -28,6 +28,7 @@
 #define f_engine_io_ipfix_h
 
 #include "pipeline.h"
+#include "ipfix-constants.h"
 
 #include <fixbuf/public.h>
 #include <glib.h>
@@ -36,9 +37,47 @@
 /* Type declarations                                                        */
 /*--------------------------------------------------------------------------*/
 
-struct io_ctxt_s;
-struct ipfix_templ_s;
-typedef struct ipfix_templ_s ipfix_templ_t;
+typedef struct ipfix_ie_s {
+  char              *name;
+  size_t             offset;
+  size_t             size;
+  enum ipfix_ie_type type;
+} ipfix_ie_t;
+
+typedef struct ipfix_templ_s {
+  ipfix_ie_t   *arr;
+  size_t        len;
+  size_t        next_offset;
+} ipfix_templ_t;
+
+struct debug_record {
+    uint64_t        flowStartMilliseconds;          /*   0-  7 */
+    uint64_t        flowEndMilliseconds;            /*   8- 15 */
+
+    uint8_t         sourceIPv6Address[16];          /*  16- 31 */
+    uint8_t         destinationIPv6Address[16];     /*  32- 47 */
+
+    uint32_t        sourceIPv4Address;              /*  48- 51 */
+    uint32_t        destinationIPv4Address;         /*  52- 55 */
+
+    uint16_t        sourceTransportPort;            /*  56- 57 */
+    uint16_t        destinationTransportPort;       /*  58- 59 */
+
+    uint32_t        ipNextHopIPv4Address;           /*  60- 63 */
+    uint8_t         ipNextHopIPv6Address[16];       /*  64- 79 */
+    uint32_t        ingressInterface;               /*  80- 83 */
+    uint32_t        egressInterface;                /*  84- 87 */
+
+    uint64_t        packetDeltaCount;               /*  88- 95 */
+    uint64_t        octetDeltaCount;                /*  96-103 */
+
+    uint8_t         protocolIdentifier;             /*  104-105 */
+
+    uint8_t         ipClassOfService;               /*  105-106 */
+    uint8_t         tcpControlBits;                 /*  106-107 */
+
+    uint8_t         paddingOctets[5];               /*  107-112 */
+};
 
 struct ipfix_ctxt_s {
   struct ipfix_templ_s* templ_spec;
