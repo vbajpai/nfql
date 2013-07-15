@@ -28,7 +28,7 @@
 
 bool file;
 char* dirpath;
-uint8_t zlevel = 5;
+int8_t zlevel = 5;
 
 /* verbosity flags */
 bool verbose_v;
