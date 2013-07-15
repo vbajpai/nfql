@@ -133,7 +133,7 @@ source.write("""
   """)
 
 filter_proto = """bool
-  filter_%s_%s(const char* const record,
+  filter_%s_%s(const char* record,
   size_t field_offset,
   uint64_t value,
   uint64_t delta)"""
@@ -155,9 +155,9 @@ def filter_body(op, atype):
   return result
 
 grouper_proto = """bool
-  grouper_%s_%s_%s_%s(const struct group const *group,
+  grouper_%s_%s_%s_%s(const struct group *group,
   size_t field_offset1,
-  const char* const record2,
+  const char* record2,
   size_t field_offset2,
   uint64_t delta)"""
 def grouper_body(op, atype1, atype2, dtype):
@@ -353,7 +353,7 @@ def groupaggr_body(op, atype):
 
 
 gfilter_proto = """bool
-  gfilter_%s_%s(const struct group const *group,
+  gfilter_%s_%s(const struct group *group,
   size_t field_offset,
   uint64_t value,
   uint64_t delta)"""
@@ -377,9 +377,9 @@ def gfilter_body(op, atype):
 
 #merger: part I: operation on field offsets
 merger1_proto = """bool
-  merger_%s_%s_%s(const struct group* const group1,
+  merger_%s_%s_%s(const struct group* group1,
   size_t field1_offset,
-  const struct group* const group2,
+  const struct group* group2,
   size_t field2_offset,
   uint64_t delta)"""
 def merger1_body(op, atype1, atype2):
@@ -427,9 +427,9 @@ def merger1_body(op, atype1, atype2):
 #merger: part II: operation on allen intervals
 
 merger2_proto = """bool
-  merger_%s(const struct group* const group1,
+  merger_%s(const struct group* group1,
   size_t field1_offset,
-  const struct group* const group2,
+  const struct group* group2,
   size_t field2_offset,
   uint64_t delta)"""
 

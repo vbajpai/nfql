@@ -97,9 +97,9 @@ parse_cmdline_args(int argc, char** const argv) {
         break;
       case 'z':
         errno = 0;
-        zlevel = (int) strtol(optarg, (char**) NULL, 10);
+        zlevel = (int8_t) strtol(optarg, (char**) NULL, 10);
         if(errno != 0) errExit("invalid zlevel");
-        else if(zlevel < 0 || zlevel > 9) errExit("valid zlevels: (0-9)");
+        else if((zlevel < 0) || (zlevel > 9))  errExit("valid zlevels: (0-9)");
         break;
       case 'd': file = TRUE; dirpath = optarg; break;
       case 'h': usageErr(usage_string, argv[0], argv[0]);

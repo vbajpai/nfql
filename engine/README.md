@@ -85,9 +85,13 @@ Install Flow-Tools from source
 	[flow-tools-0.68.4] $ make
 	[flow-tools-0.68.4] $ make install
 
-Install JSON Manipulation Library Package
+Install JSON Manipulation Library Package. `json-c` starting from v0.11
+has renamed the library from `libjson` to `libjson-c`. Debian-based
+systems are currently providing v0.10 in the repository. In order to
+avoid complexity in the makefile, we have decided to freeze the library
+dependency to v0.10. Install `json-c` v0.10:
 
-	$ brew install json-c
+	$  brew install https://raw.github.com/mxcl/homebrew/9f78662acff4c3cb1bff3587c8ead7f5935925a9/Library/Formula/json-c.rb
 
 Build Engine
 

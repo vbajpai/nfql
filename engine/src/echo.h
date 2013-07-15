@@ -44,19 +44,19 @@ echo_branch(size_t num_branches,
 
 void
 echo_filter(
-            const int const branch_id,
-            const struct filter_result* const fresult,
+            const int branch_id,
+            const struct filter_result* fresult,
             struct io_handler_s* io,
             struct io_reader_s* read_ctxt
            );
 
 void
 echo_grouper(
-             const int const branch_id,
+             const int branch_id,
              size_t num_grouper_rules,
              uint32_t num_sorted_records,
 
-             const struct grouper_result* const gresult,
+             const struct grouper_result* gresult,
              struct io_handler_s* io,
              struct io_reader_s* read_ctxt
             );
@@ -64,16 +64,16 @@ echo_grouper(
 
 void
 echo_group_aggr(
-                const int const branch_id,
-                const struct grouper_result* const gresult,
+                const int branch_id,
+                const struct grouper_result* gresult,
                 struct io_handler_s* io,
                 struct io_reader_s* read_ctxt
                );
 
 void
 echo_gfilter(
-             const int const branch_id,
-             const struct groupfilter_result* const gfresult,
+             const int branch_id,
+             const struct groupfilter_result* gfresult,
              struct io_handler_s* io,
              struct io_reader_s* read_ctxt
             );
@@ -86,7 +86,7 @@ echo_merger(
             size_t num_branches,
             struct branch** const branchset,
 
-            const struct merger_result* const mresult,
+            const struct merger_result* mresult,
             struct io_handler_s* io,
             struct io_reader_s* read_ctxt
             );
@@ -94,7 +94,7 @@ echo_merger(
 
 void
 echo_results(
-             const struct ungrouper_result* const uresult,
+             const struct ungrouper_result* uresult,
              struct io_handler_s* io,
              struct io_reader_s* read_ctxt
             );
