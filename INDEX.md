@@ -91,6 +91,11 @@ Vladislav Marinov, Masters Thesis, August 2009.
 ### Talks
 
 [NFQL: A Tool for Querying Network Flow Records
+&rarr;](http://vaibhavbajpai.com/documents/talks/nfql-ietf87-2013.pdf)  
+Vaibhav Bajpai, Johannes Schauer, Corneliu Claudiu Prodescu, Jürgen Schönwälder  
+NetFlow/IPFIX NMRG Workshop, IETF 87, Berlin, July 2013  
+
+[NFQL: A Tool for Querying Network Flow Records
 &rarr;](http://www.vaibhavbajpai.com/documents/talks/nfql-im-2013.pdf)  
 Vaibhav Bajpai, Johannes Schauer, Jürgen Schönwälder  
 IM 2013, Ghent, May 2013
@@ -126,8 +131,9 @@ Earlier releases of NFQL can be downloaded from [here &rarr;](releases.html)
 
 ### Contributors
 
-- Vaibhav Bajpai [contact@vaibhavbajpai.com](contact@vaibhavbajpai.com)
-- Johannes Schauer [j.schauer@email.de](j.schauer@email.de)
+- Vaibhav Bajpai [contact@vaibhavbajpai.com](contact@vaibhavbajpai.com)  
+- Johannes Schauer [j.schauer@email.de](j.schauer@email.de)  
+- Corneliu Claudiu Prodescu [c.prodescu@jacobs-university.de](c.prodescu@jacobs-university.de)  
 - Kaloyan Kanev [k.kanev@jacobs-university.de](k.kanev@jacobs-university.de)
 - Vladislav Marinov [v.marinov@jacobs-university.de](v.marinov@jacobs-university.de)
 - Vladislav Perelman [v.perelman@jacobs-university.de](v.perelman@jacobs-university.de)
