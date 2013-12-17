@@ -17,7 +17,7 @@ Build the Execution Engine
 
 Generate Documentation (optional)
 
-  [engine] $ make doc
+    [engine] $ make doc
 
 
 #### Running the Execution Engine
