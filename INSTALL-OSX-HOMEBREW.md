@@ -24,6 +24,10 @@ Build the Execution Engine
 
 	[engine] $ make CMAKE_PREFIX_PATH=/usr/local/flow-tools/
 	
+Generate Documentation (optional)
+
+  [engine] $ make doc
+
 #### Running the Execution Engine
 
 Example queries are available in `examples/` along with sample traces.

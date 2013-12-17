@@ -15,6 +15,10 @@ Build the Execution Engine
 
 	[engine] $ make CMAKE_PREFIX_PATH=/opt/local
 
+Generate Documentation (optional)
+
+  [engine] $ make doc
+
 
 #### Running the Execution Engine
 

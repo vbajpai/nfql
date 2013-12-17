@@ -15,6 +15,8 @@ $ tar -xvf flow-tools-0.68.4.tar.bz2
 $ brew install json-c cmake doxygen graphviz</code></pre>
 <p>Build the Execution Engine</p>
 <pre><code>[engine] $ make CMAKE_PREFIX_PATH=/usr/local/flow-tools/</code></pre>
+<p>Generate Documentation (optional)</p>
+<p>[engine] $ make doc</p>
 <h4 id="running-the-execution-engine">Running the Execution Engine</h4>
 <p>Example queries are available in <code>examples/</code> along with sample traces.</p>
 <pre><code>[engine] $ bin/engine examples/query-http-tcp-session.json examples/trace-2009.ftz</code></pre>

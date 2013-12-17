@@ -14,6 +14,10 @@ Build the Execution Engine
 
 	[engine] $ make
 
+Generate Documentation (optional)
+
+  [engine] $ make doc
+
 #### Running the Execution Engine
 
 Example queries are available in `examples/` along with sample traces.
