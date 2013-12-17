@@ -47,8 +47,8 @@ parse_cmdline_args(int argc, char** const argv) {
   };
   enum verbosity_levels               verbose_level = -1;
   const char usage_string[] =
-  "%s [OPTIONS] queryfile tracefile\t\t query the specified trace\n"
-  "   or: %s [OPTIONS] queryfile -\t\t\t read the trace from stdin\n\n"
+  "%s [OPTIONS] queryfile tracefile\t\t query the flow-tools trace\n"
+  "   or: %s [OPTIONS] queryfile -\t\t\t read the flow-tools trace from stdin\n\n"
   "OPTIONS:\n"
   "-z, --zlevel\t\t change the compression level (default:5)\n"
   "-d, --dirpath\t\t save the results as flow-tools files in given dirpath\n"
