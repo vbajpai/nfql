@@ -26,6 +26,7 @@ now has comparable execution times to contemporary flow analysis tools.
 ### Installation and Usage
 
 - [Debian-based Linux &rarr;](install-debian.html)
+- [Fedora Linux &rarr;](install-fedora.html)
 - [Mac OS X using Homebrew &rarr;](install-osx-homebrew.html)
 - [Mac OS X using Mac Ports &rarr;](install-osx-macports.html)
 

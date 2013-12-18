@@ -6,6 +6,7 @@ build:
 	pandoc INSTALL-OSX-HOMEBREW.md -o INSTALL-OSX-HOMEBREW.md.html
 	pandoc INSTALL-OSX-MACPORTS.md -o INSTALL-OSX-MACPORTS.md.html
 	pandoc INSTALL-DEBIAN.md -o INSTALL-DEBIAN.md.html
+	pandoc INSTALL-FEDORA.md -o INSTALL-FEDORA.md.html
 	
 clean:
 	rm -f -r INDEX.md.html RELEASES.md.html INSTALL-OSX-HOMEBREW.md.html .DS_Store
