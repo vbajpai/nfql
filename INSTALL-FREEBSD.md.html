@@ -1,0 +1,37 @@
+<h1 id="nfql">NFQL</h1>
+<hr />
+<p>An efficient C implementation of a stream-based flow query language.</p>
+<h3 id="installation-on-freebsd">Installation on FreeBSD</h3>
+<p>Install Dependencies</p>
+<pre><code>$ cd /usr/ports/devel/cmake
+[cmake] $ sudo make install
+
+$ cd /usr/ports/net-mgmt/flow-tools
+[flow-tools] $ sudo make install 
+
+$ cd /usr/ports/devel/json-c
+[json-c] $ sudo make install
+
+$ cd /usr/ports/devel/doxygen
+[doxygen] $ sudo make install
+
+$ cd /usr/ports/graphics/graphviz
+[graphviz] $ sudo make install </code></pre>
+<p>Build the Execution Engine</p>
+<pre><code>[engine] $ make CMAKE_PREFIX_PATH=/usr/local</code></pre>
+<p>Generate Documentation (optional)</p>
+<pre><code>[engine] $ make doc</code></pre>
+<h4 id="running-the-execution-engine">Running the Execution Engine</h4>
+<p>Example queries are available in <code>examples/</code> along with sample traces.</p>
+<pre><code>[engine] $ bin/engine examples/query-http-tcp-session.json examples/trace-2009.ftz</code></pre>
+<p>The sample queries can also be run on your own <code>NetFlow v5</code> records</p>
+<pre><code>[engine] $ flow-cat $TRACE[s] | bin/engine examples/query-http-tcp-session.json</code></pre>
+<h4 id="running-the-test-suite">Running the Test Suite</h4>
+<p>To run the complete regression test-suite:</p>
+<pre><code>[engine] $ tests/regression.py [-v]</code></pre>
+<p>Regression tests can also be run individually on a specific example query type. For instance:</p>
+<pre><code>[engine] $ tests/test-query-http-tcp-session.py [-v]</code></pre>
+<h4 id="running-the-benchmarks">Running the Benchmarks</h4>
+<p>To run the <code>NFQL</code> benchmarks:</p>
+<pre><code>[engine] $ make
+[engine] $ sudo benchmarks/nfql.py bin/engine trace[s]/ querie[s]/</code></pre>

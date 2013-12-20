@@ -29,6 +29,7 @@ now has comparable execution times to contemporary flow analysis tools.
 - [Fedora Linux &rarr;](install-fedora.html)
 - [Mac OS X using Homebrew &rarr;](install-osx-homebrew.html)
 - [Mac OS X using Mac Ports &rarr;](install-osx-macports.html)
+- [FreeBSD &rarr;](install-freebsd.html)
 
 ### Development Blog
 
