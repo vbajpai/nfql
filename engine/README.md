@@ -144,6 +144,69 @@ Cleanup
 	[engine] $ make clean
 
 
+Installing on Fedora Linux 
+--------------------------
+- - -
+
+Tried on Fedora 18.
+
+Install Dependencies
+
+	$ sudo yum install cmake flow-tools-devel json-c-devel
+
+Build Engine
+
+	[engine] $ make 
+
+Install Doxygen and GraphVIZ (optional)
+
+	$ sudo yum install doxygen graphviz
+
+Generate Documentation (optional)
+
+	[engine] $ make doc
+
+Cleanup
+
+	[engine] $ make clean
+
+
+Installing on FreeBSD 
+---------------------
+- - -
+
+Tried on FreeBSD 9.2
+
+Install Dependencies
+
+	$ cd /usr/ports/devel/cmake
+	[cmake] $ sudo make install 
+
+	$ cd /usr/ports/net-mgmt/flow-tools
+	[flow-tools] $ sudo make install 
+
+	$ cd /usr/ports/devel/json-c
+	[json-c] $ sudo make install 
+
+Build the Execution Engine
+
+	[engine] $ make CMAKE_PREFIX_PATH=/usr/local
+
+Generate Documentation (optional)
+
+	[engine] $ make doc
+
+Install Doxygen and GraphVIZ (optional)
+
+	$ cd /usr/ports/devel/doxygen
+	[doxygen] $ sudo make install 
+
+	$ cd /usr/ports/graphics/graphviz
+	[graphviz] $ sudo make install 
+
+Cleanup
+
+	[engine] $ make clean
 
 
 Running the Engine
@@ -199,5 +262,5 @@ Contributors
 ------------
 - - -
 
-`F (v2)`: Vaibhav Bajpai <contact@vaibhavbajpai.com>, 2012
+`F (v2)`: Vaibhav Bajpai <contact@vaibhavbajpai.com>, 2012  
 `F (v1)`: Johannes 'josch' Schauer <j.schauer@email.de>, 2011
