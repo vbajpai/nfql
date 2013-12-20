@@ -2,6 +2,9 @@
 # ------------------------------- CMake -------------------------------------#
 # ---------------------------------------------------------------------------#
 
+# macros
+include(CheckFunctionExists)
+
 # minimum supported cmake version
 cmake_minimum_required(VERSION 2.6)
 
@@ -63,12 +66,18 @@ find_library(ZLIB z)
 find_library(FTLIB ft)
 find_library(JSONLIB json)
 
+# On FreeBSD libc doesn't directly provide libexecinfo, so we have to find it
+if(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+  find_library(LIBEXECINFO execinfo)
+endif(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+
 # specify linked libraries
 target_link_libraries(engine ${MLIB}
                              ${CMAKE_THREAD_LIBS_INIT}
                              ${FTLIB}
                              ${JSONLIB}
-                             ${ZLIB})
+                             ${ZLIB}
+                             ${LIBEXECINFO})
 
 # ---------------------------------------------------------------------------#
 
