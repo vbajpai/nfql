@@ -66,15 +66,16 @@ parse_cmdline_args(int argc, char** const argv) {
   };
   enum verbosity_levels               verbose_level = -1;
   const char usage_string[] =
-  "%s [OPTIONS] queryfile tracefile\t\t query the flow-tools trace\n"
-  "   or: %s [OPTIONS] queryfile -\t\t\t read the flow-tools trace from stdin\n\n"
+  "%s [OPTIONS] queryfile tracefile\t\t query the tracefile\n"
+  "   or: %s [OPTIONS] queryfile -\t\t\t read the tracefile from stdin\n\n"
   "OPTIONS:\n"
-  "-z, --zlevel\t\t change the compression level (default:5)\n"
   "-d, --dirpath\t\t save the results as flow-tools files in given dirpath\n"
   "-D, --debug\t\t enable debugging mode\n"
+  "-h, --help\t\t display this help and exit\n"
+  "-I, --ipfix\t\t tracefile is in IPFIX format (default:flow-tools format)\n"
   "-v, --verbose\t\t increase the verbosity level\n"
   "-V, --version\t\t output version information and exit\n"
-  "-h, --help\t\t display this help and exit\n";
+  "-z, --zlevel\t\t change the compression level (default:5)\n";
 
 
   /* free'd after calling read_param_data(...) */
