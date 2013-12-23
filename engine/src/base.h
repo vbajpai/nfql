@@ -36,6 +36,7 @@
 #include <string.h> /* Commonly used string-handling functions */
 #include <stdint.h>
 #include <stdbool.h>
+#include <unistd.h>
 
 #ifndef TRUE
 #   define TRUE 1

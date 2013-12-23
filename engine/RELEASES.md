@@ -1,24 +1,79 @@
+`F (v2.6):` It is fast!
+
+    $ git show v0.6
+
+    tag v0.6
+    Tagger: Vaibhav Bajpai <contact@vaibhavbajpai.com>
+    Date:   Mon Dec 23 15:20:17 2013 +0100
+
+    * engine understands the NFQL DSL represented as a DNF expression.
+      - using clauses and terms instead of modules and rulesets.
+      - multiple clauses supporting or expressions in each stage of the
+        pipeline.
+      - aggregation substage within grouper can only have a single clause.
+    * JSON query can disable the stages at RUNTIME:
+      - added conditional MACROS for each stage of the processing pipeline.
+      - no filter in query => no filter in engine.
+      - no grouper in query => no grouper in engine.
+      - no groupaggregations in query => no groupaggregations in engine.
+      - no groupfilter in query => no groupfilter in engine.
+      - no merger in query => no merger and no ungrouper in engine.
+      - no ungrouper in query => no ungrouper in engine.
+    * performance optimizations:
+      - reading the trace after successfully parsing the query in struct
+        flowquery.
+      - inline writes: writing intermediates results to files as soon as
+        processed.
+      - faster filter:
+        * inline filtering while reading the trace.
+        * saving the filtered recordset only once for each branch.
+      - faster grouper:
+        * nested binary search by sorting on each term of the clauset
+      - don't call rule assignment functions for each record.
+    * --dirpath option to save the results as flow-tools files in given
+      dirpath.
+    * --zlevel option to change flow-tools trace compression level (default:
+      5).
+    * using STDIN_FILENO instead of 0 (describes standard input).
+    * using -O2 compiler flag to increase level of GCC optimization.
+    * documentation:
+      - added installation instructions for FreeBSD and FEDORA.
+      - updated bin/engine -h, tracefile must be in flow-tools format.
+      - replaced all references of flowy with f.
+      - added installation instructions using MACPORTS for Mac OS X.
+      - froze json-c library dependency to v0.10 (v0.11 now uses libjson-c
+        name)
+    * resolved issues:
+      - no segfaults with only filter enabled.
+      - successful compilation on removing any conditional macro.
+      - removed duplicate aggregation stages in JSON queries
+      - operation type of relative comparisons is RULE_REL (not RULE_ABS)
+      - changed the datatype of zlevel from uint_8 to int_8 (gcc v4.2.1
+        issue)
+      - removed duplicate const decl on one declaration statement (clang
+        issue)
+
 `F (v2.5):` It is verifiable!
 
-  $ git show v0.5
+    $ git show v0.5
 
-  tag v0.5
-  Tagger: Vaibhav Bajpai <contact@vaibhavbajpai.com>
-  Date:   Wed Jul 11 10:33:58 2012 +0200
-  Commit 8d2f9b374a1e104e97398de47542cd5c0479a0dc
+    tag v0.5
+    Tagger: Vaibhav Bajpai <contact@vaibhavbajpai.com>
+    Date:   Wed Jul 11 10:33:58 2012 +0200
+    Commit 8d2f9b374a1e104e97398de47542cd5c0479a0dc
 
-  * better engine usage on run.
-  * evaluation of query ruleset lengths at RUNTIME.
-  * python pipeline module to encapsulate pipeline stage classes.
-  * painless parser installation using make.
-  * parser installation instructions on debian/ubuntu and osx.
-  * regression test-suite for the execution engine.
-  * silk installation and usage instructions.
-  * instructions to convert flow-tools traces to silk.
-  * automated benchmarking suite.
-  * resolved issues:
-    * no segfault on srcIP = dstIP in a grouper rule.
-    * no segfault when no grouper rules are defined.
+    * better engine usage on run.
+    * evaluation of query ruleset lengths at RUNTIME.
+    * python pipeline module to encapsulate pipeline stage classes.
+    * painless parser installation using make.
+    * parser installation instructions on debian/ubuntu and osx.
+    * regression test-suite for the execution engine.
+    * silk installation and usage instructions.
+    * instructions to convert flow-tools traces to silk.
+    * automated benchmarking suite.
+    * resolved issues:
+      * no segfault on srcIP = dstIP in a grouper rule.
+      * no segfault when no grouper rules are defined.
 
 
 `F (v2.4):` It is portable!

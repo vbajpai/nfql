@@ -2,6 +2,9 @@
 # ------------------------------- CMake -------------------------------------#
 # ---------------------------------------------------------------------------#
 
+# macros
+include(CheckFunctionExists)
+
 # minimum supported cmake version
 cmake_minimum_required(VERSION 2.6)
 
@@ -71,6 +74,11 @@ if (GLIB_FOUND)
 endif (GLIB_FOUND)
 
 
+# On FreeBSD libc doesn't directly provide libexecinfo, so we have to find it
+if(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+  find_library(LIBEXECINFO execinfo)
+endif(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
+
 # specify linked libraries
 target_link_libraries(engine ${MLIB}
                              ${CMAKE_THREAD_LIBS_INIT}
@@ -79,7 +87,7 @@ target_link_libraries(engine ${MLIB}
                              ${ZLIB}
                              ${FIXBUF}
                              ${GLIB_LIBRARIES}
-)
+                             ${LIBEXECINFO})
 
 # ---------------------------------------------------------------------------#
 
