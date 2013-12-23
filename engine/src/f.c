@@ -28,7 +28,7 @@
 #define _GNU_SOURCE
 #define STR(x) #x
 #define XSTR(x) STR(x)
-#define VERSION 2.5
+#define VERSION 2.6
 #include "f.h"
 
 struct parameters*
