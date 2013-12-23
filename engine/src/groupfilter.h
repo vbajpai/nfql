@@ -28,8 +28,7 @@
 #define f_engine_group_filter_h
 
 #include "pipeline.h"
-#include "errorhandlers.h"
-#include "auto-assign.h"
+#include "io.h"
 
 struct groupfilter_result*
 groupfilter(
@@ -38,7 +37,9 @@ groupfilter(
 
             const struct grouper_result* const gresult,
 
-            struct ft_data* data,
+            struct io_handler_s* io,
+            struct io_reader_s*  read_ctxt,
+
             int branch_id
            );
 

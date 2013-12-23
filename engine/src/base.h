@@ -38,6 +38,16 @@
 #include <stdbool.h>
 #include <unistd.h>
 
+#ifndef TRUE
+#   define TRUE 1
+#endif
+
+#ifndef FALSE
+#   define FALSE 0
+#endif
+
+#define UNUSED(var) do { (void) var; } while (0)
+
 #define FILTER
 #define GROUPER
 #define GROUPERAGGREGATIONS
@@ -68,6 +78,7 @@ extern bool groupfilter_enabled;
 extern bool merger_enabled;
 extern bool ungrouper_enabled;
 
-#define FLOWHEADER "\nStart             End               Sif   SrcIPaddress    SrcP  DIf   DstIPaddress    DstP    P Fl Pkts       Octets\n"
+/* IPFIX I/O format */
+extern bool ipfix_enabled;
 
 #endif

@@ -28,30 +28,12 @@
 #ifndef f_engine_f_h
 #define f_engine_f_h
 
-#include <pthread.h>
-#include <getopt.h>
-#include <json/json.h>
-#include <sys/stat.h>
-#include <sys/mman.h>
-
-#include "branch.h"
-#include "merger.h"
-#include "ungrouper.h"
-
-#include "auto-assign.h"
-#include "errorhandlers.h"
-#include "ftreader.h"
-#include "echo.h"
+#include "base.h"
+#include "io.h"
 
 struct parameters {
   char*                           query_filename;
   char*                           trace_filename;
-};
-struct parameters_data {
-  char*                           query_mmap;
-  struct stat*                    query_mmap_stat;
-  struct ft_data*                 trace;
-  int                             trace_fsock;
 };
 
 struct json {
@@ -167,18 +149,19 @@ struct json_merger_term_op {
 struct parameters*
 parse_cmdline_args(int argc, char** const argv);
 
-struct parameters_data*
-open_trace_read_query(const struct parameters* const param);
-
 struct json*
-parse_json_query(const char* const query_mmap);
+parse_json_query(const char* query_file, struct ipfix_templ_s* templ);
 
 struct flowquery*
-prepare_flowquery(struct ft_data* const trace,
+prepare_flowquery(struct io_handler_s* io,
+                  struct io_reader_s*  io_read_ctxt,
+                  struct io_data_s*    io_data,
                   const struct json* const json_query);
 
-struct ft_data*
-read_trace(const struct parameters_data* const param_data,
+int
+read_trace(struct io_handler_s* io,
+           struct io_reader_s* read_ctxt,
+           struct io_data_s* data,
            struct flowquery* fquery);
 
 pthread_t*

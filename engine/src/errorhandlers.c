@@ -32,16 +32,7 @@
 
 static void
 terminate() {
-
-  /* Dump core if EF_DUMPCORE environment variable is defined
-   * and is a nonempty string; otherwise call exit(3)
-   */
-  char *s;
-  s = getenv("EF_DUMPCORE");
-  if (s != NULL && *s != '\0')
-    abort();
-
-  exit(EXIT_FAILURE);
+  abort();
 }
 
 static void

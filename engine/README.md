@@ -93,6 +93,15 @@ dependency to v0.10. Install `json-c` v0.10:
 
 	$  brew install https://raw.github.com/mxcl/homebrew/9f78662acff4c3cb1bff3587c8ead7f5935925a9/Library/Formula/json-c.rb
 
+Install `libfixbuf`
+
+  $ brew install libfixbuf
+
+Install `gettext`
+
+  $ brew install gettext
+  $ brew link --force gettext
+
 Build Engine
 
 	[engine] $ make CMAKE_PREFIX_PATH=/usr/local/flow-tools/

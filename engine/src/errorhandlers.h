@@ -47,5 +47,14 @@ void usageErr(const char *format, ...) NORETURN;
 void errExit(const char *format, ...) NORETURN;
 void print_trace (void);
 
+/**
+  Test expression and exit if the conndition is met
+ */
+#define exitOn(test_expr)               \
+  do {                                  \
+    if (test_expr) {                    \
+        errExit(#test_expr);            \
+    }                                   \
+  } while (0)
 
 #endif

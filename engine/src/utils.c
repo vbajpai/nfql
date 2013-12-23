@@ -28,59 +28,39 @@
 
 #include "utils.h"
 
+#include "errorhandlers.h"
+#include "ftlib.h"
+#include <math.h>
 
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <unistd.h>
+
+
+/* -----------------------------------------------------------------------*/
+/*                                generic                                 */
+/* -----------------------------------------------------------------------*/
+
+int
+get_wronly_fd(char* filename) {
+
+  int out_fd = 1;
+
+  if ((out_fd = open(filename,  O_WRONLY|O_CREAT|O_TRUNC, 0644)) == -1){
+    return -1;
+  }
+
+  struct stat sb;
+  if (fstat(out_fd, &sb) == -1) {
+    return -1;
+  }
+
+  return out_fd;
+}
 
 /* -----------------------------------------------------------------------*/
 /*                         query parsing utilities                        */
 /* -----------------------------------------------------------------------*/
-
-size_t
-get_offset(const char * const name,
-           const struct fts3rec_offsets* const offsets) {
-
-  #define CASEOFF(memb)                       \
-  if (strcmp(name, #memb) == 0)               \
-    return offsets->memb
-
-	CASEOFF(unix_secs);
-	CASEOFF(unix_nsecs);
-	CASEOFF(sysUpTime);
-	CASEOFF(exaddr);
-	CASEOFF(srcaddr);
-	CASEOFF(dstaddr);
-	CASEOFF(nexthop);
-	CASEOFF(input);
-	CASEOFF(output);
-	CASEOFF(dFlows);
-	CASEOFF(dPkts);
-	CASEOFF(dOctets);
-	CASEOFF(First);
-	CASEOFF(Last);
-	CASEOFF(srcport);
-	CASEOFF(dstport);
-	CASEOFF(prot);
-	CASEOFF(tos);
-	CASEOFF(tcp_flags);
-	CASEOFF(pad);
-	CASEOFF(engine_type);
-	CASEOFF(engine_id);
-	CASEOFF(src_mask);
-	CASEOFF(dst_mask);
-	CASEOFF(src_as);
-	CASEOFF(dst_as);
-	CASEOFF(in_encaps);
-	CASEOFF(out_encaps);
-	CASEOFF(peer_nexthop);
-	CASEOFF(router_sc);
-	CASEOFF(src_tag);
-	CASEOFF(dst_tag);
-	CASEOFF(extra_pkts);
-	CASEOFF(marked_tos);
-
-  return -1;
-}
-
-
 
 uint64_t
 get_enum(const char * const name) {

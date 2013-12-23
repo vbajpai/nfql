@@ -12,7 +12,7 @@ cmake_minimum_required(VERSION 2.6)
 project(engine C)
 
 # compiler flags passed as arguments
-add_definitions(-O2 -Wall -Werror -std=c99)
+add_definitions(-Wall -Werror -std=c99)
 
 # set output directories for libraries and executables
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_SOURCE_DIR}/bin)
@@ -65,6 +65,14 @@ find_library(MLIB m)
 find_library(ZLIB z)
 find_library(FTLIB ft)
 find_library(JSONLIB json)
+find_library(FIXBUF fixbuf)
+find_package(PkgConfig)
+pkg_check_modules(GLIB glib-2.0)
+if (GLIB_FOUND)
+  message("Found glib-2.0")
+  include_directories(${GLIB_INCLUDE_DIRS})
+endif (GLIB_FOUND)
+
 
 # On FreeBSD libc doesn't directly provide libexecinfo, so we have to find it
 if(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
@@ -77,6 +85,8 @@ target_link_libraries(engine ${MLIB}
                              ${FTLIB}
                              ${JSONLIB}
                              ${ZLIB}
+                             ${FIXBUF}
+                             ${GLIB_LIBRARIES}
                              ${LIBEXECINFO})
 
 # ---------------------------------------------------------------------------#

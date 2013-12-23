@@ -29,8 +29,8 @@
 
 #include "pipeline.h"
 #include "base.h"
-#include "ftreader.h"
-#include "ftwriter.h"
+#include "merger.h"
+#include "io.h"
 
 /* -----------------------------------------------------------------------*/
 /*                              branch                                    */
@@ -39,13 +39,15 @@
 void
 echo_branch(size_t num_branches,
             struct branch** branchset,
-            struct ft_data* trace);
+            struct io_handler_s* io_handler,
+            struct io_reader_s* read_ctxt);
 
 void
 echo_filter(
             const int branch_id,
             const struct filter_result* fresult,
-            struct ft_data* const dataformat
+            struct io_handler_s* io,
+            struct io_reader_s* read_ctxt
            );
 
 void
@@ -55,7 +57,8 @@ echo_grouper(
              uint32_t num_sorted_records,
 
              const struct grouper_result* gresult,
-             struct ft_data* const dataformat
+             struct io_handler_s* io,
+             struct io_reader_s* read_ctxt
             );
 
 
@@ -63,14 +66,16 @@ void
 echo_group_aggr(
                 const int branch_id,
                 const struct grouper_result* gresult,
-                struct ft_data* const dataformat
+                struct io_handler_s* io,
+                struct io_reader_s* read_ctxt
                );
 
 void
 echo_gfilter(
              const int branch_id,
              const struct groupfilter_result* gfresult,
-             struct ft_data* const dataformat
+             struct io_handler_s* io,
+             struct io_reader_s* read_ctxt
             );
 
 /* -----------------------------------------------------------------------*/
@@ -82,14 +87,16 @@ echo_merger(
             struct branch** const branchset,
 
             const struct merger_result* mresult,
-            struct ft_data* const dataformat
+            struct io_handler_s* io,
+            struct io_reader_s* read_ctxt
             );
 
 
 void
 echo_results(
              const struct ungrouper_result* uresult,
-             struct ft_data* const dataformat
+             struct io_handler_s* io,
+             struct io_reader_s* read_ctxt
             );
 
 

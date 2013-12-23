@@ -30,25 +30,18 @@
 
 #include "base.h"
 #include "pipeline.h"
-#include "errorhandlers.h"
-#include "ftlib.h"
-#include <math.h>
 
 
+/* -----------------------------------------------------------------------*/
+/*                                generic                                 */
+/* -----------------------------------------------------------------------*/
 
-
-
-
-
-
+int
+get_wronly_fd(char* filename);
 
 /* -----------------------------------------------------------------------*/
 /*                         query parsing utilities                        */
 /* -----------------------------------------------------------------------*/
-
-size_t
-get_offset(const char * const name,
-           const struct fts3rec_offsets* const offsets);
 
 uint64_t
 get_enum(const char * const name);

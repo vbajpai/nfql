@@ -34,30 +34,30 @@ if __name__ == '__main__':
 
 
 
-  term1 = {'term': vars(FilterRule('prot', protocol('TCP'), 'RULE_S1_16', 0,
+  term1 = {'term': vars(FilterRule('protocolIdentifier', protocol('TCP'), 'RULE_S1_8', 0,
                                     'RULE_EQ'))}
   clause1 = {'clause': [term1]}
   filter1 = {'dnf-expr': [clause1]}
 
-  term1 = {'term': vars(FilterRule('prot', protocol('TCP'), 'RULE_S1_16', 0,
+  term1 = {'term': vars(FilterRule('protocolIdentifier', protocol('TCP'), 'RULE_S1_8', 0,
                                     'RULE_EQ'))}
   clause1 = {'clause': [term1]}
   filter2 = {'dnf-expr': [clause1]}
 
 
 
-  term1 = {'term': vars(GrouperRule('srcaddr', 'RULE_S1_32',
-                                    'srcaddr', 'RULE_S2_32', 0,
+  term1 = {'term': vars(GrouperRule('sourceIPv4Address', 'RULE_S1_32',
+                                    'sourceIPv4Address', 'RULE_S2_32', 0,
                                     'RULE_EQ', 'RULE_REL'))}
-  term2 = {'term': vars(GrouperRule('dstaddr', 'RULE_S1_32',
-                                    'dstaddr', 'RULE_S2_32', 0,
+  term2 = {'term': vars(GrouperRule('destinationIPv4Address', 'RULE_S1_32',
+                                    'destinationIPv4Address', 'RULE_S2_32', 0,
                                     'RULE_EQ', 'RULE_REL'))}
   clause1 = {'clause': [term1] + [term2]}
 
 
-  term1 = {'term': vars(AggregationRule('dPkts', 'RULE_S1_32',
+  term1 = {'term': vars(AggregationRule('packetDeltaCount', 'RULE_S1_32',
                                         'RULE_SUM'))}
-  term2 = {'term': vars(AggregationRule('dOctets', 'RULE_S1_32',
+  term2 = {'term': vars(AggregationRule('octetDeltaCount', 'RULE_S1_32',
                                         'RULE_SUM'))}
   a1 = a2 = {'clause': [term1] + [term2]}
 
@@ -68,7 +68,7 @@ if __name__ == '__main__':
 
 
 
-  term1 = {'term': vars(GroupFilterRule('dPkts', 20000,
+  term1 = {'term': vars(GroupFilterRule('packetDeltaCount', 20000,
                                         'RULE_S1_32', 0,
                                         'RULE_GT'))}
   clause1 = {'clause': [term1]}
@@ -97,13 +97,13 @@ if __name__ == '__main__':
 
 
 
-  term1 = {'term': vars(MergerRule(0, 1, 'srcaddr', 'RULE_S1_32',
-                                         'dstaddr', 'RULE_S2_32', 0,
+  term1 = {'term': vars(MergerRule(0, 1, 'sourceIPv4Address', 'RULE_S1_32',
+                                         'destinationIPv4Address', 'RULE_S2_32', 0,
                                                     'RULE_EQ',
                                                     'RULE_REL'))}
 
-  term2 = {'term': vars(MergerRule(0, 1, 'dstaddr', 'RULE_S1_32',
-                                         'srcaddr', 'RULE_S2_32', 0,
+  term2 = {'term': vars(MergerRule(0, 1, 'destinationIPv4Address', 'RULE_S1_32',
+                                         'sourceIPv4Address', 'RULE_S2_32', 0,
                                                     'RULE_EQ',
                                                     'RULE_REL'))}
   clause1 = {'clause': [term1] + [term2]}

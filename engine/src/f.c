@@ -31,11 +31,29 @@
 #define VERSION 2.6
 #include "f.h"
 
+#include "auto-assign.h"
+#include "branch.h"
+#include "echo.h"
+#include "errorhandlers.h"
+#include "io.h"
+#include "merger.h"
+#include "ungrouper.h"
+
+#include <fcntl.h>
+#include <fixbuf/public.h>
+#include <getopt.h>
+#include <json/json.h>
+#include <pthread.h>
+#include <sys/mman.h>
+#include <sys/stat.h>
+#include <sys/stat.h>
+
+
 struct parameters*
 parse_cmdline_args(int argc, char** const argv) {
 
   int                                 opt;
-  char*                               shortopts = "z:d:v:DhV";
+  char*                               shortopts = "z:d:v:DhVI";
   static struct option                longopts[] = {
     { "zlevel",     required_argument,  NULL,           'z' },
     { "dirpath",    required_argument,  NULL,           'd' },
@@ -43,19 +61,21 @@ parse_cmdline_args(int argc, char** const argv) {
     { "verbose",    required_argument,  NULL,           'v' },
     { "version",    no_argument,        NULL,           'V' },
     { "help",       no_argument,        NULL,           'h' },
+    { "ipfix",      no_argument,        NULL,           'I' },
     {  NULL,        0,                  NULL,            0  }
   };
   enum verbosity_levels               verbose_level = -1;
   const char usage_string[] =
-  "%s [OPTIONS] queryfile tracefile\t\t query the flow-tools trace\n"
-  "   or: %s [OPTIONS] queryfile -\t\t\t read the flow-tools trace from stdin\n\n"
+  "%s [OPTIONS] queryfile tracefile\t\t query the tracefile\n"
+  "   or: %s [OPTIONS] queryfile -\t\t\t read the tracefile from stdin\n\n"
   "OPTIONS:\n"
-  "-z, --zlevel\t\t change the compression level (default:5)\n"
   "-d, --dirpath\t\t save the results as flow-tools files in given dirpath\n"
   "-D, --debug\t\t enable debugging mode\n"
+  "-h, --help\t\t display this help and exit\n"
+  "-I, --ipfix\t\t tracefile is in IPFIX format (default:flow-tools format)\n"
   "-v, --verbose\t\t increase the verbosity level\n"
   "-V, --version\t\t output version information and exit\n"
-  "-h, --help\t\t display this help and exit\n";
+  "-z, --zlevel\t\t change the compression level (default:5)\n";
 
 
   /* free'd after calling read_param_data(...) */
@@ -85,6 +105,7 @@ parse_cmdline_args(int argc, char** const argv) {
       case 'h': usageErr(usage_string, argv[0], argv[0]);
       case 'V': fprintf(stdout, "%s version %s", argv[0], XSTR(VERSION));
                 exit(EXIT_SUCCESS);
+      case 'I': ipfix_enabled = TRUE; break;
       case ':': usageError(argv[0], "Missing argument", optopt);
       default: exit(EXIT_FAILURE);
     }
@@ -99,66 +120,44 @@ parse_cmdline_args(int argc, char** const argv) {
   return param;
 }
 
-struct parameters_data*
-open_trace_read_query(const struct parameters* const param) {
+struct json*
+parse_json_query(const char* const query_file,
+                 struct ipfix_templ_s* ipfix_templ) {
 
-  /* param_data->query_mmap is free'd after calling parse_json_query(...)
-   * param_data->query_mmap_stat is free'd after freeing param_data->query_mmap
-   * param_data->trace is free'd before exiting from main(...)
-   * param_data is free'd before exiting from main(...)
-   */
-  struct parameters_data* param_data = calloc(1,
-                                              sizeof(struct parameters_data));
-  if (param_data == NULL)
-    errExit("calloc");
+#define REGISTER_IPFIX_IE(ie)                                               \
+  do {                                                                      \
+    if (ipfix_enabled) {                                                    \
+      if (ipfix_templ_ie_register(ipfix_templ,                              \
+                            json_object_get_string(ie)) < 0) {              \
+        fprintf(stderr, "Error while registering IE %s\n",                  \
+                json_object_get_string(ie));                                \
+        errExit("ipfix_templ_ie_register");                                 \
+      }                                                                     \
+    }                                                                       \
+  } while (0)
 
+  struct stat query_mmap_stat;
   int fsock;
-  if(!strcmp(param->trace_filename,"-"))
-    fsock = STDIN_FILENO;
-  else {
-    fsock = open(param->trace_filename, O_RDONLY);
-    if (fsock == -1)
-      errExit("open");
-  }
 
-  param_data->trace = ft_init(fsock);
-  if (param_data->trace == NULL)
-    errExit("ft_init(...) returned NULL");
-  else
-    param_data->trace_fsock = fsock;
-
-  /* param_data->query_mmap_stat is free'd after freeing
-   * param_data->query_mmap
-   */
-  param_data->query_mmap_stat = calloc(1, sizeof(struct stat));
-  if (param_data->query_mmap_stat == NULL)
-    errExit("calloc");
-  fsock = open(param->query_filename, O_RDONLY);
+  fsock = open(query_file, O_RDONLY);
   if (fsock == -1)
     errExit("open");
-  if (fstat(fsock, param_data->query_mmap_stat) == -1)
+  if (fstat(fsock, &query_mmap_stat) == -1)
     errExit("fstat");
 
-  /* param_data->query_mmap is free'd after calling parse_json_query(...) */
-  param_data->query_mmap =
+  char* query_mmap =
   mmap(
        NULL,                                   /* starting page address */
-       param_data->query_mmap_stat->st_size,   /* bytes to be mappped */
+       query_mmap_stat.st_size,   /* bytes to be mappped */
        PROT_READ,                              /* region accessibility */
        MAP_PRIVATE,                            /* flags */
        fsock,                                  /* file object */
        0                                       /* offset */
       );
-  if (param_data->query_mmap == MAP_FAILED)
+  if (query_mmap == MAP_FAILED)
     errExit("mmap");
   if (close(fsock) == -1)
     errExit("close");
-
-  return param_data;
-}
-
-struct json*
-parse_json_query(const char* const query_mmap) {
 
   struct json_tokener* tok = json_tokener_new();
   struct json_object* query = json_tokener_parse_ex(tok, query_mmap, -1);
@@ -264,6 +263,7 @@ parse_json_query(const char* const query_mmap) {
           foffset = json_object_object_get(term_items, "offset");
           struct json_object*
           fo_name = json_object_object_get(foffset, "name");
+          REGISTER_IPFIX_IE(fo_name);
           struct json_object*
           fo_val = json_object_object_get(foffset, "value");
           struct json_object*
@@ -364,8 +364,10 @@ parse_json_query(const char* const query_mmap) {
 
           struct json_object*
           f1_name = json_object_object_get(offset, "f1_name");
+          REGISTER_IPFIX_IE(f1_name);
           struct json_object*
           f2_name = json_object_object_get(offset, "f2_name");
+          REGISTER_IPFIX_IE(f2_name);
           struct json_object*
           f1_datatype = json_object_object_get(offset, "f1_datatype");
           struct json_object*
@@ -463,6 +465,7 @@ parse_json_query(const char* const query_mmap) {
 
           struct json_object*
           name = json_object_object_get(offset, "name");
+          REGISTER_IPFIX_IE(name);
           struct json_object*
           datatype = json_object_object_get(offset, "datatype");
 
@@ -565,6 +568,7 @@ parse_json_query(const char* const query_mmap) {
           offset = json_object_object_get(term_items, "offset");
           struct json_object*
           fo_name = json_object_object_get(offset, "name");
+          REGISTER_IPFIX_IE(fo_name);
           struct json_object*
           fo_val = json_object_object_get(offset, "value");
           struct json_object*
@@ -685,8 +689,10 @@ parse_json_query(const char* const query_mmap) {
 
         struct json_object*
         f1_name = json_object_object_get(offset, "f1_name");
+        REGISTER_IPFIX_IE(f1_name);
         struct json_object*
         f2_name = json_object_object_get(offset, "f2_name");
+        REGISTER_IPFIX_IE(f2_name);
         struct json_object*
         f1_datatype = json_object_object_get(offset, "f1_datatype");
         struct json_object*
@@ -755,22 +761,23 @@ parse_json_query(const char* const query_mmap) {
 
 #endif
 
-
-
-
-
-
-
-
+#undef REGISTER_IPFIX_IE
 
   /* call put(...) only on the root to decremenet the reference count */
   json_object_put(query); query = NULL;
+
+  /* free query_mmap */
+  if (munmap(query_mmap,
+             query_mmap_stat.st_size) == -1)
+    errExit("munmap");
 
   return json;
 }
 
 struct flowquery*
-prepare_flowquery(struct ft_data* const trace,
+prepare_flowquery(io_handler_t* io,
+                  io_reader_t*  io_read_ctxt,
+                  io_data_t*    io_data,
                   const struct json* const json_query) {
 
 
@@ -816,8 +823,11 @@ prepare_flowquery(struct ft_data* const trace,
 
     struct json_branch* json_branch = json_query->branchset[i];
 
+    branch->io = io;
+    branch->read_ctxt = io_read_ctxt;
+    branch->data = io_data;
+
     branch->branch_id = i;
-    branch->data = trace;
 
 #ifdef FILTER
     if (filter_enabled) {
@@ -865,9 +875,9 @@ prepare_flowquery(struct ft_data* const trace,
 
           struct json_filter_term* term_json = fclause_json->termset[j];
 
-          size_t offset = get_offset(term_json->off->name, &trace->offsets);
+          size_t offset = io->io_read_get_field_offset(io_read_ctxt, term_json->off->name);
           if (offset == -1)
-            errExit("get_offset(term_json->off->name) returned -1");
+            errExit("io_ft_get_offset(term_json->off->name) returned -1");
 
           uint64_t op_enum = get_enum(term_json->op);
           if (op_enum == -1)
@@ -940,15 +950,13 @@ prepare_flowquery(struct ft_data* const trace,
 
           struct json_grouper_term* term_json = gclause_json->termset[j];
 
-          size_t f1_offset = get_offset(term_json->off->f1_name,
-                                        &trace->offsets);
+          size_t f1_offset = io->io_read_get_field_offset(io_read_ctxt, term_json->off->f1_name);
           if (f1_offset == -1)
-            errExit("get_offset(term_json->off->f1_name) returned -1");
+            errExit("io_ft_get_offset(term_json->off->f1_name) returned -1");
 
-          size_t f2_offset = get_offset(term_json->off->f2_name,
-                                        &trace->offsets);
+          size_t f2_offset = io->io_read_get_field_offset(io_read_ctxt, term_json->off->f2_name);
           if (f2_offset == -1)
-            errExit("get_offset(term_json->off->f2_name) returned -1");
+            errExit("io_ft_get_offset(term_json->off->f2_name) returned -1");
 
           uint64_t op_name_enum = get_enum(term_json->op->name);
           if (op_name_enum == -1)
@@ -1011,10 +1019,9 @@ prepare_flowquery(struct ft_data* const trace,
           term->op = op; op = NULL;
 
         struct json_aggr_term* term_json = json_branch->aggr_clause_termset[j];
-        size_t offset = get_offset(term_json->off->name,
-                                   &trace->offsets);
+        size_t offset = io->io_read_get_field_offset(io_read_ctxt, term_json->off->name);
         if (offset == -1)
-          errExit("get_offset(term_json->off->name) returned -1");
+          errExit("io_ft_get_offset(term_json->off->name) returned -1");
 
         uint64_t op_enum = get_enum(term_json->op);
         if (op_enum == -1)
@@ -1083,9 +1090,9 @@ prepare_flowquery(struct ft_data* const trace,
 
           struct json_groupfilter_term* term_json = gfclause_json->termset[j];
 
-          size_t offset = get_offset(term_json->off->name, &trace->offsets);
+          size_t offset = io->io_read_get_field_offset(io_read_ctxt, term_json->off->name);
           if (offset == -1)
-            errExit("get_offset(term_json->off->name) returned -1");
+            errExit("io_ft_get_offset(term_json->off->name) returned -1");
 
           uint64_t op_enum = get_enum(term_json->op);
           if (op_enum == -1)
@@ -1170,13 +1177,13 @@ prepare_flowquery(struct ft_data* const trace,
 
         struct json_merger_term* term_json = mclause_json->termset[j];
 
-        size_t f1_offset = get_offset(term_json->off->f1_name, &trace->offsets);
+        size_t f1_offset = io->io_read_get_field_offset(io_read_ctxt, term_json->off->f1_name);
         if (f1_offset == -1)
-          errExit("get_offset(grule_json->off->f1_name) returned -1");
+          errExit("io_ft_get_offset(grule_json->off->f1_name) returned -1");
 
-        size_t f2_offset = get_offset(term_json->off->f2_name, &trace->offsets);
+        size_t f2_offset = io->io_read_get_field_offset(io_read_ctxt, term_json->off->f2_name);
         if (f2_offset == -1)
-          errExit("get_offset(grule_json->off->f2_name) returned -1");
+          errExit("io_ft_get_offset(grule_json->off->f2_name) returned -1");
 
         uint64_t op_name = get_enum(term_json->op->name);
         if (op_name == -1)
@@ -1227,20 +1234,221 @@ prepare_flowquery(struct ft_data* const trace,
   return fquery;
 }
 
-struct ft_data*
+int
 read_trace(
-           const struct parameters_data* const param_data,
+           struct io_handler_s* io,
+           struct io_reader_s* read_ctxt,
+           struct io_data_s* data,
            struct flowquery* fquery
           ) {
 
-  struct ft_data* trace = ft_read(param_data->trace, fquery);
-  if (trace == NULL)
-    errExit("ft_read(...) returned NULL");
+  /* assign filter func for all the branches */
+  if (filter_enabled) {
+    for (int i = 0; i < fquery->num_branches; i++) {
 
-  if (close(param_data->trace_fsock) == -1)
-    errExit("close");
+      struct branch* branch = fquery->branchset[i];
 
-  return trace;
+      /* free'd before exiting from main(...) */
+      branch->filter_result = calloc(1, sizeof(struct filter_result));
+      if (branch->filter_result == NULL)
+        errExit("calloc");
+
+      /* free'd before exiting from main(...) */
+      branch->filter_result->filtered_recordset = (char **)
+      calloc(branch->filter_result->num_filtered_records, sizeof(char *));
+      if (branch->filter_result->filtered_recordset == NULL)
+        errExit("calloc");
+
+      /* assign a filter func for each filter rule */
+      for (int k = 0; k < branch->num_filter_clauses; k++) {
+
+        struct filter_clause* const fclause = branch->filter_clauseset[k];
+
+        for (int j = 0; j < fclause->num_terms; j++) {
+
+          struct filter_term* const term = fclause->termset[j];
+
+          /* get a uintX_t specific function depending on frule->op */
+          assign_filter_func(term);
+          fclause->termset[j] = term;
+        }
+      }
+    }
+  }
+
+  /* initialize the output stream if file write is requested */
+  if (verbose_v && file) {
+
+    for (int i = 0; i < fquery->num_branches; i++) {
+
+      struct branch* branch = fquery->branchset[i];
+
+      /* get a file descriptor */
+      char* filename = (char*)0L;
+      if (asprintf(&filename, "%s/filter-branch-%d-filtered-records.%s",
+               dirpath, branch->branch_id, io->io_get_format_suffix()) < 0)
+        errExit("asprintf(...): failed");
+      int out_fd = get_wronly_fd(filename);
+      if(out_fd == -1) errExit("get_wronly_fd(...) returned -1");
+      else free(filename);
+
+      /* get the output stream */
+      branch->write_ctxt =
+            io->io_write_init(read_ctxt,
+                              out_fd,
+                              branch->filter_result->num_filtered_records);
+      exitOn(branch->write_ctxt == NULL);
+    }
+  }
+
+  /* display the flow-header when --debug/--verbose=3 is SET */
+  if(verbose_vvv && !file){
+    io->io_print_debug_header(read_ctxt);
+    io->io_print_header(read_ctxt);
+  }
+
+  size_t record_size = io->io_read_get_record_size(read_ctxt);
+  char* record = NULL;
+  /* process each flow record */
+  while ((record = io->io_read_record(read_ctxt)) != NULL) {
+
+    /* display each record when --debug/--verbose=3 is SET */
+    if(verbose_vvv && !file)
+      io->io_print_record(read_ctxt, record);
+
+    /* process each branch */
+    char* target = NULL; bool first_time = true;
+    for (int i = 0, j; i < fquery->num_branches; i++) {
+
+      struct branch* branch = fquery->branchset[i]; bool satisfied = false;
+
+      /* process each filter clause (clauses are OR'd) */
+      for (int k = 0; k < branch->num_filter_clauses; k++) {
+
+        struct filter_clause* const fclause = branch->filter_clauseset[k];
+
+        /* process each filter term (terms within a clause are AND'd) */
+        for (j = 0; j < fclause->num_terms; j++) {
+
+          struct filter_term* const term = fclause->termset[j];
+
+          /* run the comparator function of the filter rule on the record */
+          if (!term->func(
+                          record,
+                          term->field_offset,
+                          term->value,
+                          term->delta
+                         ))
+            break;
+        }
+
+        /* if any rule is not satisfied, move to the next module */
+        if (j < fclause->num_terms)
+          continue;
+        /* else this module is TRUE; so everything is TRUE; break out */
+        else {
+          satisfied = true; break;
+        }
+      }
+
+      /* if rules are satisfied then save this record */
+      if (satisfied) {
+
+        /* save this record in the trace data only once for all the
+         * branches to refer to */
+        if(first_time) {
+
+          /* allocate memory for the record */
+          target = (char*) calloc(1, record_size);
+          if (target == NULL)
+            errExit("calloc(...)");
+
+          /* copy the record */
+          memcpy(target, record, record_size);
+
+          /* save the record in the trace data */
+          data->num_records += 1;
+          data->recordset = (char**) realloc(
+                                              data->recordset,
+                                              data->num_records * sizeof(char*)
+                                            );
+          if(data->recordset)
+          data->recordset[data->num_records - 1] = target;
+          first_time = false;
+        }
+
+        /* increase the filtered recordset size */
+        branch->filter_result->num_filtered_records += 1;
+        branch->filter_result->filtered_recordset = (char **)
+                         realloc(branch->filter_result->filtered_recordset,
+                                (branch->filter_result->num_filtered_records)
+                                 *sizeof(char *));
+        if (branch->filter_result->filtered_recordset == NULL)
+          errExit("realloc");
+
+        /* also save the pointer in the filtered recordset */
+        branch->filter_result->
+        filtered_recordset[branch->filter_result->
+                           num_filtered_records - 1] = target;
+
+        /* write to the output stream, if requested */
+        if (verbose_v && file) {
+          exitOn(io->io_write_record(branch->write_ctxt, record) < 0);
+        }
+      }
+    }
+  }
+
+  /* close the output stream */
+  if (verbose_v && file) {
+    for (int i = 0; i < fquery->num_branches; i++) {
+
+      struct branch* branch = fquery->branchset[i];
+
+      exitOn(io->io_write_close(branch->write_ctxt) < 0);
+    }
+  }
+
+  /* set the last item in filtered_recordset to NULL */
+  if (filter_enabled) {
+
+    for (int i = 0; i < fquery->num_branches; i++) {
+
+      struct branch* branch = fquery->branchset[i];
+
+      /* add one more member and assign it to NULL */
+      branch->filter_result->filtered_recordset = (char **)
+      realloc( branch->filter_result->filtered_recordset,
+               (branch->filter_result->num_filtered_records + 1) * sizeof(char*)
+             );
+      if (branch->filter_result->filtered_recordset == NULL)
+        errExit("realloc");
+
+      branch->filter_result->filtered_recordset
+      [branch->filter_result->num_filtered_records] = NULL;
+    }
+  }
+
+  /* print the filtered records if verbose mode is set */
+  if (filter_enabled) {
+    if (verbose_v) {
+      /* process each branch */
+      for (int i = 0; i < fquery->num_branches; i++) {
+        struct branch* branch = fquery->branchset[i];
+
+#ifdef FILTER
+        echo_filter(
+                    branch->branch_id,
+                    branch->filter_result,
+                    io,
+                    read_ctxt
+                    );
+#endif
+      }
+    }
+  }
+
+  return 0;
 }
 
 pthread_t*
@@ -1292,73 +1500,67 @@ run_branch_async(const struct flowquery* const fquery){
 
 int
 main(int argc, char **argv) {
-
-
-
   /* -----------------------------------------------------------------------*/
   /*                  parsing the command line arguments                    */
   /* -----------------------------------------------------------------------*/
 
-  struct parameters* param = parse_cmdline_args(argc, argv);
-  if (param == NULL)
+  struct parameters* params = parse_cmdline_args(argc, argv);
+  if (params == NULL)
     errExit("parse_cmdline_args(...) returned NULL");
 
   /* ----------------------------------------------------------------------- */
 
-
-
-
-
-
-
   /* -----------------------------------------------------------------------*/
   /*                         read the input query                           */
-  /* -----------------------------------------------------------------------*/
-
-  struct parameters_data* param_data = open_trace_read_query(param);
-  if (param_data == NULL)
-    errExit("read_param_data(...) returned NULL");
-  else{
-    free(param); param = NULL;
-  }
-
-  /* ----------------------------------------------------------------------- */
-
-
-
-
-
-
-
-  /* -----------------------------------------------------------------------*/
   /*                  parse the query json into struct                      */
   /* -----------------------------------------------------------------------*/
 
-  struct json* json_query = parse_json_query(param_data->query_mmap);
-  if (json_query == NULL)
-    errExit("parse_json_query(...) returned NULL");
-  else {
-    /* free param_data->query_mmap */
-    if (munmap(param_data->query_mmap,
-               param_data->query_mmap_stat->st_size) == -1)
-      errExit("munmap");
-    param_data->query_mmap = NULL;
-    free(param_data->query_mmap_stat); param_data->query_mmap_stat = NULL;
+  ipfix_templ_t* ipfix_templ = NULL;
+  if (ipfix_enabled) {
+    ipfix_templ = ipfix_templ_new();
+    exitOn(ipfix_templ == NULL);
   }
 
- /* ----------------------------------------------------------------------- */
+  struct json* json_query = parse_json_query(params->query_filename,
+                                             ipfix_templ);
+  if (json_query == NULL)
+    errExit("parse_json_query(...) returned NULL");
 
+  /* -----------------------------------------------------------------------*/
 
+  /* -----------------------------------------------------------------------*/
+  /*                         build the io_handler                           */
+  /* -----------------------------------------------------------------------*/
 
+  io_data_t     io_data = { 0 };
+  io_handler_t* io = NULL;
 
+  if (ipfix_enabled) {
+    io = ipfix_io_handler(ipfix_templ);
+  } else {
+    io = ft_io_handler();
+  }
 
+  int trace_fd;
+  if(!strcmp(params->trace_filename,"-"))
+    trace_fd = STDIN_FILENO;
+  else {
+    trace_fd = open(params->trace_filename, O_RDONLY);
+    if (trace_fd == -1)
+      errExit("open");
+  }
 
+  io_reader_t* read_ctxt = io->io_read_init(&io->ctxt, trace_fd);
+  exitOn(read_ctxt == NULL);
 
   /* -----------------------------------------------------------------------*/
   /*                           prepare flowquery                            */
   /* -----------------------------------------------------------------------*/
 
-  struct flowquery* fquery = prepare_flowquery(param_data->trace, json_query);
+  struct flowquery* fquery = prepare_flowquery(io,
+                                               read_ctxt,
+                                               &io_data,
+                                               json_query);
   if (fquery == NULL)
     errExit("prepare_flowquery(...) returned NULL");
   else {
@@ -1474,9 +1676,13 @@ main(int argc, char **argv) {
   /*          read the input trace and prepare filtered recordsets          */
   /* -----------------------------------------------------------------------*/
 
-  param_data->trace = read_trace(param_data, fquery);
-  if(param_data->trace == NULL)
+  int rv = read_trace(io, read_ctxt, &io_data, fquery);
+  if(rv == -1)
     errExit("read_trace(...) returned NULL");
+
+  // XXX close() in io_read_close()
+  // if (close(trace_fd) == -1)
+  //   errExit("close");
 
   /* ----------------------------------------------------------------------- */
 
@@ -1520,7 +1726,8 @@ main(int argc, char **argv) {
       echo_branch(
                   fquery->num_branches,
                   fquery->branchset,
-                  param_data->trace
+                  io,
+                  read_ctxt
                   );
     }
   }
@@ -1583,7 +1790,9 @@ main(int argc, char **argv) {
 
                                    fquery->num_branches,
                                    fquery->branchset,
-                                   param_data->trace
+
+                                   io,
+                                   read_ctxt
                                    );
 
     if (fquery->merger_result == NULL)
@@ -1612,7 +1821,8 @@ main(int argc, char **argv) {
                     fquery->branchset,
 
                     fquery->merger_result,
-                    param_data->trace
+                    io,
+                    read_ctxt
                    );
     }
   }
@@ -1641,8 +1851,6 @@ main(int argc, char **argv) {
         }
 #endif
         struct aggr_record* aggr_record = group->aggr_result->aggr_record;
-        free(aggr_record->start); aggr_record->start = NULL;
-        free(aggr_record->end); aggr_record->end = NULL;
         free(aggr_record->aggr_record); aggr_record->aggr_record = NULL;
 
         free(aggr_record); aggr_record = NULL;
@@ -1691,7 +1899,8 @@ main(int argc, char **argv) {
     fquery->ungrouper_result = ungrouper(
                                          fquery->num_branches,
                                          fquery->merger_result,
-                                         param_data->trace
+                                         io,
+                                         read_ctxt
                                          );
     if (fquery->ungrouper_result == NULL)
       errExit("ungrouper(...) returned NULL");
@@ -1700,7 +1909,8 @@ main(int argc, char **argv) {
       /* echo ungrouper results */
       echo_results(
                    fquery->ungrouper_result,
-                   param_data->trace
+                   io,
+                   read_ctxt
                   );
     }
   }
@@ -1793,6 +2003,9 @@ main(int argc, char **argv) {
   }
 #endif
 
+  /* free params */
+  free(params);
+
   /* free flowquery */
   for (int i = 0; i < fquery->num_branches; i++) {
     struct branch* branch = fquery->branchset[i];
@@ -1801,12 +2014,21 @@ main(int argc, char **argv) {
   free(fquery->branchset); fquery->branchset = NULL;
   free(fquery); fquery = NULL;
 
-  /* free param_data */
-  ft_close(param_data->trace); param_data->trace = NULL;
-  free(param_data); param_data = NULL;
+  /* close IO reader */
+  io->io_read_close(read_ctxt);
+
+  /* free IO handler */
+  io->io_ctxt_destroy(&io->ctxt);
+  free(io);
+
+  /* free IO data */
+  for (int i=0; i< io_data.num_records; i++) {
+    free(io_data.recordset[i]); 
+  }
+  free(io_data.recordset);
+
 
   /* -----------------------------------------------------------------------*/
-
 
   exit(EXIT_SUCCESS);
 }
