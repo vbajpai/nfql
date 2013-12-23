@@ -2,9 +2,28 @@
 <hr />
 <p>An efficient C implementation of a stream-based flow query language.</p>
 <h3 id="motivation">Motivation</h3>
-<p>Understanding intricate traffic patterns require sophisticated flow analysis tools that can mine flow records for complex use cases. Unfortunately current tools fail to deliver owing to their language design and simplistic filtering methods. We have designed a flow query language that aims to cater to such needs. It can process flow records, aggregate them into groups, apply absolute or relative filters and invoke Allen interval algebra rules. NFQL (Network Flow Query Language) is an efficient implementation of the flow query language.</p>
-<h3 id="history">History</h3>
-<p>Flowy was a first feature complete Python prototype of the flow query language. Due to performance problems, it was superseeded by a complete rewrite in C, called Flowy 2.0. NFQL extends on Flowy 2.0, making it more feature complete. The execution engine has been optimized with crispier algorithms to make it scale to real-world sized traces. NFQL now has comparable execution times to contemporary flow analysis tools.</p>
+<p>Understanding intricate traffic patterns require sophisticated flow analysis tools that can mine flow records for complex use cases. Unfortunately current tools fail to deliver owing to their language design and simplistic filtering methods. We have designed a flow query language that aims to cater to such needs. NFQL (Network Flow Query Language) is an implementation of the flow query language.</p>
+<h3 id="features">Features</h3>
+<ul>
+<li>Filter flows.</li>
+<li>Combine flows into groups.</li>
+<li>Aggregate flows on flow-keys as one grouped flow aggregate.</li>
+<li>Merge grouped flows, supporting temporal relations between groups.</li>
+<li>Apply absolute or relative filters when grouping or merging.</li>
+<li>Unfold grouped flows back into individual flows.</li>
+</ul>
+<h3 id="architecture">Architecture</h3>
+<ul>
+<li>Supports reading and writing NetFlow v5 flows in <code>flow-tools</code> format.</li>
+<li>The default query DSL can be mathematically expressed as a <code>DNF</code> expression.</li>
+<li>The query is parsed in a <code>JSON</code> format allowing <code>M2M</code> communication.</li>
+<li>The query parser and execution engine are completely decoupled from one another.</li>
+<li>The flow processing is modular adhering to a five-stage processing pipeline.</li>
+<li>Each stage of the processing pipeline can be enabled/disabled at runtime.</li>
+<li>Compression levels for flow-traces can be configured at runtime.</li>
+</ul>
+<h3 id="releases">Releases</h3>
+<p>You can either fork the bleeding edge development version or download a release from <a href="https://github.com/vbajpai/nfql/releases">here →</a></p>
 <h3 id="installation-and-usage">Installation and Usage</h3>
 <ul>
 <li><a href="install-debian.html">Debian-based Linux →</a></li>
@@ -13,8 +32,6 @@
 <li><a href="install-osx-macports.html">Mac OS X using Mac Ports →</a></li>
 <li><a href="install-freebsd.html">FreeBSD →</a></li>
 </ul>
-<h3 id="development-blog">Development Blog</h3>
-<p>A development blog discussing the internal details is <a href="http://blog.nfql.vaibhavbajpai.com">here →</a></p>
 <h3 id="publications">Publications</h3>
 <p><a href="http://www.vaibhavbajpai.com/documents/papers/proceedings/nfql-im-2013.pdf">NFQL: A Tool for Querying Network Flow Records →</a><br />Vaibhav Bajpai, Johannes Schauer, Jürgen Schönwälder<br />IM 2013, Ghent, May 2013</p>
 <p><a href="http://www.springerlink.com/content/2t0mv427lk824224/">Flow-based Identification of Failures Caused by IPv6 Transition Mechanisms →</a><br />Vaibhav Bajpai, Nikolay Melnikov, Anuj Sehgal, Jürgen Schönwälder<br />AIMS 2012, Luxembourg, June 2012</p>
@@ -24,6 +41,7 @@
 <p><a href="http://www.springerlink.com/content/j4555jj848l8q862/">Design of a Stream-Based IP Flow Record Query Language →</a><br />Vladislav Marinov, Jürgen Schönwälder<br />DSOM 2009, Venice, October 2009.</p>
 <p><a href="http://www.springerlink.com/content/0m76rk7653872426/">Design of an IP Flow Record Query Language →</a><br />Vladislav Marinov, Jürgen Schönwälder<br />AIMS 2008, Bremen, July 2008.</p>
 <h3 id="thesis">Thesis</h3>
+<p><a href="http://cnds.eecs.jacobs-university.de/archive/bsc-2013-dmorina.pdf">NFQL Front-End Parser →</a><br />Durim Morina, Bachelors Thesis, May 2013.</p>
 <p><a href="http://cnds.eecs.jacobs-university.de/archive/msc-2012-vbajpai.pdf">A Complete System Integration of the Network Flow Query Language →</a><br />Vaibhav Bajpai, Masters Thesis, August 2012.</p>
 <p><a href="http://cnds.eecs.jacobs-university.de/archive/bsc-2011-jschauer.pdf">Flowy 2.0: Fast Execution of Stream-based IP Flow Queries →</a><br />Johannes Schauer, Bachelors Thesis, May 2011.</p>
 <p><a href="http://cnds.eecs.jacobs-university.de/archive/msc-2010-nmelnikov.pdf">Cybermetrics: Identification of Users Through Network Flow Analysis →</a><br />Nikolay Melnikov, Masters Thesis, August 2010.</p>
@@ -40,8 +58,6 @@
 <p><a href="http://cnds.eecs.jacobs-university.de/slides/2010-aims-cybermetrics.pdf">Cybermetrics: User Identiﬁcation through Network Flow Analysis →</a><br />Nikolay Melnikov, Jürgen Schönwälder<br />AIMS 2010, Zurich, June 2010.</p>
 <p><a href="http://cnds.eecs.jacobs-university.de/slides/2010-aims-flowy-implementation.pdf">Implementation of a Stream-Based IP Flow Record Query Language →</a><br />Kaloyan Kanev, Nikolay Melnikov, Jürgen Schönwälder<br />AIMS 2010, Zurich, June 2010.</p>
 <p><a href="http://cnds.eecs.jacobs-university.de/slides/2009-dsom-flow-query.pdf">Design of a Stream-Based IP Flow Record Query Language →</a><br />Vladislav Marinov, Jürgen Schönwälder<br />DSOM 2009, Venice, October 2009.</p>
-<h3 id="releases">Releases</h3>
-<p>Earlier releases of NFQL can be downloaded from <a href="releases.html">here →</a></p>
 <h3 id="contributors">Contributors</h3>
 <ul>
 <li>Vaibhav Bajpai <a href="contact@vaibhavbajpai.com">contact@vaibhavbajpai.com</a><br /></li>
@@ -53,6 +69,10 @@
 <li>Nikolay Melnikov <a href="n.melnikov@jacobs-university.de">n.melnikov@jacobs-university.de</a></li>
 <li>Jürgen Schönwälder <a href="j.schoenwaelder@jacobs-university.de">j.schoenwaelder@jacobs-university.de</a></li>
 </ul>
+<h3 id="history">History</h3>
+<p>Flowy was a first feature complete Python prototype of the flow query language. Due to performance problems, it was superseeded by a complete rewrite in C, called Flowy 2.0. NFQL extends on Flowy 2.0, making it more feature complete. The execution engine has been optimized with crispier algorithms to make it scale to real-world sized traces. NFQL now has comparable execution times to contemporary flow analysis tools.</p>
+<h3 id="development-blog">Development Blog</h3>
+<p>A development blog discussing the internal details is <a href="http://blog.nfql.vaibhavbajpai.com">here →</a></p>
 <h3 id="license">License</h3>
 <pre>
  Redistribution and use in source and binary forms, with or without

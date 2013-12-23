@@ -9,19 +9,32 @@ Understanding intricate traffic patterns require sophisticated flow
 analysis tools that can mine flow records for complex use cases.
 Unfortunately current tools fail to deliver owing to their language
 design and simplistic filtering methods. We have designed a flow query
-language that aims to cater to such needs. It can process flow records,
-aggregate them into groups, apply absolute or relative filters and
-invoke Allen interval algebra rules. NFQL (Network Flow Query Language)
-is an efficient implementation of the flow query language.
+language that aims to cater to such needs. NFQL (Network Flow Query
+Language) is an implementation of the flow query language.
 
-### History
+### Features
 
-Flowy was a first feature complete Python prototype of the flow query
-language. Due to performance problems, it was superseeded by a complete
-rewrite in C, called Flowy 2.0. NFQL extends on Flowy 2.0, making it
-more feature complete. The execution engine has been optimized with
-crispier algorithms to make it scale to real-world sized traces. NFQL
-now has comparable execution times to contemporary flow analysis tools.
+- Filter flows.
+- Combine flows into groups.
+- Aggregate flows on flow-keys as one grouped flow aggregate.
+- Merge grouped flows, supporting temporal relations between groups.
+- Apply absolute or relative filters when grouping or merging.
+- Unfold grouped flows back into individual flows.
+
+### Architecture 
+
+- Supports reading and writing NetFlow v5 flows in `flow-tools` format.
+- The default query DSL can be mathematically expressed as a `DNF` expression. 
+- The query is parsed in a `JSON` format allowing `M2M` communication.
+- The query parser and execution engine are completely decoupled from one another.
+- The flow processing is modular adhering to a five-stage processing pipeline.
+- Each stage of the processing pipeline can be enabled/disabled at runtime.
+- Compression levels for flow-traces can be configured at runtime.
+
+### Releases
+
+You can either fork the bleeding edge development version or download a
+release from [here &rarr;](https://github.com/vbajpai/nfql/releases)
 
 ### Installation and Usage
 
@@ -30,10 +43,6 @@ now has comparable execution times to contemporary flow analysis tools.
 - [Mac OS X using Homebrew &rarr;](install-osx-homebrew.html)
 - [Mac OS X using Mac Ports &rarr;](install-osx-macports.html)
 - [FreeBSD &rarr;](install-freebsd.html)
-
-### Development Blog
-
-A development blog discussing the internal details is [here &rarr;](http://blog.nfql.vaibhavbajpai.com)
 
 ### Publications
 
@@ -67,6 +76,10 @@ AIMS 2008, Bremen, July 2008.
 
 
 ### Thesis
+
+[NFQL Front-End Parser
+&rarr;](http://cnds.eecs.jacobs-university.de/archive/bsc-2013-dmorina.pdf)  
+Durim Morina, Bachelors Thesis, May 2013.
 
 [A Complete System Integration of the Network Flow Query Language &rarr;](http://cnds.eecs.jacobs-university.de/archive/msc-2012-vbajpai.pdf)  
 Vaibhav Bajpai, Masters Thesis, August 2012.
@@ -127,10 +140,6 @@ Vladislav Marinov, Jürgen Schönwälder
 DSOM 2009, Venice, October 2009.
 
 
-### Releases
-
-Earlier releases of NFQL can be downloaded from [here &rarr;](releases.html)
-
 ### Contributors
 
 - Vaibhav Bajpai [contact@vaibhavbajpai.com](contact@vaibhavbajpai.com)  
@@ -141,6 +150,20 @@ Earlier releases of NFQL can be downloaded from [here &rarr;](releases.html)
 - Vladislav Perelman [v.perelman@jacobs-university.de](v.perelman@jacobs-university.de)
 - Nikolay Melnikov [n.melnikov@jacobs-university.de](n.melnikov@jacobs-university.de)
 - Jürgen Schönwälder [j.schoenwaelder@jacobs-university.de](j.schoenwaelder@jacobs-university.de)
+
+### History
+
+Flowy was a first feature complete Python prototype of the flow query
+language. Due to performance problems, it was superseeded by a complete
+rewrite in C, called Flowy 2.0. NFQL extends on Flowy 2.0, making it
+more feature complete. The execution engine has been optimized with
+crispier algorithms to make it scale to real-world sized traces. NFQL
+now has comparable execution times to contemporary flow analysis tools.
+
+### Development Blog
+
+A development blog discussing the internal details is [here
+&rarr;](http://blog.nfql.vaibhavbajpai.com)
 
 ### License
 <pre>
