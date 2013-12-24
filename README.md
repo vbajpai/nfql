@@ -76,6 +76,10 @@ Build `nfql`
 
 	[nfql] $ make
 
+Read the man page
+
+  [nfql] $ nroff -man nfql.1 | most
+
 Install Doxygen (optional)
 
 	$ sudo apt-get install doxygen
@@ -138,6 +142,10 @@ Build `nfql`
 
 	[nfql] $ make CMAKE_PREFIX_PATH=/usr/local/flow-tools/
 
+Read the man page
+
+  [nfql] $ nroff -man nfql.1 | most
+
 Install Doxygen (optional)
 
 	$ brew install doxygen
@@ -171,6 +179,10 @@ Build `nfql`
 
 	[nfql] $ make CMAKE_PREFIX_PATH=/opt/local
 
+Read the man page
+
+  [nfql] $ nroff -man nfql.1 | most
+
 Install Doxygen and GraphVIZ (optional)
 
 	$ sudo port install doxygen graphviz
@@ -197,6 +209,10 @@ Install Dependencies
 Build `nfql`
 
 	[nfql] $ make 
+
+Read the man page
+
+  [nfql] $ nroff -man nfql.1 | most
 
 Install Doxygen and GraphVIZ (optional)
 
@@ -231,6 +247,10 @@ Install Dependencies
 Build `nfql`
 
 	[nfql] $ make CMAKE_PREFIX_PATH=/usr/local
+
+Read the man page
+
+  [nfql] $ nroff -man nfql.1 | most
 
 Generate Documentation (optional)
 
