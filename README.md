@@ -50,11 +50,11 @@ unit test can be prepared by adapting to one of the respective
 `example/` and `tests/` scripts provided in the package.
 
 
-Installing on Ubuntu
---------------------
+Installing on Debian-based Linux
+--------------------------------
 - - -
 
-Tried on Ubuntu 10.04 (LTS) x86_64 and 12.04 (LTS) x86_64
+Tried on Debian Wheezy x86_64
 
 Install CMake
 
@@ -72,9 +72,23 @@ Install JSON Manipulation Library Development Package
 
 	$ sudo apt-get install libjson0-dev
 
+Install IPFIX protocol library
+
+  $ sudo apt-get install libglib2.0-dev
+  $ wget http://tools.netsa.cert.org/releases/libfixbuf-1.4.0.tar.gz
+  $ tar -zxvf libfixbuf-1.4.0.tar.gz
+  [libfixbuf-1.4.0] $ ./configure
+  [libfixbuf-1.4.0] $ make
+  [libfixbuf-1.4.0] $ sudo make install 
+
 Build `nfql`
 
 	[nfql] $ make
+
+Read the man page
+
+  $ sudo apt-get install most
+  [nfql] $ nroff -man nfql.1 | most
 
 Install Doxygen (optional)
 
@@ -98,24 +112,19 @@ Installing on Mac OS X using Homebrew
 -------------------------------------
 - - -
 
-Tried on Mac OS X 10.7.
+Tried on Mac OS X 10.9.1
 
 Install [Homebrew &rarr;](http://mxcl.github.com/homebrew/)
 
-	$ /usr/bin/ruby -e "$(/usr/bin/curl -fsSL https://raw.github.com/mxcl/homebrew/master/Library/Contributions/install_homebrew.rb)"
+  $ ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
 
 Install CMake
 
 	$ brew install cmake
 
-Install Flow-Tools from source
+Install Flow-Tools
 
-	$ wget http://dl.dropbox.com/u/500389/flow-tools-0.68.4.tar.bz2
-	$ tar -xvf flow-tools-0.68.4.tar.bz2
-
-	[flow-tools-0.68.4] $ ./configure
-	[flow-tools-0.68.4] $ make
-	[flow-tools-0.68.4] $ make install
+  $ brew install flow-tools
 
 Install JSON Manipulation Library Package. `json-c` starting from v0.11
 has renamed the library from `libjson` to `libjson-c`. Debian-based
@@ -136,7 +145,12 @@ Install `gettext`
 
 Build `nfql`
 
-	[nfql] $ make CMAKE_PREFIX_PATH=/usr/local/flow-tools/
+	[nfql] $ make 
+
+Read the man page
+
+  $ brew install most
+  [nfql] $ nroff -man nfql.1 | most
 
 Install Doxygen (optional)
 
@@ -159,6 +173,8 @@ Installing on Mac OS X using MacPorts
 -------------------------------------
 - - -
 
+WARNING: This documentation is obsolete.
+
 Tried on Mac OS X 10.7.
 
 Install [MacPorts &rarr;](http://guide.macports.org/#installing)
@@ -170,6 +186,10 @@ Install Flow-Tools, CMake, JSON-c
 Build `nfql`
 
 	[nfql] $ make CMAKE_PREFIX_PATH=/opt/local
+
+Read the man page
+
+  [nfql] $ nroff -man nfql.1 | most
 
 Install Doxygen and GraphVIZ (optional)
 
@@ -194,9 +214,23 @@ Install Dependencies
 
 	$ sudo yum install cmake flow-tools-devel json-c-devel
 
+Install IPFIX protocol library
+
+  $ sudo yum install glib2-devel
+  $ wget http://tools.netsa.cert.org/releases/libfixbuf-1.4.0.tar.gz
+  $ tar -zxvf libfixbuf-1.4.0.tar.gz
+  [libfixbuf-1.4.0] $ ./configure
+  [libfixbuf-1.4.0] $ make
+  [libfixbuf-1.4.0] $ sudo make install 
+
 Build `nfql`
 
 	[nfql] $ make 
+
+Read the man page
+
+  $ sudo yum install most
+  [nfql] $ nroff -man nfql.1 | most
 
 Install Doxygen and GraphVIZ (optional)
 
@@ -215,6 +249,8 @@ Installing on FreeBSD
 ---------------------
 - - -
 
+WARNING: This documentation is obsolete.
+
 Tried on FreeBSD 9.2
 
 Install Dependencies
@@ -228,13 +264,24 @@ Install Dependencies
 	$ cd /usr/ports/devel/json-c
 	[json-c] $ sudo make install 
 
+  $ cd /usr/ports/devel/glib20
+  [glib20] $ sudo make install
+
+  $ cd /usr/ports/net/libfixbuf
+  [libfixbuf] $ sudo make install
+
+  $ cd /usr/ports/devel/libexecinfo
+  [libexecinfo] $ sudo make install
+
 Build `nfql`
 
 	[nfql] $ make CMAKE_PREFIX_PATH=/usr/local
 
-Generate Documentation (optional)
+Read the man page
 
-	[nfql] $ make doc
+  $ cd /usr/ports/sysutils/most
+  [most] $ sudo make install
+  [nfql] $ nroff -man nfql.1 | most
 
 Install Doxygen and GraphVIZ (optional)
 
@@ -243,6 +290,10 @@ Install Doxygen and GraphVIZ (optional)
 
 	$ cd /usr/ports/graphics/graphviz
 	[graphviz] $ sudo make install 
+
+Generate Documentation (optional)
+
+	[nfql] $ make doc
 
 Cleanup
 
