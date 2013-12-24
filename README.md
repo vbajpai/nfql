@@ -152,6 +152,10 @@ Read the man page
   $ brew install most
   [nfql] $ nroff -man nfql.1 | most
 
+Read the man page
+
+  [nfql] $ nroff -man nfql.1 | most
+
 Install Doxygen (optional)
 
 	$ brew install doxygen
