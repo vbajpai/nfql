@@ -133,7 +133,7 @@ def main(arg):
 if __name__ == '__main__':
   """checks argument list for sanity and calls main(...)"""
   if len(sys.argv) != 4:
-    print """usage: %s bin/engine trace[s]/ querie[s]/"""%(sys.argv[0])
+    print """usage: %s bin/nfql trace[s]/ querie[s]/"""%(sys.argv[0])
     exit(1)
   else:
     main(sys.argv[1:])

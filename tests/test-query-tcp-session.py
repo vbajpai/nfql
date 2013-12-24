@@ -35,7 +35,7 @@ for trace in traces:
     stdout[base] = (
                      subprocess.check_output (
                                      [
-                                      'bin/engine',
+                                      'bin/nfql',
                                       'examples/query-tcp-session.json',
                                       trace,
                                       '--debug'
@@ -44,7 +44,7 @@ for trace in traces:
                    )
   except subprocess.CalledProcessError as e:
     if e.output.find('segmentation fault'):
-      print 'bin/engine returned %s: segmentation fault' %(e.returncode)
+      print 'bin/nfql returned %s: segmentation fault' %(e.returncode)
     else:
       print e.output
   except OSError as e:

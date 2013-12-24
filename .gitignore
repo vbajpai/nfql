@@ -1,7 +1,7 @@
 # generated files
 bin
 .build
-engine/examples/query-*.json
+examples/query-*.json
 *.pyc
 
 # vim temporary files

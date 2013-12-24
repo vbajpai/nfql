@@ -9,7 +9,7 @@ include(CheckFunctionExists)
 cmake_minimum_required(VERSION 2.6)
 
 # identify the project and programming language
-project(engine C)
+project(nfql C)
 
 # compiler flags passed as arguments
 add_definitions(-Wall -Werror -std=c99)
@@ -34,10 +34,10 @@ include_directories(${CMAKE_PREFIX_PATH}/include
 )
 
 # specify the TARGET executable
-file(GLOB engine_SOURCES ${CMAKE_SOURCE_DIR}/src/*.c)
-add_executable(engine ${CMAKE_CURRENT_BINARY_DIR}/auto-assign.c
+file(GLOB nfql_SOURCES ${CMAKE_SOURCE_DIR}/src/*.c)
+add_executable(nfql ${CMAKE_CURRENT_BINARY_DIR}/auto-assign.c
                       ${CMAKE_CURRENT_BINARY_DIR}/auto-comps.c
-                      ${engine_SOURCES}
+                      ${nfql_SOURCES}
 )
 
 # add a custom command to generate examples
@@ -57,7 +57,7 @@ endforeach(pyFILE)
 add_custom_target(examples DEPENDS ${queryFILES})
 
 # add dependency
-add_dependencies(engine examples)
+add_dependencies(nfql examples)
 
 # find linked libraries
 find_package(Threads)
@@ -80,7 +80,7 @@ if(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
 endif(${CMAKE_SYSTEM_NAME} MATCHES "FreeBSD")
 
 # specify linked libraries
-target_link_libraries(engine ${MLIB}
+target_link_libraries(nfql ${MLIB}
                              ${CMAKE_THREAD_LIBS_INIT}
                              ${FTLIB}
                              ${JSONLIB}
@@ -111,7 +111,7 @@ SET(CPACK_PACKAGE_INSTALL_DIRECTORY
     "CMake ${CMake_VERSION_MAJOR}.${CMake_VERSION_MINOR}")
 #SET(CPACK_STRIP_FILES "bin/MyExecutable")
 #SET(CPACK_SOURCE_STRIP_FILES "")
-#makeSET(CPACK_PACKAGE_EXECUTABLES "engine")
+#makeSET(CPACK_PACKAGE_EXECUTABLES "nfql")
 INCLUDE(CPack)
 
 # ---------------------------------------------------------------------------#
