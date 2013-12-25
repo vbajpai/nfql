@@ -1,5 +1,5 @@
 NFQL
-----  
+----
 - - -
 
 Network Flow Query Language `(NFQL)` is our in-house stream-based
@@ -9,6 +9,7 @@ orthogonal fashion.
 
 Features
 --------
+- - - 
 
   - Filter flows.
   - Combine flows into groups.
@@ -21,17 +22,17 @@ nfql
 ----
 - - -
 
-`nfql` is a reference implementation of our in-house stream-based flow
-record query language `NFQL`. `nfql` is composed of an execution engine
-and a query parser. The execution engine is the brain of `nfql` where
-the flows are processed. `nfql` reads the flow-query in an intermediate
-`JSON` format and reads in the trace files in memory for efficient
-processing. The query parser can be used to read a custom query DSL and
-generate the `JSON` intermediate representation required by the
-execution engine.
+`nfql` is a reference implementation of `NFQL`. `nfql` is composed of an
+execution engine and a query parser. The execution engine is the brain
+of `nfql` where the flows are processed. `nfql` reads the flow-query in
+an intermediate `JSON` format and reads in the trace files in memory for
+efficient processing. The query parser can be used to read a custom
+query DSL and generate the `JSON` intermediate representation required
+by the execution engine.
 
 Architecture
 ------------
+- - -
 
 - Supports reading and writing NetFlow v5 flows in `flow-tools` format.
 - The default query DSL can be mathematically expressed as a DNF expression.
@@ -56,30 +57,18 @@ Installing on Debian-based Linux
 
 Tried on Debian Wheezy x86_64
 
-Install CMake
+Install Dependencies
 
-	$ sudo apt-get install cmake
-
-Install Flow-tool Development Package
-
-  $ sudo apt-get install flow-tools-dev
-
-Install Compression Library Development Package
-
-	$ sudo apt-get install zlib1g-dev
-
-Install JSON Manipulation Library Development Package
-
-	$ sudo apt-get install libjson0-dev
+	$ sudo apt-get install cmake flow-tools-dev zlib1g-dev libjson0-dev
 
 Install IPFIX protocol library
 
-  $ sudo apt-get install libglib2.0-dev
-  $ wget http://tools.netsa.cert.org/releases/libfixbuf-1.4.0.tar.gz
-  $ tar -zxvf libfixbuf-1.4.0.tar.gz
-  [libfixbuf-1.4.0] $ ./configure
-  [libfixbuf-1.4.0] $ make
-  [libfixbuf-1.4.0] $ sudo make install 
+    $ sudo apt-get install libglib2.0-dev  
+    $ wget http://tools.netsa.cert.org/releases/libfixbuf-1.4.0.tar.gz
+    $ tar -zxvf libfixbuf-1.4.0.tar.gz
+    [libfixbuf-1.4.0] $ ./configure
+    [libfixbuf-1.4.0] $ make
+    [libfixbuf-1.4.0] $ sudo make install 
 
 Build `nfql`
 
@@ -87,19 +76,13 @@ Build `nfql`
 
 Read the man page
 
-  $ sudo apt-get install most
-  [nfql] $ nroff -man nfql.1 | most
-
-Install Doxygen (optional)
-
-	$ sudo apt-get install doxygen
-
-Install GraphVIZ (optional)
-
-	$ sudo apt-get install graphviz
+    $ sudo apt-get install most
+    [nfql] $ nroff -man nfql.1 | most
 
 Generate Documentation (optional)
 
+	$ sudo apt-get install doxygen
+	$ sudo apt-get install graphviz
 	[nfql] $ make doc
 
 Cleanup
@@ -116,32 +99,26 @@ Tried on Mac OS X 10.9.1
 
 Install [Homebrew &rarr;](http://mxcl.github.com/homebrew/)
 
-  $ ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
+	$ ruby -e "$(curl -fsSL https://raw.github.com/Homebrew/homebrew/go/install)"
 
-Install CMake
+Install Dependencies
 
 	$ brew install cmake
+	$ brew install flow-tools
 
-Install Flow-Tools
-
-  $ brew install flow-tools
-
-Install JSON Manipulation Library Package. `json-c` starting from v0.11
-has renamed the library from `libjson` to `libjson-c`. Debian-based
-systems are currently providing v0.10 in the repository. In order to
-avoid complexity in the makefile, we have decided to freeze the library
-dependency to v0.10. Install `json-c` v0.10:
+NOTE: `json-c` starting from v0.11 has renamed the library from
+`libjson` to `libjson-c`. Debian-based systems are currently providing
+v0.10 in the repository. In order to avoid complexity in the makefile,
+we have decided to freeze the library dependency to v0.10. Install
+`json-c` v0.10:
 
 	$  brew install https://raw.github.com/mxcl/homebrew/9f78662acff4c3cb1bff3587c8ead7f5935925a9/Library/Formula/json-c.rb
 
-Install `libfixbuf`
+Install IPFIX protocol library
 
-  $ brew install libfixbuf
-
-Install `gettext`
-
-  $ brew install gettext
-  $ brew link --force gettext
+	$ brew install libfixbuf
+	$ brew install gettext
+	$ brew link --force gettext
 
 Build `nfql`
 
@@ -149,23 +126,13 @@ Build `nfql`
 
 Read the man page
 
-  $ brew install most
-  [nfql] $ nroff -man nfql.1 | most
-
-Read the man page
-
-  [nfql] $ nroff -man nfql.1 | most
-
-Install Doxygen (optional)
-
-	$ brew install doxygen
-
-Install GraphVIZ (optional)
-
-	$ brew install graphviz
+	$ brew install most 
+	[nfql] $ nroff -man nfql.1 | most
 
 Generate Documentation (optional)
 
+	$ brew install doxygen
+	$ brew install graphviz
 	[nfql] $ make doc
 
 Cleanup
@@ -177,30 +144,27 @@ Installing on Mac OS X using MacPorts
 -------------------------------------
 - - -
 
-WARNING: This documentation is obsolete.
+*WARNING: This documentation is obsolete.*
 
 Tried on Mac OS X 10.7.
 
 Install [MacPorts &rarr;](http://guide.macports.org/#installing)
 
-Install Flow-Tools, CMake, JSON-c
+Install Dependencies:
 
 	$ sudo port install cmake flow-tools json-c
 
-Build `nfql`
+Build `nfql`:
 
 	[nfql] $ make CMAKE_PREFIX_PATH=/opt/local
 
-Read the man page
+Read the man page:
 
-  [nfql] $ nroff -man nfql.1 | most
-
-Install Doxygen and GraphVIZ (optional)
-
-	$ sudo port install doxygen graphviz
+	[nfql] $ nroff -man nfql.1 | most
 
 Generate Documentation (optional)
 
+	$ sudo port install doxygen graphviz
 	[nfql] $ make doc
 
 Cleanup
@@ -220,12 +184,12 @@ Install Dependencies
 
 Install IPFIX protocol library
 
-  $ sudo yum install glib2-devel
-  $ wget http://tools.netsa.cert.org/releases/libfixbuf-1.4.0.tar.gz
-  $ tar -zxvf libfixbuf-1.4.0.tar.gz
-  [libfixbuf-1.4.0] $ ./configure
-  [libfixbuf-1.4.0] $ make
-  [libfixbuf-1.4.0] $ sudo make install 
+    $ sudo yum install glib2-devel
+    $ wget http://tools.netsa.cert.org/releases/libfixbuf-1.4.0.tar.gz
+    $ tar -zxvf libfixbuf-1.4.0.tar.gz
+    [libfixbuf-1.4.0] $ ./configure
+    [libfixbuf-1.4.0] $ make
+    [libfixbuf-1.4.0] $ sudo make install 
 
 Build `nfql`
 
@@ -233,15 +197,12 @@ Build `nfql`
 
 Read the man page
 
-  $ sudo yum install most
-  [nfql] $ nroff -man nfql.1 | most
-
-Install Doxygen and GraphVIZ (optional)
-
-	$ sudo yum install doxygen graphviz
+    $ sudo yum install most
+    [nfql] $ nroff -man nfql.1 | most
 
 Generate Documentation (optional)
 
+	$ sudo yum install doxygen graphviz
 	[nfql] $ make doc
 
 Cleanup
@@ -253,7 +214,7 @@ Installing on FreeBSD
 ---------------------
 - - -
 
-WARNING: This documentation is obsolete.
+*WARNING: This documentation is obsolete.*
 
 Tried on FreeBSD 9.2
 
@@ -268,14 +229,14 @@ Install Dependencies
 	$ cd /usr/ports/devel/json-c
 	[json-c] $ sudo make install 
 
-  $ cd /usr/ports/devel/glib20
-  [glib20] $ sudo make install
+    $ cd /usr/ports/devel/glib20
+    [glib20] $ sudo make install
 
-  $ cd /usr/ports/net/libfixbuf
-  [libfixbuf] $ sudo make install
+    $ cd /usr/ports/net/libfixbuf
+    [libfixbuf] $ sudo make install
 
-  $ cd /usr/ports/devel/libexecinfo
-  [libexecinfo] $ sudo make install
+    $ cd /usr/ports/devel/libexecinfo
+    [libexecinfo] $ sudo make install
 
 Build `nfql`
 
@@ -283,19 +244,17 @@ Build `nfql`
 
 Read the man page
 
-  $ cd /usr/ports/sysutils/most
-  [most] $ sudo make install
-  [nfql] $ nroff -man nfql.1 | most
+    $ cd /usr/ports/sysutils/most
+    [most] $ sudo make install
+    [nfql] $ nroff -man nfql.1 | most
 
-Install Doxygen and GraphVIZ (optional)
+Generate Documentation (optional)
 
 	$ cd /usr/ports/devel/doxygen
 	[doxygen] $ sudo make install 
 
 	$ cd /usr/ports/graphics/graphviz
 	[graphviz] $ sudo make install 
-
-Generate Documentation (optional)
 
 	[nfql] $ make doc
 
@@ -310,11 +269,8 @@ Running `nfql`
 
 Some example queries are provided in `examples/` along with a sample trace.
 
-  # IPFIX flows
-	[nfql] $ bin/nfql --ipfix examples/query-http-tcp-session.json examples/trace-2009.ipfix
-
-  # NetFlow v5 flow-tools flows
-	[nfql] $ bin/nfql examples/query-http-tcp-session.json examples/trace-2009.ft
+    [nfql] $ bin/nfql --ipfix examples/query-http-tcp-session.json examples/trace-2009.ipfix  
+    [nfql] $ bin/nfql examples/query-http-tcp-session.json examples/trace-2009.ft
 
 The sample queries can also be run on your own `NetFlow v5` records
 
@@ -357,15 +313,11 @@ To run the `SiLK` benchmarks:
 Example `SiLK` traces and queries are provided in `examples/silk/`
 
 
-Contributors
-------------
+Authors
+-------
 - - - 
 
-Vaibhav Bajpai <contact@vaibhavbajpai.com>
-Johannes Schauer <j.schauer@email.de>
-Corneliu Claudiu Prodescu <c.prodescu@jacobs-university.de>
-Kaloyan Kanev <k.kanev@jacobs-university.de>
-Vladislav Marinov <v.marinov@jacobs-university.de>
-Vladislav Perelman <v.perelman@jacobs-university.de>
-Nikolay Melnikov <n.melnikov@jacobs-university.de>
-Jürgen Schönwälder <j.schoenwaelder@jacobs-university.de>
+- Vaibhav Bajpai <contact@vaibhavbajpai.com>
+- Johannes Schauer <j.schauer@email.de>
+- Corneliu Claudiu Prodescu <c.prodescu@jacobs-university.de>
+- Jürgen Schönwälder <j.schoenwaelder@jacobs-university.de>
