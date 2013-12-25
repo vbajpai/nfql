@@ -1,4 +1,26 @@
-`F (v2.6):` It is fast!
+`nfql v0.7`: It supports IPFIX!
+
+    $ git show v0.7
+
+    * execution engine supports IPFIX
+      - the query DSL now uses IPFIX entity names and datatypes [RFC 7012].
+      - the IPFIX I/O processing is supported using libfixbuf.
+      - the read and written IPFIX flows are RFC 5655 compatible.
+      - added --ipfix/-I in bin/engine -h
+      - updated installation instructions for Mac OS X homebrew.
+      - updated installation instructions for Debian and Fedora.
+    * IPFIX to NetFlow v5 backward compatibility layer:
+      - allows usage of IPFIX entitiy names and datatypes for NetFlow v5 flows.
+      - query DSL only supports IPFIX entity name and datatypes as default.
+    * deprecated and removed flowy parser codebase
+    * removed all references to flowy
+    * the executable binary is now called nfql (and not engine)
+    * removed all references to engine with nfql
+    * added a nfql.1 man page, updated README.md with reading instructions.
+    * resolved issues:
+      - fixed asprintf(...) unchecked return warnings
+
+`nfql v0.6`: It is fast!
 
     $ git show v0.6
 
@@ -53,7 +75,7 @@
       - removed duplicate const decl on one declaration statement (clang
         issue)
 
-`F (v2.5):` It is verifiable!
+`nfql v0.5`: It is verifiable!
 
     $ git show v0.5
 
@@ -76,7 +98,7 @@
       * no segfault when no grouper rules are defined.
 
 
-`F (v2.4):` It is portable!
+`nfql v0.4`: It is portable!
 
 	$ git show v0.4
 	
@@ -95,7 +117,7 @@
 	*  installation instruction for Mac OS X.
 
 
-`F (v2.3):` It is flexible!
+`nfql v0.3`: It is flexible!
   
 	$ git show v0.3
 	
@@ -115,7 +137,7 @@
 	* flow-cat ... | flowy-engine $QUERY -		
 
 
-`F (v2.2):` It is robust!
+`nfql v0.2`: It is robust!
 	
 	$ git show v0.2
 	
@@ -138,7 +160,7 @@
 	    - lazy `rule->func(…)` assignment when the stage is entered.	Summary: (since after `v0.2`)
 	    
 
-`F (v2.1):` It works!
+`nfql v0.1`: It works!
 
 	$ git show v0.1
 	
@@ -163,7 +185,7 @@
 	* flexible filters and group filters with no uintX_t assumptions on field offsets.
 	* first-ever ungrouper implementation.
   
-`F (v2.0)`
+`nfql v0.0`: It is a start!
 
 	$ git show v0.0
 
