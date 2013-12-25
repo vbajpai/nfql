@@ -1,18 +1,18 @@
 # NFQL
 - - - -
 
-An efficient C implementation of a stream-based flow query language.
+An efficient C implementation of the network flow query language (NFQL).
 
-### Motivation
+
+### Query Language 
 
 Understanding intricate traffic patterns require sophisticated flow
 analysis tools that can mine flow records for complex use cases.
 Unfortunately current tools fail to deliver owing to their language
-design and simplistic filtering methods. We have designed a flow query
-language that aims to cater to such needs. NFQL (Network Flow Query
-Language) is an implementation of the flow query language.
+design and simplistic filtering methods. We have designed a network flow
+query language (NFQL) that aims to cater to such needs.
 
-### Features
+#### Features
 
 - Filter flows.
 - Combine flows into groups.
@@ -21,10 +21,27 @@ Language) is an implementation of the flow query language.
 - Apply absolute or relative filters when grouping or merging.
 - Unfold grouped flows back into individual flows.
 
-### Architecture 
+### Implementation
 
-- Supports reading and writing NetFlow v5 flows in `flow-tools` format.
+`nfql`  is  a  reference  implementation of NFQL.  `nfql` is composed of
+an execution engine and a query parser. The execution engine is the
+brain of  `nfql`  where  the flows are processed. `nfql` reads a
+flow‐query in an intermediate `JSON` format alongwith tracefiles that
+are read  in memory for efficient processing. The query parser can be
+used to read a custom query domain specific language (DSL) and generate
+the `JSON` intermediate representation required by the execution engine.
+
+ A common usage is shown below:
+
+     $ nfql examples/query‐tcp‐session.json examples/trace‐2009.ftz
+     $ flow‐cat tracefile[s] | nfql examples/query‐tcp‐session.json ‐
+     $ nfql ‐-ipfix examples/query‐tcp‐session.json examples/trace‐2009.ipfix
+
+#### Features
+
+- Supports reading and writing NetFlow v5 flows in `flow-tools` format and IPFIX flows in [RFC 5655](http://tools.ietf.org/search/rfc5655) format.
 - The default query DSL can be mathematically expressed as a `DNF` expression. 
+- The default query DSL uses IPFIX information model defined in [RFC 7012](http://tools.ietf.org/html/rfc7012). for both NetFlow v5 and IPFIX.
 - The query is parsed in a `JSON` format allowing `M2M` communication.
 - The query parser and execution engine are completely decoupled from one another.
 - The flow processing is modular adhering to a five-stage processing pipeline.
@@ -153,12 +170,12 @@ DSOM 2009, Venice, October 2009.
 
 ### History
 
-Flowy was a first feature complete Python prototype of the flow query
-language. Due to performance problems, it was superseeded by a complete
-rewrite in C, called Flowy 2.0. NFQL extends on Flowy 2.0, making it
-more feature complete. The execution engine has been optimized with
-crispier algorithms to make it scale to real-world sized traces. NFQL
-now has comparable execution times to contemporary flow analysis tools.
+Flowy was a first feature complete Python prototype of NFQL. Due to
+performance problems, it was superseeded by a complete rewrite in C,
+called Flowy 2.0. `nfql` extends on Flowy 2.0, making it feature
+complete. The execution engine has been optimized with crispier
+algorithms to make it scale to real-world sized traces. `nfql` now has
+comparable execution times to contemporary flow analysis tools.
 
 ### Development Blog
 

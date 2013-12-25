@@ -1,25 +1,42 @@
 <h1 id="nfql">NFQL</h1>
 <hr />
-<p>An efficient C implementation of a stream-based flow query language.</p>
+<p>An efficient C implementation of the network flow query language (NFQL)</p>
 <h3 id="installation-on-fedora-linux">Installation on Fedora Linux</h3>
 <p>Install Dependencies</p>
-<pre><code>$ sudo yum install cmake flow-tools-devel json-c-devel
-$ sudo yum install doxygen graphviz</code></pre>
-<p>Build the Execution Engine</p>
-<pre><code>[engine] $ make</code></pre>
+<pre><code>$ sudo yum install cmake flow-tools-devel json-c-devel</code></pre>
+<p>Install IPFIX protocol library</p>
+<pre><code>$ sudo yum install glib2-devel
+$ wget http://tools.netsa.cert.org/releases/libfixbuf-1.4.0.tar.gz
+$ tar -zxvf libfixbuf-1.4.0.tar.gz
+[libfixbuf-1.4.0] $ ./configure
+[libfixbuf-1.4.0] $ make
+[libfixbuf-1.4.0] $ sudo make install</code></pre>
+<p>Build <code>nfql</code></p>
+<pre><code>[nfql] $ make</code></pre>
+<p>Read the man page</p>
+<pre><code>$ sudo yum install most
+[nfql] $ nroff -man nfql.1 | most</code></pre>
 <p>Generate Documentation (optional)</p>
-<pre><code>[engine] $ make doc</code></pre>
-<h4 id="running-the-execution-engine">Running the Execution Engine</h4>
-<p>Example queries are available in <code>examples/</code> along with sample traces.</p>
-<pre><code>[engine] $ bin/engine examples/query-http-tcp-session.json examples/trace-2009.ftz</code></pre>
+<pre><code>$ sudo yum install doxygen graphviz
+[nfql] $ make doc</code></pre>
+<p>Cleanup</p>
+<pre><code>[nfql] $ make clean</code></pre>
+<h4 id="running-nfql">Running <code>nfql</code></h4>
+<p>Some example queries are provided in <code>examples/</code> along with a sample trace.</p>
+<pre><code>[nfql] $ bin/nfql --ipfix examples/query-http-tcp-session.json examples/trace-2009.ipfix
+[nfql] $ bin/nfql examples/query-http-tcp-session.json examples/trace-2009.ft</code></pre>
 <p>The sample queries can also be run on your own <code>NetFlow v5</code> records</p>
-<pre><code>[engine] $ flow-cat $TRACE[s] | bin/engine examples/query-http-tcp-session.json</code></pre>
+<pre><code>[nfql] $ flow-cat tracefile[s] | bin/nfql examples/query-http-tcp-session.json</code></pre>
 <h4 id="running-the-test-suite">Running the Test Suite</h4>
 <p>To run the complete regression test-suite:</p>
-<pre><code>[engine] $ tests/regression.py [-v]</code></pre>
+<pre><code>[nfql] $ tests/regression.py [-v]</code></pre>
 <p>Regression tests can also be run individually on a specific example query type. For instance:</p>
-<pre><code>[engine] $ tests/test-query-http-tcp-session.py [-v]</code></pre>
+<pre><code>[nfql] $ tests/test-query-http-tcp-session.py [-v]</code></pre>
 <h4 id="running-the-benchmarks">Running the Benchmarks</h4>
-<p>To run the <code>NFQL</code> benchmarks:</p>
-<pre><code>[engine] $ make
-[engine] $ sudo benchmarks/nfql.py bin/engine trace[s]/ querie[s]/</code></pre>
+<p>To run the <code>nfql</code> benchmarks:</p>
+<pre><code>[nfql] $ make
+[nfql] $ sudo benchmarks/nfql.py bin/nfql tracefile[s]/ querie[s]/</code></pre>
+<p>Example <code>nfql</code> traces and queries are provided in <code>examples/</code></p>
+<p>To run the <code>SiLK</code> benchmarks:</p>
+<pre><code>[nfql] $ sudo benchmarks/silk.py tracefile[s]/ querie[s]/</code></pre>
+<p>Example <code>SiLK</code> traces and queries are provided in <code>examples/silk/</code></p>

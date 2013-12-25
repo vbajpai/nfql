@@ -1,50 +1,68 @@
 # NFQL
 - - - -
 
-An efficient C implementation of a stream-based flow query language.
+An efficient C implementation of the network flow query language (NFQL).
+
+*WARNING: This documentation is obsolete.*
 
 ### Installation on Mac OS X using MacPorts
 
 Install [MacPorts &rarr;](http://guide.macports.org/#installing)
 
-Install Dependencies
+Install Dependencies:
 
-	$ sudo port install cmake flow-tools json-c doxygen graphviz
+    $ sudo port install cmake flow-tools json-c
 
-Build the Execution Engine
+Build `nfql`:
 
-	[engine] $ make CMAKE_PREFIX_PATH=/opt/local
+    [nfql] $ make CMAKE_PREFIX_PATH=/opt/local
+
+Read the man page:
+
+    [nfql] $ nroff -man nfql.1 | most
 
 Generate Documentation (optional)
 
-    [engine] $ make doc
+    $ sudo port install doxygen graphviz
+    [nfql] $ make doc
 
+Cleanup
 
-#### Running the Execution Engine
+    [nfql] $ make clean
 
-Example queries are available in `examples/` along with sample traces.
+#### Running `nfql`
 
-	[engine] $ bin/engine examples/query-http-tcp-session.json examples/trace-2009.ftz
+Some example queries are provided in `examples/` along with a sample trace.
+
+    [nfql] $ bin/nfql --ipfix examples/query-http-tcp-session.json examples/trace-2009.ipfix
+    [nfql] $ bin/nfql examples/query-http-tcp-session.json examples/trace-2009.ft
 
 The sample queries can also be run on your own `NetFlow v5` records
 
-	[engine] $ flow-cat $TRACE[s] | bin/engine examples/query-http-tcp-session.json
-
+    [nfql] $ flow-cat tracefile[s] | bin/nfql examples/query-http-tcp-session.json
 
 #### Running the Test Suite
 
 To run the complete regression test-suite:
 
-	[engine] $ tests/regression.py [-v]
+    [nfql] $ tests/regression.py [-v]
 
-Regression tests can also be run individually on a specific example query type. For instance:
+ Regression tests can also be run individually on a specific example
+ query type. For instance:
 
-	[engine] $ tests/test-query-http-tcp-session.py [-v]
+    [nfql] $ tests/test-query-http-tcp-session.py [-v]
 
 #### Running the Benchmarks
 
-To run the `NFQL` benchmarks:
+To run the `nfql` benchmarks:
 
-	[engine] $ make
-	[engine] $ sudo benchmarks/nfql.py bin/engine trace[s]/ querie[s]/
+    [nfql] $ make
+    [nfql] $ sudo benchmarks/nfql.py bin/nfql tracefile[s]/ querie[s]/
 
+Example `nfql` traces and queries are provided in `examples/`
+
+To run the `SiLK` benchmarks:
+
+    [nfql] $ sudo benchmarks/silk.py tracefile[s]/ querie[s]/
+
+Example `SiLK` traces and queries are provided in `examples/silk/`

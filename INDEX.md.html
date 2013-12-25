@@ -1,9 +1,9 @@
 <h1 id="nfql">NFQL</h1>
 <hr />
-<p>An efficient C implementation of a stream-based flow query language.</p>
-<h3 id="motivation">Motivation</h3>
-<p>Understanding intricate traffic patterns require sophisticated flow analysis tools that can mine flow records for complex use cases. Unfortunately current tools fail to deliver owing to their language design and simplistic filtering methods. We have designed a flow query language that aims to cater to such needs. NFQL (Network Flow Query Language) is an implementation of the flow query language.</p>
-<h3 id="features">Features</h3>
+<p>An efficient C implementation of the network flow query language (NFQL).</p>
+<h3 id="query-language">Query Language</h3>
+<p>Understanding intricate traffic patterns require sophisticated flow analysis tools that can mine flow records for complex use cases. Unfortunately current tools fail to deliver owing to their language design and simplistic filtering methods. We have designed a network flow query language (NFQL) that aims to cater to such needs.</p>
+<h4 id="features">Features</h4>
 <ul>
 <li>Filter flows.</li>
 <li>Combine flows into groups.</li>
@@ -12,10 +12,17 @@
 <li>Apply absolute or relative filters when grouping or merging.</li>
 <li>Unfold grouped flows back into individual flows.</li>
 </ul>
-<h3 id="architecture">Architecture</h3>
+<h3 id="implementation">Implementation</h3>
+<p><code>nfql</code> is a reference implementation of NFQL. <code>nfql</code> is composed of an execution engine and a query parser. The execution engine is the brain of <code>nfql</code> where the flows are processed. <code>nfql</code> reads a flow‐query in an intermediate <code>JSON</code> format alongwith tracefiles that are read in memory for efficient processing. The query parser can be used to read a custom query domain specific language (DSL) and generate the <code>JSON</code> intermediate representation required by the execution engine.</p>
+<p>A common usage is shown below:</p>
+<pre><code> $ nfql examples/query‐tcp‐session.json examples/trace‐2009.ftz
+ $ flow‐cat tracefile[s] | nfql examples/query‐tcp‐session.json ‐
+ $ nfql ‐-ipfix examples/query‐tcp‐session.json examples/trace‐2009.ipfix</code></pre>
+<h4 id="features-1">Features</h4>
 <ul>
-<li>Supports reading and writing NetFlow v5 flows in <code>flow-tools</code> format.</li>
+<li>Supports reading and writing NetFlow v5 flows in <code>flow-tools</code> format and IPFIX flows in <a href="http://tools.ietf.org/search/rfc5655">RFC 5655</a> format.</li>
 <li>The default query DSL can be mathematically expressed as a <code>DNF</code> expression.</li>
+<li>The default query DSL uses IPFIX information model defined in <a href="http://tools.ietf.org/html/rfc7012">RFC 7012</a>. for both NetFlow v5 and IPFIX.</li>
 <li>The query is parsed in a <code>JSON</code> format allowing <code>M2M</code> communication.</li>
 <li>The query parser and execution engine are completely decoupled from one another.</li>
 <li>The flow processing is modular adhering to a five-stage processing pipeline.</li>
@@ -70,7 +77,7 @@
 <li>Jürgen Schönwälder <a href="j.schoenwaelder@jacobs-university.de">j.schoenwaelder@jacobs-university.de</a></li>
 </ul>
 <h3 id="history">History</h3>
-<p>Flowy was a first feature complete Python prototype of the flow query language. Due to performance problems, it was superseeded by a complete rewrite in C, called Flowy 2.0. NFQL extends on Flowy 2.0, making it more feature complete. The execution engine has been optimized with crispier algorithms to make it scale to real-world sized traces. NFQL now has comparable execution times to contemporary flow analysis tools.</p>
+<p>Flowy was a first feature complete Python prototype of NFQL. Due to performance problems, it was superseeded by a complete rewrite in C, called Flowy 2.0. <code>nfql</code> extends on Flowy 2.0, making it feature complete. The execution engine has been optimized with crispier algorithms to make it scale to real-world sized traces. <code>nfql</code> now has comparable execution times to contemporary flow analysis tools.</p>
 <h3 id="development-blog">Development Blog</h3>
 <p>A development blog discussing the internal details is <a href="http://blog.nfql.vaibhavbajpai.com">here →</a></p>
 <h3 id="license">License</h3>
