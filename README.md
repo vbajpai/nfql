@@ -199,8 +199,8 @@ Build and install `nfql`
 
 	[nfql] $ make 
 	[nfql] $ sudo make install
-  # echo "/usr/local/lib" >> /etc/ld.so.conf
-  # ldconfig
+    # echo "/usr/local/lib" >> /etc/ld.so.conf
+    # ldconfig
 
 Read the man page
 
