@@ -1,3 +1,15 @@
+`nfql v0.7.1`: Ready for Packaging
+
+    $ git show v0.7.1
+
+    tag v0.7.1
+    Tagger: Vaibhav Bajpai <contact@vaibhavbajpai.com>
+    Date:   Sat Dec 28 15:53:39 2013 +0100
+    Commit bff58ec77ca8a7a84c7f2ae8a9dbc63e0d22dc1c
+
+    * proper nfql binary and man page installation at standard locations.
+    * updated README.md with installation instructions.
+
 `nfql v0.7`: It supports IPFIX!
 
     $ git show v0.7
