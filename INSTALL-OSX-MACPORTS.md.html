@@ -6,10 +6,11 @@
 <p>Install <a href="http://guide.macports.org/#installing">MacPorts →</a></p>
 <p>Install Dependencies:</p>
 <pre><code>$ sudo port install cmake flow-tools json-c</code></pre>
-<p>Build <code>nfql</code>:</p>
-<pre><code>[nfql] $ make CMAKE_PREFIX_PATH=/opt/local</code></pre>
+<p>Build and install <code>nfql</code>:</p>
+<pre><code>[nfql] $ make CMAKE_PREFIX_PATH=/opt/local
+[nfql] $ make install</code></pre>
 <p>Read the man page:</p>
-<pre><code>[nfql] $ nroff -man nfql.1 | most</code></pre>
+<pre><code>$ man nfql | most</code></pre>
 <p>Generate Documentation (optional)</p>
 <pre><code>$ sudo port install doxygen graphviz
 [nfql] $ make doc</code></pre>
@@ -17,10 +18,10 @@
 <pre><code>[nfql] $ make clean</code></pre>
 <h4 id="running-nfql">Running <code>nfql</code></h4>
 <p>Some example queries are provided in <code>examples/</code> along with a sample trace.</p>
-<pre><code>[nfql] $ bin/nfql --ipfix examples/query-http-tcp-session.json examples/trace-2009.ipfix
-[nfql] $ bin/nfql examples/query-http-tcp-session.json examples/trace-2009.ft</code></pre>
+<pre><code>[nfql] $ nfql --ipfix examples/query-http-tcp-session.json examples/trace-2009.ipfix
+[nfql] $ nfql examples/query-http-tcp-session.json examples/trace-2009.ft</code></pre>
 <p>The sample queries can also be run on your own <code>NetFlow v5</code> records</p>
-<pre><code>[nfql] $ flow-cat tracefile[s] | bin/nfql examples/query-http-tcp-session.json</code></pre>
+<pre><code>[nfql] $ flow-cat tracefile[s] | nfql examples/query-http-tcp-session.json -</code></pre>
 <h4 id="running-the-test-suite">Running the Test Suite</h4>
 <p>To run the complete regression test-suite:</p>
 <pre><code>[nfql] $ tests/regression.py [-v]</code></pre>
@@ -29,7 +30,7 @@
 <h4 id="running-the-benchmarks">Running the Benchmarks</h4>
 <p>To run the <code>nfql</code> benchmarks:</p>
 <pre><code>[nfql] $ make
-[nfql] $ sudo benchmarks/nfql.py bin/nfql tracefile[s]/ querie[s]/</code></pre>
+[nfql] $ sudo benchmarks/nfql.py nfql tracefile[s]/ querie[s]/</code></pre>
 <p>Example <code>nfql</code> traces and queries are provided in <code>examples/</code></p>
 <p>To run the <code>SiLK</code> benchmarks:</p>
 <pre><code>[nfql] $ sudo benchmarks/silk.py tracefile[s]/ querie[s]/</code></pre>

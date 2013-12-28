@@ -13,13 +13,14 @@ Install Dependencies:
 
     $ sudo port install cmake flow-tools json-c
 
-Build `nfql`:
+Build and install `nfql`:
 
     [nfql] $ make CMAKE_PREFIX_PATH=/opt/local
+    [nfql] $ make install
 
 Read the man page:
 
-    [nfql] $ nroff -man nfql.1 | most
+    $ man nfql | most
 
 Generate Documentation (optional)
 
@@ -34,12 +35,12 @@ Cleanup
 
 Some example queries are provided in `examples/` along with a sample trace.
 
-    [nfql] $ bin/nfql --ipfix examples/query-http-tcp-session.json examples/trace-2009.ipfix
-    [nfql] $ bin/nfql examples/query-http-tcp-session.json examples/trace-2009.ft
+    [nfql] $ nfql --ipfix examples/query-http-tcp-session.json examples/trace-2009.ipfix
+    [nfql] $ nfql examples/query-http-tcp-session.json examples/trace-2009.ft
 
 The sample queries can also be run on your own `NetFlow v5` records
 
-    [nfql] $ flow-cat tracefile[s] | bin/nfql examples/query-http-tcp-session.json
+    [nfql] $ flow-cat tracefile[s] | nfql examples/query-http-tcp-session.json -
 
 #### Running the Test Suite
 
@@ -57,7 +58,7 @@ To run the complete regression test-suite:
 To run the `nfql` benchmarks:
 
     [nfql] $ make
-    [nfql] $ sudo benchmarks/nfql.py bin/nfql tracefile[s]/ querie[s]/
+    [nfql] $ sudo benchmarks/nfql.py nfql tracefile[s]/ querie[s]/
 
 Example `nfql` traces and queries are provided in `examples/`
 
