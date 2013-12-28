@@ -28,7 +28,7 @@
 #define _GNU_SOURCE
 #define STR(x) #x
 #define XSTR(x) STR(x)
-#define VERSION 0.7
+#define VERSION 0.7.1
 #include "f.h"
 
 #include "auto-assign.h"
