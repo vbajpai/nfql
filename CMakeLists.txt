@@ -4,6 +4,7 @@
 
 # macros
 include(CheckFunctionExists)
+include(GNUInstallDirs)
 
 # minimum supported cmake version
 cmake_minimum_required(VERSION 2.6)
@@ -88,6 +89,10 @@ target_link_libraries(nfql ${MLIB}
                              ${FIXBUF}
                              ${GLIB_LIBRARIES}
                              ${LIBEXECINFO})
+
+# install the binary and man page
+install(TARGETS nfql DESTINATION ${CMAKE_INSTALL_BINDIR})
+install(FILES nfql.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1 COMPONENT doc)
 
 # ---------------------------------------------------------------------------#
 
