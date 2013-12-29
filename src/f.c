@@ -103,7 +103,7 @@ parse_cmdline_args(int argc, char** const argv) {
         break;
       case 'd': file = TRUE; dirpath = optarg; break;
       case 'h': usageErr(usage_string, argv[0], argv[0]);
-      case 'V': fprintf(stdout, "%s version %s", argv[0], XSTR(VERSION));
+      case 'V': fprintf(stdout, "%s version %s\n", argv[0], XSTR(VERSION));
                 exit(EXIT_SUCCESS);
       case 'I': ipfix_enabled = TRUE; break;
       case ':': usageError(argv[0], "Missing argument", optopt);
