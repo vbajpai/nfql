@@ -63,7 +63,7 @@ release from [here &rarr;](https://github.com/vbajpai/nfql/releases)
 
 ### Publications
 
-[Network Flow Query Lanauage - Design, Implementation, Performance and Applications &rarr;](http://vaibhavbajpai.com/documents/papers/proceedings/nfql-tnsm-2017.pdf)  
+[Network Flow Query Language - Design, Implementation, Performance and Applications &rarr;](http://vaibhavbajpai.com/documents/papers/proceedings/nfql-tnsm-2017.pdf)  
 Vaibhav Bajpai, Jürgen Schönwälder  
 TNSM 2017, XXX 2017
 
