@@ -65,7 +65,7 @@ release from [here &rarr;](https://github.com/vbajpai/nfql/releases)
 
 [Network Flow Query Language - Design, Implementation, Performance and Applications &rarr;](http://vaibhavbajpai.com/documents/papers/proceedings/nfql-tnsm-2017.pdf)  
 Vaibhav Bajpai, Jürgen Schönwälder  
-TNSM 2017, XXX 2017
+TNSM 2017, March 2017
 
 [NFQL: A Tool for Querying Network Flow Records &rarr;](http://www.vaibhavbajpai.com/documents/papers/proceedings/nfql-im-2013.pdf)  
 Vaibhav Bajpai, Johannes Schauer, Jürgen Schönwälder  
